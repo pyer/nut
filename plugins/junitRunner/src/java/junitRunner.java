@@ -1,6 +1,7 @@
 package nut.plugins;
 
 import nut.logging.Log;
+import nut.project.NutProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,68 +31,23 @@ public class junitRunner
     
     private static int index = 0;
 
-    public static void execute(Properties pluginContext, List dependencies, List testDependencies )
+    public static void execute( NutProject project )
         throws Exception
     {
         log =new Log();
-        String basedir             = (String)pluginContext.getProperty( "basedir" );
-        String buildDirectory      = (String)pluginContext.getProperty( "build.directory" );
-        String sourceDirectory     = (String)pluginContext.getProperty( "build.sourceDirectory" );
-        String testSourceDirectory = (String)pluginContext.getProperty( "build.testSourceDirectory" );
-        String outputDirectory     = (String)pluginContext.getProperty( "build.outputDirectory" );
-        String testOutputDirectory = (String)pluginContext.getProperty( "build.testOutputDirectory" );
-        String artifactId          = (String)pluginContext.getProperty( "project.artifactId" );
-        String packaging           = (String)pluginContext.getProperty( "project.packaging" );
+        Properties pluginProperties = project.getModel().getProperties();
+        String basedir              = (String)pluginProperties.getProperty( "basedir" );
+        String testOutputDirectory  = (String)pluginProperties.getProperty( "build.testOutputDirectory" );
 
-        /*
-        log.debug( "build.directory           = " + buildDirectory );
-        log.debug( "build.sourceDirectory     = " + sourceDirectory );
-        log.debug( "build.testSourceDirectory = " + testSourceDirectory );
-        log.debug( "build.outputDirectory     = " + outputDirectory );
-        log.debug( "build.testOutputDirectory = " + testOutputDirectory );
-        log.debug( "project.artifactId        = " + artifactId );
-        */
-        
         File directoryPath = new File( basedir + File.separator + testOutputDirectory );
         index = 1 + directoryPath.getPath().length();
-        //log.debug( "Testing " + directoryPath.getPath() );
 
+        // Runs all test classes in a directory and its sub folders.
         log.info( "   Testing..." );
-/*
-        for ( int i = 0; i < testDependencies.size(); i++ )
-        {
-            String dep = (String)(testDependencies.get(i));
-            log.debug( "testDependency " + dep );
-            copyFile( dep, testOutputDirectory + File.separator + "junit.jar" );
-        }
-*/
-
-        runDirectory( directoryPath );
-    }
-
-    /**
-     * Runs all test classes in a directory and its sub folders.
-     *
-     */
-    public static void runDirectory( File dir )
-        throws Exception
-    {
-        if ( dir != null )
-        {
-            if ( !dir.exists() )
-            {
-                //log.warn( dir + " doesn't exist" );
-                return;
-            }
-
-            if ( dir.isDirectory() )
-            {
-                //log.warn( "   run tests in " + dir.getAbsolutePath() );
-                runTests(dir);
-            }
+        if ( directoryPath != null && directoryPath.isDirectory() ) {
+           runTests(directoryPath);
         }
     }
-
 
   private static void runTests(File path)
         throws Exception

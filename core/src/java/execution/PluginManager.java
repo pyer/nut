@@ -5,7 +5,6 @@ import nut.logging.Log;
 import nut.artifact.Artifact;
 import nut.artifact.InvalidArtifactRTException;
 
-import nut.model.Dependency;
 import nut.model.Plugin;
 
 import nut.project.NutProject;
@@ -21,9 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import java.util.Properties;
-
 
 public class PluginManager
 {
@@ -59,8 +55,7 @@ public class PluginManager
                 //log.info( "["+goal.substring(0,index)+"]" );
                 //log.info( "["+goal.substring(index+1,goal.length())+"]" );
                 //log.debug( plugin.toString() );
-                executePlugin( plugin, project.getModel().getProperties(), null, null );
-                //executePlugin( plugin, project.getModel().getProperties(), dependencies, testDependencies );
+                executePlugin( plugin, project );
             }
             else
             {
@@ -83,33 +78,13 @@ public class PluginManager
             return;
         }
 
-        // List of dependencies file names
-        List<String> dependencies = new ArrayList<String>();
-        List<String> testDependencies = new ArrayList<String>();
-        List modelDep = project.getModel().getDependencies();
-        for ( int i = 0; i < modelDep.size(); i++ )
-        {
-            Dependency dep = (Dependency)(modelDep.get(i));
-            Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType(), null );
-            File file = artifactDep.getFile();
-            //log.debug( "scope is " + dep.getScope() + " for " + dep.getId() );
-            if( dep.getScope().equals("test") )
-            {
-                testDependencies.add(file.getAbsolutePath());
-            }
-            else
-            {
-                dependencies.add(file.getAbsolutePath());
-            }
-        }
-
         boolean run = false;
         for ( Iterator it = plugins.iterator(); it.hasNext(); )
         {
             Plugin plugin = (Plugin) it.next();
             if ( goal.equals( plugin.getGoal() ) || (goal.equals( "build" ) && !plugin.getSkip()) )
             {
-                executePlugin( plugin, project.getModel().getProperties(), dependencies, testDependencies );
+                executePlugin( plugin, project );
                 project.buildIsDone();
                 run = true;
             }
@@ -121,7 +96,7 @@ public class PluginManager
     }
 
     @SuppressWarnings("unchecked")
-    private void executePlugin( Plugin plugin, Properties properties, List dependencies, List testDependencies )
+    private void executePlugin( Plugin plugin, NutProject project )
         throws BuildFailureException
     {
         try
@@ -136,11 +111,8 @@ public class PluginManager
                    ClassLoader mainLoader = Thread.currentThread().getContextClassLoader();
                    NutClassRealm realm    = new NutClassRealm( mainLoader, file.toURI().toURL() );
                    Class mainClass        = realm.loading( "nut.plugins." + artifact.getArtifactId() );
-//                   Method setLogMethod = mainClass.getMethod( "setLog", new Class[] { Log.class } );
-//                   setLogMethod.invoke( mainClass, new Object[]{log} );
-                   
-                   Method mainMethod = mainClass.getMethod( "execute", new Class[] { Properties.class, List.class, List.class } );
-                   mainMethod.invoke( mainClass, new Object[]{properties, dependencies, testDependencies} );
+                   Method mainMethod = mainClass.getMethod( "execute", new Class[] { NutProject.class } );
+                   mainMethod.invoke( mainClass, new Object[]{project} );
                }
                else
                {

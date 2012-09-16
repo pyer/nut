@@ -2,9 +2,8 @@
 set -e
 
 root=$(pwd)
-classes="target/classes"
 options="-d $root/target/classes -cp $root/target/classes:../nutRepository/nut/logging/Log-1.0.jar -deprecation -Xlint:unchecked"
-rm -r ../nutRepository
+[ -d ../nutRepository ] && rm -r ../nutRepository
 mkdir ../nutRepository
 
 cp -a junit ../nutRepository
@@ -52,24 +51,26 @@ echo "Build plugins"
 cd $root
 mkdir -p ../nutRepository/nut/plugins
 
+options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.0.jar:../nutRepository/nut/core/Nut-1.0.jar -deprecation -Xlint:unchecked"
 rm -r target/classes/*
-javac -d target/classes -cp ../nutRepository/nut/logging/Log-1.0.jar plugins/cleaner/src/java/cleaner.java -Xlint:unchecked
+javac $options plugins/cleaner/src/java/cleaner.java
 jar cf ../nutRepository/nut/plugins/cleaner-1.0.jar -C target/classes .
 
 rm -r target/classes/*
-javac -d target/classes -cp ../nutRepository/nut/logging/Log-1.0.jar plugins/installer/src/java/installer.java -Xlint:unchecked
+javac $options plugins/installer/src/java/installer.java
 jar cf ../nutRepository/nut/plugins/installer-1.0.jar -C target/classes .
 
 rm -r target/classes/*
-javac -d target/classes -cp ../nutRepository/nut/logging/Log-1.0.jar plugins/jarArchiver/src/java/jarArchiver.java -Xlint:unchecked
+javac $options plugins/jarArchiver/src/java/jarArchiver.java
 jar cf ../nutRepository/nut/plugins/jarArchiver-1.0.jar -C target/classes .
 
 rm -r target/classes/*
-javac -d target/classes -cp ../nutRepository/nut/logging/Log-1.0.jar plugins/javaCompiler/src/java/javaCompiler.java -Xlint:unchecked
+javac $options plugins/javaCompiler/src/java/javaCompiler.java
 jar cf ../nutRepository/nut/plugins/javaCompiler-1.0.jar -C target/classes .
 
 rm -r target/classes/*
-javac -d target/classes -cp ../nutRepository/nut/logging/Log-1.0.jar:../nutRepository/junit/junit-4.10.jar plugins/junitRunner/src/java/junitRunner.java -Xlint:unchecked
+options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.0.jar:../nutRepository/nut/core/Nut-1.0.jar:../nutRepository/junit/junit-4.10.jar -deprecation -Xlint:unchecked"
+javac $options plugins/junitRunner/src/java/junitRunner.java
 jar cf ../nutRepository/nut/plugins/junitRunner-1.0.jar -C target/classes .
 
 echo "Build packaging"

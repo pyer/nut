@@ -1,41 +1,9 @@
 package nut.plugins;
 
-/*
-Javac.exe is used by this plugin
---------------------------------
-
-Usage: javac <options> <source files>
-where possible options include:
-  -g                         Generate all debugging info
-  -g:none                    Generate no debugging info
-  -g:{lines,vars,source}     Generate only some debugging info
-  -nowarn                    Generate no warnings
-  -verbose                   Output messages about what the compiler is doing
-  -deprecation               Output source locations where deprecated APIs are used
-  -classpath <path>          Specify where to find user class files and annotation processors
-  -cp <path>                 Specify where to find user class files and annotation processors
-  -sourcepath <path>         Specify where to find input source files
-  -bootclasspath <path>      Override location of bootstrap class files
-  -extdirs <dirs>            Override location of installed extensions
-  -endorseddirs <dirs>       Override location of endorsed standards path
-  -proc:{none,only}          Control whether annotation processing and/or compilation is done.
-  -processor <class1>[,<class2>,<class3>...]Names of the annotation processors to run; bypasses default discovery process
-  -processorpath <path>      Specify where to find annotation processors
-  -d <directory>             Specify where to place generated class files
-  -s <directory>             Specify where to place generated source files
-  -implicit:{none,class}     Specify whether or not to generate class files for implicitly referenced files 
-  -encoding <encoding>       Specify character encoding used by source files
-  -source <release>          Provide source compatibility with specified release
-  -target <release>          Generate class files for specific VM version
-  -version                   Version information
-  -help                      Print a synopsis of standard options
-  -Akey[=value]              Options to pass to annotation processors
-  -X                         Print a synopsis of nonstandard options
-  -J<flag>                   Pass <flag> directly to the runtime system
-
-*/
-
 import nut.logging.Log;
+import nut.project.NutProject;
+import nut.model.Dependency;
+import nut.artifact.Artifact;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -74,22 +42,43 @@ public class javaCompiler
     /** Instance logger */
     private static Log log;
 
-    public static void execute(Properties pluginContext, List<String> dependencies, List<String> testDependencies )
+    public static void execute( NutProject project )
         throws Exception
     {
         log =new Log();
-        String basedir = (String)pluginContext.getProperty( "basedir" );
-        String buildDirectory      = (String)pluginContext.getProperty( "build.directory" );
-        String sourceDirectory     = (String)pluginContext.getProperty( "build.sourceDirectory" );
-        String testSourceDirectory = (String)pluginContext.getProperty( "build.testSourceDirectory" );
-        String outputDirectory     = (String)pluginContext.getProperty( "build.outputDirectory" );
-        String testOutputDirectory = (String)pluginContext.getProperty( "build.testOutputDirectory" );
+        Properties pluginProperties = project.getModel().getProperties();
+        String basedir              = (String)pluginProperties.getProperty( "basedir" );
+        String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );
+        String sourceDirectory      = (String)pluginProperties.getProperty( "build.sourceDirectory" );
+        String testSourceDirectory  = (String)pluginProperties.getProperty( "build.testSourceDirectory" );
+        String outputDirectory      = (String)pluginProperties.getProperty( "build.outputDirectory" );
+        String testOutputDirectory  = (String)pluginProperties.getProperty( "build.testOutputDirectory" );
 
         log.debug( "build.directory           = " + buildDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );
         log.debug( "build.testSourceDirectory = " + testSourceDirectory );
         log.debug( "build.outputDirectory     = " + outputDirectory );
         log.debug( "build.testOutputDirectory = " + testOutputDirectory );
+
+        // List of dependencies file names
+        List<String> dependencies = new ArrayList<String>();
+        List<String> testDependencies = new ArrayList<String>();
+        List modelDep = project.getModel().getDependencies();
+        for ( int i = 0; i < modelDep.size(); i++ )
+        {
+            Dependency dep = (Dependency)(modelDep.get(i));
+            Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType(), null );
+            File file = artifactDep.getFile();
+            //log.debug( "scope is " + dep.getScope() + " for " + dep.getId() );
+            if( dep.getScope().equals("test") )
+            {
+                testDependencies.add(file.getAbsolutePath());
+            }
+            else
+            {
+                dependencies.add(file.getAbsolutePath());
+            }
+        }
 /*        
         if ( dependencies!=null )
         {

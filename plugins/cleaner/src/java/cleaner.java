@@ -1,6 +1,7 @@
 package nut.plugins;
 
 import nut.logging.Log;
+import nut.project.NutProject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,12 +34,13 @@ public class cleaner
      *
      * @throws Exception When a directory failed to get deleted.
      */
-    public static void execute(Properties pluginContext, List dependencies, List testDependencies )
+    public static void execute( NutProject project )
         throws Exception
     {
         log =new Log();
-        String basedir        = (String)pluginContext.getProperty( "basedir" );
-        String buildDirectory = (String)pluginContext.getProperty( "build.directory" );
+        Properties pluginProperties = project.getModel().getProperties();
+        String basedir        = (String)pluginProperties.getProperty( "basedir" );
+        String buildDirectory = (String)pluginProperties.getProperty( "build.directory" );
         
         File directoryPath = new File( basedir + File.separator + buildDirectory );
         log.info( "   Cleaning " + directoryPath.getPath() );

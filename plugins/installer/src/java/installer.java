@@ -1,6 +1,7 @@
 package nut.plugins;
 
 import nut.logging.Log;
+import nut.project.NutProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,17 +17,18 @@ public class installer
     /** Instance logger */
     private static Log log;
 
-    public static void execute(Properties pluginContext, List dependencies, List testDependencies )
+    public static void execute( NutProject project )
         throws Exception
     {
         log =new Log();
-        String basedir             = (String)pluginContext.getProperty( "basedir" );
-        String buildDirectory      = (String)pluginContext.getProperty( "build.directory" );
-        String artifactId          = (String)pluginContext.getProperty( "project.artifactId" );
-        String version             = (String)pluginContext.getProperty( "project.version" );
-        String packaging           = (String)pluginContext.getProperty( "project.packaging" );
+        Properties pluginProperties = project.getModel().getProperties();
+        String basedir        = (String)pluginProperties.getProperty( "basedir" );
+        String buildDirectory = (String)pluginProperties.getProperty( "build.directory" );
+        String artifactId          = (String)pluginProperties.getProperty( "project.artifactId" );
+        String version             = (String)pluginProperties.getProperty( "project.version" );
+        String packaging           = (String)pluginProperties.getProperty( "project.packaging" );
 
-        String artifactPath        = (String)pluginContext.getProperty( "project.artifactPath" );
+        String artifactPath        = (String)pluginProperties.getProperty( "project.artifactPath" );
 
         log.debug( "basedir                   = " + basedir );
         log.debug( "build.directory           = " + buildDirectory );
