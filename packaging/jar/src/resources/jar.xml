@@ -1,0 +1,55 @@
+<!-- START SNIPPET: superpom -->
+<project>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <directory>target</directory>
+    <outputDirectory>target/classes</outputDirectory>
+    <testOutputDirectory>target/test-classes</testOutputDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>test/java</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>cleaner</artifactId>
+        <version>1.1</version>
+        <goal>clean</goal>
+      </plugin>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>javaCompiler</artifactId>
+        <version>1.1</version>
+        <goal>compile</goal>
+      </plugin>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>junitRunner</artifactId>
+        <version>1.1</version>
+        <goal>test</goal>
+      </plugin>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>jarArchiver</artifactId>
+        <version>1.1</version>
+        <goal>package</goal>
+      </plugin>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>installer</artifactId>
+        <version>1.1</version>
+        <goal>install</goal>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+<!-- END SNIPPET: superpom -->

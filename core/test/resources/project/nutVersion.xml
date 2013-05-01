@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+  <groupId>test.groupId</groupId>
+  <artifactId>artifact</artifactId>
+  <packaging>jar</packaging>
+  <parent>test/resources/project/</parent>
+
+</project>

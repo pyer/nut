@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>..</parent>
+
+  <groupId>nut</groupId>
+  <artifactId>plugins</artifactId>
+  <packaging>modules</packaging>
+
+  <modules>
+    <module>cleaner</module>
+    <module>installer</module>
+    <module>javaCompiler</module>
+    <module>jarArchiver</module>
+    <module>junitRunner</module>
+    <module>release</module>
+  </modules>
+</project>

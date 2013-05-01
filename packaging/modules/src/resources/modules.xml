@@ -1,0 +1,23 @@
+<!-- START SNIPPET: superpom -->
+<project>
+
+  <build>
+    <directory>target</directory>
+    <outputDirectory>target</outputDirectory>
+    <testOutputDirectory>target/test</testOutputDirectory>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>cleaner</artifactId>
+        <version>1.1</version>
+        <goal>clean</goal>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>
+<!-- END SNIPPET: superpom -->
