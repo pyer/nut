@@ -15,9 +15,6 @@ import nut.project.ProjectSorter;
 
 import nut.model.EffectiveModel;
 
-import nut.util.dag.CycleDetectedException;
-import nut.util.Os;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -51,7 +48,7 @@ public class Nut
         List<String> goals = new ArrayList<String>();
         boolean effectiveNut = false;
 
-        log =new Log();
+        log = new Log();
         if( args.length>0 )
         {
 	   for(int i=0; i < args.length ; i++)
@@ -214,7 +211,7 @@ public class Nut
                 for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
                 {
                     NutProject currentProject = (NutProject) it.next();
-                    log.info( "   " + currentProject.getName() );
+                    log.info( "   " + currentProject.getId() );
                 }
             }
             
@@ -231,7 +228,6 @@ public class Nut
                 else
                 {
                     long buildStartTime = System.currentTimeMillis();
-                //    log.info( "Goals " +goals + ":" + currentProject.getName() );
                     PluginManager mngr = new PluginManager( currentProject, log );
                     mngr.executeProject( goals );
                     currentProject.setStatus( System.currentTimeMillis() - buildStartTime, true );
@@ -246,12 +242,13 @@ public class Nut
             stats( start );
             throw new ExecutionException( e.getMessage(), e );
         }
-        catch ( CycleDetectedException e )
+/*        catch ( CycleDetectedException e )
         {
             logFailure( e );
             stats( start );
             throw new ExecutionException( "The projects in the reactor contain a cyclic reference: " + e.getMessage(), e );
         }
+*/
         catch ( DuplicateProjectException e )
         {
             logFailure( e );
@@ -279,7 +276,7 @@ public class Nut
                 NutProject project = (NutProject) it.next();
                 if ( project.isBuilt() &&  !project.isSuccessful() )
                 {
-                    log.error( "Error for project: " + project.getName() + " (during " + project.getTask() + ")" );
+                    log.error( "Error for project: " + project.getId() + " (during " + project.getTask() + ")" );
                     logDiagnostics( project.getCause() );
                 }
             }
@@ -309,7 +306,7 @@ public class Nut
             if ( ( project.getModules() != null ) && !project.getModules().isEmpty() )
             {
             //log.info("   Modules:");
-                File basedir = file.getParentFile();
+                File modulesRoot = file.getParentFile();
 
                 // Initial ordering is as declared in the modules section
                 List<File> moduleFiles = new ArrayList<File>( project.getModules().size() );
@@ -323,32 +320,16 @@ public class Nut
                         continue;
                     }
 
-                    File moduleFile = new File( basedir, name );
+                    File moduleFile = new File( modulesRoot, name );
 
                     if ( moduleFile.exists() && moduleFile.isDirectory() )
                     {
-                        moduleFile = new File( basedir, name + "/" + Nut.POM_FILE );
+                        //moduleFile = new File( modulesRoot, name + "/" + Nut.POM_FILE );
+                        moduleFiles.add( new File( modulesRoot, name + "/" + Nut.POM_FILE ) );
                     }
 
-                    if ( Os.isWindows() )
-                    {
-                        // we don't canonicalize on unix to avoid interfering with symlinks
-
-                        try
-                        {
-                            moduleFile = moduleFile.getCanonicalFile();
-                        }
-                        catch ( IOException e )
-                        {
-                            throw new ExecutionException( "Unable to canonicalize file name " + moduleFile, e );
-                        }
-                    }
-                    else
-                    {
-                        moduleFile = new File( moduleFile.toURI().normalize() );
-                    }
-
-                    moduleFiles.add( moduleFile );
+//                    moduleFile = new File( moduleFile.toURI().normalize() );
+//                    moduleFiles.add( moduleFile );
                 }
                 List<NutProject> collectedProjects = collectProjects( builder, moduleFiles );
                 projects.addAll( collectedProjects );
@@ -373,8 +354,8 @@ public class Nut
 
     protected static void logFailure( Exception e )
     {
-        log.error( "BUILD FAILURE" );
-        //log.error( "BUILD FAILURE:" + e.getMessage() );
+        //log.error( "BUILD FAILURE" );
+        log.error( "BUILD FAILURE:" + e.getMessage() );
         //e.printStackTrace();
         line();
     }
@@ -416,17 +397,17 @@ public class Nut
                 {
                     if ( project.isSuccessful() )
                     {
-                        logReactorSummaryLine( project.getName(), "SUCCESS", project.getTime() );
+                        logReactorSummaryLine( project.getId(), "SUCCESS", project.getTime() );
                     }
                     else
                     {
-                        logReactorSummaryLine( project.getName(), "FAILED", project.getTime() );
+                        logReactorSummaryLine( project.getId(), "FAILED", project.getTime() );
                         failureCount++;
                     }
                 }
                 else
                 {
-                    logReactorSummaryLine( project.getName(), "NOT BUILT", -1 );
+                    logReactorSummaryLine( project.getId(), "NOT BUILT", -1 );
                 }
             }
             line();

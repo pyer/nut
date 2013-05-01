@@ -1,7 +1,6 @@
 package nut.artifact;
 
 import nut.artifact.InvalidArtifactRTException;
-//import nut.util.Os;
 
 import java.io.File;
 import java.util.Collection;
@@ -102,48 +101,26 @@ public class Artifact
         return ( (classifier!=null) && !classifier.isEmpty() );
     }
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    public String getId()
+    public void setResolved( boolean resolved )
     {
-        StringBuffer sb = new StringBuffer();
-        sb.append( getGroupId() );
-        sb.append( ":" );
-        appendArtifactTypeClassifierString( sb );
-        return sb.toString() + ":" + getVersion();
+        this.resolved = resolved;
     }
 
-    
+    public boolean isResolved()
+    {
+        return resolved;
+    }
+
     public String getPath()
     {
-        String gid = getGroupId().replace( '.', File.separatorChar );
-        String path = repository+File.separator+gid+File.separator+artifactId+"-"+getVersion();
+        String group = getGroupId().replace( '.', File.separatorChar );
+        String path  = group+File.separator+artifactId+"-"+getVersion();
         if ( hasClassifier() )
         {
             path = path + "-" + classifier;
         }
         path = path + "." + type;
         return path;
-    }
-
-    public File getFile()
-    {
-        return new File( getPath() );
-    }
-
-    // ----------------------------------------------------------------------
-    private void appendArtifactTypeClassifierString( StringBuffer sb )
-    {
-        sb.append( getArtifactId() );
-        sb.append( ":" );
-        sb.append( getType() );
-        if ( hasClassifier() )
-        {
-            sb.append( ":" );
-            sb.append( getClassifier() );
-        }
     }
 
     // ----------------------------------------------------------------------
@@ -153,17 +130,18 @@ public class Artifact
     public String toString()
     {
         StringBuffer sb = new StringBuffer();
-        if ( getGroupId() != null )
-        {
-            sb.append( getGroupId() );
-            sb.append( ":" );
-        }
-        appendArtifactTypeClassifierString( sb );
+        sb.append( getGroupId() );
         sb.append( ":" );
-        if ( getVersion() != null )
+        sb.append( getArtifactId() );
+        sb.append( ":" );
+        sb.append( getType() );
+        if ( hasClassifier() )
         {
-            sb.append( getVersion() );
+            sb.append( ":" );
+            sb.append( getClassifier() );
         }
+        sb.append( ":" );
+        sb.append( getVersion() );
         return sb.toString();
     }
 
@@ -260,13 +238,4 @@ public class Artifact
         return result;
     }
 
-    public void setResolved( boolean resolved )
-    {
-        this.resolved = resolved;
-    }
-
-    public boolean isResolved()
-    {
-        return resolved;
-    }
 }

@@ -91,7 +91,8 @@ public class PluginManager
         }
         if ( run == false && !project.getModel().getPackaging().equals("modules") )
         {
-                throw new BuildFailureException( "No plugin for this goal");
+           // throw new BuildFailureException( "No plugin for " + goal + " goal");
+           log.warn( "No plugin for " + goal + " goal");
         }
     }
 
@@ -104,15 +105,18 @@ public class PluginManager
                log.debug( plugin.toString() );
                // just to see the id of the plugin
                Artifact artifact = new Artifact( plugin.getGroupId(), plugin.getArtifactId(), plugin.getVersion(), "jar", null );
-               File file = artifact.getFile();
+               String repository = System.getProperty( "nut.home" );
+               File file = new File( repository+File.separator+artifact.getPath() );
                log.debug( "File: " + file.getAbsolutePath() );
                if ( file.exists() )
                {
                    ClassLoader mainLoader = Thread.currentThread().getContextClassLoader();
                    NutClassRealm realm    = new NutClassRealm( mainLoader, file.toURI().toURL() );
                    Class mainClass        = realm.loading( "nut.plugins." + artifact.getArtifactId() );
-                   Method mainMethod = mainClass.getMethod( "execute", new Class[] { NutProject.class } );
-                   mainMethod.invoke( mainClass, new Object[]{project} );
+                   Method mainMethod = mainClass.getMethod( "execute", new Class[] { NutProject.class, Log.class } );
+                   //Method mainMethod = mainClass.getMethod( "execute", new Class[] { NutProject.class } );
+                   mainMethod.invoke( mainClass, new Object[]{project,log} );
+                   //mainMethod.invoke( mainClass, new Object[]{project} );
                }
                else
                {

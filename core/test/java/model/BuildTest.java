@@ -30,6 +30,53 @@ import junit.framework.TestCase;
 public class BuildTest
     extends TestCase
 {
+    public void testOutputDirectory()
+    {
+        String dir = "directory";
+        Build thing = new Build();
+        thing.setOutputDirectory( dir );
+        assertEquals( thing.getOutputDirectory(), dir );
+    }
+
+    public void testSourceDirectory()
+    {
+        String dir = "directory";
+        Build thing = new Build();
+        thing.setSourceDirectory( dir );
+        assertEquals( thing.getSourceDirectory(), dir );
+    }
+
+    public void testTestOutputDirectory()
+    {
+        String dir = "directory";
+        Build thing = new Build();
+        thing.setTestOutputDirectory( dir );
+        assertEquals( thing.getTestOutputDirectory(), dir );
+    }
+
+    public void testTestSourceDirectory()
+    {
+        String dir = "directory";
+        Build thing = new Build();
+        thing.setTestSourceDirectory( dir );
+        assertEquals( thing.getTestSourceDirectory(), dir );
+    }
+
+    public void testDefaultModelEncoding()
+    {
+        Build thing = new Build();
+        assertEquals( thing.getModelEncoding(), "UTF-8" );
+    }
+
+    public void testModelEncoding()
+    {
+        String me = "ASCII";
+        Build thing = new Build();
+        thing.setModelEncoding( me );
+        assertEquals( thing.getModelEncoding(), me );
+    }
+
+
 
     public void testHashCodeNullSafe()
     {

@@ -42,11 +42,12 @@ public class javaCompiler
     /** Instance logger */
     private static Log log;
 
-    public static void execute( NutProject project )
+    public static void execute( NutProject project, Log logger )
         throws Exception
     {
-        log =new Log();
+        log = logger;
         Properties pluginProperties = project.getModel().getProperties();
+        String repository           = (String)pluginProperties.getProperty( "nut.home" );
         String basedir              = (String)pluginProperties.getProperty( "basedir" );
         String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );
         String sourceDirectory      = (String)pluginProperties.getProperty( "build.sourceDirectory" );
@@ -68,7 +69,7 @@ public class javaCompiler
         {
             Dependency dep = (Dependency)(modelDep.get(i));
             Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType(), null );
-            File file = artifactDep.getFile();
+            File file = new File ( repository + File.separator + artifactDep.getPath() );
             //log.debug( "scope is " + dep.getScope() + " for " + dep.getId() );
             if( dep.getScope().equals("test") )
             {

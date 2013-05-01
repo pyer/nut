@@ -16,8 +16,6 @@ import nut.model.Dependency;
 //import ab.nut.model.Extension;
 //import ab.nut.model.FileSet;
 import nut.model.Model;
-import nut.model.Parent;
-//import ab.nut.model.PatternSet;
 import nut.model.Plugin;
 import nut.model.PluginContainer;
 //import ab.nut.model.Resource;
@@ -403,297 +401,6 @@ public class xmlReader {
     } //-- String getTrimmedValue( String ) 
 
     /**
-     * Method parseActivation.
-     * 
-     * @param tagName
-     * @param strict
-     * @param parser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @return Activation
-     */
-    /* private Activation parseActivation( String tagName, XmlPullParser parser, boolean strict )
-        throws IOException, XmlPullParserException
-    {
-        Activation activation = new Activation();
-        java.util.Set parsed = new java.util.HashSet();
-        while ( parser.nextTag() == XmlPullParser.START_TAG )
-        {
-            if ( parser.getName().equals( "activeByDefault" )  )
-            {
-                if ( parsed.contains( "activeByDefault" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "activeByDefault" );
-                activation.setActiveByDefault( getBooleanValue( getTrimmedValue( parser.nextText()), "activeByDefault", parser, "false" ) );
-            }
-            else if ( parser.getName().equals( "jdk" )  )
-            {
-                if ( parsed.contains( "jdk" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "jdk" );
-                activation.setJdk( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "os" )  )
-            {
-                if ( parsed.contains( "os" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "os" );
-                activation.setOs( parseActivationOS( "os", parser, strict ) );
-            }
-            else if ( parser.getName().equals( "property" )  )
-            {
-                if ( parsed.contains( "property" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "property" );
-                activation.setProperty( parseActivationProperty( "property", parser, strict ) );
-            }
-            else if ( parser.getName().equals( "file" )  )
-            {
-                if ( parsed.contains( "file" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "file" );
-                activation.setFile( parseActivationFile( "file", parser, strict ) );
-            }
-            else
-            {
-                if ( strict )
-                {
-                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
-                }
-                else
-                {
-                    // swallow up to end tag since this is not valid
-                    while ( parser.next() != XmlPullParser.END_TAG ) {}
-                }
-            }
-        }
-        return activation;
-    } //-- Activation parseActivation( String, XmlPullParser, boolean ) 
-
-    /**
-     * Method parseActivationFile.
-     * 
-     * @param tagName
-     * @param strict
-     * @param parser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @return ActivationFile
-     */
-    /* private ActivationFile parseActivationFile( String tagName, XmlPullParser parser, boolean strict )
-        throws IOException, XmlPullParserException
-    {
-        ActivationFile activationFile = new ActivationFile();
-        java.util.Set parsed = new java.util.HashSet();
-        while ( parser.nextTag() == XmlPullParser.START_TAG )
-        {
-            if ( parser.getName().equals( "missing" )  )
-            {
-                if ( parsed.contains( "missing" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "missing" );
-                activationFile.setMissing( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "exists" )  )
-            {
-                if ( parsed.contains( "exists" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "exists" );
-                activationFile.setExists( getTrimmedValue( parser.nextText()) );
-            }
-            else
-            {
-                if ( strict )
-                {
-                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
-                }
-                else
-                {
-                    // swallow up to end tag since this is not valid
-                    while ( parser.next() != XmlPullParser.END_TAG ) {}
-                }
-            }
-        }
-        return activationFile;
-    } //-- ActivationFile parseActivationFile( String, XmlPullParser, boolean ) 
-
-    /**
-     * Method parseActivationOS.
-     * 
-     * @param tagName
-     * @param strict
-     * @param parser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @return ActivationOS
-     */
-    /* private ActivationOS parseActivationOS( String tagName, XmlPullParser parser, boolean strict )
-        throws IOException, XmlPullParserException
-    {
-        ActivationOS activationOS = new ActivationOS();
-        java.util.Set parsed = new java.util.HashSet();
-        while ( parser.nextTag() == XmlPullParser.START_TAG )
-        {
-            if ( parser.getName().equals( "name" )  )
-            {
-                if ( parsed.contains( "name" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "name" );
-                activationOS.setName( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "family" )  )
-            {
-                if ( parsed.contains( "family" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "family" );
-                activationOS.setFamily( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "arch" )  )
-            {
-                if ( parsed.contains( "arch" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "arch" );
-                activationOS.setArch( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "version" )  )
-            {
-                if ( parsed.contains( "version" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "version" );
-                activationOS.setVersion( getTrimmedValue( parser.nextText()) );
-            }
-            else
-            {
-                if ( strict )
-                {
-                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
-                }
-                else
-                {
-                    // swallow up to end tag since this is not valid
-                    while ( parser.next() != XmlPullParser.END_TAG ) {}
-                }
-            }
-        }
-        return activationOS;
-    } //-- ActivationOS parseActivationOS( String, XmlPullParser, boolean ) 
-
-    /**
-     * Method parseActivationProperty.
-     * 
-     * @param tagName
-     * @param strict
-     * @param parser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @return ActivationProperty
-     */
-    /* private ActivationProperty parseActivationProperty( String tagName, XmlPullParser parser, boolean strict )
-        throws IOException, XmlPullParserException
-    {
-        ActivationProperty activationProperty = new ActivationProperty();
-        java.util.Set parsed = new java.util.HashSet();
-        while ( parser.nextTag() == XmlPullParser.START_TAG )
-        {
-            if ( parser.getName().equals( "name" )  )
-            {
-                if ( parsed.contains( "name" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "name" );
-                activationProperty.setName( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "value" )  )
-            {
-                if ( parsed.contains( "value" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "value" );
-                activationProperty.setValue( getTrimmedValue( parser.nextText()) );
-            }
-            else
-            {
-                if ( strict )
-                {
-                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
-                }
-                else
-                {
-                    // swallow up to end tag since this is not valid
-                    while ( parser.next() != XmlPullParser.END_TAG ) {}
-                }
-            }
-        }
-        return activationProperty;
-    } //-- ActivationProperty parseActivationProperty( String, XmlPullParser, boolean ) 
-
-    /**
-     * Method parseBranch.
-     * 
-     * @param tagName
-     * @param strict
-     * @param parser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @return Branch
-     */
-    /* private Branch parseBranch( String tagName, XmlPullParser parser, boolean strict )
-        throws IOException, XmlPullParserException
-    {
-        Branch branch = new Branch();
-        java.util.Set parsed = new java.util.HashSet();
-        while ( parser.nextTag() == XmlPullParser.START_TAG )
-        {
-            if ( parser.getName().equals( "tag" )  )
-            {
-                if ( parsed.contains( "tag" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "tag" );
-                branch.setTag( getTrimmedValue( parser.nextText()) );
-            }
-            else
-            {
-                if ( strict )
-                {
-                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
-                }
-                else
-                {
-                    // swallow up to end tag since this is not valid
-                    while ( parser.next() != XmlPullParser.END_TAG ) {}
-                }
-            }
-        }
-        return branch;
-    } //-- Branch parseBranch( String, XmlPullParser, boolean ) 
-
-    /**
      * Method parseBuild.
      * 
      * @param tagName
@@ -945,15 +652,6 @@ public class xmlReader {
                     parsed.add( "modelVersion" );
                     model.setModelVersion( getTrimmedValue( parser.nextText()) );
                 }
-                else if ( parser.getName().equals( "parent" )  )
-                {
-                    if ( parsed.contains( "parent" ) )
-                    {
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    }
-                    parsed.add( "parent" );
-                    model.setParent( parseParent( "parent", parser, strict ) );
-                }
                 else if ( parser.getName().equals( "groupId" )  )
                 {
                     if ( parsed.contains( "groupId" ) )
@@ -1007,6 +705,15 @@ public class xmlReader {
                     }
                     parsed.add( "description" );
                     model.setDescription( getTrimmedValue( parser.nextText()) );
+                }
+                else if ( parser.getName().equals( "parent" )  )
+                {
+                    if ( parsed.contains( "parent" ) )
+                    {
+                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                    }
+                    parsed.add( "parent" );
+                    model.setParent( getTrimmedValue( parser.nextText()) );
                 }
                 else if ( parser.getName().equals( "url" )  )
                 {
@@ -1101,67 +808,6 @@ public class xmlReader {
         }
         return model;
     } //-- Model parseModel( String, XmlPullParser, boolean ) 
-
-
-    /**
-     * Method parseParent.
-     * 
-     * @param tagName
-     * @param strict
-     * @param parser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @return Parent
-     */
-    private Parent parseParent( String tagName, XmlPullParser parser, boolean strict )
-        throws IOException, XmlPullParserException
-    {
-        Parent parent = new Parent();
-        java.util.Set<String> parsed = new java.util.HashSet<String>();
-        while ( parser.nextTag() == XmlPullParser.START_TAG )
-        {
-            if ( parser.getName().equals( "artifactId" )  )
-            {
-                if ( parsed.contains( "artifactId" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "artifactId" );
-                parent.setArtifactId( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "groupId" )  )
-            {
-                if ( parsed.contains( "groupId" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "groupId" );
-                parent.setGroupId( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "version" )  )
-            {
-                if ( parsed.contains( "version" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "version" );
-                parent.setVersion( getTrimmedValue( parser.nextText()) );
-            }
-            else
-            {
-                if ( strict )
-                {
-                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
-                }
-                else
-                {
-                    // swallow up to end tag since this is not valid
-                    while ( parser.next() != XmlPullParser.END_TAG ) {}
-                }
-            }
-        }
-        return parent;
-    } //-- Parent parseParent( String, XmlPullParser, boolean ) 
 
 
     /**

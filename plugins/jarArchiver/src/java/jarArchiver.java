@@ -54,10 +54,10 @@ public class jarArchiver
     /** Instance logger */
     private static Log log;
 
-    public static void execute( NutProject project )
+    public static void execute( NutProject project, Log logger )
         throws Exception
     {
-        log =new Log();
+        log = logger;
         Properties pluginProperties = project.getModel().getProperties();
         String basedir              = (String)pluginProperties.getProperty( "basedir" );
         String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );

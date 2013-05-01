@@ -16,7 +16,6 @@ import nut.model.Dependency;
 //import ab.nut.model.Extension;
 //import ab.nut.model.FileSet;
 import nut.model.Model;
-import nut.model.Parent;
 //import ab.nut.model.PatternSet;
 import nut.model.Plugin;
 import nut.model.PluginContainer;
@@ -155,10 +154,6 @@ public class xmlWriter {
             {
                 serializer.startTag( NAMESPACE, "scope" ).text( dependency.getScope() ).endTag( NAMESPACE, "scope" );
             }
-            if ( dependency.getUrl() != null )
-            {
-                serializer.startTag( NAMESPACE, "url" ).text( dependency.getUrl() ).endTag( NAMESPACE, "url" );
-            }
             if ( dependency.getProperties() != null && dependency.getProperties().size() > 0 )
             {
                 serializer.startTag( NAMESPACE, "properties" );
@@ -193,10 +188,6 @@ public class xmlWriter {
             {
                 serializer.startTag( NAMESPACE, "modelVersion" ).text( model.getModelVersion() ).endTag( NAMESPACE, "modelVersion" );
             }
-            if ( model.getParent() != null )
-            {
-                writeParent( (Parent) model.getParent(), "parent", serializer );
-            }
             if ( model.getGroupId() != null )
             {
                 serializer.startTag( NAMESPACE, "groupId" ).text( model.getGroupId() ).endTag( NAMESPACE, "groupId" );
@@ -220,6 +211,10 @@ public class xmlWriter {
             if ( model.getDescription() != null )
             {
                 serializer.startTag( NAMESPACE, "description" ).text( model.getDescription() ).endTag( NAMESPACE, "description" );
+            }
+            if ( model.getParent() != null )
+            {
+                serializer.startTag( NAMESPACE, "parent" ).text( model.getParent() ).endTag( NAMESPACE, "parent" );
             }
             if ( model.getUrl() != null )
             {
@@ -263,37 +258,6 @@ public class xmlWriter {
             serializer.endTag( NAMESPACE, tagName );
         }
     } //-- void writeModel( Model, String, XmlSerializer ) 
-
-
-    /**
-     * Method writeParent.
-     * 
-     * @param parent
-     * @param serializer
-     * @param tagName
-     * @throws java.io.IOException
-     */
-    private void writeParent( Parent parent, String tagName, XmlSerializer serializer )
-        throws java.io.IOException
-    {
-        if ( parent != null )
-        {
-            serializer.startTag( NAMESPACE, tagName );
-            if ( parent.getArtifactId() != null )
-            {
-                serializer.startTag( NAMESPACE, "artifactId" ).text( parent.getArtifactId() ).endTag( NAMESPACE, "artifactId" );
-            }
-            if ( parent.getGroupId() != null )
-            {
-                serializer.startTag( NAMESPACE, "groupId" ).text( parent.getGroupId() ).endTag( NAMESPACE, "groupId" );
-            }
-            if ( parent.getVersion() != null )
-            {
-                serializer.startTag( NAMESPACE, "version" ).text( parent.getVersion() ).endTag( NAMESPACE, "version" );
-            }
-            serializer.endTag( NAMESPACE, tagName );
-        }
-    } //-- void writeParent( Parent, String, XmlSerializer ) 
 
     /**
      * Method writePlugin.

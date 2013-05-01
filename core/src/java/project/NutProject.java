@@ -166,14 +166,7 @@ public class NutProject
 
     public String getGroupId()
     {
-        String groupId = getModel().getGroupId();
-
-        if ( ( groupId == null ) && ( getModel().getParent() != null ) )
-        {
-            groupId = getModel().getParent().getGroupId();
-        }
-        
-        return groupId;
+        return getModel().getGroupId();
     }
 
     public void setArtifactId( String artifactId )
@@ -193,13 +186,7 @@ public class NutProject
 
     public String getVersion()
     {
-        String version = getModel().getVersion();
-        if ( ( version == null ) && ( getModel().getParent() != null ) )
-        {
-            version = getModel().getParent().getVersion();
-            getModel().setVersion( version );
-        }
-        return version;
+        return getModel().getVersion();
     }
 
     public void setPackaging( String packaging )
@@ -226,7 +213,7 @@ public class NutProject
         }
         else
         {
-            return "Unnamed - " + getId();
+            return getId();
         }
     }
 

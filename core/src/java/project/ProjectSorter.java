@@ -5,9 +5,10 @@ import nut.model.Dependency;
 import nut.model.Model;
 import nut.model.Plugin;
 import nut.project.NutProject;
-import nut.util.dag.CycleDetectedException;
-import nut.util.dag.DAG;
-import nut.util.dag.TopologicalSorter;
+
+import org.codehaus.plexus.util.dag.CycleDetectedException;
+import org.codehaus.plexus.util.dag.DAG;
+import org.codehaus.plexus.util.dag.TopologicalSorter;
 
 import java.util.ArrayList;
 import java.util.Collections;

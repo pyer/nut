@@ -17,37 +17,39 @@ public class installer
     /** Instance logger */
     private static Log log;
 
-    public static void execute( NutProject project )
+    public static void execute( NutProject project, Log logger )
         throws Exception
     {
-        log =new Log();
+        log = logger;
         Properties pluginProperties = project.getModel().getProperties();
-        String basedir        = (String)pluginProperties.getProperty( "basedir" );
-        String buildDirectory = (String)pluginProperties.getProperty( "build.directory" );
-        String artifactId          = (String)pluginProperties.getProperty( "project.artifactId" );
-        String version             = (String)pluginProperties.getProperty( "project.version" );
-        String packaging           = (String)pluginProperties.getProperty( "project.packaging" );
-
-        String artifactPath        = (String)pluginProperties.getProperty( "project.artifactPath" );
+        String basedir              = (String)pluginProperties.getProperty( "basedir" );
+        String repository           = (String)pluginProperties.getProperty( "nut.home" );
+        String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );
+        String groupId              = (String)pluginProperties.getProperty( "project.groupId" );
+        String artifactId           = (String)pluginProperties.getProperty( "project.artifactId" );
+        String version              = (String)pluginProperties.getProperty( "project.version" );
+        String packaging            = (String)pluginProperties.getProperty( "project.packaging" );
 
         log.debug( "basedir                   = " + basedir );
+        log.debug( "repository                = " + repository );
         log.debug( "build.directory           = " + buildDirectory );
         log.debug( "project.artifactId        = " + artifactId );
         log.debug( "project.version           = " + version );
         log.debug( "project.packaging         = " + packaging );
-        log.debug( "project.artifactPath      = " + artifactPath );
 
             log.info( "   Installing \'" + artifactId + "\'" );
             // + "-" + version + "." + packaging
             if( !packaging.equals("modules") )
             {
+                String group = groupId.replace( '.', File.separatorChar );
+                String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 //install: copy target file to local repository
-                String artifactName = basedir + File.separator + buildDirectory + File.separator + artifactId + "." + packaging;
-                copyFile( artifactName, artifactPath, version );
+                String buildName = basedir + File.separator + buildDirectory + File.separator + artifactId + "." + packaging;
+                copyFile( buildName, artifactName, version );
             }
             //install: copy nut.xml file to local repository
-            String nutName = basedir + File.separator + "nut.xml";
-            copyFile( nutName, artifactPath + ".nut", version );
+            //String nutName = basedir + File.separator + "nut.xml";
+            //copyFile( nutName, artifactName + ".nut", version );
     }
 
     /**
@@ -80,8 +82,8 @@ public class installer
             }
         }
 
-		try
-		{
+	try
+	{
             log.debug( "   copy \'" + sourceFile.getCanonicalPath() + "\' to \'" + destinationFile.getCanonicalPath() + "\'"  );
             //does destination directory exist ?
             if ( destinationFile.getParentFile() != null && !destinationFile.getParentFile().exists() )
@@ -104,17 +106,17 @@ public class installer
 			in.close();
 			out.close();			
  
-		}
-		catch(FileNotFoundException fnf)
-		{
-			log.error( "Specified file not found :" + fnf );
+	}
+	catch(FileNotFoundException fnf)
+	{
+		log.error( "Specified file not found :" + fnf );
             throw new Exception();
-		}
-		catch(IOException ioe)
-		{
-			log.error( "Error while copying file :" + ioe );
+	}
+	catch(IOException ioe)
+	{
+		log.error( "Error while copying file :" + ioe );
             throw new Exception();
-		}
+	}
         if ( sourceFile.length() != destinationFile.length() )
         {
             log.error( "Failed to copy full contents from " + source + " to " + destination );

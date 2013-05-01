@@ -116,7 +116,6 @@ public class Log
      */
     public void error( CharSequence content, Throwable error )
     {
-        debug = true;
         StringWriter sWriter = new StringWriter();
         PrintWriter pWriter = new PrintWriter( sWriter );
 
@@ -132,7 +131,6 @@ public class Log
      */
     public void error( Throwable error )
     {
-        debug = true;
         StringWriter sWriter = new StringWriter();
         PrintWriter pWriter = new PrintWriter( sWriter );
 

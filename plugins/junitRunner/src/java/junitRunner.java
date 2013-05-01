@@ -31,10 +31,10 @@ public class junitRunner
     
     private static int index = 0;
 
-    public static void execute( NutProject project )
+    public static void execute( NutProject project, Log logger )
         throws Exception
     {
-        log =new Log();
+        log = logger;
         Properties pluginProperties = project.getModel().getProperties();
         String basedir              = (String)pluginProperties.getProperty( "basedir" );
         String testOutputDirectory  = (String)pluginProperties.getProperty( "build.testOutputDirectory" );

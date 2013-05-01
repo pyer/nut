@@ -70,10 +70,26 @@ public class ProjectBuilder
     {
         String pomLocation = projectFile.getAbsolutePath();
         // First read the project's nut.xml
-        Model model          = readModel( "unknownModel", projectFile, true );
-        // then read the packaging model
-        Model packagingModel = readModel( "unknownModel",
-                               new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" ), true );
+        Model model = readModel( "unknownModel", projectFile, true );
+        // then read the packaging model if any
+        Model packagingModel = null;
+        File packagingFile = new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" );
+        if( packagingFile.exists() )
+        {
+            packagingModel = readModel( "unknownModel", packagingFile, true );
+        }
+        // at last read the parent model if any
+        Model parentModel = null;
+        if( model.getParent() != null )
+        {
+            File parentFile = new File( projectFile.getParentFile() + "/" + model.getParent(), "nut.xml" );
+            parentModel = readModel( "unknownModel", parentFile, true );
+            if( model.getGroupId() == null )
+                model.setGroupId( parentModel.getGroupId() );
+            if( model.getVersion() == null )
+                model.setVersion( parentModel.getVersion() );
+        }
+ 
         //log.info( "Building " + model.getId() );
         model.addProperty( "basedir", projectFile.getAbsoluteFile().getParent() );
         // add properties as "nut..."
@@ -87,11 +103,17 @@ public class ProjectBuilder
         }
                 
         NutProject project = null;
-
         try
         {
-            model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
-            model.getDependencies().addAll( packagingModel.getDependencies() );
+            if( packagingModel != null )
+            {
+                model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
+                model.getDependencies().addAll( packagingModel.getDependencies() );
+            }
+            if( parentModel != null )
+            {
+                model.getDependencies().addAll( parentModel.getDependencies() );
+            }
 
             project = new NutProject( model );
             Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(),
@@ -115,7 +137,6 @@ public class ProjectBuilder
             model.addProperty( "project.artifactId", project.getArtifact().getArtifactId() );
             model.addProperty( "project.version", project.getArtifact().getVersion() );
             model.addProperty( "project.packaging", project.getPackaging() );
-            model.addProperty( "project.artifactPath", project.getArtifact().getPath() );
         }
         catch ( ModelValidationException e )
         {

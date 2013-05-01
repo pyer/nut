@@ -1,25 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+  <parent>..</parent>
 
-  <groupId>ab.nut</groupId>
-  <artifactId>Nut</artifactId>
-  <version>1.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <groupId>nut</groupId>
+  <artifactId>packaging</artifactId>
+  <packaging>modules</packaging>
 
-  <name>Nut core</name>
-  <description>
-     Nut is a project development management tool inspired from Maven.
-     Based on the concept of a project object model: builds, dependency management and distribution publication are all controlled from the declarative file.
-     Nut can be extended by plugins to use a number of other development tools for the build process.
-  </description>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.4</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
+  <modules>
+    <module>file</module>
+    <module>jar</module>
+    <module>modules</module>
+  </modules>
 </project>

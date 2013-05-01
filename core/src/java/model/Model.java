@@ -38,24 +38,12 @@ public class Model implements java.io.Serializable
     private String modelVersion;
 
     /**
-     * The location of the parent project, if one exists. Values
-     * from the parent
-     * project will be the default for this project if
-     * they are left unspecified. The location
-     * is given as a group ID, artifact ID and version.
-     */
-    private Parent parent;
-
-    /**
-     * 
-     * 
      * A universally unique identifier for a project.
      * It is normal to
      * use a fully-qualified package name to
      * distinguish it from other
      * projects with a similar name (eg.
      * <code>org.apache.maven</code>).
-     * 
      *           
      */
     private String groupId;
@@ -98,11 +86,15 @@ public class Model implements java.io.Serializable
     private String description;
 
     /**
-     * 
-     * 
+     * The location of the parent project, if one exists.
+     * Values from the parent
+     * project will be the default for this project if
+     * they are left unspecified.
+     */
+    private String parent;
+
+    /**
      * The URL to the project's homepage.
-     * 
-     *           
      */
     private String url;
 
@@ -237,16 +229,14 @@ public class Model implements java.io.Serializable
      * Get the location of the parent project, if one exists.
      * Values from the parent
      * project will be the default for this project if
-     * they are left unspecified. The location
-     * is given as a group ID, artifact ID and version.
-     * 
-     * @return Parent
+     * they are left unspecified.
+     *
+     * @return String
      */
-    public Parent getParent()
+    public String getParent()
     {
         return this.parent;
-    } //-- Parent getParent() 
-
+    } //-- String getParent() 
 
     /**
      * Get 
@@ -386,15 +376,14 @@ public class Model implements java.io.Serializable
      * Set the location of the parent project, if one exists.
      * Values from the parent
      * project will be the default for this project if
-     * they are left unspecified. The location
-     * is given as a group ID, artifact ID and version.
+     * they are left unspecified.
      * 
      * @param parent
      */
-    public void setParent( Parent parent )
+    public void setParent( String parent )
     {
         this.parent = parent;
-    } //-- void setParent( Parent ) 
+    } //-- void setParent( String ) 
 
     /**
      * Set 
@@ -416,17 +405,6 @@ public class Model implements java.io.Serializable
     public String getId()
     {
         return getGroupId() + ":" + getArtifactId() + ":" + getVersion();
-/*
-        StringBuffer id = new StringBuffer();
-
-        id.append( getGroupId() );
-        id.append( ":" );
-        id.append( getArtifactId() );
-        id.append( ":" );
-        id.append( getVersion() );
-
-        return id.toString();
-*/
     }
             
     /**

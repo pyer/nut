@@ -3,7 +3,7 @@
 
   <groupId>nut</groupId>
   <artifactId>nut</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>modules</packaging>
 
   <name>Nut</name>
@@ -17,11 +17,7 @@
     <module>core</module>
     <module>logging</module>
     <module>packaging</module>
-    <module>plugins/cleaner</module>
-    <module>plugins/installer</module>
-    <module>plugins/javaCompiler</module>
-    <module>plugins/jarArchiver</module>
-    <module>plugins/junitRunner</module>
+    <module>plugins</module>
   </modules>
 
 </project>

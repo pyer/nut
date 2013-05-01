@@ -1,6 +1,8 @@
 package nut.artifact;
 
+import nut.artifact.Artifact;
 import junit.framework.TestCase;
+import java.io.File;
 
 public class ArtifactTest
     extends TestCase
@@ -28,6 +30,27 @@ public class ArtifactTest
         assertEquals( groupId + ":" + artifactId + ":" + type, artifact.getDependencyConflictId() );
     }
 */
+    public void testResolvedTrue()
+    {
+        artifact = new Artifact( groupId, artifactId, version, type, null );
+        artifact.setResolved(true);
+        assertTrue( artifact.isResolved());
+    }
+
+    public void testResolvedFalse()
+    {
+        artifact = new Artifact( groupId, artifactId, version, type, null );
+        artifact.setResolved(false);
+        assertFalse( artifact.isResolved());
+    }
+
+    public void testPath()
+    {
+        //System.out.println( artifact.getPath() );
+        assertEquals( groupId + File.separator + artifactId + "-" + version + "-" + classifier + "." + type,
+                      artifact.getPath() );
+    }
+
     public void testToString()
     {
         assertEquals( groupId + ":" + artifactId + ":" + type + ":" + classifier + ":" + version,
@@ -39,5 +62,6 @@ public class ArtifactTest
         artifact = new Artifact( groupId, artifactId, version, type, null );
         assertEquals( groupId + ":" + artifactId + ":" + type + ":" + version, artifact.toString() );
     }
+
 
 }

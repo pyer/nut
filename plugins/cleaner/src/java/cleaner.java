@@ -34,10 +34,10 @@ public class cleaner
      *
      * @throws Exception When a directory failed to get deleted.
      */
-    public static void execute( NutProject project )
+    public static void execute( NutProject project, Log logger )
         throws Exception
     {
-        log =new Log();
+        log = logger;
         Properties pluginProperties = project.getModel().getProperties();
         String basedir        = (String)pluginProperties.getProperty( "basedir" );
         String buildDirectory = (String)pluginProperties.getProperty( "build.directory" );
