@@ -474,17 +474,11 @@ public class Nut
     private static void stats( Date start )
     {
         Date finish = new Date();
-
         long time = finish.getTime() - start.getTime();
 
 //        line();
         log.info( "Total time: " + formatTime( time ) );
-        log.info( "Finished at: " + finish );
-
-        //noinspection CallToSystemGC
-        System.gc();
-        Runtime r = Runtime.getRuntime();
-        log.info( "Final Memory: " + ( r.totalMemory() - r.freeMemory() ) / MB + "M/" + r.totalMemory() / MB + "M" );
+        log.info( "Finished at " + finish );
         line();
     }
 
