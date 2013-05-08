@@ -92,7 +92,7 @@ public class PluginManager
         if ( run == false && !project.getModel().getPackaging().equals("modules") )
         {
            // throw new BuildFailureException( "No plugin for " + goal + " goal");
-           log.warn( "No plugin for " + goal + " goal");
+           log.warn( "No plugin for goal '" + goal + "'");
         }
     }
 
