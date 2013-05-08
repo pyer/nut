@@ -190,6 +190,7 @@ public class Nut
         try
         {
             line();
+            log.info( "Started at " + start );
             log.info( "Scanning for projects..." );
             List files = Collections.EMPTY_LIST;
             File projectFile = new File( POM_FILE );
