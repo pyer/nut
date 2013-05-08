@@ -78,6 +78,10 @@ public class ProjectBuilder
         {
             packagingModel = readModel( "unknownModel", packagingFile, true );
         }
+        else
+        {
+            log.warn( "No template for packaging '" + model.getPackaging() + "'" );
+        }
         // at last read the parent model if any
         Model parentModel = null;
         if( model.getParent() != null )
