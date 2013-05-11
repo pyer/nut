@@ -9,6 +9,7 @@
   <modules>
     <module>file</module>
     <module>jar</module>
+    <module>war</module>
     <module>modules</module>
   </modules>
 </project>
