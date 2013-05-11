@@ -81,6 +81,11 @@ public class javaArchiver
             throw new Exception();
         }
         
+        if ( packaging=="war" )
+        {
+           outputDirectory += File.separator + "war";
+        }
+        
         File outputDir = new File( basedir + File.separator + outputDirectory );
         if ( !outputDir.exists() )
         {
