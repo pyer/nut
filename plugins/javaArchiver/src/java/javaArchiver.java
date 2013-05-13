@@ -61,6 +61,7 @@ public class javaArchiver
         Properties pluginProperties = project.getModel().getProperties();
         String basedir              = (String)pluginProperties.getProperty( "basedir" );
         String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );
+        String sourceDirectory      = (String)pluginProperties.getProperty( "build.sourceDirectory" );
         String outputDirectory      = (String)pluginProperties.getProperty( "build.outputDirectory" );
         String artifactId           = (String)pluginProperties.getProperty( "project.artifactId" );
         String version              = (String)pluginProperties.getProperty( "project.version" );
@@ -70,6 +71,7 @@ public class javaArchiver
         log.debug( "project.artifactId        = " + artifactId );
         log.debug( "project.packaging         = " + packaging );
         log.debug( "build.directory           = " + buildDirectory );
+        log.debug( "build.sourceDirectory     = " + sourceDirectory );
         log.debug( "build.outputDirectory     = " + outputDirectory );
 
         
@@ -94,21 +96,30 @@ public class javaArchiver
             buildDir.mkdirs();
         }
 
-        archive( artifactFile, basedir + File.separator + buildDirectory, basedir + File.separator + outputDirectory );
+        if( packaging.equals( "war" ) )
+        {
+            archive( artifactFile, basedir + File.separator + buildDirectory, basedir + File.separator + sourceDirectory, "c" );
+            archive( artifactFile, basedir + File.separator + buildDirectory, basedir + File.separator + outputDirectory, "u" );
+        }
+        else
+        {
+            archive( artifactFile, basedir + File.separator + buildDirectory, basedir + File.separator + outputDirectory, "c" );
+        }
         //archive( artifactId + ".src.jar", basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory );
     }
 
-    private static void archive(String finalName, String buildDirectory, String outputDirectory)
+    private static void archive(String finalName, String buildDirectory, String outputDirectory, String mode)
         throws Exception
     {
         // ----------------------------------------------------------------------
         List<String> args = new ArrayList<String>();
         args.add( "jar" );
-        args.add( "cf" );
+        args.add( mode + "f" );
         args.add( buildDirectory + File.separator + finalName );
         args.add( "-C" );
         args.add( outputDirectory + File.separator );
         args.add( "." );
+        log.debug( "jar: -C " + outputDirectory );
         // ----------------------------------------------------------------------
         // build the command line
         String[] command = (String[]) args.toArray( new String[ args.size() ] );
