@@ -12,6 +12,7 @@
     <module>javaCompiler</module>
     <module>jarArchiver</module>
     <module>junitRunner</module>
+    <module>depProcessor</module>
     <module>release</module>
   </modules>
 </project>
