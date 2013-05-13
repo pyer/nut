@@ -4,8 +4,8 @@ set -e
 root=$(pwd)
 options="-d $root/target/classes -cp $root/target/classes:$root/../nutRepository/nut/logging/Log-1.1.jar:$root/../nutRepository/org/codehaus/plexus/plexus-utils-3.0.jar -deprecation -Xlint:unchecked"
 
-[ -d ../nutRepository ] && rm -r ../nutRepository
-mkdir ../nutRepository
+[ -d ../nutRepository ] && rm -r ../nutRepository/nut
+mkdir -p ../nutRepository/nut
 
 cp -a junit ../nutRepository
 mkdir -p ../nutRepository/org/codehaus/
@@ -60,8 +60,12 @@ javac $options plugins/installer/src/java/installer.java
 jar cf ../nutRepository/nut/plugins/installer-1.1.jar -C target/classes .
 
 rm -r target/classes/*
-javac $options plugins/jarArchiver/src/java/jarArchiver.java
-jar cf ../nutRepository/nut/plugins/jarArchiver-1.1.jar -C target/classes .
+javac $options plugins/depProcessor/src/java/depProcessor.java
+jar cf ../nutRepository/nut/plugins/depProcessor-1.1.jar -C target/classes .
+
+rm -r target/classes/*
+javac $options plugins/javaArchiver/src/java/javaArchiver.java
+jar cf ../nutRepository/nut/plugins/javaArchiver-1.1.jar -C target/classes .
 
 rm -r target/classes/*
 javac $options plugins/javaCompiler/src/java/javaCompiler.java
@@ -75,6 +79,7 @@ jar cf ../nutRepository/nut/plugins/junitRunner-1.1.jar -C target/classes .
 echo "Build packaging"
 mkdir -p ../nutRepository/nut/packaging
 cp packaging/jar/src/resources/jar.xml     ../nutRepository/nut/packaging/jar-1.1.xml
+cp packaging/war/src/resources/war.xml     ../nutRepository/nut/packaging/war-1.1.xml
 cp packaging/modules/src/resources/modules.xml ../nutRepository/nut/packaging/modules-1.1.xml
 
 rm -r target
