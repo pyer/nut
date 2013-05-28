@@ -1,0 +1,40 @@
+<!-- START SNIPPET: superpom -->
+<project>
+
+  <build>
+    <directory>target</directory>
+    <outputDirectory>target/webapp</outputDirectory>
+    <testOutputDirectory>target/test</testOutputDirectory>
+    <sourceDirectory>src/webapp</sourceDirectory>
+    <testSourceDirectory>test/webapp</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>cleaner</artifactId>
+        <version>1.1</version>
+        <goal>clean</goal>
+      </plugin>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>depProcessor</artifactId>
+        <version>1.1</version>
+        <goal>process</goal>
+      </plugin>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>javaArchiver</artifactId>
+        <version>1.1</version>
+        <goal>package</goal>
+      </plugin>
+      <plugin>
+        <groupId>nut.plugins</groupId>
+        <artifactId>installer</artifactId>
+        <version>1.1</version>
+        <goal>install</goal>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+<!-- END SNIPPET: superpom -->
