@@ -706,15 +706,6 @@ public class xmlReader {
                     parsed.add( "description" );
                     model.setDescription( getTrimmedValue( parser.nextText()) );
                 }
-                else if ( parser.getName().equals( "parent" )  )
-                {
-                    if ( parsed.contains( "parent" ) )
-                    {
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    }
-                    parsed.add( "parent" );
-                    model.setParent( getTrimmedValue( parser.nextText()) );
-                }
                 else if ( parser.getName().equals( "url" )  )
                 {
                     if ( parsed.contains( "url" ) )

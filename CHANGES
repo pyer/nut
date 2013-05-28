@@ -2,9 +2,8 @@
 1.1
 use plexus-utils-3.0.jar instead of compiling sources
 add plugin release
-change parent: <parent> is no more an artifact, <parent> is a path to a nut.xml file as <module> is.
-Very useful to manage groupId and version of modules.
-
+add xml packaging
+remove parent in nut.xml
 
 1.0
 Initial release

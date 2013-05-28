@@ -212,10 +212,6 @@ public class xmlWriter {
             {
                 serializer.startTag( NAMESPACE, "description" ).text( model.getDescription() ).endTag( NAMESPACE, "description" );
             }
-            if ( model.getParent() != null )
-            {
-                serializer.startTag( NAMESPACE, "parent" ).text( model.getParent() ).endTag( NAMESPACE, "parent" );
-            }
             if ( model.getUrl() != null )
             {
                 serializer.startTag( NAMESPACE, "url" ).text( model.getUrl() ).endTag( NAMESPACE, "url" );

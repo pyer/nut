@@ -86,14 +86,6 @@ public class Model implements java.io.Serializable
     private String description;
 
     /**
-     * The location of the parent project, if one exists.
-     * Values from the parent
-     * project will be the default for this project if
-     * they are left unspecified.
-     */
-    private String parent;
-
-    /**
      * The URL to the project's homepage.
      */
     private String url;
@@ -224,19 +216,6 @@ public class Model implements java.io.Serializable
     {
         return this.modelVersion;
     } //-- String getModelVersion() 
-
-    /**
-     * Get the location of the parent project, if one exists.
-     * Values from the parent
-     * project will be the default for this project if
-     * they are left unspecified.
-     *
-     * @return String
-     */
-    public String getParent()
-    {
-        return this.parent;
-    } //-- String getParent() 
 
     /**
      * Get 
@@ -371,19 +350,6 @@ public class Model implements java.io.Serializable
     {
         this.modelVersion = modelVersion;
     } //-- void setModelVersion( String ) 
-
-    /**
-     * Set the location of the parent project, if one exists.
-     * Values from the parent
-     * project will be the default for this project if
-     * they are left unspecified.
-     * 
-     * @param parent
-     */
-    public void setParent( String parent )
-    {
-        this.parent = parent;
-    } //-- void setParent( String ) 
 
     /**
      * Set 

@@ -82,17 +82,6 @@ public class ProjectBuilder
         {
             log.warn( "No template for packaging '" + model.getPackaging() + "'" );
         }
-        // at last read the parent model if any
-        Model parentModel = null;
-        if( model.getParent() != null )
-        {
-            File parentFile = new File( projectFile.getParentFile() + "/" + model.getParent(), "nut.xml" );
-            parentModel = readModel( "unknownModel", parentFile, true );
-            if( model.getGroupId() == null )
-                model.setGroupId( parentModel.getGroupId() );
-            if( model.getVersion() == null )
-                model.setVersion( parentModel.getVersion() );
-        }
  
         //log.info( "Building " + model.getId() );
         model.addProperty( "basedir", projectFile.getAbsoluteFile().getParent() );
@@ -113,10 +102,6 @@ public class ProjectBuilder
             {
                 model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
                 model.getDependencies().addAll( packagingModel.getDependencies() );
-            }
-            if( parentModel != null )
-            {
-                model.getDependencies().addAll( parentModel.getDependencies() );
             }
 
             project = new NutProject( model );

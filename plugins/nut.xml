@@ -9,7 +9,7 @@
     <module>cleaner</module>
     <module>installer</module>
     <module>javaCompiler</module>
-    <module>jarArchiver</module>
+    <module>javaArchiver</module>
     <module>junitRunner</module>
     <module>depProcessor</module>
     <module>release</module>
