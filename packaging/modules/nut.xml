@@ -4,24 +4,4 @@
   <artifactId>modules</artifactId>
   <version>1.1</version>
   <packaging>xml</packaging>
-
-  <name>Nut packaging templates</name>
-
-  <build>
-    <directory>src/resources</directory>
-    <outputDirectory>target</outputDirectory>
-    <testOutputDirectory>target/test</testOutputDirectory>
-    <sourceDirectory>src/resources</sourceDirectory>
-    <testSourceDirectory>test/resources</testSourceDirectory>
-
-    <plugins>
-      <plugin>
-        <groupId>nut.plugins</groupId>
-        <artifactId>installer</artifactId>
-        <version>1.1</version>
-        <goal>install</goal>
-      </plugin>
-    </plugins>
-  </build>
-
 </project>

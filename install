@@ -72,12 +72,17 @@ javac $options plugins/javaCompiler/src/java/javaCompiler.java
 jar cf ../nutRepository/nut/plugins/javaCompiler-1.1.jar -C target/classes .
 
 rm -r target/classes/*
+javac $options plugins/release/src/java/release.java
+jar cf ../nutRepository/nut/plugins/release-1.1.jar -C target/classes .
+
+rm -r target/classes/*
 options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.1.jar:../nutRepository/nut/core/Nut-1.1.jar:../nutRepository/junit/junit-4.10.jar -deprecation -Xlint:unchecked"
 javac $options plugins/junitRunner/src/java/junitRunner.java
 jar cf ../nutRepository/nut/plugins/junitRunner-1.1.jar -C target/classes .
 
 echo "Build packaging"
 mkdir -p ../nutRepository/nut/packaging
+cp packaging/xml/src/resources/xml.xml     ../nutRepository/nut/packaging/xml-1.1.xml
 cp packaging/jar/src/resources/jar.xml     ../nutRepository/nut/packaging/jar-1.1.xml
 cp packaging/war/src/resources/war.xml     ../nutRepository/nut/packaging/war-1.1.xml
 cp packaging/modules/src/resources/modules.xml ../nutRepository/nut/packaging/modules-1.1.xml
