@@ -10,21 +10,13 @@ import junit.framework.TestCase;
 public class ProjectBuilderTest 
     extends TestCase
 {
-    public void testGroupIdInheritance()
+    public void testProperties()
         throws ProjectBuildingException
     {
         ProjectBuilder builder = new ProjectBuilder( new Log() );
-        NutProject project = builder.build( new File("test/resources/project/nutGroupId.xml") );
-        assertEquals( "test.groupId", project.getGroupId() );
-        assertEquals( "artifact", project.getArtifactId() );
-    }
-
-    public void testVersionInheritance()
-        throws ProjectBuildingException
-    {
-        ProjectBuilder builder = new ProjectBuilder( new Log() );
-        NutProject project = builder.build( new File("test/resources/project/nutVersion.xml") );
+        NutProject project = builder.build( new File("test/resources/project/nut.xml") );
         assertEquals( "1.1", project.getVersion() );
         assertEquals( "artifact", project.getArtifactId() );
+        assertEquals( "test.groupId", project.getGroupId() );
     }
 }
