@@ -49,6 +49,45 @@ public class junitRunner
         }
     }
 
+/*
+    public static void runTests1()
+    {
+     Class cls = Class.forName("ClassLoaderDemo");
+     // returns the ClassLoader object associated with this Class
+     ClassLoader cLoader = cls.getClassLoader();
+    
+     System.out.println(cLoader.getClass());
+    
+     // finds resource with the given name
+     URL url = cLoader.getResource("file.txt");
+     System.out.println("Value = " + url);
+
+     // finds resource with the given name
+     url = cLoader.getResource("newfolder/a.txt");
+     System.out.println("Value = " + url);  
+   }
+*/
+/*
+public static ArrayList<String>getClassNamesFromPackage(String packageName) throws IOException{
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    URL packageURL;
+    ArrayList<String> names = new ArrayList<String>();;
+
+    packageName = packageName.replace(".", "/");
+    packageURL = classLoader.getResource(packageName);
+
+    // loop through files in classpath
+        File folder = new File(packageURL.getFile());
+        File[] contenuti = folder.listFiles();
+        String entryName;
+        for(File actual: contenuti){
+            entryName = actual.getName();
+            entryName = entryName.substring(0, entryName.lastIndexOf('.'));
+            names.add(entryName);
+        }
+    return names;
+}
+*/
   private static void runTests(File path)
         throws Exception
   {
@@ -57,29 +96,40 @@ public class junitRunner
                //log.debug( "   test " + path.getAbsolutePath() );
                if(files[i].isDirectory()) {
                    runTests(files[i]);
-               }
-               else {
-                   String testPackage = files[i].getAbsolutePath();
-                   // length of testPackage without ending ".class"
-                   int len = testPackage.length()-6;
-                   log.debug( "   file: " + testPackage );
-                   if( testPackage.endsWith(".class") ) {
-                       // Cut testOutputDirectory name and ending ".class"
-                       // and substitute '/' by '.'
-                       String testCaseName = testPackage.substring(index,len).replace( File.separatorChar, '.' );
-                       //log.debug( "   test: " + testCaseName );
-                       runTest( testCaseName );
-                   }
+               } else {
+                   runTest( files[i].getAbsolutePath() );
                }
             }
   }
 
-  private static void runTest(String suiteClassName)
+  private static void runTest(String testPackage)
         throws Exception
   {
         Class<? extends TestCase> testClass = null;
+// target/test-classes/nut/plugins/junitTest.class  [error] Class not found "nut.plugins.junitTest"
+        // length of testPackage without ending ".class"
+        int len = testPackage.length()-6;
+        String suiteClassName;
+        log.debug( "   file: " + testPackage );
+        if( testPackage.endsWith(".class") ) {
+            // Cut testOutputDirectory name and ending ".class"
+            // and substitute '/' by '.'
+            suiteClassName = testPackage.substring(index,len).replace( File.separatorChar, '.' );
+            log.debug( "   test: " + suiteClassName );
+        } else {
+            throw new Exception();
+        }
+
         try {
-            testClass = Class.forName(suiteClassName).asSubclass(TestCase.class);
+            ClassLoader cLoader = ClassLoader.getSystemClassLoader();
+            Class lClass = cLoader.loadClass(suiteClassName);
+
+            ////testClass = Class.forName(suiteClassName).asSubclass(TestCase.class);
+            ////testClass = Class.forName(suiteClassName);
+            //testClass = lClass.asSubclass(TestCase.class);
+//            testClass = (TestCase) lClass;
+//MyClass obj = (MyClass) Class.forName("test.MyClass").newInstance();
+//obj.testmethod();
         } catch (ClassNotFoundException e) {
             String clazz= e.getMessage();
             if (clazz == null)
