@@ -3,19 +3,19 @@
   
   <groupId>nut.plugins</groupId>
   <artifactId>depProcessor</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>nut.core</groupId>
       <artifactId>Nut</artifactId>
-      <version>1.1</version>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>nut.logging</groupId>
       <artifactId>Log</artifactId>
-      <version>1.0</version>
+      <version>1.2</version>
     </dependency>
   </dependencies>
   

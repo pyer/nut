@@ -2,7 +2,7 @@
 <project>
   <groupId>nut</groupId>
   <artifactId>plugins</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <packaging>modules</packaging>
 
   <modules>

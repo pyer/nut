@@ -2,7 +2,7 @@
 set -e
 
 root=$(pwd)
-options="-d $root/target/classes -cp $root/target/classes:$root/../nutRepository/org/codehaus/plexus/plexus-utils-3.0.jar -deprecation -Xlint:unchecked"
+options="-d $root/target/classes -cp $root/target/classes:$root/../nutRepository/nut/logging/Log-1.2.jar:$root/../nutRepository/org/codehaus/plexus/plexus-utils-3.0.jar -deprecation -Xlint:unchecked"
 
 [ -d ../nutRepository ] && rm -r ../nutRepository/nut
 mkdir -p ../nutRepository/nut
@@ -13,9 +13,17 @@ cp -a plexus ../nutRepository/org/codehaus/
 
 mkdir -p target/classes 
 
-cd src/java/logging/
+echo "Build log"
+cd logging/src/java
 javac $options Log.java
-cd ../xml/
+
+cd $root
+mkdir -p ../nutRepository/nut/logging
+jar cf ../nutRepository/nut/logging/Log-1.2.jar -C target/classes .
+
+echo "Build core"
+cd $root
+cd core/src/java/xml/
 javac $options XmlPullParserException.java XmlPullParser.java XmlSerializer.java
 cd ../artifact
 javac $options InvalidArtifactRTException.java Artifact.java
@@ -30,18 +38,53 @@ cd ../execution
 javac $options BuildFailureException.java ExecutionException.java NutClassRealm.java NutClassLoader.java PluginManager.java 
 cd ..
 javac $options Nut.java
-cd ../..
-pwd
-jar cf ../nutRepository/nut/Nut-2.0.jar -C target/classes .
+
+cd $root
+mkdir -p ../nutRepository/nut/core
+jar cf ../nutRepository/nut/core/Nut-1.2.jar -C target/classes .
 
 sudo rm /usr/bin/nut
 sudo ln -s $root/nut /usr/bin/nut
 
+echo "Build plugins"
+cd $root
+mkdir -p ../nutRepository/nut/plugins
+
+options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.2.jar:../nutRepository/nut/core/Nut-1.2.jar -deprecation -Xlint:unchecked"
+rm -r target/classes/*
+javac $options plugins/cleaner/src/java/cleaner.java
+jar cf ../nutRepository/nut/plugins/cleaner-1.2.jar -C target/classes .
+
+rm -r target/classes/*
+javac $options plugins/installer/src/java/installer.java
+jar cf ../nutRepository/nut/plugins/installer-1.2.jar -C target/classes .
+
+rm -r target/classes/*
+javac $options plugins/depProcessor/src/java/depProcessor.java
+jar cf ../nutRepository/nut/plugins/depProcessor-1.2.jar -C target/classes .
+
+rm -r target/classes/*
+javac $options plugins/javaArchiver/src/java/javaArchiver.java
+jar cf ../nutRepository/nut/plugins/javaArchiver-1.2.jar -C target/classes .
+
+rm -r target/classes/*
+javac $options plugins/javaCompiler/src/java/javaCompiler.java
+jar cf ../nutRepository/nut/plugins/javaCompiler-1.2.jar -C target/classes .
+
+rm -r target/classes/*
+javac $options plugins/release/src/java/release.java
+jar cf ../nutRepository/nut/plugins/release-1.2.jar -C target/classes .
+
+rm -r target/classes/*
+options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.2.jar:../nutRepository/nut/core/Nut-1.2.jar:../nutRepository/junit/junit-4.10.jar -deprecation -Xlint:unchecked"
+javac $options plugins/junitRunner/src/java/junitRunner.java
+jar cf ../nutRepository/nut/plugins/junitRunner-1.2.jar -C target/classes .
+
 echo "Build packaging"
 mkdir -p ../nutRepository/nut/packaging
-cp packaging/xml/src/resources/xml.xml     ../nutRepository/nut/packaging/xml-2.0.xml
-cp packaging/jar/src/resources/jar.xml     ../nutRepository/nut/packaging/jar-2.0.xml
-cp packaging/war/src/resources/war.xml     ../nutRepository/nut/packaging/war-2.0.xml
-cp packaging/modules/src/resources/modules.xml ../nutRepository/nut/packaging/modules-2.0.xml
+cp packaging/xml/src/resources/xml.xml     ../nutRepository/nut/packaging/xml-1.2.xml
+cp packaging/jar/src/resources/jar.xml     ../nutRepository/nut/packaging/jar-1.2.xml
+cp packaging/war/src/resources/war.xml     ../nutRepository/nut/packaging/war-1.2.xml
+cp packaging/modules/src/resources/modules.xml ../nutRepository/nut/packaging/modules-1.2.xml
 
 rm -r target
