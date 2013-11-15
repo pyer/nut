@@ -12,7 +12,6 @@
       <plugin>
         <groupId>nut.plugins</groupId>
         <artifactId>cleaner</artifactId>
-        <version>1.2</version>
         <goal>clean</goal>
       </plugin>
     </plugins>

@@ -52,42 +52,42 @@ public class Nut
         if( args.length>0 )
         {
 	   for(int i=0; i < args.length ; i++)
+           {
+              if(args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?") )
               {
-              if(!args[i].startsWith("-") )
-                 {
-                 // every arg without - is a goal
-                 goals.add(args[i]);
-                 }
-              else if(args[i].startsWith("-D") )
-                 {
-                 // -Dproperty=value (-Dproperty means -Dproperty=true)
-                 setDefine(args[i]);
-                 }
-              else if(args[i].equals("-X") || args[i].equals("--debug") )
-                 {
-                 log.debugOn();
-                 }
-              else if(args[i].equals("-e") || args[i].equals("--effective") )
-                 {
-                 effectiveNut = true;
-                 }
-              else if(args[i].equals("-h") || args[i].equals("--help") || args[i].equals("?") )
-                 {
                  showHelp();
                  System.exit( exitCode );
-                 }
+              }
               else if(args[i].equals("-v") || args[i].equals("--version") )
-                 {
+              {
                  showVersion();
                  System.exit( exitCode );
-                 }
-              else
-                 {
-                 log.error( "Option [" + args[i] + "] is invalid.\n" );
-                 showHelp();
-                 System.exit( 101 );
-                 }
               }
+              else if(args[i].startsWith("-D") )
+              {
+                 // -Dproperty=value (-Dproperty means -Dproperty=true)
+                 setDefine(args[i]);
+              }
+              else if(args[i].equals("-X") || args[i].equals("--debug") )
+              {
+                 log.debugOn();
+              }
+              else if(args[i].equals("-e") || args[i].equals("--effective") )
+              {
+                 effectiveNut = true;
+              }
+              else
+              {
+                 if(args[i].startsWith("-") )
+                 {
+                    log.error( "Option [" + args[i] + "] is invalid.\n" );
+                    showHelp();
+                    System.exit( 101 );
+                 }
+                 // nearly every arg without '-' is a goal
+                 goals.add(args[i]);
+              }
+           }
         }
         else
         {
@@ -364,7 +364,10 @@ public class Nut
     {
         //log.error( "BUILD FAILURE" );
         log.error( "BUILD FAILURE:" + e.getMessage() );
-        //e.printStackTrace();
+        if( log.isDebug(true) )
+        {
+           e.printStackTrace();
+        }
         line();
     }
 

@@ -18,6 +18,11 @@ public class Log
         debug = false;
     }
 
+    public boolean isDebug( boolean mode )
+    {
+        return( debug == mode );
+    }
+
 
     /**
      * @see org.apache.nut.plugin.logging.Log#debug(java.lang.CharSequence)
@@ -105,7 +110,6 @@ public class Log
      */
     public void error( CharSequence content )
     {
-        debug = true;
         System.err.print( "\033[1;31m" );
         System.err.println( "[error] " + content.toString() );
         System.err.print( "\033[1;37m" );

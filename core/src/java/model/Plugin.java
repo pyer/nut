@@ -82,6 +82,10 @@ public class Plugin implements java.io.Serializable
      */
     public String getVersion()
     {
+        if ( this.version == null )
+        {
+          this.version = System.getProperty( "nut.version", "1.0" );
+        }
         return this.version;
     } //-- String getVersion() 
 
