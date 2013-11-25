@@ -29,8 +29,8 @@ public class release
     {
         log = logger;
 
-        Properties pluginProperties = project.getModel().getProperties();
-        String basedir              = (String)pluginProperties.getProperty( "basedir" );
+        Properties pp     = project.getModel().getProperties();
+        String basedir    = (String)pp.getProperty( "basedir" );
         log.info( "   Release \'" + basedir + "/nut.xml\'" );
         incrementVersion( new File( basedir + "/nut.xml" ) );
 /*

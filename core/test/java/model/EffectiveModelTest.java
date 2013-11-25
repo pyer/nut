@@ -19,27 +19,31 @@ package nut.model;
  * under the License.
  */
 
-import junit.framework.TestCase;
 import nut.model.Model;
 import java.io.IOException;
 
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+
 public class EffectiveModelTest
-    extends TestCase
 {
     private String ref = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <packaging>modules</packaging>\n</project>\n";
 
+    @Test
     public void testHashCodeNullSafe()
     {
         Model m = new Model();
         new EffectiveModel(m).hashCode();
     }
 
+    @Test
     public void testEqualsNullSafe()
     {
         Model m = new Model();
         assertFalse( new EffectiveModel(m).equals( null ) );
     }
 
+    @Test
     public void testEqualsIdentity()
     {
         Model m = new Model();
@@ -47,12 +51,14 @@ public class EffectiveModelTest
         assertTrue( thing.equals( thing ) );
     }
 
+    @Test
     public void testToStringNullSafe()
     {
         Model m = new Model();
         assertNotNull( new EffectiveModel(m).toString() );
     }
 
+    @Test
     public void testGetEffectiveModel()
     {
         Model m = new Model();

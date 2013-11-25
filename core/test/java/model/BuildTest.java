@@ -19,7 +19,8 @@ package nut.model;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 /**
  * Tests {@code Build}.
@@ -28,8 +29,8 @@ import junit.framework.TestCase;
  * @version $Id: BuildTest.java 727548 2008-12-17 22:26:15Z bentmann $
  */
 public class BuildTest
-    extends TestCase
 {
+    @Test
     public void testOutputDirectory()
     {
         String dir = "directory";
@@ -38,6 +39,7 @@ public class BuildTest
         assertEquals( thing.getOutputDirectory(), dir );
     }
 
+    @Test
     public void testSourceDirectory()
     {
         String dir = "directory";
@@ -46,6 +48,7 @@ public class BuildTest
         assertEquals( thing.getSourceDirectory(), dir );
     }
 
+    @Test
     public void testTestOutputDirectory()
     {
         String dir = "directory";
@@ -54,6 +57,7 @@ public class BuildTest
         assertEquals( thing.getTestOutputDirectory(), dir );
     }
 
+    @Test
     public void testTestSourceDirectory()
     {
         String dir = "directory";
@@ -62,12 +66,14 @@ public class BuildTest
         assertEquals( thing.getTestSourceDirectory(), dir );
     }
 
+    @Test
     public void testDefaultModelEncoding()
     {
         Build thing = new Build();
         assertEquals( thing.getModelEncoding(), "UTF-8" );
     }
 
+    @Test
     public void testModelEncoding()
     {
         String me = "ASCII";
@@ -76,24 +82,26 @@ public class BuildTest
         assertEquals( thing.getModelEncoding(), me );
     }
 
-
-
+    @Test
     public void testHashCodeNullSafe()
     {
         new Build().hashCode();
     }
 
+    @Test
     public void testEqualsNullSafe()
     {
         assertFalse( new Build().equals( null ) );
     }
 
+    @Test
     public void testEqualsIdentity()
     {
         Build thing = new Build();
         assertTrue( thing.equals( thing ) );
     }
 
+    @Test
     public void testToStringNullSafe()
     {
         assertNotNull( new Build().toString() );

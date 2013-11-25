@@ -5,15 +5,15 @@ import nut.logging.Log;
 import nut.model.Model;
 import nut.project.NutProject;
 
-import junit.framework.TestCase;
-
 import java.io.File;
 import java.io.Reader;
 import java.util.Properties;
 
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeTest;
 
 public class installerTest
-    extends TestCase
 {
     /** Instance logger */
     private static Log log;
@@ -21,10 +21,9 @@ public class installerTest
     private final String LOCAL_REPO = "target/repository";
     private NutProject project;
     
-    public void setUp()
-        throws Exception
+    @BeforeTest
+    public void setup()
     {
-        super.setUp();
         Model model = new Model();
         model.addProperty( "basedir",    "target" );
         model.addProperty( "repository", LOCAL_REPO );
@@ -40,6 +39,7 @@ public class installerTest
         log = new Log();
     }
 
+    @Test
     public void testRepositoryIsDeleted()
     {
         File repo = new File( LOCAL_REPO );
@@ -47,6 +47,7 @@ public class installerTest
         assertFalse ( repo.exists() );
     }
 
+    @Test
     public void testRepository()
     {
         File repo = new File( LOCAL_REPO );
@@ -55,6 +56,7 @@ public class installerTest
         assertTrue ( repo.exists() );
     }
 
+    @Test
     public void testBasicInstallFile()
         throws Exception
     {
@@ -69,6 +71,7 @@ public class installerTest
       assertTrue( installedArtifactNut.exists() );
     }
 
+    @Test
     public void testInstallModules()
         throws Exception
     {
@@ -92,6 +95,7 @@ public class installerTest
       assertTrue( installedArtifactNut.exists() );
     }
 
+    @Test
     public void testInstallIfArtifactFileIsNull()
         throws Exception
     {

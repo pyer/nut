@@ -38,9 +38,9 @@ public class cleaner
         throws Exception
     {
         log = logger;
-        Properties pluginProperties = project.getModel().getProperties();
-        String basedir        = (String)pluginProperties.getProperty( "basedir" );
-        String buildDirectory = (String)pluginProperties.getProperty( "build.directory" );
+        Properties pp  = project.getModel().getProperties();
+        String basedir = (String)pp.getProperty( "basedir" );
+        String buildDirectory = project.getBuild().getDirectory();
         
         File directoryPath = new File( basedir + File.separator + buildDirectory );
         log.info( "   Cleaning " + directoryPath.getPath() );

@@ -3,10 +3,6 @@
 
   <build>
     <directory>target</directory>
-    <outputDirectory>target</outputDirectory>
-    <testOutputDirectory>target/test</testOutputDirectory>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>test</testSourceDirectory>
 
     <plugins>
       <plugin>

@@ -19,7 +19,8 @@ package nut.model;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 /**
  * Tests {@code Dependency}.
@@ -28,25 +29,28 @@ import junit.framework.TestCase;
  * @version $Id: DependencyTest.java 727548 2008-12-17 22:26:15Z bentmann $
  */
 public class DependencyTest
-    extends TestCase
 {
 
+    @Test
     public void testHashCodeNullSafe()
     {
         new Dependency().hashCode();
     }
 
+    @Test
     public void testEqualsNullSafe()
     {
         assertFalse( new Dependency().equals( null ) );
     }
 
+    @Test
     public void testEqualsIdentity()
     {
         Dependency thing = new Dependency();
         assertTrue( thing.equals( thing ) );
     }
 
+    @Test
     public void testToStringNullSafe()
     {
         assertNotNull( new Dependency().toString() );

@@ -19,6 +19,10 @@ import java.util.Properties;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+
+import junit.framework.TestCase;
+import junit.framework.TestResult;
+import junit.framework.TestSuite;
 //import org.junit.runner.notification.RunListener;
 
 /**
@@ -48,22 +52,23 @@ public class junitRunner
     public static void execute( NutProject project, Log log )
         throws Exception
     {
-        Properties pluginProperties = project.getModel().getProperties();
-        String basedir              = (String)pluginProperties.getProperty( "basedir" );
-        String testOutputDirectory  = (String)pluginProperties.getProperty( "build.testOutputDirectory" );
-        log.debug("basedir=" + basedir);
-        log.debug("testdir=" + testOutputDirectory);
+        Properties pp               = project.getModel().getProperties();
+        String basedir              = (String)pp.getProperty( "basedir" );
+        String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
+        log.debug( "basedir = " + basedir);
+        log.debug( "testdir = " + testOutputDirectory);
 /*
         File directoryPath = new File( basedir + File.separator + testOutputDirectory );
 */
       try {
-        //URL[] url={new URL("file://"+basedir+File.separator+testOutputDirectory+File.separator)};
-        //URLClassLoader loader = new URLClassLoader(url);
+        URL[] url={new URL("file://"+basedir+File.separator+testOutputDirectory+File.separator)};
+        URLClassLoader loader = new URLClassLoader(url);
         JUnitCore junit = new JUnitCore();
         //junit.addListener( new JunitRunner.TextListener(log) );
         log.info("   Testing" );
-        Result result = junit.run(Class.forName("TestSuite"));
-        //Result result = junit.run(loader.loadClass("junit.framework.TestSuite"));
+        //Result result = junit.run(Class.forName("TestSuite"));
+        Result result = junit.run(loader.loadClass("junit.framework.TestSuite"));
+
         log.info("   ==> " + result.getRunCount()+" tests" );
         log.info("   ==> " + result.getIgnoreCount()+" ignores" );
         log.info("   ==> " + result.getFailureCount()+" failures" );

@@ -5,24 +5,22 @@ import nut.logging.Log;
 import nut.model.Model;
 import nut.project.NutProject;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.Reader;
 import java.util.Properties;
 
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeTest;
 
 public class CleanerTest
 {
     private final String LOCAL_TARGET = "target/local-target";
     private NutProject project;
     
-//    public void setUp()
-//        throws Exception
-    public CleanerTest()
+    @BeforeTest
+    public void setup()
     {
-//        super.setUp();
         Model model = new Model();
         model.addProperty( "basedir", "target" );
         model.addProperty( "build.directory", "local-target" );

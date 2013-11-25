@@ -112,7 +112,7 @@ public class ProjectBuilder
             // Must validate before artifact construction to make sure dependencies are good
             ModelValidator validator = new ModelValidator( model );
             validator.validate( );
-            
+/*            
             Build build = model.getBuild();
             if( build != null )
             {
@@ -126,6 +126,7 @@ public class ProjectBuilder
             model.addProperty( "project.artifactId", project.getArtifact().getArtifactId() );
             model.addProperty( "project.version", project.getArtifact().getVersion() );
             model.addProperty( "project.packaging", project.getPackaging() );
+*/
         }
         catch ( ModelValidationException e )
         {

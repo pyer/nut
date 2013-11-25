@@ -21,22 +21,32 @@ public class installer
         throws Exception
     {
         log = logger;
-        Properties pluginProperties = project.getModel().getProperties();
-        String basedir              = (String)pluginProperties.getProperty( "basedir" );
-        String repository           = (String)pluginProperties.getProperty( "nut.home" );
-        String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );
-        String groupId              = (String)pluginProperties.getProperty( "project.groupId" );
-        String artifactId           = (String)pluginProperties.getProperty( "project.artifactId" );
-        String version              = (String)pluginProperties.getProperty( "project.version" );
-        String packaging            = (String)pluginProperties.getProperty( "project.packaging" );
+        Properties pp               = project.getModel().getProperties();
+        String basedir              = (String)pp.getProperty( "basedir" );
+        String repository           = (String)pp.getProperty( "nut.home" );
+        String buildDirectory       = project.getBuild().getDirectory();
+//        String sourceDirectory      = project.getBuild().getSourceDirectory();
+//        String testSourceDirectory  = project.getBuild().getTestSourceDirectory();
+//        String outputDirectory      = project.getBuild().getOutputDirectory();
+//        String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
 
-        log.debug( "basedir                   = " + basedir );
-        log.debug( "repository                = " + repository );
         log.debug( "build.directory           = " + buildDirectory );
+//        log.debug( "build.sourceDirectory     = " + sourceDirectory );
+//        log.debug( "build.testSourceDirectory = " + testSourceDirectory );
+//        log.debug( "build.outputDirectory     = " + outputDirectory );
+//        log.debug( "build.testOutputDirectory = " + testOutputDirectory );
+
+        String groupId              = project.getGroupId();
+        String artifactId           = project.getArtifactId();
+        String version              = project.getVersion();
+        String packaging            = project.getPackaging();
+        String artifactFile         = artifactId + "." + packaging;
+
+        log.debug( "project.groupId           = " + groupId );
         log.debug( "project.artifactId        = " + artifactId );
         log.debug( "project.version           = " + version );
         log.debug( "project.packaging         = " + packaging );
-
+        
             log.info( "   Installing \'" + artifactId + "\'" );
             // + "-" + version + "." + packaging
             if( !packaging.equals("modules") )

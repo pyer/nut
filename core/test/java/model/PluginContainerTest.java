@@ -19,7 +19,8 @@ package nut.model;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 /**
  * Tests {@code PluginContainer}.
@@ -28,25 +29,28 @@ import junit.framework.TestCase;
  * @version $Id: PluginContainerTest.java 727548 2008-12-17 22:26:15Z bentmann $
  */
 public class PluginContainerTest
-    extends TestCase
 {
 
+    @Test
     public void testHashCodeNullSafe()
     {
         new PluginContainer().hashCode();
     }
 
+    @Test
     public void testEqualsNullSafe()
     {
         assertFalse( new PluginContainer().equals( null ) );
     }
 
+    @Test
     public void testEqualsIdentity()
     {
         PluginContainer thing = new PluginContainer();
         assertTrue( thing.equals( thing ) );
     }
 
+    @Test
     public void testToStringNullSafe()
     {
         assertNotNull( new PluginContainer().toString() );

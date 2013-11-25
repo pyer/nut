@@ -55,7 +55,7 @@ public class Dependency implements java.io.Serializable {
      * 
      *           
      */
-    private String version;
+    private String version = null;
 
     /**
      * 
@@ -117,11 +117,7 @@ public class Dependency implements java.io.Serializable {
      * compilation, testing, and so on.
      * It also assists in determining which artifacts
      * to include in a distribution of
-     * this project. For more information, see
-     * <a
-     * href="http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html">the
-     * dependency mechanism</a>.
-     * 
+     * this project.
      */
     private String scope = "compile";
 
@@ -266,12 +262,7 @@ public class Dependency implements java.io.Serializable {
      * compilation, testing, and so on.
      * It also assists in determining which artifacts
      * to include in a distribution of
-     * this project. For more information, see
-     * <a
-     * href="http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html">the
-     * dependency mechanism</a>.
-     * 
-     *           
+     * this project.
      * 
      * @return String
      */

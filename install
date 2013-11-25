@@ -6,10 +6,7 @@ options="-d $root/target/classes -cp $root/target/classes:$root/../nutRepository
 
 [ -d ../nutRepository ] && rm -r ../nutRepository/nut
 mkdir -p ../nutRepository/nut
-
-cp -a junit ../nutRepository
-mkdir -p ../nutRepository/org/codehaus/
-cp -a plexus ../nutRepository/org/codehaus/
+cp -a localRepository/* ../nutRepository/
 
 mkdir -p target/classes 
 
@@ -76,10 +73,12 @@ javac $options plugins/release/src/java/release.java
 jar cf ../nutRepository/nut/plugins/release-1.1.jar -C target/classes .
 
 rm -r target/classes/*
-options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.1.jar:../nutRepository/nut/core/Nut-1.1.jar:../nutRepository/junit/junit-4.11.jar -deprecation -Xlint:unchecked"
-#javac $options plugins/junitRunner/src/java/TextListener.java plugins/junitRunner/src/java/JunitRunner.java
-javac $options plugins/junitRunner/src/java/junitRunner.java
-jar cf ../nutRepository/nut/plugins/junitRunner-1.1.jar -C target/classes .
+#options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.1.jar:../nutRepository/nut/core/Nut-1.1.jar:../nutRepository/junit/junit-4.11.jar -deprecation -Xlint:unchecked"
+#javac $options plugins/junitRunner/src/java/junitRunner.java
+#jar cf ../nutRepository/nut/plugins/junitRunner-1.1.jar -C target/classes .
+options="-d target/classes -cp target/classes:../nutRepository/nut/logging/Log-1.1.jar:../nutRepository/nut/core/Nut-1.1.jar:../nutRepository/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
+javac $options plugins/testRunner/src/java/testRunner.java
+jar cf ../nutRepository/nut/plugins/testRunner-1.1.jar -C target/classes .
 
 echo "Build packaging"
 mkdir -p ../nutRepository/nut/packaging

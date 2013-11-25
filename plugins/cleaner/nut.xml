@@ -11,12 +11,10 @@
     <dependency>
       <groupId>nut.core</groupId>
       <artifactId>Nut</artifactId>
-      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>nut.logging</groupId>
       <artifactId>Log</artifactId>
-      <version>1.2</version>
     </dependency>
   </dependencies>
   

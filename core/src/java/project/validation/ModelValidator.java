@@ -46,7 +46,8 @@ public class ModelValidator
             validateId( "dependencies.dependency.groupId", d.getGroupId() );
 
             validateDepStringNotEmpty( d, "dependencies.dependency.type", d.getType() );
-
+            if ( d.getVersion() == null )
+                d.setVersion( model.getVersion() );
             validateDepStringNotEmpty( d, "dependencies.dependency.version", d.getVersion() );
         }
 

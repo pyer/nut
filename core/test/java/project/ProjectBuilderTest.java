@@ -5,11 +5,12 @@ import java.io.IOException;
 
 import nut.logging.Log;
 
-import junit.framework.TestCase;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 public class ProjectBuilderTest 
-    extends TestCase
 {
+    @Test
     public void testProperties()
         throws ProjectBuildingException
     {
