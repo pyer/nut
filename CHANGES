@@ -1,3 +1,6 @@
+1.2
+plugins ans dependencies use core version if version is undefined 
+junit ie replced by testng
 
 1.1
 use plexus-utils-3.0.jar instead of compiling sources
