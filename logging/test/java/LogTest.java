@@ -1,24 +1,10 @@
 package nut.logging;
 
-/*
-import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.junit.Test;
-*/
-//import org.testng.TestNG;
-/*
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.ExpectedExceptions;
-*/
-//import org.testng.Assert;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 public class LogTest
 {
