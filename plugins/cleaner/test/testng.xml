@@ -1,0 +1,7 @@
+<suite name="Cleaner test Suite">
+  <test name="Cleaner test">
+    <classes>
+      <class name="nut.plugins.cleaner.CleanerTest" />
+    </classes>
+  </test>
+</suite>

@@ -1,0 +1,7 @@
+<suite name="Installer test Suite">
+  <test name="Installer test">
+    <classes>
+      <class name="nut.plugins.installer.InstallerTest" />
+    </classes>
+  </test>
+</suite>
