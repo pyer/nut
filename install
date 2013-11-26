@@ -4,7 +4,7 @@ set -e
 root=$(pwd)
 options="-d $root/target/classes -cp $root/target/classes:$root/../nutRepository/nut/logging/Log-1.1.jar:$root/../nutRepository/org/codehaus/plexus/plexus-utils-3.0.jar -deprecation -Xlint:unchecked"
 
-[ -d ../nutRepository ] && rm -r ../nutRepository/nut
+[ -d ../nutRepository ] && rm -r ../nutRepository
 mkdir -p ../nutRepository/nut
 cp -a localRepository/* ../nutRepository/
 

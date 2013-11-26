@@ -1,7 +1,7 @@
-<suite name="Releaser test Suite">
-  <test name="Releaser test">
+<suite name="Release test Suite">
+  <test name="Release test">
     <classes>
-      <class name="nut.plugins.releaser.ReleaserTest" />
+      <class name="nut.plugins.ReleaseTest" />
     </classes>
   </test>
 </suite>

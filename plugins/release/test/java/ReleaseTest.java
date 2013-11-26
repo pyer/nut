@@ -27,7 +27,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeTest;
 
-public class releaseTest
+public class ReleaseTest
 {
 
     private File NutFile  = new File( "test/resources/nut.xml" );
@@ -35,6 +35,7 @@ public class releaseTest
     
     @BeforeTest
     public void setup()
+        throws IOException
     {
     // NutFile = "test/resources/nut.xml";
     // TestFile = "target/nut.xml";

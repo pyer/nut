@@ -13,7 +13,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeTest;
 
-public class installerTest
+public class InstallerTest
 {
     /** Instance logger */
     private static Log log;
