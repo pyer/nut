@@ -62,19 +62,28 @@ public class testRunner
         String testSuiteFileName    = basedir + "/test/testng.xml";
         log.debug( "testdir = " + basedir + File.separator + testOutputDirectory);
         log.debug( "reports = " + basedir + File.separator + reportsDirectory );
-        log.info( "   Testing " + testSuiteFileName );
 
-        URL url=new URL("file://"+basedir+File.separator+testOutputDirectory+File.separator);
-        addUrlToClassPath(url);
+        File testSuiteFile = new File( testSuiteFileName );
+        if ( !testSuiteFile.exists() )
+        {
+            log.warn( "   No test" );
+        }
+        else
+        {
+            log.info( "   Testing " + testSuiteFileName );
 
-        TestNG tng = new TestNG();
+            URL url=new URL("file://"+basedir+File.separator+testOutputDirectory+File.separator);
+            addUrlToClassPath(url);
+
+            TestNG tng = new TestNG();
 //        TestListenerAdapter tla = new TestListenerAdapter();
 //        tng.addListener(tla);
-        tng.setOutputDirectory( reportsDirectory );
-        List<String> suites = new ArrayList<String>();
-        suites.add( testSuiteFileName );
-        tng.setTestSuites(suites);
-        tng.run();
+            tng.setOutputDirectory( reportsDirectory );
+            List<String> suites = new ArrayList<String>();
+            suites.add( testSuiteFileName );
+            tng.setTestSuites(suites);
+            tng.run();
+        }
     }
 
     /**
