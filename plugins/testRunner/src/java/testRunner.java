@@ -3,7 +3,9 @@ package nut.plugins;
 import nut.logging.Log;
 import nut.project.NutProject;
 
+//import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ import java.net.URLClassLoader;
 //import java.ClassLoader;
 
 
-//import org.testng.TestListenerAdapter;
+import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 
 /**
@@ -52,6 +54,9 @@ public class testRunner
     public static void execute( NutProject project, Log log )
         throws Exception
     {
+        PrintStream originalOut = System.out;
+        PrintStream originalErr = System.err;
+
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
         String buildDirectory       = project.getBuild().getDirectory();
@@ -71,18 +76,25 @@ public class testRunner
         else
         {
             log.info( "   Testing " + testSuiteFileName );
+            // catch stdout
+            //System.setOut(new PrintStream( basedir + File.separator + buildDirectory + File.separator + "testng.out.log" ));
+            // catch stderr
+            //System.setErr(new PrintStream( basedir + File.separator + buildDirectory + File.separator + "testng.err.log" ));
 
             URL url=new URL("file://"+basedir+File.separator+testOutputDirectory+File.separator);
             addUrlToClassPath(url);
 
             TestNG tng = new TestNG();
-//        TestListenerAdapter tla = new TestListenerAdapter();
-//        tng.addListener(tla);
+            TestListenerAdapter tla = new TestListener();
+            tng.addListener(tla);
             tng.setOutputDirectory( reportsDirectory );
             List<String> suites = new ArrayList<String>();
             suites.add( testSuiteFileName );
             tng.setTestSuites(suites);
             tng.run();
+            // restore outputs
+            //System.setErr(originalErr);
+            //System.setOut(originalOut);
         }
     }
 
@@ -102,4 +114,5 @@ public class testRunner
             throw new IllegalArgumentException("Unable to add URL: " + url, ex);
         }
     }
+
 }

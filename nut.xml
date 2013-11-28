@@ -3,7 +3,7 @@
 
   <groupId>nut</groupId>
   <artifactId>nut</artifactId>
-  <version>1.2</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>modules</packaging>
 
   <name>Nut</name>

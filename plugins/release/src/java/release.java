@@ -31,36 +31,13 @@ public class release
 
         Properties pp     = project.getModel().getProperties();
         String basedir    = (String)pp.getProperty( "basedir" );
+        String release    = (String)System.getProperty( "nut.release", null );
         log.info( "   Release \'" + basedir + "/nut.xml\'" );
-        incrementVersion( new File( basedir + "/nut.xml" ) );
-/*
-        String repository           = (String)pluginProperties.getProperty( "repository" );
-        String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );
-        String groupId              = (String)pluginProperties.getProperty( "project.groupId" );
-        String artifactId           = (String)pluginProperties.getProperty( "project.artifactId" );
-        String version              = (String)pluginProperties.getProperty( "project.version" );
-        String packaging            = (String)pluginProperties.getProperty( "project.packaging" );
-
-        log.debug( "repository                = " + repository );
-        log.debug( "build.directory           = " + buildDirectory );
-        log.debug( "project.artifactId        = " + artifactId );
-        log.debug( "project.version           = " + version );
-        log.debug( "project.packaging         = " + packaging );
-
-            log.info( "   Installing \'" + artifactId + "\'" );
-            // + "-" + version + "." + packaging
-            String group = groupId.replace( '.', File.separatorChar );
-            String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
-            if( !packaging.equals("modules") )
-            {
-                //install: copy target file to local repository
-                String buildName = basedir + File.separator + buildDirectory + File.separator + artifactId + "." + packaging;
-                copyFile( buildName, artifactName, version );
-            }
-            //install: copy nut.xml file to local repository
-            String nutName = basedir + File.separator + "nut.xml";
-            copyFile( nutName, artifactName + ".nut", version );
-*/
+        if( release == null ) {
+            incrementVersion( new File( basedir + "/nut.xml" ) );
+        } else {
+            setNutVersion( new File( basedir + "/nut.xml" ), release );
+        }
     }
 
     public static void incrementVersion( File nut )
