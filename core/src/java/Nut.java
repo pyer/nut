@@ -139,7 +139,7 @@ public class Nut
     {
         System.out.println( "usage: nut [options] build" );
         System.out.println( "       nut [options] [goals]" );
-        System.out.println( "       nut [options] plugin:version" );
+        System.out.println( "       nut [options] pluginName:pluginVersion" );
         System.out.println( "\nGoals: clean compile test package install deploy" );
         System.out.println( "\nOptions:" );
         System.out.println( " -D,--define      Define a system property" );
