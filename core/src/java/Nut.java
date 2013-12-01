@@ -362,11 +362,11 @@ public class Nut
 
     protected static void logFailure( Exception e )
     {
-        //log.error( "BUILD FAILURE" );
-        log.error( "BUILD FAILURE:" + e.getMessage() );
-        if( log.isDebug(true) )
-        {
+        if( log.isDebug(true) ) {
+           log.error( "BUILD FAILURE:" + e.getMessage() );
            e.printStackTrace();
+        } else {
+           log.error( "BUILD FAILURE" );
         }
         line();
     }
