@@ -25,8 +25,7 @@ javac $options XmlPullParserException.java XmlPullParser.java XmlSerializer.java
 cd ../artifact
 javac $options InvalidArtifactRTException.java Artifact.java
 cd ../model
-javac $options Plugin.java PluginContainer.java Dependency.java Build.java Model.java 
-javac $options xmlReader.java xmlWriter.java EffectiveModel.java 
+javac $options Plugin.java PluginContainer.java Dependency.java Build.java Model.java xmlReader.java xmlWriter.java EffectiveModel.java 
 cd ../project/validation
 javac $options ModelValidationException.java ModelValidator.java 
 cd ..
