@@ -3,9 +3,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.8.7</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -14,6 +20,7 @@
     <directory>target</directory>
     <outputDirectory>target/classes</outputDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
+    <testReportDirectory>target/test-reports</testReportDirectory>
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
 
@@ -21,31 +28,29 @@
       <plugin>
         <groupId>nut.plugins</groupId>
         <artifactId>cleaner</artifactId>
-        <version>1.1</version>
         <goal>clean</goal>
       </plugin>
       <plugin>
         <groupId>nut.plugins</groupId>
         <artifactId>javaCompiler</artifactId>
-        <version>1.1</version>
         <goal>compile</goal>
       </plugin>
       <plugin>
         <groupId>nut.plugins</groupId>
-        <artifactId>junitRunner</artifactId>
-        <version>1.1</version>
+        <artifactId>testRunner</artifactId>
         <goal>test</goal>
+        <configuration>
+          <testSuiteFile>test/testng.xml</testSuiteFile>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>nut.plugins</groupId>
         <artifactId>javaArchiver</artifactId>
-        <version>1.1</version>
         <goal>package</goal>
       </plugin>
       <plugin>
         <groupId>nut.plugins</groupId>
         <artifactId>installer</artifactId>
-        <version>1.1</version>
         <goal>install</goal>
       </plugin>
     </plugins>

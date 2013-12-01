@@ -46,14 +46,14 @@ public class javaCompiler
         throws Exception
     {
         log = logger;
-        Properties pluginProperties = project.getModel().getProperties();
-        String repository           = (String)pluginProperties.getProperty( "nut.home" );
-        String basedir              = (String)pluginProperties.getProperty( "basedir" );
-        String buildDirectory       = (String)pluginProperties.getProperty( "build.directory" );
-        String sourceDirectory      = (String)pluginProperties.getProperty( "build.sourceDirectory" );
-        String testSourceDirectory  = (String)pluginProperties.getProperty( "build.testSourceDirectory" );
-        String outputDirectory      = (String)pluginProperties.getProperty( "build.outputDirectory" );
-        String testOutputDirectory  = (String)pluginProperties.getProperty( "build.testOutputDirectory" );
+        Properties pp               = project.getModel().getProperties();
+        String basedir              = (String)pp.getProperty( "basedir" );
+        String repository           = (String)pp.getProperty( "nut.home" );
+        String buildDirectory       = project.getBuild().getDirectory();
+        String sourceDirectory      = project.getBuild().getSourceDirectory();
+        String testSourceDirectory  = project.getBuild().getTestSourceDirectory();
+        String outputDirectory      = project.getBuild().getOutputDirectory();
+        String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
 
         log.debug( "build.directory           = " + buildDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );

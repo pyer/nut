@@ -1,0 +1,7 @@
+<suite name="Release test Suite">
+  <test name="release plugin">
+    <classes>
+      <class name="nut.plugins.ReleaseTest" />
+    </classes>
+  </test>
+</suite>

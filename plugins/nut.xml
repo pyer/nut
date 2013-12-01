@@ -10,7 +10,7 @@
     <module>installer</module>
     <module>javaCompiler</module>
     <module>javaArchiver</module>
-    <module>junitRunner</module>
+    <module>testRunner</module>
     <module>depProcessor</module>
     <module>release</module>
   </modules>
