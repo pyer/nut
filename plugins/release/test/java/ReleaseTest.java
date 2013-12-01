@@ -2,7 +2,6 @@ package nut.plugins;
 
 /*
 import nut.logging.Log;
-
 import nut.model.Model;
 import nut.project.NutProject;
 */
@@ -29,29 +28,23 @@ import org.testng.annotations.BeforeTest;
 
 public class ReleaseTest
 {
-
-    private File NutFile  = new File( "test/resources/nut.xml" );
     private File TestFile = new File( "target/nut.xml" );
     
     @BeforeTest
     public void setup()
         throws IOException
     {
-    // NutFile = "test/resources/nut.xml";
-    // TestFile = "target/nut.xml";
         if( TestFile.exists() ) {
           TestFile.delete();
         }
         FileWriter fw = new FileWriter(TestFile); 
         BufferedWriter bw = new BufferedWriter(fw);
-        FileReader fr = new FileReader(NutFile);
-        BufferedReader br = new BufferedReader(fr);
-        String line;
-        while ((line = br.readLine()) != null)
-        {
-          bw.write(line + "\n");
-        }
-        br.close();
+        bw.write("<project>\n");
+        bw.write("  <groupId>nut.plugins</groupId>\n");
+        bw.write("  <artifactId>versionning</artifactId>\n");
+        bw.write("  <version>1.0-SNAPSHOT</version>\n");
+        bw.write("  <packaging>jar</packaging>\n");
+        bw.write("</project>\n");
         bw.close();
     }
 
@@ -97,7 +90,7 @@ public class ReleaseTest
     @Test
     public void testReleaseToSnapshot()
     {
-        release.setReleaseVersion(TestFile);
+        release.setNutVersion(TestFile,"1.0");
         assertEquals( "1.0", release.getNutVersion( TestFile ) );
         release.setSnapshotVersion(TestFile);
         assertEquals( "1.0-SNAPSHOT", release.getNutVersion( TestFile ) );
@@ -106,7 +99,7 @@ public class ReleaseTest
     @Test
     public void testReleaseToRelease()
     {
-        release.setReleaseVersion(TestFile);
+        release.setNutVersion(TestFile,"1.0");
         assertEquals( "1.0", release.getNutVersion( TestFile ) );
         release.setReleaseVersion(TestFile);
         assertEquals( "1.0", release.getNutVersion( TestFile ) );
@@ -115,7 +108,7 @@ public class ReleaseTest
     @Test
     public void testSnapshotToSnapshot()
     {
-        release.setSnapshotVersion(TestFile);
+        release.setNutVersion(TestFile,"1.0-SNAPSHOT");
         assertEquals( "1.0-SNAPSHOT", release.getNutVersion( TestFile ) );
         release.setSnapshotVersion(TestFile);
         assertEquals( "1.0-SNAPSHOT", release.getNutVersion( TestFile ) );
@@ -124,7 +117,7 @@ public class ReleaseTest
     @Test
     public void testSnapshotToRelease()
     {
-        release.setSnapshotVersion(TestFile);
+        release.setNutVersion(TestFile,"1.0-SNAPSHOT");
         assertEquals( "1.0-SNAPSHOT", release.getNutVersion( TestFile ) );
         release.setReleaseVersion(TestFile);
         assertEquals( "1.0", release.getNutVersion( TestFile ) );

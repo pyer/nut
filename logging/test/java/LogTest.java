@@ -8,18 +8,9 @@ import org.testng.annotations.Test;
 
 public class LogTest
 {
-
-private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-
     @Test
     public void testHashCodeNullSafe() {
         new Log().hashCode();
-    }
-
-    @Test
-    public void testForceError() {
-        assertTrue( false );
     }
 
     @Test
@@ -36,6 +27,7 @@ private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     @Test
     public void testDebugOn() {
         PrintStream original = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         Log log = new Log();
         log.debugOn();
@@ -49,6 +41,7 @@ private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     @Test
     public void testDebugOff() {
         PrintStream original = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         Log log = new Log();
         // log.debugOff();
@@ -61,32 +54,35 @@ private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
     @Test
     public void testError() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream original = System.err;
-        System.setErr(new PrintStream(errContent));
+        System.setErr(new PrintStream(outContent));
         new Log().error( "ERROR" );
-        String out = errContent.toString();
+        String out = outContent.toString();
         System.setErr(original);
         assertEquals("\033[1;31m[error] ERROR\n\033[1;37m", out);
     }
 
     @Test
     public void testWarn() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream original = System.out;
         System.setOut(new PrintStream(outContent));
-        new Log().warn( "hello" );
+        new Log().warn( "WARNING" );
         String out = outContent.toString();
         System.setOut(original);
-        assertEquals("\033[1;33m[warn] hello\n\033[1;37m", out);
+        assertEquals("\033[1;33m[warn] WARNING\n\033[1;37m", out);
     }
 
     @Test
     public void testInfo() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream original = System.out;
         System.setOut(new PrintStream(outContent));
-        new Log().info( "hello" );
+        new Log().info( "Hello !" );
         String out = outContent.toString();
         System.setOut(original);
-        assertEquals("[info] hello\n", out);
+        assertEquals("[info] Hello !\n", out);
     }
 
 }

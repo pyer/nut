@@ -112,21 +112,6 @@ public class ProjectBuilder
             // Must validate before artifact construction to make sure dependencies are good
             ModelValidator validator = new ModelValidator( model );
             validator.validate( );
-/*            
-            Build build = model.getBuild();
-            if( build != null )
-            {
-                model.addProperty( "build.directory", project.getBuild().getDirectory() );
-                model.addProperty( "build.outputDirectory", project.getBuild().getOutputDirectory() );
-                model.addProperty( "build.testOutputDirectory", project.getBuild().getTestOutputDirectory() );
-                model.addProperty( "build.sourceDirectory", project.getBuild().getSourceDirectory() );
-                model.addProperty( "build.testSourceDirectory", project.getBuild().getTestSourceDirectory() );
-            }
-            model.addProperty( "project.groupId", project.getArtifact().getGroupId() );
-            model.addProperty( "project.artifactId", project.getArtifact().getArtifactId() );
-            model.addProperty( "project.version", project.getArtifact().getVersion() );
-            model.addProperty( "project.packaging", project.getPackaging() );
-*/
         }
         catch ( ModelValidationException e )
         {

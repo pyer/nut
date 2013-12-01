@@ -1,5 +1,6 @@
 <suite name="Cleaner test Suite">
-  <test name="Cleaner test">
+  <test name="cleaner plugin">
+    <parameter name="myName" value="manisha"/> 
     <classes>
       <class name="nut.plugins.CleanerTest" />
     </classes>

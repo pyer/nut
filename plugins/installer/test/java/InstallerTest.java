@@ -2,6 +2,7 @@ package nut.plugins;
 
 import nut.logging.Log;
 
+import nut.model.Build;
 import nut.model.Model;
 import nut.project.NutProject;
 
@@ -15,42 +16,27 @@ import org.testng.annotations.BeforeTest;
 
 public class InstallerTest
 {
-    /** Instance logger */
-    private static Log log;
-
     private final String LOCAL_REPO = "target/repository";
-    private NutProject project;
+    private Model model = new Model();
     
-    @BeforeTest
-    public void setup()
+//    @BeforeTest
+//    public void setup()
+    private void setup()
     {
-        Model model = new Model();
-        model.addProperty( "basedir",    "target" );
-        model.addProperty( "repository", LOCAL_REPO );
-        model.addProperty( "build.directory",    "build" );
-        model.addProperty( "project.groupId",    "local.group" );
-        model.addProperty( "project.artifactId", "artifact" );
-        model.addProperty( "project.version",    "0.0-SNAPSHOT" );
-        model.addProperty( "project.packaging",  "file" );
-        project = new NutProject(model);
-        
-        //System.out.println( ">>>Cleaning " + LOCAL_REPO );
-        new File( LOCAL_REPO ).delete();
-        log = new Log();
-    }
-
-    @Test
-    public void testRepositoryIsDeleted()
-    {
-        File repo = new File( LOCAL_REPO );
-        //System.out.println( repo.getAbsolutePath() );
-        assertFalse ( repo.exists() );
+        model.addProperty( "basedir", "target" );
+        Build build = new Build();
+        build.setDirectory( "build" );
+        model.setBuild( build );
+        model.setGroupId( "local.group" );
+        model.setArtifactId( "artifact" );
+        model.setVersion( "0.0-SNAPSHOT" );
+        model.setPackaging( "file" );
     }
 
     @Test
     public void testRepository()
     {
-        File repo = new File( LOCAL_REPO );
+        File repo = new File( "target/repo1" );
         repo.mkdir();
         //System.out.println( repo.getAbsolutePath() );
         assertTrue ( repo.exists() );
@@ -60,39 +46,39 @@ public class InstallerTest
     public void testBasicInstallFile()
         throws Exception
     {
-      new File( LOCAL_REPO ).mkdir();
-      new File( "target/build" ).mkdir();
-      new File( "target/nut.xml" ).createNewFile();
-      new File( "target/build/artifact.file" ).createNewFile();
-      installer.execute(project,log);
-      File installedArtifact = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.file" );
-      assertTrue( installedArtifact.exists() );
-      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.file.nut" );
-      assertTrue( installedArtifactNut.exists() );
+        setup();
+        model.addProperty( "nut.home", "target/repo2" );
+        new File( "target/repo2" ).mkdir();
+        new File( "target/build" ).mkdir();
+        new File( "target/nut.xml" ).createNewFile();
+        new File( "target/build/artifact.file" ).createNewFile();
+        NutProject project = new NutProject(model);
+        Log log = new Log();
+        installer.execute(project,log);
+        File installedArtifact = new File( "target/repo2/local/group/artifact-0.0-SNAPSHOT.file" );
+        assertTrue( installedArtifact.exists() );
+//      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.file.nut" );
+//      assertTrue( installedArtifactNut.exists() );
     }
 
     @Test
     public void testInstallModules()
         throws Exception
     {
-        Model model = new Model();
-        model.addProperty( "basedir",    "target" );
-        model.addProperty( "repository", LOCAL_REPO );
-        model.addProperty( "build.directory",    "build" );
-        model.addProperty( "project.groupId",    "local.group" );
-        model.addProperty( "project.artifactId", "artifact" );
-        model.addProperty( "project.version",    "0.0-SNAPSHOT" );
-        model.addProperty( "project.packaging",  "modules" );
-        NutProject prj = new NutProject(model);
+        setup();
+        model.addProperty( "nut.home", "target/repo3" );
+        new File( "target/repo3" ).mkdir();
+        new File( "target/build" ).mkdir();
+        new File( "target/nut.xml" ).createNewFile();
+        model.setPackaging( "modules" );
 
-      new File( LOCAL_REPO ).mkdir();
-      new File( "target/build" ).mkdir();
-      new File( "target/nut.xml" ).createNewFile();
-      installer.execute(prj,log);
-      File installedArtifact = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.modules" );
-      assertFalse( installedArtifact.exists() );
-      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.modules.nut" );
-      assertTrue( installedArtifactNut.exists() );
+        NutProject project = new NutProject(model);
+        Log log = new Log();
+        installer.execute(project,log);
+        File installedArtifact = new File( "target/repo3/local/group/artifact-0.0-SNAPSHOT.modules" );
+        assertFalse( installedArtifact.exists() );
+//      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.modules.nut" );
+//      assertTrue( installedArtifactNut.exists() );
     }
 
     @Test
@@ -101,13 +87,16 @@ public class InstallerTest
     {
       try
       {
-        new File( LOCAL_REPO ).mkdir();
+        setup();
+        model.addProperty( "nut.home", "target/repo4" );
+        new File( "target/repo4" ).mkdir();
         new File( "target/build" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
-        //new File( "target/build/artifact.file" ).createNewFile();
-        //new File( "target/build/artifact.file" ).delete();
-        //installer.execute(project,log);
-        File installedArtifact = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.file" );
+        model.setPackaging( "file" );
+        NutProject project = new NutProject(model);
+        Log log = new Log();
+        installer.execute(project,log);
+        File installedArtifact = new File( "target/repo4/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
       }
       catch(Exception e)

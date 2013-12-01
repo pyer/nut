@@ -3,8 +3,8 @@ package nut.plugins;
 import nut.logging.Log;
 import nut.project.NutProject;
 
-//import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import java.util.ArrayList;
@@ -38,8 +38,6 @@ import java.lang.reflect.WildcardType;
 
 import java.net.URL;
 import java.net.URLClassLoader;
-//import java.ClassLoader;
-
 
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
@@ -51,22 +49,39 @@ import org.testng.TestNG;
  */
 public class testRunner
 {
-    public static void execute( NutProject project, Log log )
+    private static Log log;
+    private static PrintStream sysout;
+    private static PrintStream stdout;
+
+    public static Log getLog() {
+        return log;
+    }
+
+    public static PrintStream getSysOut() {
+        return sysout;
+    }
+
+    public static PrintStream getStdOut() {
+        return stdout;
+    }
+
+    public static void execute( NutProject project, Log logger )
         throws Exception
     {
-        PrintStream originalOut = System.out;
-        PrintStream originalErr = System.err;
-
+        log = logger;
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String buildDirectory       = project.getBuild().getDirectory();
-        String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
-        String reportsDirectory     = buildDirectory + File.separator + "test-reports";
+        String buildDirectory       = basedir + File.separator + project.getBuild().getDirectory();
+        String outputDirectory      = basedir + File.separator + project.getBuild().getOutputDirectory();
+        String testOutputDirectory  = basedir + File.separator + project.getBuild().getTestOutputDirectory();
+        String testReportDirectory  = basedir + File.separator + project.getBuild().getTestReportDirectory();
         // to put in a property
         //String testSuitePath        = project.getBuild().getTestOutputDirectory();
-        String testSuiteFileName    = basedir + "/test/testng.xml";
-        log.debug( "testdir = " + basedir + File.separator + testOutputDirectory);
-        log.debug( "reports = " + basedir + File.separator + reportsDirectory );
+//        String testSuiteFileName    = basedir + "/test/testng.xml";
+        String testSuiteFileName    = basedir + File.separator + project.getModel().getBuild().getCurrentPlugin().getConfigurationValue( "testSuiteFile" );
+        log.debug( "test suite   = " + testSuiteFileName);
+        log.debug( "test classes = " + testOutputDirectory);
+        log.debug( "test reports = " + testReportDirectory );
 
         File testSuiteFile = new File( testSuiteFileName );
         if ( !testSuiteFile.exists() )
@@ -75,26 +90,30 @@ public class testRunner
         }
         else
         {
-            log.info( "   Testing " + testSuiteFileName );
+            //log.info( "   Testing " + testSuiteFileName );
             // catch stdout
-            //System.setOut(new PrintStream( basedir + File.separator + buildDirectory + File.separator + "testng.out.log" ));
-            // catch stderr
-            //System.setErr(new PrintStream( basedir + File.separator + buildDirectory + File.separator + "testng.err.log" ));
+            sysout = System.out;
+            stdout = new PrintStream(new FileOutputStream("/dev/null"));
+            System.setOut(stdout);
 
-            URL url=new URL("file://"+basedir+File.separator+testOutputDirectory+File.separator);
+            URL url=new URL("file://"+outputDirectory+File.separator);
+            addUrlToClassPath(url);
+            url=new URL("file://"+testOutputDirectory+File.separator);
             addUrlToClassPath(url);
 
             TestNG tng = new TestNG();
-            TestListenerAdapter tla = new TestListener();
+            TestListenerAdapter tla = new nut.plugins.TestListener();
             tng.addListener(tla);
-            tng.setOutputDirectory( reportsDirectory );
+            tng.setOutputDirectory( testReportDirectory );
             List<String> suites = new ArrayList<String>();
             suites.add( testSuiteFileName );
             tng.setTestSuites(suites);
             tng.run();
-            // restore outputs
-            //System.setErr(originalErr);
-            //System.setOut(originalOut);
+            // restore stdout
+            System.setOut(sysout);
+            if ( tng.hasFailure() ) {
+              throw new Exception();
+            }
         }
     }
 

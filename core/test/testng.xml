@@ -1,5 +1,5 @@
 <suite name="Core test Suite">
-  <test name="Core test">
+  <test name="core">
     <classes>
       <class name="nut.artifact.ArtifactTest" />
       <class name="nut.model.BuildTest" />

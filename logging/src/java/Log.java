@@ -9,6 +9,7 @@ import java.io.StringWriter;
 public class Log
 {
     private boolean debug = false;
+
     public void debugOn()
     {
         debug = true;
@@ -145,6 +146,11 @@ public class Log
         System.err.print( "\033[0;37m" );
     }
 
+
+    public void print( String content )
+    {
+        System.out.print( content );
+    }
 
     private void print( String prefix, CharSequence content )
     {

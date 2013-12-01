@@ -31,24 +31,46 @@ public class PluginContainer implements java.io.Serializable {
      */
     private List<Plugin> plugins;
 
+    private Plugin currentPlugin;
+
 
       //-----------/
      //- Methods -/
     //-----------/
 
     /**
-     * Method addPlugin.
+     * Method setCurrentPlugin.
      * 
      * @param plugin
      */
-    public void addPlugin( Plugin plugin )
+    public void setCurrentPlugin( Plugin plugin )
     {
         if ( !(plugin instanceof Plugin) )
         {
-            throw new ClassCastException( "PluginContainer.addPlugins(plugin) parameter must be instanceof " + Plugin.class.getName() );
+            throw new ClassCastException( "PluginContainer.setCurrentPlugin(plugin) parameter must be instanceof " + Plugin.class.getName() );
         }
-        getPlugins().add( plugin );
-    } //-- void addPlugin( Plugin ) 
+        this.currentPlugin = plugin;
+    }
+
+    /**
+     * Method getCurrentPlugin.
+     * 
+     * @return plugin
+     */
+    public Plugin getCurrentPlugin()
+    {
+        return this.currentPlugin;
+    }
+
+    /**
+     * Set the list of plugins to use.
+     * 
+     * @param plugins
+     */
+    public void setPlugins( List<Plugin> plugins )
+    {
+        this.plugins = plugins;
+    } //-- void setPlugins( List ) 
 
     /**
      * Method getPlugins.
@@ -66,6 +88,20 @@ public class PluginContainer implements java.io.Serializable {
     } //-- List getPlugins() 
 
     /**
+     * Method addPlugin.
+     * 
+     * @param plugin
+     */
+    public void addPlugin( Plugin plugin )
+    {
+        if ( !(plugin instanceof Plugin) )
+        {
+            throw new ClassCastException( "PluginContainer.addPlugin(plugin) parameter must be instanceof " + Plugin.class.getName() );
+        }
+        getPlugins().add( plugin );
+    } //-- void addPlugin( Plugin ) 
+
+    /**
      * Method removePlugin.
      * 
      * @param plugin
@@ -78,15 +114,5 @@ public class PluginContainer implements java.io.Serializable {
         }
         getPlugins().remove( plugin );
     } //-- void removePlugin( Plugin ) 
-
-    /**
-     * Set the list of plugins to use.
-     * 
-     * @param plugins
-     */
-    public void setPlugins( List<Plugin> plugins )
-    {
-        this.plugins = plugins;
-    } //-- void setPlugins( List ) 
 
 }

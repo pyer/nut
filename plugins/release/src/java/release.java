@@ -31,7 +31,7 @@ public class release
 
         Properties pp     = project.getModel().getProperties();
         String basedir    = (String)pp.getProperty( "basedir" );
-        String release    = (String)System.getProperty( "nut.release", null );
+        String release    = project.getModel().getVersion();
         log.info( "   Release \'" + basedir + "/nut.xml\'" );
         if( release == null ) {
             incrementVersion( new File( basedir + "/nut.xml" ) );

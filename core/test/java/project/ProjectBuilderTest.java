@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 public class ProjectBuilderTest 
 {
-    @Test
+    @Test(enabled=false)
     public void testProperties()
         throws ProjectBuildingException
     {

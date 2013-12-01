@@ -45,9 +45,9 @@ public class Plugin implements java.io.Serializable
     private Boolean skip = false;
 
     /**
-     * The configuration as DOM object.
+     * The configuration as properties.
      */
-    private Object configuration;
+    private java.util.Properties configuration;
 
 
       //-----------/
@@ -105,15 +105,28 @@ public class Plugin implements java.io.Serializable
     }
 
     /**
-     * Get the configuration as DOM object.
+     * Get the configuration object
      * 
-     * @return Object
+     * @return configuration 
      */
-    public Object getConfiguration()
+    public java.util.Properties getConfiguration()
     {
+        if ( this.configuration == null )
+        {
+            this.configuration = new java.util.Properties();
+        }
         return this.configuration;
-    } //-- Object getConfiguration() 
+    }
 
+    /**
+     * 
+     * @param  key
+     * @return value
+     */
+    public String getConfigurationValue( String key )
+    {
+        return getConfiguration().getProperty( key );
+    }
     /**
      * Set the group ID of the plugin in the repository.
      * 
@@ -161,15 +174,24 @@ public class Plugin implements java.io.Serializable
     }
 
     /**
-     * Set the configuration as DOM object.
+     * Set the configuration object.
      * 
      * @param configuration
      */
-    public void setConfiguration( Object configuration )
+    public void setConfiguration( java.util.Properties configuration )
     {
         this.configuration = configuration;
-    } //-- void setConfiguration( Object ) 
+    }
 
+    /**
+     * 
+     * @param key
+     * @param value
+     */
+    public void setConfigurationValue( String key, String value )
+    {
+        getConfiguration().setProperty( key, value );
+    }
 
     /**
      * @return the key of the plugin, ie <code>groupId:artifactId</code>

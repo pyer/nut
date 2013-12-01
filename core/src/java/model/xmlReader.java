@@ -453,7 +453,15 @@ public class xmlReader {
                 parsed.add( "testOutputDirectory" );
                 build.setTestOutputDirectory( getTrimmedValue( parser.nextText()) );
             }
-
+            else if ( parser.getName().equals( "testReportDirectory" )  )
+            {
+                if ( parsed.contains( "testReportDirectory" ) )
+                {
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                }
+                parsed.add( "testReportDirectory" );
+                build.setTestReportDirectory( getTrimmedValue( parser.nextText()) );
+            }
 
             else if ( parser.getName().equals( "directory" )  )
             {
@@ -862,6 +870,20 @@ public class xmlReader {
                 }
                 parsed.add( "skip" );
                 plugin.setSkip( getTrimmedValue( parser.nextText()) );
+            }
+            else if ( parser.getName().equals( "configuration" )  )
+            {
+                if ( parsed.contains( "configuration" ) )
+                {
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                }
+                parsed.add( "configuration" );
+                while ( parser.nextTag() == XmlPullParser.START_TAG )
+                {
+                    String key = parser.getName();
+                    String value = parser.nextText().trim();
+                    plugin.setConfigurationValue( key, value );
+                }
             }
             else
             {

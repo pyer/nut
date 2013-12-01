@@ -20,6 +20,7 @@
     <directory>target</directory>
     <outputDirectory>target/classes</outputDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
+    <testReportDirectory>target/test-reports</testReportDirectory>
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
 
@@ -38,6 +39,9 @@
         <groupId>nut.plugins</groupId>
         <artifactId>testRunner</artifactId>
         <goal>test</goal>
+        <configuration>
+          <testSuiteFile>test/testng.xml</testSuiteFile>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>nut.plugins</groupId>

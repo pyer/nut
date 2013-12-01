@@ -2,6 +2,7 @@ package nut.plugins;
 
 import nut.logging.Log;
 
+import nut.model.Build;
 import nut.model.Model;
 import nut.project.NutProject;
 
@@ -11,23 +12,11 @@ import java.util.Properties;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
-import org.testng.annotations.BeforeTest;
 
 public class CleanerTest
 {
     private final String LOCAL_TARGET = "target/local-target";
-    private NutProject project;
     
-    @BeforeTest
-    public void setup()
-    {
-        Model model = new Model();
-        model.addProperty( "basedir", "target" );
-        model.addProperty( "build.directory", "local-target" );
-        project = new NutProject(model);
-
-    }
-
     @Test
     public void testCreateTarget()
     {
@@ -40,11 +29,23 @@ public class CleanerTest
     public void testExecute()
     {
       Log log = new Log();
+      Build build = new Build();
+      build.setDirectory( "local-target" );
+      Model model = new Model();
+      model.addProperty( "basedir", "target" );
+      model.setBuild( build );
+      NutProject project = new NutProject(model);
+
       File d = new File( LOCAL_TARGET );
       d.mkdirs();
       File f = new File( LOCAL_TARGET + "/dummy" );
       try
       {
+/*
+File directory = new File (".");
+log.info("Current directory's canonical path: " + directory.getCanonicalPath());
+log.info("Current directory's absolute  path: " + directory.getAbsolutePath());
+*/
         f.createNewFile();
         assertTrue( f.exists() );
         cleaner.execute(project, log);

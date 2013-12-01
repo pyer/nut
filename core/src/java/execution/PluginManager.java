@@ -103,6 +103,7 @@ public class PluginManager
         try
         {
                log.debug( plugin.toString() );
+               project.getBuild().setCurrentPlugin( plugin );
                // just to see the id of the plugin
                Artifact artifact = new Artifact( plugin.getGroupId(), plugin.getArtifactId(), plugin.getVersion(), "jar", null );
                String repository = System.getProperty( "nut.home" );

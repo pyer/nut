@@ -289,6 +289,17 @@ public class xmlWriter {
             {
                 serializer.startTag( NAMESPACE, "skip" ).text( "true" ).endTag( NAMESPACE, "skip" );
             }
+            if ( plugin.getConfiguration() != null && plugin.getConfiguration().size() > 0 )
+            {
+                serializer.startTag( NAMESPACE, "configuration" );
+                for ( Iterator iter = plugin.getConfiguration().keySet().iterator(); iter.hasNext(); )
+                {
+                    String key = (String) iter.next();
+                    String value = (String) plugin.getConfigurationValue( key );
+                    serializer.startTag( NAMESPACE, "" + key + "" ).text( value ).endTag( NAMESPACE, "" + key + "" );
+                }
+                serializer.endTag( NAMESPACE, "configuration" );
+            }
             serializer.endTag( NAMESPACE, tagName );
         }
     } //-- void writePlugin( Plugin, String, XmlSerializer ) 
