@@ -18,6 +18,11 @@ import java.util.Properties;
 import java.util.List;
 import java.util.ArrayList;
 
+/* Usage:
+ * nut release:1.2               => increments release version
+ * nut release:1.2 -Drelease=2.0 => sets version 2.0 in nut.xml
+ *
+ */
 
 public class release
 {
@@ -31,7 +36,7 @@ public class release
 
         Properties pp     = project.getModel().getProperties();
         String basedir    = (String)pp.getProperty( "basedir" );
-        String release    = project.getModel().getVersion();
+        String release    = (String)pp.getProperty( "release" );
         log.info( "   Release \'" + basedir + "/nut.xml\'" );
         if( release == null ) {
             incrementVersion( new File( basedir + "/nut.xml" ) );
@@ -87,6 +92,7 @@ public class release
       String line = null;
       List<String> buffer = new ArrayList<String>();
 
+      log.debug( "setNutVersion: " + version);
       try {
         // FileReader reads text files in the default encoding.
         FileReader fr = new FileReader(nut);
@@ -122,6 +128,7 @@ public class release
              if( b>=0 && e>10 ) {
                String s = line.substring(0,b+9);
                line = s + version + "</version>";
+               log.debug( "setNutVersion: " + version + " done");
              }
              bw.write(line+"\n");
              i++;
@@ -171,33 +178,8 @@ public class release
       catch(IOException e) {
         return(version);
       }
+      log.debug( "getNutVersion: " + version );
       return version;
-    }
-
-    public static String getNutVersion0( File nut )
-        throws Exception
-    {
-        String version = "";
-        String line = null;
-        // FileReader reads text files in the default encoding.
-        FileReader fr = new FileReader(nut);
-        // Always wrap FileReader in BufferedReader.
-        BufferedReader br = new BufferedReader(fr);
-        int b = -1;
-        int e = -1;
-        while ((line = br.readLine()) != null && (b == -1) && (e == -1 ) )
-        {
-          b = line.indexOf("<version>");
-          e = line.indexOf("</version>");
-          if( b>=0 && e>10 )
-          {
-            version=line.substring(b+9,e);
-  //  System.out.print(line);
-          }
-        }
-        // Always close files.
-        br.close();			
-        return version;
     }
 
 }
