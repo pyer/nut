@@ -39,7 +39,7 @@ cd $root
 mkdir -p ../nutRepository/nut/core
 jar cf ../nutRepository/nut/core/Nut-1.2-SNAPSHOT.jar -C target/classes .
 
-sudo rm /usr/bin/nut
+sudo rm -f /usr/bin/nut
 sudo ln -s $root/nut /usr/bin/nut
 
 echo "Build plugins"
