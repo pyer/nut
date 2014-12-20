@@ -2,7 +2,7 @@
 <project>
   <groupId>nut.core</groupId>
   <artifactId>Nut</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <packaging>jar</packaging>
 
   <name>Nut core</name>
@@ -21,6 +21,7 @@
     <dependency>
       <groupId>nut.logging</groupId>
       <artifactId>Log</artifactId>
+      <version>1.2</version>
     </dependency>
   </dependencies>
 

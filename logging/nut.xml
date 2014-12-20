@@ -3,7 +3,7 @@
 
   <groupId>nut.logging</groupId>
   <artifactId>Log</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <packaging>jar</packaging>
 
   <name>Nut log</name>

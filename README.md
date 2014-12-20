@@ -11,9 +11,5 @@ Maven is far better.
 Have a look to Raven too !
 
 Pierre BAZONNARD
-pierre.bazonnard@gmail.com
-
-
-
-
+pierre@bazonnard.fr
 
