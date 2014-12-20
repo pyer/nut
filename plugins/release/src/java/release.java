@@ -31,21 +31,19 @@ public class release
 
         Properties pp     = project.getModel().getProperties();
         String basedir    = (String)pp.getProperty( "basedir" );
-        String release    = project.getModel().getVersion();
         log.info( "   Release \'" + basedir + "/nut.xml\'" );
-        if( release == null ) {
-            incrementVersion( new File( basedir + "/nut.xml" ) );
-        } else {
-            setNutVersion( new File( basedir + "/nut.xml" ), release );
-        }
+        incrementVersion( new File( basedir + "/nut.xml" ) );
     }
 
     public static void incrementVersion( File nut )
     {
        String version = getNutVersion( nut );
+       log.info("     from "+version );
        int i = version.indexOf("-SNAPSHOT");
+       log.debug("i="+String.valueOf(i));
        if( i > 0 ) {
-         setNutVersion( nut, version.substring(0, i) );
+         version = version.substring(0, i);
+         setNutVersion( nut, version );
        } else {
          i = version.indexOf(".");
          if( i > 0 ) {
@@ -63,6 +61,7 @@ public class release
              System.out.print("Invalid version: "+version );
          }
        }
+       log.info("     to   "+version );
     }
 
     public static void setReleaseVersion( File nut )
@@ -87,6 +86,7 @@ public class release
       String line = null;
       List<String> buffer = new ArrayList<String>();
 
+      log.debug("setVersion: "+version );
       try {
         // FileReader reads text files in the default encoding.
         FileReader fr = new FileReader(nut);
@@ -95,6 +95,7 @@ public class release
         while ((line = br.readLine()) != null)
         {
           buffer.add(line);
+          log.debug("READ: "+line );
         }
         br.close();			
       }
@@ -124,11 +125,13 @@ public class release
                line = s + version + "</version>";
              }
              bw.write(line+"\n");
+             log.debug("WRITE: "+line );
              i++;
         }
         while ( i < n ) {
           line = buffer.get(i);
           bw.write(line+"\n");
+          log.debug("WRITE: "+line );
           i++;
         }
         bw.close();
@@ -171,33 +174,8 @@ public class release
       catch(IOException e) {
         return(version);
       }
+      log.debug("getVersion: "+version );
       return version;
-    }
-
-    public static String getNutVersion0( File nut )
-        throws Exception
-    {
-        String version = "";
-        String line = null;
-        // FileReader reads text files in the default encoding.
-        FileReader fr = new FileReader(nut);
-        // Always wrap FileReader in BufferedReader.
-        BufferedReader br = new BufferedReader(fr);
-        int b = -1;
-        int e = -1;
-        while ((line = br.readLine()) != null && (b == -1) && (e == -1 ) )
-        {
-          b = line.indexOf("<version>");
-          e = line.indexOf("</version>");
-          if( b>=0 && e>10 )
-          {
-            version=line.substring(b+9,e);
-  //  System.out.print(line);
-          }
-        }
-        // Always close files.
-        br.close();			
-        return version;
     }
 
 }
