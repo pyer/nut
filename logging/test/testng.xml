@@ -1,7 +1,0 @@
-<suite name="Logging test Suite">
-  <test name="logging">
-    <classes>
-      <class name="nut.logging.LogTest" />
-    </classes>
-  </test>
-</suite>

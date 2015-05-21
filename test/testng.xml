@@ -1,4 +1,4 @@
-<suite name="Core test Suite">
+<suite name="Nut test Suite">
   <test name="core">
     <classes>
       <class name="nut.artifact.ArtifactTest" />
@@ -9,6 +9,11 @@
       <class name="nut.model.PluginContainerTest" />
       <class name="nut.model.PluginTest" />
       <class name="nut.project.ProjectBuilderTest" />
+    </classes>
+  </test>
+  <test name="logging">
+    <classes>
+      <class name="nut.logging.LogTest" />
     </classes>
   </test>
 </suite>
