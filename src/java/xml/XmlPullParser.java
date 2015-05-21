@@ -929,11 +929,6 @@ public class XmlPullParser
             throw new XmlPullParserException(
                 "could not create reader for encoding "+inputEncoding+" : "+une, this, une);
         }
-        catch ( IOException e )
-        {
-            throw new XmlPullParserException(
-                "could not create reader : "+e, this, e);
-        }
         setInput(reader);
         //must be  here as reset() was called in setInput() and has set this.inputEncoding to null ...
         this.inputEncoding = inputEncoding;
