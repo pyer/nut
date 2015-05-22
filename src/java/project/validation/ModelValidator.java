@@ -3,8 +3,8 @@ package nut.project.validation;
 import nut.artifact.Artifact;
 import nut.model.Build;
 import nut.model.Dependency;
+import nut.model.Goal;
 import nut.model.Model;
-import nut.model.Plugin;
 
 import java.io.File;
 import java.util.Iterator;
@@ -54,16 +54,13 @@ public class ModelValidator
         Build build = model.getBuild();
         if ( build != null )
         {
-            List plugins = build.getPlugins();
-            if ( plugins != null )
+            List goals = build.getGoals();
+            if ( goals != null )
             {
-                for ( Iterator it = plugins.iterator(); it.hasNext(); )
+                for ( Iterator it = goals.iterator(); it.hasNext(); )
                 {
-                    Plugin plugin = (Plugin) it.next();
-                    validateStringNotEmpty( "build.plugins.plugin.groupId", plugin.getGroupId() );
-                    validateStringNotEmpty( "build.plugins.plugin.artifactId", plugin.getArtifactId() );
-                    validateStringNotEmpty( "build.plugins.plugin.version", plugin.getVersion() );
-                    validateStringNotEmpty( "build.plugins.plugin.goal", plugin.getGoal() );
+                    Goal goal = (Goal) it.next();
+                    validateStringNotEmpty( "build.goals.goal.name", goal.getName() );
                 }
             }
         }

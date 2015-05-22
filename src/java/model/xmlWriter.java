@@ -1,7 +1,7 @@
 package nut.model;
 
-  //---------------------------------/
- //- Imported classes and packages -/
+//---------------------------------/
+//- Imported classes and packages -/
 //---------------------------------/
 
 import java.io.Writer;
@@ -11,17 +11,8 @@ import java.util.Locale;
 
 import nut.model.Build;
 import nut.model.Dependency;
-//import ab.nut.model.DependencyManagement;
-//import ab.nut.model.Exclusion;
-//import ab.nut.model.Extension;
-//import ab.nut.model.FileSet;
+import nut.model.Goal;
 import nut.model.Model;
-//import ab.nut.model.PatternSet;
-import nut.model.Plugin;
-import nut.model.PluginContainer;
-//import ab.nut.model.Resource;
-//import ab.nut.model.Scm;
-//import ab.nut.model.UnitTest;
 
 import nut.xml.XmlSerializer;
 
@@ -33,8 +24,8 @@ import nut.xml.XmlSerializer;
 public class xmlWriter {
 
 
-      //--------------------------/
-     //- Class/Member Variables -/
+    //--------------------------/
+    //- Class/Member Variables -/
     //--------------------------/
 
     /**
@@ -43,8 +34,8 @@ public class xmlWriter {
     private String NAMESPACE;
 
 
-      //-----------/
-     //- Methods -/
+    //-----------/
+    //- Methods -/
     //-----------/
 
     /**
@@ -66,6 +57,42 @@ public class xmlWriter {
         serializer.endDocument();
     } //-- void write( Writer, Model ) 
 
+    /**
+     * Method writeGoal.
+     * 
+     * @param goal
+     * @param serializer
+     * @param tagName
+     * @throws java.io.IOException
+     */
+    private void writeGoal( Goal goal, String tagName, XmlSerializer serializer )
+        throws java.io.IOException
+    {
+        if ( goal != null )
+        {
+            serializer.startTag( NAMESPACE, tagName );
+            if ( goal.getName() != null )
+            {
+                serializer.startTag( NAMESPACE, "name" ).text( goal.getName() ).endTag( NAMESPACE, "name" );
+            }
+            if ( goal.getType() != null )
+            {
+                serializer.startTag( NAMESPACE, "type" ).text( goal.getType() ).endTag( NAMESPACE, "type" );
+            }
+            if ( goal.getConfiguration() != null && goal.getConfiguration().size() > 0 )
+            {
+                serializer.startTag( NAMESPACE, "configuration" );
+                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); )
+                {
+                    String key = (String) iter.next();
+                    String value = (String) goal.getConfigurationValue( key );
+                    serializer.startTag( NAMESPACE, "" + key + "" ).text( value ).endTag( NAMESPACE, "" + key + "" );
+                }
+                serializer.endTag( NAMESPACE, "configuration" );
+            }
+            serializer.endTag( NAMESPACE, tagName );
+        }
+    } //-- void writeGoal( Goal, String, XmlSerializer ) 
 
     /**
      * Method writeBuild.
@@ -102,15 +129,15 @@ public class xmlWriter {
                 serializer.startTag( NAMESPACE, "testSourceDirectory" ).text( build.getTestSourceDirectory() ).endTag( NAMESPACE, "testSourceDirectory" );
             }
 
-            if ( build.getPlugins() != null && build.getPlugins().size() > 0 )
+            if ( build.getGoals() != null && build.getGoals().size() > 0 )
             {
-                serializer.startTag( NAMESPACE, "plugins" );
-                for ( Iterator iter = build.getPlugins().iterator(); iter.hasNext(); )
+                serializer.startTag( NAMESPACE, "goals" );
+                for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); )
                 {
-                    Plugin o = (Plugin) iter.next();
-                    writePlugin( o, "plugin", serializer );
+                    Goal o = (Goal) iter.next();
+                    writeGoal( o, "goal", serializer );
                 }
-                serializer.endTag( NAMESPACE, "plugins" );
+                serializer.endTag( NAMESPACE, "goals" );
             }
             serializer.endTag( NAMESPACE, tagName );
         }
@@ -254,82 +281,5 @@ public class xmlWriter {
             serializer.endTag( NAMESPACE, tagName );
         }
     } //-- void writeModel( Model, String, XmlSerializer ) 
-
-    /**
-     * Method writePlugin.
-     * 
-     * @param plugin
-     * @param serializer
-     * @param tagName
-     * @throws java.io.IOException
-     */
-    private void writePlugin( Plugin plugin, String tagName, XmlSerializer serializer )
-        throws java.io.IOException
-    {
-        if ( plugin != null )
-        {
-            serializer.startTag( NAMESPACE, tagName );
-            if ( plugin.getGroupId() != null )
-            {
-                serializer.startTag( NAMESPACE, "groupId" ).text( plugin.getGroupId() ).endTag( NAMESPACE, "groupId" );
-            }
-            if ( plugin.getArtifactId() != null )
-            {
-                serializer.startTag( NAMESPACE, "artifactId" ).text( plugin.getArtifactId() ).endTag( NAMESPACE, "artifactId" );
-            }
-            if ( plugin.getVersion() != null )
-            {
-                serializer.startTag( NAMESPACE, "version" ).text( plugin.getVersion() ).endTag( NAMESPACE, "version" );
-            }
-            if ( plugin.getGoal() != null )
-            {
-                serializer.startTag( NAMESPACE, "goal" ).text( plugin.getGoal() ).endTag( NAMESPACE, "goal" );
-            }
-            if ( plugin.getSkip() )
-            {
-                serializer.startTag( NAMESPACE, "skip" ).text( "true" ).endTag( NAMESPACE, "skip" );
-            }
-            if ( plugin.getConfiguration() != null && plugin.getConfiguration().size() > 0 )
-            {
-                serializer.startTag( NAMESPACE, "configuration" );
-                for ( Iterator iter = plugin.getConfiguration().keySet().iterator(); iter.hasNext(); )
-                {
-                    String key = (String) iter.next();
-                    String value = (String) plugin.getConfigurationValue( key );
-                    serializer.startTag( NAMESPACE, "" + key + "" ).text( value ).endTag( NAMESPACE, "" + key + "" );
-                }
-                serializer.endTag( NAMESPACE, "configuration" );
-            }
-            serializer.endTag( NAMESPACE, tagName );
-        }
-    } //-- void writePlugin( Plugin, String, XmlSerializer ) 
-
-    /**
-     * Method writePluginContainer.
-     * 
-     * @param pluginContainer
-     * @param serializer
-     * @param tagName
-     * @throws java.io.IOException
-     */
-    private void writePluginContainer( PluginContainer pluginContainer, String tagName, XmlSerializer serializer )
-        throws java.io.IOException
-    {
-        if ( pluginContainer != null )
-        {
-            serializer.startTag( NAMESPACE, tagName );
-            if ( pluginContainer.getPlugins() != null && pluginContainer.getPlugins().size() > 0 )
-            {
-                serializer.startTag( NAMESPACE, "plugins" );
-                for ( Iterator iter = pluginContainer.getPlugins().iterator(); iter.hasNext(); )
-                {
-                    Plugin o = (Plugin) iter.next();
-                    writePlugin( o, "plugin", serializer );
-                }
-                serializer.endTag( NAMESPACE, "plugins" );
-            }
-            serializer.endTag( NAMESPACE, tagName );
-        }
-    } //-- void writePluginContainer( PluginContainer, String, XmlSerializer ) 
 
 }

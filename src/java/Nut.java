@@ -4,8 +4,8 @@ import nut.logging.Log;
 
 import nut.artifact.Artifact;
 import nut.execution.BuildFailureException;
+import nut.execution.Execution;
 import nut.execution.ExecutionException;
-import nut.execution.PluginManager;
 
 import nut.project.NutProject;
 import nut.project.DuplicateProjectException;
@@ -139,8 +139,7 @@ public class Nut
     {
         System.out.println( "usage: nut [options] build" );
         System.out.println( "       nut [options] [goals]" );
-        System.out.println( "       nut [options] pluginName:pluginVersion" );
-        System.out.println( "\nGoals: clean compile test package install deploy" );
+        System.out.println( "\nGoals: clean compile test pack install deploy" );
         System.out.println( "\nOptions:" );
         System.out.println( " -D,--define      Define a system property" );
         System.out.println( " -X,--debug       Produce execution debug output" );
@@ -236,8 +235,8 @@ public class Nut
                 else
                 {
                     long buildStartTime = System.currentTimeMillis();
-                    PluginManager mngr = new PluginManager( currentProject, log );
-                    mngr.executeProject( goals );
+                    Execution executor = new Execution( currentProject, log );
+                    executor.executeGoals( goals );
                     currentProject.setStatus( System.currentTimeMillis() - buildStartTime, true );
                 }
             }            

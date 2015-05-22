@@ -1,4 +1,3 @@
-<!-- START SNIPPET: superpom -->
 <project>
 
   <dependencies>
@@ -24,37 +23,26 @@
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
 
-    <plugins>
-      <plugin>
-        <groupId>nut.plugins</groupId>
-        <artifactId>cleaner</artifactId>
-        <goal>clean</goal>
-      </plugin>
-      <plugin>
-        <groupId>nut.plugins</groupId>
-        <artifactId>javaCompiler</artifactId>
-        <goal>compile</goal>
-      </plugin>
-      <plugin>
-        <groupId>nut.plugins</groupId>
-        <artifactId>testRunner</artifactId>
-        <goal>test</goal>
+    <goals>
+      <goal>
+        <name>clean</name>
+      </goal>
+      <goal>
+        <name>compile</name>
+      </goal>
+      <goal>
+        <name>test</name>
         <configuration>
           <testSuiteFile>test/testng.xml</testSuiteFile>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>nut.plugins</groupId>
-        <artifactId>javaArchiver</artifactId>
-        <goal>package</goal>
-      </plugin>
-      <plugin>
-        <groupId>nut.plugins</groupId>
-        <artifactId>installer</artifactId>
-        <goal>install</goal>
-      </plugin>
-    </plugins>
+      </goal>
+      <goal>
+        <name>pack</name>
+      </goal>
+      <goal>
+        <name>install</name>
+      </goal>
+    </goals>
   </build>
 
 </project>
-<!-- END SNIPPET: superpom -->

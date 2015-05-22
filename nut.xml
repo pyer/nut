@@ -5,7 +5,7 @@
   <version>2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Nut core</name>
+  <name>Nut tool</name>
   <description>
      Nut is a project development management tool inspired by Maven.
      Based on the concept of a project object model: builds, dependency management and distribution publication are all controlled from the declarative file.
@@ -16,11 +16,6 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>nut.logging</groupId>
-      <artifactId>Log</artifactId>
-  <version>1.2</version>
     </dependency>
   </dependencies>
 

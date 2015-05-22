@@ -2,8 +2,8 @@ package nut.project;
 
 import nut.model.Build;
 import nut.model.Dependency;
+import nut.model.Goal;
 import nut.model.Model;
-import nut.model.Plugin;
 import nut.project.NutProject;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;

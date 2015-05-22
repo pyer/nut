@@ -1,0 +1,26 @@
+<project>
+
+  <build>
+    <directory>target</directory>
+    <outputDirectory>target/webapp</outputDirectory>
+    <testOutputDirectory>target/test</testOutputDirectory>
+    <sourceDirectory>src/webapp</sourceDirectory>
+    <testSourceDirectory>test/webapp</testSourceDirectory>
+
+    <goals>
+      <goal>
+        <name>clean</name>
+      </goal>
+      <goal>
+        <name>process</name>
+      </goal>
+      <goal>
+        <name>pack</name>
+      </goal>
+      <goal>
+        <name>install</name>
+      </goal>
+    </goals>
+  </build>
+
+</project>

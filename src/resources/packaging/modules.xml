@@ -1,0 +1,11 @@
+<project>
+  <build>
+    <directory>target</directory>
+
+    <goals>
+      <goal>
+        <name>clean</name>
+      </goal>
+    </goals>
+  </build>
+</project>

@@ -9,11 +9,13 @@
       <class name="nut.model.PluginContainerTest" />
       <class name="nut.model.PluginTest" />
       <class name="nut.project.ProjectBuilderTest" />
+      <class name="nut.logging.LogTest" />
     </classes>
   </test>
-  <test name="logging">
+  <test name="goals">
     <classes>
-      <class name="nut.logging.LogTest" />
+      <class name="nut.goals.cleanTest" />
+      <class name="nut.goals.installTest" />
     </classes>
   </test>
 </suite>

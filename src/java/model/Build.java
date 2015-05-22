@@ -3,6 +3,7 @@ package nut.model;
 //---------------------------------/
 //- Imported classes and packages -/
 //---------------------------------/
+import nut.model.Goal;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * 
  * @version $Revision$ $Date$
  */
-public class Build extends PluginContainer 
+public class Build 
 implements java.io.Serializable
 {
 
@@ -85,6 +86,11 @@ implements java.io.Serializable
     private String baseDirectory = ".";
 
     private String modelEncoding = "UTF-8";
+
+    /**
+     * Field goals.
+     */
+    private List<Goal> goals;
 
     //-----------/
     //- Methods -/
@@ -273,5 +279,25 @@ implements java.io.Serializable
     {
         this.modelEncoding = modelEncoding;
     }
+
+    /**
+     * Method getGoals.
+     * 
+     * @return java.util.List
+     */
+    public List<Goal> getGoals()
+    {
+        if ( this.goals == null )
+        {
+            this.goals = new ArrayList<Goal>();
+        }
+    
+        return this.goals;
+    } //-- java.util.List getGoals() 
+
+    public void setGoals( List<Goal> goals )
+    {
+        this.goals = goals;
+    } //-- void setGoals( java.util.List ) 
 
 }

@@ -57,7 +57,7 @@ public class ProjectBuilder
     {
         this.log = log;
         // path of packaging models
-        this.packagingPath = System.getProperty( "nut.home", "." ) + File.separatorChar + "nut" + File.separatorChar + "packaging" ;
+        this.packagingPath = System.getProperty( "nut.home", "." ) + File.separatorChar + "nut" + File.separatorChar + "packaging";
         this.nutVersion = System.getProperty( "nut.version", "1.0" );
     }
 
@@ -138,7 +138,7 @@ public class ProjectBuilder
             if( childBuild.getTestSourceDirectory()==null )
                  childBuild.setTestSourceDirectory( parentBuild.getTestSourceDirectory() );
 
-            childBuild.getPlugins().addAll( parentBuild.getPlugins() );
+            childBuild.getGoals().addAll( parentBuild.getGoals() );
         }
         return( childBuild );
     }

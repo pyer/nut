@@ -25,60 +25,39 @@ public class Log
     }
 
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#debug(java.lang.CharSequence)
-     */
     public void debug( CharSequence content )
     {
       if(debug)
         print( "debug", content );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#debug(java.lang.CharSequence, java.lang.Throwable)
-     */
     public void debug( CharSequence content, Throwable error )
     {
       if(debug)
         print( "debug", content, error );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#debug(java.lang.Throwable)
-     */
     public void debug( Throwable error )
     {
       if(debug)
         print( "debug", error );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#info(java.lang.CharSequence)
-     */
     public void info( CharSequence content )
     {
         print( "info", content );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#info(java.lang.CharSequence, java.lang.Throwable)
-     */
     public void info( CharSequence content, Throwable error )
     {
         print( "info", content, error );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#info(java.lang.Throwable)
-     */
     public void info( Throwable error )
     {
         print( "info", error );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#warn(java.lang.CharSequence)
-     */
     public void warn( CharSequence content )
     {
         System.out.print( "\033[1;33m" );
@@ -86,9 +65,6 @@ public class Log
         System.out.print( "\033[1;37m" );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#warn(java.lang.CharSequence, java.lang.Throwable)
-     */
     public void warn( CharSequence content, Throwable error )
     {
         System.out.print( "\033[1;33m" );
@@ -96,9 +72,6 @@ public class Log
         System.out.print( "\033[1;37m" );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#warn(java.lang.Throwable)
-     */
     public void warn( Throwable error )
     {
         System.out.print( "\033[1;33m" );
@@ -106,9 +79,6 @@ public class Log
         System.out.print( "\033[1;37m" );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#error(java.lang.CharSequence)
-     */
     public void error( CharSequence content )
     {
         System.err.print( "\033[1;31m" );
@@ -116,9 +86,6 @@ public class Log
         System.err.print( "\033[1;37m" );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#error(java.lang.CharSequence, java.lang.Throwable)
-     */
     public void error( CharSequence content, Throwable error )
     {
         StringWriter sWriter = new StringWriter();
@@ -131,9 +98,6 @@ public class Log
         System.err.print( "\033[0;37m" );
     }
 
-    /**
-     * @see org.apache.nut.plugin.logging.Log#error(java.lang.Throwable)
-     */
     public void error( Throwable error )
     {
         StringWriter sWriter = new StringWriter();

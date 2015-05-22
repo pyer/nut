@@ -1,7 +1,7 @@
 package nut.model;
 
-  //---------------------------------/
- //- Imported classes and packages -/
+//---------------------------------/
+//- Imported classes and packages -/
 //---------------------------------/
 
 import java.io.IOException;
@@ -11,16 +11,8 @@ import java.util.Locale;
 
 import nut.model.Build;
 import nut.model.Dependency;
-//import ab.nut.model.DependencyManagement;
-//import ab.nut.model.Exclusion;
-//import ab.nut.model.Extension;
-//import ab.nut.model.FileSet;
+import nut.model.Goal;
 import nut.model.Model;
-import nut.model.Plugin;
-import nut.model.PluginContainer;
-//import ab.nut.model.Resource;
-//import ab.nut.model.Scm;
-//import ab.nut.model.UnitTest;
 
 import nut.xml.pull.XmlPullParser;
 import nut.xml.pull.XmlPullParserException;
@@ -33,8 +25,8 @@ import nut.xml.pull.XmlPullParserException;
 public class xmlReader {
 
 
-      //--------------------------/
-     //- Class/Member Variables -/
+    //--------------------------/
+    //- Class/Member Variables -/
     //--------------------------/
 
     /**
@@ -50,8 +42,8 @@ public class xmlReader {
     private boolean addDefaultEntities = true;
 
 
-      //-----------/
-     //- Methods -/
+    //-----------/
+    //- Methods -/
     //-----------/
 
     /**
@@ -401,6 +393,71 @@ public class xmlReader {
     } //-- String getTrimmedValue( String ) 
 
     /**
+     * Method parseGoal.
+     * 
+     * @param tagName
+     * @param strict
+     * @param parser
+     * @throws IOException
+     * @throws XmlPullParserException
+     * @return Goal
+     */
+    private Goal parseGoal( String tagName, XmlPullParser parser, boolean strict )
+        throws IOException, XmlPullParserException
+    {
+        Goal goal = new Goal();
+        java.util.Set<String> parsed = new java.util.HashSet<String>();
+        while ( parser.nextTag() == XmlPullParser.START_TAG )
+        {
+            if ( parser.getName().equals( "name" )  )
+            {
+                if ( parsed.contains( "name" ) )
+                {
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                }
+                parsed.add( "name" );
+                goal.setName( getTrimmedValue( parser.nextText()) );
+            }
+            else if ( parser.getName().equals( "type" )  )
+            {
+                if ( parsed.contains( "type" ) )
+                {
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                }
+                parsed.add( "type" );
+                goal.setType( getTrimmedValue( parser.nextText()) );
+            }
+            else if ( parser.getName().equals( "configuration" )  )
+            {
+                if ( parsed.contains( "configuration" ) )
+                {
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                }
+                parsed.add( "configuration" );
+                while ( parser.nextTag() == XmlPullParser.START_TAG )
+                {
+                    String key = parser.getName();
+                    String value = parser.nextText().trim();
+                    goal.setConfigurationValue( key, value );
+                }
+            }
+            else
+            {
+                if ( strict )
+                {
+                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
+                }
+                else
+                {
+                    // swallow up to end tag since this is not valid
+                    while ( parser.next() != XmlPullParser.END_TAG ) {}
+                }
+            }
+        }
+        return goal;
+    } //-- Goal parseGoal( String, XmlPullParser, boolean ) 
+
+    /**
      * Method parseBuild.
      * 
      * @param tagName
@@ -472,20 +529,20 @@ public class xmlReader {
                 parsed.add( "directory" );
                 build.setDirectory( getTrimmedValue( parser.nextText()) );
             }
-            else if ( parser.getName().equals( "plugins" )  )
+            else if ( parser.getName().equals( "goals" )  )
             {
-                if ( parsed.contains( "plugins" ) )
+                if ( parsed.contains( "goals" ) )
                 {
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 }
-                parsed.add( "plugins" );
-                java.util.List<Plugin> pluginContainer = new java.util.ArrayList<Plugin>();
-                build.setPlugins( pluginContainer );
+                parsed.add( "goals" );
+                java.util.List<Goal> goals = new java.util.ArrayList<Goal>();
+                build.setGoals( goals );
                 while ( parser.nextTag() == XmlPullParser.START_TAG )
                 {
-                    if ( parser.getName().equals( "plugin" ) )
+                    if ( parser.getName().equals( "goal" ) )
                     {
-                        pluginContainer.add( parsePlugin( "plugin", parser, strict ) );
+                        goals.add( parseGoal( "goal", parser, strict ) );
                     }
                     else if ( strict )
                     {
@@ -623,6 +680,7 @@ public class xmlReader {
         }
         return dependency;
     } //-- Dependency parseDependency( String, XmlPullParser, boolean ) 
+
 
 
     /**
@@ -808,98 +866,6 @@ public class xmlReader {
         return model;
     } //-- Model parseModel( String, XmlPullParser, boolean ) 
 
-
-    /**
-     * Method parsePlugin.
-     * 
-     * @param tagName
-     * @param strict
-     * @param parser
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @return Plugin
-     */
-    private Plugin parsePlugin( String tagName, XmlPullParser parser, boolean strict )
-        throws IOException, XmlPullParserException
-    {
-        Plugin plugin = new Plugin();
-        java.util.Set<String> parsed = new java.util.HashSet<String>();
-        while ( parser.nextTag() == XmlPullParser.START_TAG )
-        {
-            if ( parser.getName().equals( "groupId" )  )
-            {
-                if ( parsed.contains( "groupId" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "groupId" );
-                plugin.setGroupId( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "artifactId" )  )
-            {
-                if ( parsed.contains( "artifactId" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "artifactId" );
-                plugin.setArtifactId( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "version" )  )
-            {
-                if ( parsed.contains( "version" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "version" );
-                plugin.setVersion( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "goal" )  )
-            {
-                if ( parsed.contains( "goal" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "goal" );
-                plugin.setGoal( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "skip" )  )
-            {
-                if ( parsed.contains( "skip" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "skip" );
-                plugin.setSkip( getTrimmedValue( parser.nextText()) );
-            }
-            else if ( parser.getName().equals( "configuration" )  )
-            {
-                if ( parsed.contains( "configuration" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "configuration" );
-                while ( parser.nextTag() == XmlPullParser.START_TAG )
-                {
-                    String key = parser.getName();
-                    String value = parser.nextText().trim();
-                    plugin.setConfigurationValue( key, value );
-                }
-            }
-            else
-            {
-                if ( strict )
-                {
-                    throw new XmlPullParserException( "Unrecognised tag: '" + parser.getName() + "'", parser, null );
-                }
-                else
-                {
-                    // swallow up to end tag since this is not valid
-                    while ( parser.next() != XmlPullParser.END_TAG ) {}
-                }
-            }
-        }
-        return plugin;
-    } //-- Plugin parsePlugin( String, XmlPullParser, boolean ) 
 
 
     /**

@@ -21,9 +21,8 @@ import nut.logging.Log;
 
 import nut.model.Build;
 import nut.model.Dependency;
+import nut.model.Goal;
 import nut.model.Model;
-import nut.model.Plugin;
-import nut.model.PluginContainer;
 
 import nut.project.InvalidDependencyVersionException;
 
@@ -240,8 +239,6 @@ public class NutProject
         return build;
     }
 
-    // ----------------------------------------------------------------------
-    // Plugins
     // ----------------------------------------------------------------------
 
     public List<String> getModules()
