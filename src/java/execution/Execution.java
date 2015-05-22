@@ -59,12 +59,23 @@ public class Execution
     {
       try {
           log.debug(goal);
-          Class cls = Class.forName ("nut.goals.goal");
-          Method method = cls.getMethod(goal);
+          Class cls = Class.forName ("nut.goals." + goal);
+          Class[] cArg = new Class[2];
+          cArg[0] = NutProject.class;
+          cArg[1] = Log.class;
+          Method method = cls.getMethod("execute", cArg);
+          method.invoke( cls, project, log );
+      } catch (IllegalArgumentException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+      } catch (IllegalAccessException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+      } catch (InvocationTargetException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+
       } catch ( ClassNotFoundException e) {
-          throw new BuildFailureException( "goal is unknown" , e );
+          throw new BuildFailureException( "Goal " + goal + " not found" , e );
       } catch (NoSuchMethodException e) {
-          throw new BuildFailureException( goal + " is unknown" , e );
+          throw new BuildFailureException( "Method 'execute' not found" , e );
       } catch (SecurityException e) {
           throw new BuildFailureException( e.getMessage() , e );
       } catch (NullPointerException e) {

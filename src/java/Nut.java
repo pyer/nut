@@ -355,17 +355,17 @@ public class Nut
     protected static void logFatal( Throwable t )
     {
         log.error( "FATAL ERROR:" + t.getMessage() );
-        t.printStackTrace();
+        if( log.isDebug(true) ) {
+           t.printStackTrace();
+        }
         line();
     }
 
     protected static void logFailure( Exception e )
     {
+        log.error( "BUILD FAILURE:" + e.getMessage() );
         if( log.isDebug(true) ) {
-           log.error( "BUILD FAILURE:" + e.getMessage() );
            e.printStackTrace();
-        } else {
-           log.error( "BUILD FAILURE" );
         }
         line();
     }
