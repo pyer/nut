@@ -3,11 +3,9 @@ package nut;
 import nut.logging.Log;
 
 import nut.artifact.Artifact;
-import nut.execution.BuildFailureException;
-import nut.execution.Execution;
-import nut.execution.ExecutionException;
 
 import nut.project.NutProject;
+import nut.project.BuildFailureException;
 import nut.project.DuplicateProjectException;
 import nut.project.ProjectBuilder;
 import nut.project.ProjectBuildingException;
@@ -47,45 +45,44 @@ public class Nut
         int exitCode = 0;
         List<String> goals = new ArrayList<String>();
         boolean effectiveNut = false;
+        boolean noopMode     = false;
+        boolean buildArg     = false;
 
         log = new Log();
-        if( args.length>0 )
-        {
-	   for(int i=0; i < args.length ; i++)
-           {
-              if(args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?") )
-              {
+        if( args.length>0 ) {
+           for(int i=0; i < args.length ; i++) {
+              if(args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?") ) {
                  showHelp();
                  System.exit( exitCode );
               }
-              else if(args[i].equals("-v") || args[i].equals("--version") )
-              {
+              else if(args[i].equals("-v") || args[i].equals("--version") ) {
                  showVersion();
                  System.exit( exitCode );
               }
-              else if(args[i].startsWith("-D") )
-              {
+              else if(args[i].startsWith("-D") ) {
                  // -Dproperty=value (-Dproperty means -Dproperty=true)
                  setDefine(args[i]);
               }
-              else if(args[i].equals("-X") || args[i].equals("--debug") )
-              {
+              else if( args[i].equals("-d") || args[i].equals("--debug") ) {
                  log.debugOn();
               }
-              else if(args[i].equals("-e") || args[i].equals("--effective") )
-              {
+              else if( args[i].equals("-e") || args[i].equals("--effective") ) {
                  effectiveNut = true;
               }
-              else
-              {
-                 if(args[i].startsWith("-") )
-                 {
+              else if( args[i].equals("-n") || args[i].equals("--noop") ) {
+                 noopMode = true;
+              }
+              else {
+                 if( args[i].startsWith("-") ) {
                     log.error( "Option [" + args[i] + "] is invalid.\n" );
                     showHelp();
                     System.exit( 101 );
                  }
                  // nearly every arg without '-' is a goal
                  goals.add(args[i]);
+                 if( args[i].equals("build") ) {
+                    buildArg = true;
+                 }
               }
            }
         }
@@ -96,12 +93,17 @@ public class Nut
         }
         if (goals.isEmpty() && effectiveNut==false ) {
                  showHelp();
-                 System.exit( 102 );
+                 System.exit( 103 );
+        } 
+        if (goals.size()>1 && buildArg==true ) {
+                 log.error( "Too many arguments with build.\n" );
+                 showHelp();
+                 System.exit( 104 );
         } 
         
         try
         {
-            ScanningProject(goals, effectiveNut);
+            ScanningProject(goals, effectiveNut, noopMode);
         }
         catch ( Exception e )
         {
@@ -139,13 +141,14 @@ public class Nut
     {
         System.out.println( "usage: nut [options] build" );
         System.out.println( "       nut [options] [goals]" );
-        System.out.println( "\nGoals: clean compile test pack install deploy" );
+        System.out.println( "\nGoals: clean compile process test pack install deploy" );
         System.out.println( "\nOptions:" );
-        System.out.println( " -D,--define      Define a system property" );
-        System.out.println( " -X,--debug       Produce execution debug output" );
-        System.out.println( " -e,--effective   Display effective NUT" );
         System.out.println( " -h,--help        Display this help" );
         System.out.println( " -v,--version     Display version information" );
+        System.out.println( " -D,--define      Define a system property" );
+        System.out.println( " -d,--debug       Produce execution debug output" );
+        System.out.println( " -e,--effective   Display effective NUT" );
+        System.out.println( " -n,--noop        No operation mode (dry run)" );
     }
 
     // ----------------------------------------------------------------------
@@ -180,8 +183,8 @@ public class Nut
     // ----------------------------------------------------------------------
     // Project execution
     // ----------------------------------------------------------------------
-    private static void ScanningProject( List goals, boolean effectiveNut )
-        throws ExecutionException, BuildFailureException
+    private static void ScanningProject( List<String> goals, boolean effectiveNut, boolean noopMode )
+        throws Exception
     {
         ProjectSorter sorter;
         List sortedProjects;
@@ -234,9 +237,21 @@ public class Nut
                 }
                 else
                 {
+                    log.info( "Building " + currentProject.getName() );
                     long buildStartTime = System.currentTimeMillis();
-                    Execution executor = new Execution( currentProject, log );
-                    executor.executeGoals( goals );
+                    if (goals.get(0).equals("build")) {
+                      goals.clear();
+                      goals = currentProject.getBuild().getGoalsNames();
+                    }
+                    currentProject.setLog( log );
+                    for ( Iterator g = goals.iterator(); g.hasNext(); ) {
+                      String goal = (String)(g.next());
+                      if( noopMode ) {
+                        log.info( "Goal " + goal + " in noop mode" );
+                      } else {
+                        currentProject.executeGoal( goal );
+                      }
+                    }
                     currentProject.setStatus( System.currentTimeMillis() - buildStartTime, true );
                 }
             }            
@@ -247,32 +262,25 @@ public class Nut
         {
             logFailure( e );
             stats( start );
-            throw new ExecutionException( e.getMessage(), e );
+            throw new Execution( e.getMessage(), e );
         }
-/*        catch ( CycleDetectedException e )
-        {
-            logFailure( e );
-            stats( start );
-            throw new ExecutionException( "The projects in the reactor contain a cyclic reference: " + e.getMessage(), e );
-        }
-*/
         catch ( DuplicateProjectException e )
         {
             logFailure( e );
             stats( start );
-            throw new ExecutionException( e.getMessage(), e );
+            throw new Execution( e.getMessage(), e );
         }
         catch ( ProjectBuildingException e )
         {
             logFailure( e );
             stats( start );
-            throw new ExecutionException( e.getMessage(), e );
+            throw new Execution( e.getMessage(), e );
         }
         catch ( Throwable t )
         {
             logFatal( t );
             stats( start );
-            throw new ExecutionException( "Error executing project within the reactor", t );
+            throw new Execution( "Error executing project within the reactor", t );
         }
         int failures = logReactorSummary( sorter );
 
@@ -290,7 +298,7 @@ public class Nut
 */
             log.info( "BUILD ERRORS" );
             stats( start );
-            throw new ExecutionException( "Some builds failed" );
+            throw new Exception( "Some builds failed" );
         }
 
         logSuccess( );
@@ -299,8 +307,7 @@ public class Nut
     // ----------------------------------------------------------------------
 
     private static List<NutProject> collectProjects( ProjectBuilder builder, List files )
-        throws ProjectBuildingException, ExecutionException, BuildFailureException
-//        throws ArtifactResolutionException, ProjectBuildingException, ExecutionException, BuildFailureException
+        throws ProjectBuildingException, BuildFailureException
     {
         List<NutProject> projects = new ArrayList<NutProject>( files.size() );
 

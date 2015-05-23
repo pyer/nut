@@ -5,19 +5,13 @@ package nut.model;
 //---------------------------------/
 import nut.model.Goal;
 
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * 
- *         
  * The <code>&lt;build&gt;</code> element contains
  * informations required to build the project.
- *         
- *       
  * 
- * @version $Revision$ $Date$
  */
 public class Build 
 implements java.io.Serializable
@@ -294,6 +288,15 @@ implements java.io.Serializable
     
         return this.goals;
     } //-- java.util.List getGoals() 
+
+    public List<String> getGoalsNames()
+    {
+      List<String> goalsNames = new ArrayList<String>();
+      for ( Integer i=0; i<this.goals.size(); i++ ) {
+        goalsNames.add(i, this.goals.get(i).getName());
+      }
+      return goalsNames;
+    }
 
     public void setGoals( List<Goal> goals )
     {

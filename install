@@ -18,6 +18,7 @@ java -Xmx512M -classpath ./target/test-classes:\$NUT_HOME/nut/Nut-\$NUT_VERSION.
 EOF
 
 sudo install nut /usr/bin/
+rm nut
 
 echo "Build repository"
 [ -d $NUT_HOME ] && rm -r $NUT_HOME
@@ -42,9 +43,7 @@ javac $options Goal.java Dependency.java Build.java Model.java xmlReader.java xm
 cd ../project/validation
 javac $options ModelValidationException.java ModelValidator.java 
 cd ..
-javac $options InvalidDependencyVersionException.java InvalidProjectModelException.java DuplicateProjectException.java NutProject.java ProjectBuildingException.java ProjectBuilder.java ProjectSorter.java
-cd ../execution
-javac $options BuildFailureException.java ExecutionException.java Execution.java 
+javac $options InvalidDependencyVersionException.java InvalidProjectModelException.java DuplicateProjectException.java BuildFailureException.java NutProject.java ProjectBuildingException.java ProjectBuilder.java ProjectSorter.java
 cd ../goals
 echo "Build goals"
 javac $options clean.java

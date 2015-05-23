@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,16 +18,16 @@ import java.util.Properties;
 import java.util.Set;
 
 import nut.artifact.Artifact;
-//import ab.nut.artifact.ArtifactUtils;
-
-import nut.logging.Log;
 
 import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
 
+import nut.execution.BuildFailureException;
 import nut.project.InvalidDependencyVersionException;
+
+import nut.logging.Log;
 
 /**
  * The concern of the project is provide runtime values based on the model. <p/>
@@ -44,19 +47,15 @@ public class NutProject
     
     private Model model;
 
-    private Set artifacts;
-
     private Artifact artifact;
 
-    private Map artifactMap;
-
-    private Log log;
-    
     // Building time
     private long time;
     // 
     boolean buildDone;
     boolean buildSuccess;
+
+    private Log log;
 
     // in case of failure
     private Exception cause;
@@ -70,6 +69,11 @@ public class NutProject
         this.buildSuccess = false;
     }
 
+    // ----------------------------------------------------------------------
+    public void setLog( Log log )
+    {
+        this.log = log;
+    }
     // ----------------------------------------------------------------------
     public boolean isBuilt()
     {
@@ -262,6 +266,36 @@ public class NutProject
 
             return getId().equals( otherProject.getId() );
         }
+    }
+
+    // ----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    public void executeGoal( String goal )
+        throws BuildFailureException
+    {
+      try {
+          log.debug("* execute goal: " + goal);
+          Class cls = Class.forName ("nut.goals." + goal);
+          Class[] cArg = new Class[2];
+          cArg[0] = NutProject.class;
+          cArg[1] = Log.class;
+          Method method = cls.getMethod("execute", cArg);
+          method.invoke( cls, this, log );
+      } catch (IllegalArgumentException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+      } catch (IllegalAccessException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+      } catch (InvocationTargetException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+      } catch ( ClassNotFoundException e) {
+          throw new BuildFailureException( "Goal " + goal + " not found" , e );
+      } catch (NoSuchMethodException e) {
+          throw new BuildFailureException( "Method 'execute' not found" , e );
+      } catch (SecurityException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+      } catch (NullPointerException e) {
+          throw new BuildFailureException( e.getMessage() , e );
+      }
     }
 
 }

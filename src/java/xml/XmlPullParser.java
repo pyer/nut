@@ -1395,26 +1395,6 @@ public class XmlPullParser
     }
 
 
-    /**
-     * Skip sub tree that is currently porser positioned on.
-     * <br>NOTE: parser must be on START_TAG and when funtion returns
-     * parser will be positioned on corresponding END_TAG
-     */
-    public void skipSubTree()
-        throws XmlPullParserException, IOException
-    {
-        require(START_TAG, null, null);
-        int level = 1;
-        while(level > 0) {
-            int eventType = next();
-            if(eventType == END_TAG) {
-                --level;
-            } else if(eventType == START_TAG) {
-                ++level;
-            }
-        }
-    }
-
     //    public String readText() throws XmlPullParserException, IOException
     //    {
     //        if (getEventType() != TEXT) return "";
