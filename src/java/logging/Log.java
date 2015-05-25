@@ -10,6 +10,10 @@ public class Log
 {
     private boolean debug = false;
 
+    // ----------------------------------------------------------------------
+    // Public methods
+    // ----------------------------------------------------------------------
+
     public void debugOn()
     {
         debug = true;
@@ -18,12 +22,6 @@ public class Log
     {
         debug = false;
     }
-
-    public boolean isDebug( boolean mode )
-    {
-        return( debug == mode );
-    }
-
 
     public void debug( CharSequence content )
     {
@@ -110,8 +108,44 @@ public class Log
         System.err.print( "\033[0;37m" );
     }
 
+    public void line()
+    {
+        info( "------------------------------------------------------------------------" );
+    }
 
-    public void print( String content )
+    // ----------------------------------------------------------------------
+    // Nut log methods
+    // ----------------------------------------------------------------------
+
+    public void logFatal( Throwable t )
+    {
+        error( "FATAL ERROR:" + t.getMessage() );
+        if( isDebug(true) ) {
+           t.printStackTrace();
+        }
+        line();
+    }
+
+    public void logFailure( Exception e )
+    {
+        error( "BUILD FAILURE:" + e.getMessage() );
+        if( isDebug(true) ) {
+           e.printStackTrace();
+        }
+        line();
+    }
+
+    public void logSuccess( )
+    {
+        info( "BUILD SUCCESSFUL" );
+        line();
+    }
+
+    // ----------------------------------------------------------------------
+    // Private methods
+    // ----------------------------------------------------------------------
+
+    private void print( String content )
     {
         System.out.print( content );
     }
