@@ -69,14 +69,11 @@ public class compile
         {
             Dependency dep = (Dependency)(modelDep.get(i));
             Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType(), null );
-            File file = new File ( repository + File.separator + artifactDep.getPath() );
+            File file = artifactDep.getFile();
             //log.debug( "scope is " + dep.getScope() + " for " + dep.getId() );
-            if( dep.getScope().equals("test") )
-            {
+            if( dep.getScope().equals("test") ) {
                 testDependencies.add(file.getAbsolutePath());
-            }
-            else
-            {
+            } else {
                 dependencies.add(file.getAbsolutePath());
             }
         }
