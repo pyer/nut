@@ -7,7 +7,7 @@ tmp=$(grep -P -m 1 "<version>(.*)</version>" nut.xml)
 NUT_VERSION=$(expr $tmp : '<version>\(.*\)</version>')
 NUT_HOME="$HOME/nutRepository"
 
-echo "Build nut"
+echo "Build nut script"
 cat <<EOF >nut
 #!/bin/bash
 # Nut start up script
@@ -20,7 +20,7 @@ EOF
 sudo install nut /usr/bin/
 rm nut
 
-echo "Build repository"
+echo "Build nut local repository"
 [ -d $NUT_HOME ] && rm -r $NUT_HOME
 mkdir -p $NUT_HOME/nut
 cp -a localRepository/* $NUT_HOME/
@@ -29,32 +29,37 @@ mkdir -p target/classes
 
 
 cd $root
-echo "Build classes"
+echo "Compiling.."
 options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
 cd $root
+echo " - logging"
 cd src/java/logging
 javac $options Log.java
+echo " - xml"
 cd ../xml
 javac $options XmlPullParserException.java XmlPullParser.java XmlSerializer.java
+echo " - artifact"
 cd ../artifact
 javac $options InvalidArtifactRTException.java Artifact.java
+echo " - model"
 cd ../model
-javac $options Goal.java Dependency.java Build.java Model.java xmlReader.java xmlWriter.java EffectiveModel.java 
-cd ../project/validation
-javac $options ModelValidationException.java ModelValidator.java 
-cd ..
+javac $options Goal.java Dependency.java Build.java Model.java xmlReader.java xmlWriter.java EffectiveModel.java ValidationException.java
+echo " - project"
+cd ../project
 javac $options InvalidDependencyVersionException.java InvalidProjectModelException.java DuplicateProjectException.java BuildFailureException.java NutProject.java ProjectBuildingException.java ProjectBuilder.java ProjectSorter.java
+echo " - goals"
 cd ../goals
-echo "Build goals"
 javac $options clean.java
 javac $options compile.java
 javac $options install.java
 javac $options pack.java
 javac $options test.java ../testng/TestListener.java
+echo " - "
 cd ..
 javac $options Nut.java
 
 cd $root
+echo "Build Nut.jar"
 mkdir -p $NUT_HOME/nut
 jar cf $NUT_HOME/nut/Nut-$NUT_VERSION.jar -C target/classes .
 rm -r target

@@ -1,5 +1,7 @@
 package nut.model;
 
+import nut.model.ValidationException;
+
 public class Dependency implements java.io.Serializable {
 
     //--------------------------/
@@ -94,41 +96,9 @@ public class Dependency implements java.io.Serializable {
      */
     private String scope = "compile";
 
-    /**
-     * Field exclusions.
-     */
-    private java.util.List exclusions;
-
-    /**
-     * Indicates the dependency is optional for use of this
-     * library. While the
-     * version of the dependency will be taken into
-     * account for dependency calculation if the
-     * library is used elsewhere, it will not be passed
-     * on transitively.
-     */
-    private boolean optional = false;
-
-
-      //-----------/
-     //- Methods -/
     //-----------/
-
-    /**
-     * Method addExclusion.
-     * 
-     * @param exclusion
-     */
-/*
-    public void addExclusion( Exclusion exclusion )
-    {
-        if ( !(exclusion instanceof Exclusion) )
-        {
-            throw new ClassCastException( "Dependency.addExclusions(exclusion) parameter must be instanceof " + Exclusion.class.getName() );
-        }
-        getExclusions().add( exclusion );
-    } //-- void addExclusion( Exclusion ) 
-*/
+    //- Methods -/
+    //-----------/
 
     /**
      * Method addProperty.
@@ -192,22 +162,6 @@ public class Dependency implements java.io.Serializable {
         return this.classifier;
     } //-- String getClassifier() 
 
-    /**
-     * Method getExclusions.
-     * 
-     * @return java.util.List
-     */
-/*
-    public java.util.List getExclusions()
-    {
-        if ( this.exclusions == null )
-        {
-            this.exclusions = new java.util.ArrayList();
-        }
-    
-        return this.exclusions;
-    } //-- java.util.List getExclusions() 
-*/
     /**
      * Method getProperties.
      * 
@@ -290,37 +244,6 @@ public class Dependency implements java.io.Serializable {
     } //-- String getType() 
 
     /**
-     * Get indicates the dependency is optional for use of this
-     * library. While the
-     * version of the dependency will be taken into
-     * account for dependency calculation if the
-     * library is used elsewhere, it will not be passed
-     * on transitively.
-     * 
-     * @return boolean
-     */
-    public boolean isOptional()
-    {
-        return this.optional;
-    } //-- boolean isOptional() 
-
-    /**
-     * Method removeExclusion.
-     * 
-     * @param exclusion
-     */
-/*
-    public void removeExclusion( Exclusion exclusion )
-    {
-        if ( !(exclusion instanceof Exclusion) )
-        {
-            throw new ClassCastException( "Dependency.removeExclusions(exclusion) parameter must be instanceof " + Exclusion.class.getName() );
-        }
-        getExclusions().remove( exclusion );
-    } //-- void removeExclusion( Exclusion ) 
-*/
-
-    /**
      * Set 
      * 
      * The project group that produced the dependency,
@@ -370,35 +293,6 @@ public class Dependency implements java.io.Serializable {
     {
         this.classifier = classifier;
     } //-- void setClassifier( String ) 
-
-    /**
-     * Set lists a set of artifacts that should be excluded from
-     * this dependency's
-     * artifact list when it comes to calculating
-     * transitive dependencies.
-     * 
-     * @param exclusions
-     */
-/*
-    public void setExclusions( java.util.List exclusions )
-    {
-        this.exclusions = exclusions;
-    } //-- void setExclusions( java.util.List ) 
-*/
-    /**
-     * Set indicates the dependency is optional for use of this
-     * library. While the
-     * version of the dependency will be taken into
-     * account for dependency calculation if the
-     * library is used elsewhere, it will not be passed
-     * on transitively.
-     * 
-     * @param optional
-     */
-    public void setOptional( boolean optional )
-    {
-        this.optional = optional;
-    } //-- void setOptional( boolean ) 
 
     /**
      * Set 
@@ -647,4 +541,22 @@ public class Dependency implements java.io.Serializable {
     {
         return modelEncoding;
     }
+
+    /**
+     * validate method
+     * if a dependency version is undefined, it is the same as the project version
+     */
+    private static final String ID_REGEX = "[A-Za-z0-9_\\-.]+";
+
+    public void validate( String projectVersion )
+        throws ValidationException
+    {
+        if ( !groupId.matches( ID_REGEX ) )
+            throw new ValidationException( "dependency.groupId '" + groupId + "' does not match a valid id pattern." );
+        if ( !artifactId.matches( ID_REGEX ) )
+            throw new ValidationException( "dependency.artifactId '" + artifactId + "' does not match a valid id pattern." );
+        if ( version == null )
+            this.version = ( projectVersion );
+    }
+
 }

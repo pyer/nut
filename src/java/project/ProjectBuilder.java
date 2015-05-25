@@ -1,7 +1,6 @@
 package nut.project;
 
 import nut.artifact.Artifact;
-//import nut.artifact.ArtifactUtils;
 
 import nut.logging.Log;
 
@@ -9,12 +8,10 @@ import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Model;
 import nut.model.xmlReader;
+import nut.model.ValidationException;
 
-import nut.project.InvalidDependencyVersionException;
 import nut.project.NutProject;
-
-import nut.project.validation.ModelValidationException;
-import nut.project.validation.ModelValidator;
+import nut.project.InvalidDependencyVersionException;
 
 import nut.xml.pull.XmlPullParserException;
 
@@ -108,12 +105,10 @@ public class ProjectBuilder
             Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(),
                                                      project.getPackaging(), null );
             project.setArtifact( projectArtifact );
-            
             // Must validate before artifact construction to make sure dependencies are good
-            ModelValidator validator = new ModelValidator( model );
-            validator.validate( );
+            model.validate( );
         }
-        catch ( ModelValidationException e )
+        catch ( ValidationException e )
         {
             throw new InvalidProjectModelException( model.getId(), pomLocation, e.getMessage(), e );
         }

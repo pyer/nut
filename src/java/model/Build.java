@@ -1,9 +1,11 @@
 package nut.model;
 
 import nut.model.Goal;
+import nut.model.ValidationException;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Build 
 implements java.io.Serializable
@@ -160,8 +162,12 @@ implements java.io.Serializable
     public List<String> getGoalsNames()
     {
       List<String> goalsNames = new ArrayList<String>();
-      for ( Integer i=0; i<this.goals.size(); i++ ) {
-        goalsNames.add(i, this.goals.get(i).getName());
+      List goals = this.getGoals();
+      Integer i = 0;
+      for ( Iterator it = goals.iterator(); it.hasNext(); )
+      {
+          Goal goal = (Goal) it.next();
+          goalsNames.add(i++, goal.getName());
       }
       return goalsNames;
     }
@@ -194,4 +200,17 @@ implements java.io.Serializable
         this.modelEncoding = modelEncoding;
     }
 
+    /**
+     * validate method
+     */
+    public void validate()
+        throws ValidationException
+    {
+        List goals = this.getGoals();
+        for ( Iterator it = goals.iterator(); it.hasNext(); )
+        {
+          Goal goal = (Goal) it.next();
+          goal.validate();
+        }
+    }
 }

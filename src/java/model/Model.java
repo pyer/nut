@@ -2,9 +2,11 @@ package nut.model;
 
 import nut.model.Build;
 import nut.model.Dependency;
+import nut.model.ValidationException;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -281,4 +283,49 @@ public class Model implements java.io.Serializable
         this.properties = properties;
     }
  
+    /**
+     * validate method
+     */
+    private static final String ID_REGEX = "[A-Za-z0-9_\\-.]+";
+
+    public void validate()
+        throws ValidationException
+    {
+        if ( !groupId.matches( ID_REGEX ) )
+            throw new ValidationException( "groupId '" + groupId + "' does not match a valid id pattern." );
+        if ( !artifactId.matches( ID_REGEX ) )
+            throw new ValidationException( "artifactId '" + artifactId + "' does not match a valid id pattern." );
+
+        validateStringNotEmpty( "version", version );
+        validateStringNotEmpty( "packaging", packaging );
+
+        if ( !getModules().isEmpty() && !"modules".equals( packaging ) ) {
+            throw new ValidationException( "Packaging '" + packaging +
+                                                "' is invalid. Aggregator projects require 'modules' as packaging." );
+        }
+
+        for ( Iterator it = dependencies.iterator(); it.hasNext(); )
+        {
+            Dependency dep = (Dependency) it.next();
+            dep.validate(version);
+        }
+
+        if ( build != null ) {
+            build.validate();
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    // Field validation
+    // ----------------------------------------------------------------------
+
+    private void validateStringNotEmpty( String fieldName, String string )
+        throws ValidationException
+    {
+        if ( string == null )
+            throw new ValidationException( "'" + fieldName + "' is null." );
+        if ( string.length() <1 )
+            throw new ValidationException( "'" + fieldName + "' is empty." );
+    }
+
 }

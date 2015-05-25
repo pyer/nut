@@ -1,5 +1,7 @@
 package nut.model;
 
+import nut.model.ValidationException;
+
 //---------------------------------/
 //- Imported classes and packages -/
 //---------------------------------/
@@ -103,4 +105,15 @@ public class Goal implements java.io.Serializable
         getConfiguration().setProperty( key, value );
     }
 
+    /**
+     * validate method
+     */
+    public void validate()
+        throws ValidationException
+    {
+        if ( name == null )
+            throw new ValidationException( "goal.name is null." );
+        if ( name.length() < 1 )
+            throw new ValidationException( "goal.name is empty." );
+    }
 }
