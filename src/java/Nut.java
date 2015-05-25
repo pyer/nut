@@ -85,9 +85,7 @@ public class Nut
                  }
               }
            }
-        }
-        else
-        {
+        } else {
                  showHelp();
                  System.exit( 102 );
         }
@@ -164,14 +162,11 @@ public class Nut
             String name;
             String value;
             int i = define.indexOf( "=" );
-            if ( i <= 0 )
-            {
+            if ( i <= 0 ) {
                 // no value means -Dname=true
                 name = define.substring( 2, define.length() ).trim();
                 value = "true";
-            }
-            else
-            {
+            } else {
                 name = define.substring( 2, i ).trim();
                 value = define.substring( i + 1 ).trim();
             }
@@ -191,32 +186,27 @@ public class Nut
         Date start   = new Date();
         try
         {
-            line();
+            log.line();
             log.info( "Started at " + start );
             log.info( "Scanning for projects..." );
             List files = Collections.EMPTY_LIST;
             File projectFile = new File( POM_FILE );
-            if ( projectFile.exists() )
-            {
+            if ( projectFile.exists() ) {
                 files = Collections.singletonList( projectFile );
-            }
-            else
-            {
+            } else {
                 throw new BuildFailureException(  "Project file '" + POM_FILE + "' not found !" );
             }
 
             ProjectBuilder builder = new ProjectBuilder(log);
             List<NutProject> projects = collectProjects( builder, files );
-            if ( projects.isEmpty() )
-            {
+            if ( projects.isEmpty() ) {
                 throw new BuildFailureException(  "Project file '" + POM_FILE + "' is empty !" );
             }
 
             sorter = new ProjectSorter( projects );
             sortedProjects = sorter.getSortedProjects( );
-            if ( sorter.hasMultipleProjects() )
-            {
-                line();
+            if ( sorter.hasMultipleProjects() ) {
+                log.line();
                 log.info( "Ordering projects..." );
                 for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
                 {
@@ -229,14 +219,11 @@ public class Nut
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
             {
                 NutProject currentProject = (NutProject) it.next();
-                line();
-                if( effectiveNut )
-                {
-                   EffectiveModel em = new EffectiveModel(currentProject.getModel());
-                   log.info( em.getEffectiveModel() );
-                }
-                else
-                {
+                log.line();
+                if( effectiveNut ) {
+                    EffectiveModel em = new EffectiveModel(currentProject.getModel());
+                    log.info( em.getEffectiveModel() );
+                } else {
                     log.info( "Building " + currentProject.getName() );
                     long buildStartTime = System.currentTimeMillis();
                     if (goals.get(0).equals("build")) {
@@ -260,32 +247,30 @@ public class Nut
         // --------------------------------------------------------------------------------
         catch ( BuildFailureException e )
         {
-            logFailure( e );
+            log.logFailure( e );
             stats( start );
             throw new Exception( e.getMessage(), e );
         }
         catch ( DuplicateProjectException e )
         {
-            logFailure( e );
+            log.logFailure( e );
             stats( start );
             throw new Exception( e.getMessage(), e );
         }
         catch ( ProjectBuildingException e )
         {
-            logFailure( e );
+            log.logFailure( e );
             stats( start );
             throw new Exception( e.getMessage(), e );
         }
         catch ( Throwable t )
         {
-            logFatal( t );
+            log.logFatal( t );
             stats( start );
             throw new Exception( "Error executing project within the reactor", t );
         }
         int failures = logReactorSummary( sorter );
-
-        if ( failures>0 )
-        {
+        if ( failures>0 ) {
 /*            for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
             {
                 NutProject project = (NutProject) it.next();
@@ -301,7 +286,7 @@ public class Nut
             throw new Exception( "Some builds failed" );
         }
 
-        logSuccess( );
+        log.logSuccess( );
         stats( start );
     }
     // ----------------------------------------------------------------------
@@ -317,8 +302,7 @@ public class Nut
             log.debug("   Project " + file.getAbsolutePath());
             NutProject project = builder.build( file );
 
-            if ( ( project.getModules() != null ) && !project.getModules().isEmpty() )
-            {
+            if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
             //log.info("   Modules:");
                 File modulesRoot = file.getParentFile();
 
@@ -328,22 +312,15 @@ public class Nut
                 {
                     String name = (String) i.next();
                     log.info("   - Module " + name);
-                    if ( name.trim().length()==0 )
-                    {
+                    if ( name.trim().length()==0 ) {
                         log.warn( "Empty module detected. Please check you don't have any empty module definitions." );
                         continue;
                     }
 
                     File moduleFile = new File( modulesRoot, name );
-
-                    if ( moduleFile.exists() && moduleFile.isDirectory() )
-                    {
-                        //moduleFile = new File( modulesRoot, name + "/" + Nut.POM_FILE );
+                    if ( moduleFile.exists() && moduleFile.isDirectory() ) {
                         moduleFiles.add( new File( modulesRoot, name + "/" + Nut.POM_FILE ) );
                     }
-
-//                    moduleFile = new File( moduleFile.toURI().normalize() );
-//                    moduleFiles.add( moduleFile );
                 }
                 List<NutProject> collectedProjects = collectProjects( builder, moduleFiles );
                 projects.addAll( collectedProjects );
@@ -353,34 +330,6 @@ public class Nut
         }
 
         return projects;
-    }
-
-    // ----------------------------------------------------------------------
-    // Logging
-    // ----------------------------------------------------------------------
-
-    protected static void logFatal( Throwable t )
-    {
-        log.error( "FATAL ERROR:" + t.getMessage() );
-        if( log.isDebug(true) ) {
-           t.printStackTrace();
-        }
-        line();
-    }
-
-    protected static void logFailure( Exception e )
-    {
-        log.error( "BUILD FAILURE:" + e.getMessage() );
-        if( log.isDebug(true) ) {
-           e.printStackTrace();
-        }
-        line();
-    }
-
-    protected static void logSuccess( )
-    {
-        log.info( "BUILD SUCCESSFUL" );
-        line();
     }
 
 
@@ -402,9 +351,9 @@ public class Nut
             // o project-name...........FAILED
             // o project-name...........SUCCESS
 
-            line();
+            log.line();
             log.info( "Summary:" );
-            line();
+            log.line();
 
             for ( Iterator it = sorter.getSortedProjects().iterator(); it.hasNext(); )
             {
@@ -427,7 +376,7 @@ public class Nut
                     logReactorSummaryLine( project.getId(), "NOT BUILT", -1 );
                 }
             }
-            line();
+            log.line();
         }
         return failureCount;
     }
@@ -435,33 +384,25 @@ public class Nut
     private static void logReactorSummaryLine( String name, String status, long time )
     {
         StringBuffer messageBuffer = new StringBuffer();
-
         messageBuffer.append( name );
 
         int dotCount = 48;
-
         dotCount -= name.length();
 
         messageBuffer.append( " " );
-
         for ( int i = 0; i < dotCount; i++ )
         {
             messageBuffer.append( '.' );
         }
 
         messageBuffer.append( " " );
-
         messageBuffer.append( status );
-
         if ( time >= 0 )
         {
             messageBuffer.append( " [" );
-
             messageBuffer.append( getFormattedTime( time ) );
-
             messageBuffer.append( "]" );
         }
-
         log.info( messageBuffer.toString() );
     }
 
@@ -485,47 +426,29 @@ public class Nut
     {
         Date finish = new Date();
         long time = finish.getTime() - start.getTime();
-
-//        line();
         log.info( "Total time: " + formatTime( time ) );
         log.info( "Finished at " + finish );
-        line();
-    }
-
-    private static void line()
-    {
-        log.info( "------------------------------------------------------------------------" );
+        log.line();
     }
 
     private static String formatTime( long ms )
     {
         long secs = ms / MS_PER_SEC;
-
         long min = secs / SEC_PER_MIN;
-
         secs = secs % SEC_PER_MIN;
 
         String msg = "";
-
-        if ( min > 1 )
-        {
+        if ( min > 1 ) {
             msg = min + " minutes ";
-        }
-        else if ( min == 1 )
-        {
+        } else if ( min == 1 ) {
             msg = "1 minute ";
         }
 
-        if ( secs > 1 )
-        {
+        if ( secs > 1 ) {
             msg += secs + " seconds";
-        }
-        else if ( secs == 1 )
-        {
+        } else if ( secs == 1 ) {
             msg += "1 second";
-        }
-        else if ( min == 0 )
-        {
+        } else if ( min == 0 ) {
             msg += "< 1 second";
         }
         return msg;
