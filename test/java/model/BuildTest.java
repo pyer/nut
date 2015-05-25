@@ -1,69 +1,104 @@
 package nut.model;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-/**
- * Tests {@code Build}.
- * 
- * @author Benjamin Bentmann
- * @version $Id: BuildTest.java 727548 2008-12-17 22:26:15Z bentmann $
- */
 public class BuildTest
 {
     @Test
-    public void testOutputDirectory()
+    public void testDirectory()
     {
-        String dir = "directory";
+        String dir = "target";
         Build thing = new Build();
-        thing.setOutputDirectory( dir );
-        assertEquals( thing.getOutputDirectory(), dir );
+        // check default value
+        assertEquals( thing.getDirectory(), dir );
+        // check set value
+        thing.setDirectory( dir );
+        assertEquals( thing.getDirectory(), dir );
+    }
+
+    @Test
+    public void testBaseDirectory()
+    {
+        String dir = "base";
+        Build thing = new Build();
+        // check default value
+        assertEquals( thing.getBaseDirectory(), "." );
+        // check set value
+        thing.setBaseDirectory( dir );
+        assertEquals( thing.getBaseDirectory(), dir );
     }
 
     @Test
     public void testSourceDirectory()
     {
-        String dir = "directory";
+        String dir = "src/java";
         Build thing = new Build();
-        thing.setSourceDirectory( dir );
+        // check default value
         assertEquals( thing.getSourceDirectory(), dir );
-    }
-
-    @Test
-    public void testTestOutputDirectory()
-    {
-        String dir = "directory";
-        Build thing = new Build();
-        thing.setTestOutputDirectory( dir );
-        assertEquals( thing.getTestOutputDirectory(), dir );
+        // check set value
+        thing.setOutputDirectory( dir );
+        assertEquals( thing.getSourceDirectory(), dir );
     }
 
     @Test
     public void testTestSourceDirectory()
     {
-        String dir = "directory";
+        String dir = "test/java";
         Build thing = new Build();
-        thing.setTestSourceDirectory( dir );
+        // check default value
         assertEquals( thing.getTestSourceDirectory(), dir );
+        // check set value
+        thing.setOutputDirectory( dir );
+        assertEquals( thing.getTestSourceDirectory(), dir );
+    }
+
+    @Test
+    public void testTestSuiteFile()
+    {
+        String dir = "test/testng.xml";
+        Build thing = new Build();
+        // check default value
+        assertEquals( thing.getTestSuiteFile(), dir );
+        // check set value
+        thing.setTestSuiteFile( dir );
+        assertEquals( thing.getTestSuiteFile(), dir );
+    }
+
+    @Test
+    public void testOutputDirectory()
+    {
+        String dir = "target/classes";
+        Build thing = new Build();
+        // check default value
+        assertEquals( thing.getOutputDirectory(), dir );
+        // check set value
+        thing.setOutputDirectory( dir );
+        assertEquals( thing.getOutputDirectory(), dir );
+    }
+
+    @Test
+    public void testTestOutputDirectory()
+    {
+        String dir = "target/test-classes";
+        Build thing = new Build();
+        // check default value
+        assertEquals( thing.getTestOutputDirectory(), dir );
+        // check set value
+        thing.setTestOutputDirectory( dir );
+        assertEquals( thing.getTestOutputDirectory(), dir );
+    }
+
+    @Test
+    public void testTestReportDirectory()
+    {
+        String dir = "target/test-reports";
+        Build thing = new Build();
+        // check default value
+        assertEquals( thing.getTestReportDirectory(), dir );
+        // check set value
+        thing.setTestReportDirectory( dir );
+        assertEquals( thing.getTestReportDirectory(), dir );
     }
 
     @Test
