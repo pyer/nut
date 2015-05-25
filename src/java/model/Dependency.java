@@ -1,27 +1,9 @@
 package nut.model;
 
-  //---------------------------------/
- //- Imported classes and packages -/
-//---------------------------------/
-
-//import java.util.Date;
-
-/**
- * 
- *         
- * The <code>&lt;dependency&gt;</code> element contains
- * information about a dependency
- * of the project.
- *         
- *       
- * 
- * @version $Revision$ $Date$
- */
 public class Dependency implements java.io.Serializable {
 
-
-      //--------------------------/
-     //- Class/Member Variables -/
+    //--------------------------/
+    //- Class/Member Variables -/
     //--------------------------/
 
     /**
@@ -82,15 +64,6 @@ public class Dependency implements java.io.Serializable {
     private String type = "jar";
 
     /**
-     * This url will be provided to the user if the jar file cannot
-     * be downloaded
-     * from the central repository.
-     */
-    private String url;
-
-    /**
-     * 
-     * 
      * The classifier of the dependency. This allows
      * distinguishing two artifacts
      * that belong to the same POM but were built
@@ -270,18 +243,6 @@ public class Dependency implements java.io.Serializable {
     {
         return this.scope;
     } //-- String getScope() 
-
-    /**
-     * Get this url will be provided to the user if the jar file
-     * cannot be downloaded
-     * from the central repository.
-     * 
-     * @return String
-     */
-    public String getUrl()
-    {
-        return this.url;
-    } //-- String getUrl() 
 
     /**
      * Get 
@@ -483,18 +444,6 @@ public class Dependency implements java.io.Serializable {
     {
         this.scope = scope;
     } //-- void setScope( String ) 
-
-    /**
-     * Set this url will be provided to the user if the jar file
-     * cannot be downloaded
-     * from the central repository.
-     * 
-     * @param url
-     */
-    public void setUrl( String url )
-    {
-        this.url = url;
-    } //-- void setUrl( String ) 
 
     /**
      * Set 
