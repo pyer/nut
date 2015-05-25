@@ -14,7 +14,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeTest;
 
-public class installTest
+public class InstallTest
 {
     private final String LOCAL_REPO = "target/repository";
     private Model model = new Model();

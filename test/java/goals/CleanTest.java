@@ -13,7 +13,7 @@ import java.util.Properties;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class cleanTest
+public class CleanTest
 {
     private final String LOCAL_TARGET = "target/local-target";
     
