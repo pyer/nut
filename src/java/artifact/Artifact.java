@@ -100,7 +100,7 @@ public class Artifact
         return path;
     }
 
-    public String getFile()
+    public File getFile()
     {
         return new File ( repository + File.separator + getPath() );
     }
