@@ -650,15 +650,6 @@ public class xmlReader {
                 parsed.add( "scope" );
                 dependency.setScope( getTrimmedValue( parser.nextText()) );
             }
-            else if ( parser.getName().equals( "url" )  )
-            {
-                if ( parsed.contains( "url" ) )
-                {
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                }
-                parsed.add( "url" );
-                dependency.setUrl( getTrimmedValue( parser.nextText()) );
-            }
             else if ( parser.getName().equals( "properties" )  )
             {
                 if ( parsed.contains( "properties" ) )
@@ -779,15 +770,6 @@ public class xmlReader {
                     }
                     parsed.add( "description" );
                     model.setDescription( getTrimmedValue( parser.nextText()) );
-                }
-                else if ( parser.getName().equals( "url" )  )
-                {
-                    if ( parsed.contains( "url" ) )
-                    {
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    }
-                    parsed.add( "url" );
-                    model.setUrl( getTrimmedValue( parser.nextText()) );
                 }
                 else if ( parser.getName().equals( "build" )  )
                 {
