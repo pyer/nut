@@ -13,34 +13,6 @@ public class ArtifactTest
 
     private String groupId = "groupid", artifactId = "artifactId", version = "1.0", type = "type", classifier = "classifier";
 
-/*
-    public void testGetDependencyConflictId()
-    {
-        assertEquals( groupId + ":" + artifactId + ":" + type + ":" + classifier, artifact.getDependencyConflictId() );
-    }
-
-    public void testGetDependencyConflictIdNullClassifier()
-    {
-        artifact = new Artifact( groupId, artifactId, version, type, null );
-        assertEquals( groupId + ":" + artifactId + ":" + type, artifact.getDependencyConflictId() );
-    }
-*/
-    @Test
-    public void testResolvedTrue()
-    {
-        artifact = new Artifact( groupId, artifactId, version, type, null );
-        artifact.setResolved(true);
-        assertTrue( artifact.isResolved());
-    }
-
-    @Test
-    public void testResolvedFalse()
-    {
-        artifact = new Artifact( groupId, artifactId, version, type, null );
-        artifact.setResolved(false);
-        assertFalse( artifact.isResolved());
-    }
-
     @Test
     public void testPath()
     {
