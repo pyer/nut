@@ -262,25 +262,25 @@ public class Nut
         {
             logFailure( e );
             stats( start );
-            throw new Execution( e.getMessage(), e );
+            throw new Exception( e.getMessage(), e );
         }
         catch ( DuplicateProjectException e )
         {
             logFailure( e );
             stats( start );
-            throw new Execution( e.getMessage(), e );
+            throw new Exception( e.getMessage(), e );
         }
         catch ( ProjectBuildingException e )
         {
             logFailure( e );
             stats( start );
-            throw new Execution( e.getMessage(), e );
+            throw new Exception( e.getMessage(), e );
         }
         catch ( Throwable t )
         {
             logFatal( t );
             stats( start );
-            throw new Execution( "Error executing project within the reactor", t );
+            throw new Exception( "Error executing project within the reactor", t );
         }
         int failures = logReactorSummary( sorter );
 

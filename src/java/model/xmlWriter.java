@@ -128,6 +128,10 @@ public class xmlWriter {
             {
                 serializer.startTag( NAMESPACE, "testSourceDirectory" ).text( build.getTestSourceDirectory() ).endTag( NAMESPACE, "testSourceDirectory" );
             }
+            if ( build.getTestSuiteFile() != null )
+            {
+                serializer.startTag( NAMESPACE, "testSuiteFile" ).text( build.getTestSourceDirectory() ).endTag( NAMESPACE, "testSuiteFile" );
+            }
 
             if ( build.getGoals() != null && build.getGoals().size() > 0 )
             {

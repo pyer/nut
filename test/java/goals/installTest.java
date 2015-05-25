@@ -1,4 +1,4 @@
-package nut.plugins;
+package nut.goals;
 
 import nut.logging.Log;
 
@@ -14,7 +14,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeTest;
 
-public class InstallerTest
+public class installTest
 {
     private final String LOCAL_REPO = "target/repository";
     private Model model = new Model();
@@ -54,7 +54,7 @@ public class InstallerTest
         new File( "target/build/artifact.file" ).createNewFile();
         NutProject project = new NutProject(model);
         Log log = new Log();
-        installer.execute(project,log);
+        install.execute(project,log);
         File installedArtifact = new File( "target/repo2/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
 //      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.file.nut" );
@@ -74,7 +74,7 @@ public class InstallerTest
 
         NutProject project = new NutProject(model);
         Log log = new Log();
-        installer.execute(project,log);
+        install.execute(project,log);
         File installedArtifact = new File( "target/repo3/local/group/artifact-0.0-SNAPSHOT.modules" );
         assertFalse( installedArtifact.exists() );
 //      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.modules.nut" );
@@ -95,7 +95,7 @@ public class InstallerTest
         model.setPackaging( "file" );
         NutProject project = new NutProject(model);
         Log log = new Log();
-        installer.execute(project,log);
+        install.execute(project,log);
         File installedArtifact = new File( "target/repo4/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
       }

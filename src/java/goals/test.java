@@ -3,6 +3,12 @@ package nut.goals;
 import nut.logging.Log;
 import nut.project.NutProject;
 
+import nut.testng.TestListener;
+
+import org.testng.TestListenerAdapter;
+import org.testng.TestNG;
+
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -39,9 +45,6 @@ import java.lang.reflect.WildcardType;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.testng.TestListenerAdapter;
-import org.testng.TestNG;
-
 /**
  * Goal which runs tests
  *
@@ -73,12 +76,9 @@ public class test
         String basedir              = (String)pp.getProperty( "basedir" );
         String buildDirectory       = basedir + File.separator + project.getBuild().getDirectory();
         String outputDirectory      = basedir + File.separator + project.getBuild().getOutputDirectory();
+        String testSuiteFileName    = basedir + File.separator + project.getBuild().getTestSuiteFile();
         String testOutputDirectory  = basedir + File.separator + project.getBuild().getTestOutputDirectory();
         String testReportDirectory  = basedir + File.separator + project.getBuild().getTestReportDirectory();
-        // to put in a property
-        //String testSuitePath        = project.getBuild().getTestOutputDirectory();
-//        String testSuiteFileName    = basedir + "/test/testng.xml";
-        String testSuiteFileName    = basedir + File.separator + project.getModel().getBuild().getCurrentPlugin().getConfigurationValue( "testSuiteFile" );
         log.debug( "test suite   = " + testSuiteFileName);
         log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory );
@@ -102,7 +102,7 @@ public class test
             addUrlToClassPath(url);
 
             TestNG tng = new TestNG();
-            TestListenerAdapter tla = new nut.plugins.TestListener();
+            TestListenerAdapter tla = new nut.testng.TestListener();
             tng.addListener(tla);
             tng.setOutputDirectory( testReportDirectory );
             List<String> suites = new ArrayList<String>();

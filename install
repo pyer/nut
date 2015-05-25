@@ -30,7 +30,7 @@ mkdir -p target/classes
 
 cd $root
 echo "Build classes"
-options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar -deprecation -Xlint:unchecked"
+options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
 cd $root
 cd src/java/logging
 javac $options Log.java
@@ -50,7 +50,7 @@ javac $options clean.java
 javac $options compile.java
 javac $options install.java
 javac $options pack.java
-#javac $options test.java
+javac $options test.java ../testng/TestListener.java
 cd ..
 javac $options Nut.java
 

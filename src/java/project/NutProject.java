@@ -24,7 +24,7 @@ import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
 
-import nut.execution.BuildFailureException;
+import nut.project.BuildFailureException;
 import nut.project.InvalidDependencyVersionException;
 
 import nut.logging.Log;

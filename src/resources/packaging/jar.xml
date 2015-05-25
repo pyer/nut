@@ -22,6 +22,7 @@
     <testReportDirectory>target/test-reports</testReportDirectory>
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
+    <testSuiteFile>test/testng.xml</testSuiteFile>
 
     <goals>
       <goal>
@@ -32,9 +33,6 @@
       </goal>
       <goal>
         <name>test</name>
-        <configuration>
-          <testSuiteFile>test/testng.xml</testSuiteFile>
-        </configuration>
       </goal>
       <goal>
         <name>pack</name>

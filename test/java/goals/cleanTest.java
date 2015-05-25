@@ -1,4 +1,4 @@
-package nut.plugins;
+package nut.goals;
 
 import nut.logging.Log;
 
@@ -13,7 +13,7 @@ import java.util.Properties;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class CleanerTest
+public class cleanTest
 {
     private final String LOCAL_TARGET = "target/local-target";
     
@@ -48,7 +48,7 @@ log.info("Current directory's absolute  path: " + directory.getAbsolutePath());
 */
         f.createNewFile();
         assertTrue( f.exists() );
-        cleaner.execute(project, log);
+        clean.execute(project, log);
       }
       catch( Exception e )
       {

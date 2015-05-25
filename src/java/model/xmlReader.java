@@ -519,7 +519,15 @@ public class xmlReader {
                 parsed.add( "testReportDirectory" );
                 build.setTestReportDirectory( getTrimmedValue( parser.nextText()) );
             }
-
+            else if ( parser.getName().equals( "testSuiteFile" )  )
+            {
+                if ( parsed.contains( "testSuiteFile" ) )
+                {
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                }
+                parsed.add( "testSuiteFile" );
+                build.setTestSuiteFile( getTrimmedValue( parser.nextText()) );
+            }
             else if ( parser.getName().equals( "directory" )  )
             {
                 if ( parsed.contains( "directory" ) )
