@@ -6,6 +6,28 @@ import java.io.PrintStream;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
+/*
+Log.java public methods:
+    public void debugOn()
+    public void debugOff()
+    public void debug( CharSequence content )
+    public void debug( CharSequence content, Throwable error )
+    public void debug( Throwable error )
+    public void info( CharSequence content )
+    public void info( CharSequence content, Throwable error )
+    public void info( Throwable error )
+    public void warn( CharSequence content )
+    public void warn( CharSequence content, Throwable error )
+    public void warn( Throwable error )
+    public void error( CharSequence content )
+    public void error( CharSequence content, Throwable error )
+    public void error( Throwable error )
+    public void line()
+    public void logFatal( Throwable t )
+    public void logFailure( Exception e )
+    public void logSuccess( )
+*/
+
 public class LogTest
 {
     @Test
@@ -44,7 +66,6 @@ public class LogTest
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         Log log = new Log();
-        // log.debugOff();
         // default debug is off
         log.debug( "hello" );
         String out = outContent.toString();

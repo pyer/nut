@@ -120,18 +120,16 @@ public class Log
     public void logFatal( Throwable t )
     {
         error( "FATAL ERROR:" + t.getMessage() );
-        if( isDebug(true) ) {
+        if(debug)
            t.printStackTrace();
-        }
         line();
     }
 
     public void logFailure( Exception e )
     {
         error( "BUILD FAILURE:" + e.getMessage() );
-        if( isDebug(true) ) {
+        if(debug)
            e.printStackTrace();
-        }
         line();
     }
 
