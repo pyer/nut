@@ -54,7 +54,7 @@ javac $options compile.java
 javac $options install.java
 javac $options pack.java
 javac $options test.java ../testng/TestListener.java
-echo " - "
+echo " - Nut"
 cd ..
 javac $options Nut.java
 
