@@ -67,13 +67,13 @@ public class ProjectBuilder
     {
         String pomLocation = projectFile.getAbsolutePath();
         // First read the project's nut.xml
-        Model model = readModel( "unknownModel", projectFile, true );
+        Model model = readModel( "unknownModel", projectFile );
         // then read the packaging model if any
         Model packagingModel = null;
         File packagingFile = new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" );
         if( packagingFile.exists() )
         {
-            packagingModel = readModel( "unknownModel", packagingFile, true );
+            packagingModel = readModel( "unknownModel", packagingFile );
         }
         else
         {
@@ -139,43 +139,37 @@ public class ProjectBuilder
     }
 
     // ----------------------------------------------------------------------
-
-    private Model readModel( String projectId,
-                             File file,
-                             boolean strict )
+    private Model readModel( String projectId, File file )
         throws ProjectBuildingException
     {
-        Reader reader = null;
         Model model = null;
-        //log.info( "readModel 1: " + projectId + " from file "+ file.getAbsolutePath() );
         try
         {
-            InputStream is = new FileInputStream(file);
-            reader = new InputStreamReader( is );
-            model = readModel( projectId, file.getAbsolutePath(), reader, strict );
+            InputStream is        = new FileInputStream(file);
+            Reader reader         = new InputStreamReader( is );
+            xmlReader modelReader = new xmlReader();
+            StringReader sReader  = modelStringReader( reader );
+            model = modelReader.parseModel( sReader );
             reader.close();
         }
-        catch ( FileNotFoundException e )
-        {
+        catch ( XmlPullParserException e ) {
+            throw new ProjectBuildingException( projectId,
+                                                "Parse error reading nut.xml: " + e.getMessage(), e );
+        }
+        catch ( FileNotFoundException e ) {
             throw new ProjectBuildingException( projectId,
                                                 "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
         }
-        catch ( IOException e )
-        {
+        catch ( IOException e ) {
             throw new ProjectBuildingException( projectId, "Failed to build model from file '" +
                 file.getAbsolutePath() + "'.\nError: \'" + e.getLocalizedMessage() + "\'", e );
         }
         return model;
     }
 
-    private Model readModel( String projectId,
-                             String pomLocation,
-                             Reader reader,
-                             boolean strict )
-        throws IOException, InvalidProjectModelException
+    private StringReader modelStringReader( Reader reader )
+        throws IOException
     {
-        //String modelSource = IOUtil.toString( reader );
-
         StringWriter sw = new StringWriter();
         final char[] buffer = new char[1024 * 4];
         int n = 0;
@@ -185,20 +179,7 @@ public class ProjectBuilder
         }
         sw.flush();
         String modelSource = sw.toString();
-
-        StringReader sReader = new StringReader( modelSource );
-        //log.info( "readModel 2: " + projectId + " from  "+ pomLocation );
-
-        try
-        {
-            xmlReader modelReader = new xmlReader();
-            return modelReader.read( sReader, strict );
-        }
-        catch ( XmlPullParserException e )
-        {
-            throw new InvalidProjectModelException( projectId, pomLocation,
-                                                    "Parse error reading nut.xml. Reason: " + e.getMessage(), e );
-        }
+        return new StringReader( modelSource );
     }
 
 }
