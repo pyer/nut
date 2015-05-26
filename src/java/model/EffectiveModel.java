@@ -25,11 +25,10 @@ public class EffectiveModel
     public String getEffectiveModel()
              throws IOException
     {
-        StringWriter sWriter = new StringWriter();
-        xmlWriter writer = new xmlWriter();
-        writer.write( sWriter, model );
+        xmlWriter modelWriter = new xmlWriter();
+        StringWriter sWriter  = new StringWriter();
+        modelWriter.writeModel( sWriter, model );
         return sWriter.toString();
     }
 
 }
-
