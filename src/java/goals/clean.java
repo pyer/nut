@@ -40,7 +40,7 @@ public class clean
         log = logger;
         Properties pp  = project.getModel().getProperties();
         String basedir = (String)pp.getProperty( "basedir" );
-        String buildDirectory = project.getBuild().getDirectory();
+        String buildDirectory = project.getBuild().getTargetDirectory();
         
         File directoryPath = new File( basedir + File.separator + buildDirectory );
         log.info( "   Cleaning " + directoryPath.getPath() );
