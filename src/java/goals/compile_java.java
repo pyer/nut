@@ -49,13 +49,11 @@ public class compile_java
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
         String repository           = (String)pp.getProperty( "nut.home" );
-        String buildDirectory       = project.getBuild().getDirectory();
         String sourceDirectory      = project.getBuild().getSourceDirectory();
         String testSourceDirectory  = project.getBuild().getTestSourceDirectory();
         String outputDirectory      = project.getBuild().getOutputDirectory();
         String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
 
-        log.debug( "build.directory           = " + buildDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );
         log.debug( "build.testSourceDirectory = " + testSourceDirectory );
         log.debug( "build.outputDirectory     = " + outputDirectory );

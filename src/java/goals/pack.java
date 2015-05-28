@@ -61,13 +61,13 @@ public class pack
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
         String repository           = (String)pp.getProperty( "nut.home" );
-        String buildDirectory       = project.getBuild().getDirectory();
+        String targetDirectory      = project.getBuild().getTargetDirectory();
         String sourceDirectory      = project.getBuild().getSourceDirectory();
 //        String testSourceDirectory  = project.getBuild().getTestSourceDirectory();
         String outputDirectory      = project.getBuild().getOutputDirectory();
 //        String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
 
-        log.debug( "build.directory           = " + buildDirectory );
+        log.debug( "build.directory           = " + targetDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );
 //        log.debug( "build.testSourceDirectory = " + testSourceDirectory );
         log.debug( "build.outputDirectory     = " + outputDirectory );
@@ -97,32 +97,32 @@ public class pack
             throw new Exception();
         }
 
-        File buildDir = new File( basedir + File.separator + buildDirectory );
-        if ( !buildDir.exists() )
+        File targetDir = new File( basedir + File.separator + targetDirectory );
+        if ( !targetDir.exists() )
         {
-            buildDir.mkdirs();
+            targetDir.mkdirs();
         }
 
         if( packaging.equals( "war" ) )
         {
-            archive( artifactFile, basedir + File.separator + buildDirectory, basedir + File.separator + sourceDirectory, "c" );
-            archive( artifactFile, basedir + File.separator + buildDirectory, basedir + File.separator + outputDirectory, "u" );
+            archive( artifactFile, basedir + File.separator + targetDirectory, basedir + File.separator + sourceDirectory, "c" );
+            archive( artifactFile, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "u" );
         }
         else
         {
-            archive( artifactFile, basedir + File.separator + buildDirectory, basedir + File.separator + outputDirectory, "c" );
+            archive( artifactFile, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "c" );
         }
         //archive( artifactId + ".src.jar", basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory );
     }
 
-    private static void archive(String finalName, String buildDirectory, String outputDirectory, String mode)
+    private static void archive(String finalName, String targetDirectory, String outputDirectory, String mode)
         throws Exception
     {
         // ----------------------------------------------------------------------
         List<String> args = new ArrayList<String>();
         args.add( "jar" );
         args.add( mode + "f" );
-        args.add( buildDirectory + File.separator + finalName );
+        args.add( targetDirectory + File.separator + finalName );
         args.add( "-C" );
         args.add( outputDirectory + File.separator );
         args.add( "." );

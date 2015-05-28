@@ -74,22 +74,21 @@ public class test
         log = logger;
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String buildDirectory       = basedir + File.separator + project.getBuild().getDirectory();
+        String targetDirectory      = basedir + File.separator + project.getBuild().getTargetDirectory();
         String outputDirectory      = basedir + File.separator + project.getBuild().getOutputDirectory();
-        String testSuiteFileName    = basedir + File.separator + project.getBuild().getTestSuiteFile();
         String testOutputDirectory  = basedir + File.separator + project.getBuild().getTestOutputDirectory();
         String testReportDirectory  = basedir + File.separator + project.getBuild().getTestReportDirectory();
+
+//        String testSuiteFileName    = basedir + File.separator + project.getBuild().getTestSuiteFile();
+        String testSuiteFileName    = basedir + File.separator + "test/testng.xml";
         log.debug( "test suite   = " + testSuiteFileName);
         log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory );
 
         File testSuiteFile = new File( testSuiteFileName );
-        if ( !testSuiteFile.exists() )
-        {
+        if ( !testSuiteFile.exists() ) {
             log.warn( "   No test" );
-        }
-        else
-        {
+        } else {
             //log.info( "   Testing " + testSuiteFileName );
             // catch stdout
             sysout = System.out;
