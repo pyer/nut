@@ -16,13 +16,14 @@
   </dependencies>
 
   <build>
-    <directory>target</directory>
+    <targetDirectory>target</targetDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <resourcesDirectory>src/resources</resourcesDirectory>
     <outputDirectory>target/classes</outputDirectory>
+    <testSourceDirectory>test/java</testSourceDirectory>
+    <testResourcesDirectory>test/resources</testResourcesDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
     <testReportDirectory>target/test-reports</testReportDirectory>
-    <sourceDirectory>src/java</sourceDirectory>
-    <testSourceDirectory>test/java</testSourceDirectory>
-    <testSuiteFile>test/testng.xml</testSuiteFile>
 
     <goals>
       <goal>
@@ -30,9 +31,14 @@
       </goal>
       <goal>
         <name>compile</name>
+        <type>java</type>
       </goal>
       <goal>
         <name>test</name>
+        <type>testng</type>
+        <configuration>
+          <testSuiteFile>test/testng.xml</testSuiteFile>
+        </configuration>
       </goal>
       <goal>
         <name>pack</name>

@@ -44,6 +44,24 @@ public class Goal implements java.io.Serializable
         return this.type;
     }
 
+    private boolean hasType()
+    {
+        return ( (type!=null) && !type.isEmpty() );
+    }
+
+    /**
+     * Get the Id, ie full name, of the goal.
+     * @return String
+     */
+    public String getId()
+    {
+      String id = name;
+      if( hasType() ) {
+        id = name + "_" + type;
+      }
+      return id;
+    }
+
     /**
      * Get the configuration object
      * @return configuration 

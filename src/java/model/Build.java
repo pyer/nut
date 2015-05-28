@@ -159,19 +159,6 @@ implements java.io.Serializable
         this.testReportDirectory = testReportDirectory;
     }
 
-    public List<String> getGoalsNames()
-    {
-      List<String> goalsNames = new ArrayList<String>();
-      List goals = this.getGoals();
-      Integer i = 0;
-      for ( Iterator it = goals.iterator(); it.hasNext(); )
-      {
-          Goal goal = (Goal) it.next();
-          goalsNames.add(i++, goal.getName());
-      }
-      return goalsNames;
-    }
-
     public List<Goal> getGoals()
     {
         if ( this.goals == null )

@@ -50,7 +50,7 @@ javac $options InvalidDependencyVersionException.java InvalidProjectModelExcepti
 echo " - goals"
 cd ../goals
 javac $options clean.java
-javac $options compile.java
+javac $options compile_java.java
 javac $options install.java
 javac $options pack.java
 javac $options test.java ../testng/TestListener.java

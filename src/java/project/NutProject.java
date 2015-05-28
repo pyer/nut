@@ -270,12 +270,12 @@ public class NutProject
 
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
-    public void executeGoal( String goal )
+    public void executeGoal( String goalName )
         throws BuildFailureException
     {
       try {
-          log.debug("* execute goal: " + goal);
-          Class cls = Class.forName ("nut.goals." + goal);
+          log.debug("* execute goal: " + goalName);
+          Class cls = Class.forName ("nut.goals." + goalName);
           Class[] cArg = new Class[2];
           cArg[0] = NutProject.class;
           cArg[1] = Log.class;
@@ -288,7 +288,7 @@ public class NutProject
       } catch (InvocationTargetException e) {
           throw new BuildFailureException( e.getMessage() , e );
       } catch ( ClassNotFoundException e) {
-          throw new BuildFailureException( "Goal " + goal + " not found" , e );
+          throw new BuildFailureException( "Goal " + goalName + " not found" , e );
       } catch (NoSuchMethodException e) {
           throw new BuildFailureException( "Method 'execute' not found" , e );
       } catch (SecurityException e) {

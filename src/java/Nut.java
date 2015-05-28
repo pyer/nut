@@ -12,6 +12,7 @@ import nut.project.ProjectBuildingException;
 import nut.project.ProjectSorter;
 
 import nut.model.EffectiveModel;
+import nut.model.Goal;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,10 +44,9 @@ public class Nut
     public static void main( String[] args )
     {
         int exitCode = 0;
-        List<String> goals = new ArrayList<String>();
+        String  goalArg      = null;
         boolean effectiveNut = false;
         boolean noopMode     = false;
-        boolean buildArg     = false;
 
         log = new Log();
         if( args.length>0 ) {
@@ -79,29 +79,27 @@ public class Nut
                     System.exit( 101 );
                  }
                  // nearly every arg without '-' is a goal
-                 goals.add(args[i]);
-                 if( args[i].equals("build") ) {
-                    buildArg = true;
+                 if( goalArg==null ) {
+                    goalArg = args[i];
+                 } else {
+                    log.error( "Too many goals.\n" );
+                    showHelp();
+                    System.exit( 102 );
                  }
               }
            }
         } else {
                  showHelp();
-                 System.exit( 102 );
-        }
-        if (goals.isEmpty() && effectiveNut==false ) {
-                 showHelp();
                  System.exit( 103 );
-        } 
-        if (goals.size()>1 && buildArg==true ) {
-                 log.error( "Too many arguments with build.\n" );
+        }
+        if (goalArg==null && effectiveNut==false ) {
                  showHelp();
                  System.exit( 104 );
         } 
         
         try
         {
-            ScanningProject(goals, effectiveNut, noopMode);
+            ScanningProject(goalArg, effectiveNut, noopMode);
         }
         catch ( Exception e )
         {
@@ -138,8 +136,8 @@ public class Nut
     private static void showHelp()
     {
         System.out.println( "usage: nut [options] build" );
-        System.out.println( "       nut [options] [goals]" );
-        System.out.println( "\nGoals: clean compile process test pack install deploy" );
+        System.out.println( "       nut [options] [goal]" );
+        System.out.println( "\n  where [goal] is one of: clean compile process test pack install deploy" );
         System.out.println( "\nOptions:" );
         System.out.println( " -h,--help        Display this help" );
         System.out.println( " -v,--version     Display version information" );
@@ -178,7 +176,7 @@ public class Nut
     // ----------------------------------------------------------------------
     // Project execution
     // ----------------------------------------------------------------------
-    private static void ScanningProject( List<String> goals, boolean effectiveNut, boolean noopMode )
+    private static void ScanningProject( String goalArgument, boolean effectiveNut, boolean noopMode )
         throws Exception
     {
         ProjectSorter sorter;
@@ -226,24 +224,24 @@ public class Nut
                 } else {
                     log.info( "Building " + currentProject.getName() );
                     long buildStartTime = System.currentTimeMillis();
-                    if (goals.get(0).equals("build")) {
-                      goals.clear();
-                      goals = currentProject.getBuild().getGoalsNames();
-                    }
+                    List<Goal> goals = currentProject.getBuild().getGoals();
                     currentProject.setLog( log );
                     for ( Iterator g = goals.iterator(); g.hasNext(); ) {
-                      String goal = (String)(g.next());
-                      if( noopMode ) {
-                        log.info( "Goal " + goal + " in noop mode" );
-                      } else {
-                        currentProject.executeGoal( goal );
+                      Goal   goal   = (Goal)g.next();
+                      String goalId = goal.getId();
+                      if( "build".equals(goalArgument) || goalId.startsWith(goalArgument) ) {
+                        if( noopMode ) {
+                          log.info( "Goal " + goalId + " in noop mode" );
+                        } else {
+                          currentProject.executeGoal( goalId );
+                        }
                       }
                     }
                     currentProject.setStatus( System.currentTimeMillis() - buildStartTime, true );
                 }
-            }            
+            }
         }
-            
+
         // --------------------------------------------------------------------------------
         catch ( BuildFailureException e )
         {
