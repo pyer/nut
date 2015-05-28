@@ -75,11 +75,26 @@ public class xmlReader {
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
                 build.setSourceDirectory( parser.nextText() );
+            } else if ( parser.getName().equals( "resourceDirectory" ) ) {
+                if ( parsed.contains( "resourceDirectory" ) )
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                parsed.add( parser.getName() );
+                build.setResourceDirectory( parser.nextText() );
             } else if ( parser.getName().equals( "testSourceDirectory" ) ) {
                 if ( parsed.contains( "testSourceDirectory" ) )
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
                 build.setTestSourceDirectory( parser.nextText() );
+            } else if ( parser.getName().equals( "testResourceDirectory" ) ) {
+                if ( parsed.contains( "testResourceDirectory" ) )
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                parsed.add( parser.getName() );
+                build.setTestResourceDirectory( parser.nextText() );
+            } else if ( parser.getName().equals( "targetDirectory" )  ) {
+                if ( parsed.contains( "targetDirectory" ) )
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                parsed.add( parser.getName() );
+                build.setTargetDirectory( parser.nextText() );
             } else if ( parser.getName().equals( "outputDirectory" )  ) {
                 if ( parsed.contains( "outputDirectory" ) )
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
@@ -95,16 +110,6 @@ public class xmlReader {
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
                 build.setTestReportDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "testSuiteFile" )  ) {
-                if ( parsed.contains( "testSuiteFile" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
-                build.setTestSuiteFile( parser.nextText() );
-            } else if ( parser.getName().equals( "directory" )  ) {
-                if ( parsed.contains( "directory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
-                build.setDirectory( parser.nextText() );
             } else if ( parser.getName().equals( "goals" )  ) {
                 if ( parsed.contains( "goals" ) )
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );

@@ -82,17 +82,17 @@ public class xmlWriter {
     {
         if ( build != null ) {
             serializer.startTag( NAMESPACE, tagName );
-            writeTag( "directory", build.getDirectory(), serializer );
+            writeTag( "sourceDirectory", build.getSourceDirectory(), serializer );
+            writeTag( "resourceDirectory", build.getResourceDirectory(), serializer );
+            writeTag( "testSourceDirectory", build.getTestSourceDirectory(), serializer );
+            writeTag( "testResourceDirectory", build.getTestResourceDirectory(), serializer );
+            writeTag( "targetDirectory", build.getTargetDirectory(), serializer );
             writeTag( "outputDirectory", build.getOutputDirectory(), serializer );
             writeTag( "testOutputDirectory", build.getTestOutputDirectory(), serializer );
-            writeTag( "sourceDirectory", build.getSourceDirectory(), serializer );
-            writeTag( "testSourceDirectory", build.getTestSourceDirectory(), serializer );
-            writeTag( "testSuiteFile", build.getTestSuiteFile(), serializer );
-            if ( build.getGoals() != null && build.getGoals().size() > 0 )
-            {
+            writeTag( "testReportDirectory", build.getTestReportDirectory(), serializer );
+            if ( build.getGoals() != null && build.getGoals().size() > 0 ) {
                 serializer.startTag( NAMESPACE, "goals" );
-                for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); )
-                {
+                for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); ) {
                     Goal o = (Goal) iter.next();
                     writeGoal( o, "goal", serializer );
                 }
