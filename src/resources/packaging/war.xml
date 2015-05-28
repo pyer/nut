@@ -3,10 +3,10 @@
   <build>
     <targetDirectory>target</targetDirectory>
     <sourceDirectory>src/java</sourceDirectory>
-    <resourcesDirectory>src/resources</resourcesDirectory>
+    <resourceDirectory>src/resources</resourceDirectory>
     <outputDirectory>target/classes</outputDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
-    <testResourcesDirectory>test/resources</testResourcesDirectory>
+    <testResourceDirectory>test/resources</testResourceDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
     <testReportDirectory>target/test-reports</testReportDirectory>
 
