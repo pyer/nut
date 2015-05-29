@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.TimeZone;
 
 public class Nut
@@ -227,13 +228,14 @@ public class Nut
                     List<Goal> goals = currentProject.getBuild().getGoals();
                     currentProject.setLog( log );
                     for ( Iterator g = goals.iterator(); g.hasNext(); ) {
-                      Goal   goal   = (Goal)g.next();
-                      String goalId = goal.getId();
+                      Goal   goal       = (Goal)g.next();
+                      String goalId     = goal.getId();
+                      Properties config = goal.getConfiguration();
                       if( "build".equals(goalArgument) || goalId.startsWith(goalArgument) ) {
                         if( noopMode ) {
                           log.info( "Goal " + goalId + " in noop mode" );
                         } else {
-                          currentProject.executeGoal( goalId );
+                          currentProject.executeGoal( goalId, config );
                         }
                       }
                     }
