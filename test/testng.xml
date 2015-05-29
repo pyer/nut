@@ -1,16 +1,28 @@
 <suite name="Nut test Suite">
-  <test name="core">
+  <test name="nut.artifact">
     <classes>
       <class name="nut.artifact.ArtifactTest" />
+    </classes>
+  </test>
+  <test name="nut.model">
+    <classes>
       <class name="nut.model.BuildTest" />
       <class name="nut.model.DependencyTest" />
       <class name="nut.model.EffectiveModelTest" />
       <class name="nut.model.ModelTest" />
+    </classes>
+  </test>
+  <test name="nut.project">
+    <classes>
       <class name="nut.project.ProjectBuilderTest" />
+    </classes>
+  </test>
+  <test name="nut.logging">
+    <classes>
       <class name="nut.logging.LogTest" />
     </classes>
   </test>
-  <test name="goals">
+  <test name="nut.goals">
     <classes>
       <class name="nut.goals.CleanTest" />
       <class name="nut.goals.InstallTest" />
