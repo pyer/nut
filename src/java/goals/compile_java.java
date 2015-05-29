@@ -42,10 +42,10 @@ public class compile_java
     /** Instance logger */
     private static Log log;
 
-    public static void execute( NutProject project, Log logger )
+    public static void execute( NutProject project, Properties config )
         throws Exception
     {
-        log = logger;
+        log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
         String repository           = (String)pp.getProperty( "nut.home" );

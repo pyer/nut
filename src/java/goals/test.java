@@ -68,10 +68,10 @@ public class test
         return stdout;
     }
 
-    public static void execute( NutProject project, Log logger )
+    public static void execute( NutProject project, Properties config )
         throws Exception
     {
-        log = logger;
+        log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
         String targetDirectory      = basedir + File.separator + project.getBuild().getTargetDirectory();
