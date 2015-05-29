@@ -39,7 +39,7 @@ import java.net.URLClassLoader;
  *
  * @goal test
  */
-public class test_testng
+public class TestTestng
 {
     private static Log log;
     private static PrintStream sysout;

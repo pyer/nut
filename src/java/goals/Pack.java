@@ -49,7 +49,7 @@ import java.util.Set;
 [DEBUG] adding entry META-INF/maven/ab.plugins/clean/pom.properties
  *
  */
-public class pack
+public class Pack
 {
     /** Instance logger */
     private static Log log;

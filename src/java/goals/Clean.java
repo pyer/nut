@@ -23,7 +23,7 @@ import java.util.Properties;
  *
  * @goal clean
  */
-public class clean
+public class Clean
 {
     /** Instance logger */
     private static Log log;

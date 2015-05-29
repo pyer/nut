@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-public class install
+public class Install
 {
     /** Instance logger */
     private static Log log;
