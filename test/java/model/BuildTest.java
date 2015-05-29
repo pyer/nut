@@ -6,15 +6,15 @@ import org.testng.annotations.Test;
 public class BuildTest
 {
     @Test
-    public void testDirectory()
+    public void testTargetDirectory()
     {
         String dir = "target";
         Build thing = new Build();
         // check default value
-        assertEquals( thing.getDirectory(), dir );
+        assertEquals( thing.getTargetDirectory(), dir );
         // check set value
-        thing.setDirectory( dir );
-        assertEquals( thing.getDirectory(), dir );
+        thing.setTargetDirectory( dir );
+        assertEquals( thing.getTargetDirectory(), dir );
     }
 
     @Test
@@ -51,18 +51,6 @@ public class BuildTest
         // check set value
         thing.setOutputDirectory( dir );
         assertEquals( thing.getTestSourceDirectory(), dir );
-    }
-
-    @Test
-    public void testTestSuiteFile()
-    {
-        String dir = "test/testng.xml";
-        Build thing = new Build();
-        // check default value
-        assertEquals( thing.getTestSuiteFile(), dir );
-        // check set value
-        thing.setTestSuiteFile( dir );
-        assertEquals( thing.getTestSuiteFile(), dir );
     }
 
     @Test

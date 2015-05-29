@@ -30,7 +30,7 @@ public class CleanTest
     {
       Log log = new Log();
       Build build = new Build();
-      build.setDirectory( "local-target" );
+      build.setTargetDirectory( "local-target" );
       Model model = new Model();
       model.addProperty( "basedir", "target" );
       model.setBuild( build );
@@ -48,7 +48,7 @@ log.info("Current directory's absolute  path: " + directory.getAbsolutePath());
 */
         f.createNewFile();
         assertTrue( f.exists() );
-        clean.execute(project, log);
+        clean.execute(project, null);
       }
       catch( Exception e )
       {
