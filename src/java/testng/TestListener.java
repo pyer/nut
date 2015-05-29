@@ -13,8 +13,8 @@ public class TestListener extends TestListenerAdapter {
 
   @Override
   public void onStart(ITestContext tc) {
-    System.setOut( nut.goals.test.getSysOut() );
-    Log log = nut.goals.test.getLog();
+    System.setOut( nut.goals.test_testng.getSysOut() );
+    Log log = nut.goals.test_testng.getLog();
     log.info("   Testing " + tc.getName());
   }
  
@@ -22,18 +22,18 @@ public class TestListener extends TestListenerAdapter {
   public void onFinish(ITestContext tc) {
     //Log log = nut.goals.test.getLog();
     //log.print("\n");
-    System.setOut( nut.goals.test.getStdOut() );
+    System.setOut( nut.goals.test_testng.getStdOut() );
   }
  
   @Override
   public void onTestFailure(ITestResult tr) {
-    Log log = nut.goals.test.getLog();
+    Log log = nut.goals.test_testng.getLog();
     log.error("     " + tr.getName()+ " failed");
   }
  
   @Override
   public void onTestSkipped(ITestResult tr) {
-    Log log = nut.goals.test.getLog();
+    Log log = nut.goals.test_testng.getLog();
     log.warn("      Skip " + tr.getName());
   }
 /*

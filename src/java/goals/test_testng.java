@@ -16,17 +16,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-/*
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import java.net.URL;
-import java.net.URLClassLoader;
-
-import java.util.Enumeration;
-*/
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
@@ -50,7 +39,7 @@ import java.net.URLClassLoader;
  *
  * @goal test
  */
-public class test
+public class test_testng
 {
     private static Log log;
     private static PrintStream sysout;
