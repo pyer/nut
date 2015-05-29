@@ -50,16 +50,24 @@ public class Goal implements java.io.Serializable
     }
 
     /**
-     * Get the Id, ie full name, of the goal.
+     * Get the Id, ie full class name, of the goal.
+     * For example: compile java ==> CompileJava
      * @return String
      */
     public String getId()
     {
-      String id = name;
+      String id = name.substring(0, 1).toUpperCase() + name.substring(1);
       if( hasType() ) {
-        id = name + "_" + type;
+        return id + type.substring(0, 1).toUpperCase() + type.substring(1);
       }
       return id;
+    }
+
+    public String getId( String name )
+    {
+      if( name==null || name.isEmpty() )
+        return "";
+      return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     /**
@@ -68,8 +76,7 @@ public class Goal implements java.io.Serializable
      */
     public java.util.Properties getConfiguration()
     {
-        if ( this.configuration == null )
-        {
+        if ( this.configuration == null ) {
             this.configuration = new java.util.Properties();
         }
         return this.configuration;

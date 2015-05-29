@@ -48,7 +48,7 @@ log.info("Current directory's absolute  path: " + directory.getAbsolutePath());
 */
         f.createNewFile();
         assertTrue( f.exists() );
-        clean.execute(project, null);
+        Clean.execute(project, null);
       }
       catch( Exception e )
       {
