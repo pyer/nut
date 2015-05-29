@@ -49,11 +49,11 @@ cd ../project
 javac $options InvalidDependencyVersionException.java InvalidProjectModelException.java DuplicateProjectException.java BuildFailureException.java NutProject.java ProjectBuildingException.java ProjectBuilder.java ProjectSorter.java
 echo " - goals"
 cd ../goals
-javac $options clean.java
-javac $options compile_java.java
-javac $options install.java
-javac $options pack.java
-javac $options test_testng.java ../testng/TestListener.java
+javac $options Clean.java
+javac $options CompileJava.java
+javac $options Install.java
+javac $options Pack.java
+javac $options TestTestng.java ../testng/TestListener.java
 echo " - Nut"
 cd ..
 javac $options Nut.java
