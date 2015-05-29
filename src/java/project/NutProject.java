@@ -270,7 +270,7 @@ public class NutProject
 
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
-    public void executeGoal( String goalName )
+    public void executeGoal( String goalName, Properties config )
         throws BuildFailureException
     {
       try {
@@ -278,9 +278,9 @@ public class NutProject
           Class cls = Class.forName ("nut.goals." + goalName);
           Class[] cArg = new Class[2];
           cArg[0] = NutProject.class;
-          cArg[1] = Log.class;
+          cArg[1] = Properties.class;
           Method method = cls.getMethod("execute", cArg);
-          method.invoke( cls, this, log );
+          method.invoke( cls, this, config );
       } catch (IllegalArgumentException e) {
           throw new BuildFailureException( e.getMessage() , e );
       } catch (IllegalAccessException e) {
