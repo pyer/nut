@@ -53,7 +53,7 @@ javac $options clean.java
 javac $options compile_java.java
 javac $options install.java
 javac $options pack.java
-javac $options test.java ../testng/TestListener.java
+javac $options test_testng.java ../testng/TestListener.java
 echo " - Nut"
 cd ..
 javac $options Nut.java
