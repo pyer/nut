@@ -93,9 +93,12 @@ public class Nut
                  showHelp();
                  System.exit( 103 );
         }
-        if (goalArg==null && effectiveNut==false ) {
+        if (effectiveNut==false ) {
+            // every goal is 4 characters or more length
+            if( goalArg==null || goalArg.length()<4 ) {
                  showHelp();
                  System.exit( 104 );
+            }
         } 
         
         try
@@ -231,7 +234,7 @@ public class Nut
                       Goal   goal       = (Goal)g.next();
                       String goalId     = goal.getId();
                       Properties config = goal.getConfiguration();
-                      if( "build".equals(goalArgument) || goalId.startsWith(goalArgument) ) {
+                      if( "build".equals(goalArgument) || goalId.startsWith(goal.getId(goalArgument)) ) {
                         if( noopMode ) {
                           log.info( "Goal " + goalId + " in noop mode" );
                         } else {
@@ -312,7 +315,7 @@ public class Nut
                 {
                     String name = (String) i.next();
                     log.info("   - Module " + name);
-                    if ( name.trim().length()==0 ) {
+                    if ( name.trim().isEmpty() ) {
                         log.warn( "Empty module detected. Please check you don't have any empty module definitions." );
                         continue;
                     }
