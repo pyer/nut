@@ -84,7 +84,7 @@ public class Pack
         
         log.info( "   Packaging \'" + artifactFile + "\'" );
 
-        if ( artifactId==null || (artifactId.trim().length() == 0 ) )
+        if ( artifactId==null || (artifactId.trim().isEmpty() ) )
         {
             log.error( "\'project.artifactId\' property is undefined" );
             throw new Exception();
