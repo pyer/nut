@@ -67,13 +67,9 @@ public class NutProject
         this.time = 0;
         this.buildDone = false;
         this.buildSuccess = false;
+        this.log = new Log();
     }
 
-    // ----------------------------------------------------------------------
-    public void setLog( Log log )
-    {
-        this.log = log;
-    }
     // ----------------------------------------------------------------------
     public boolean isBuilt()
     {
@@ -100,27 +96,6 @@ public class NutProject
         this.time = time;
         this.buildSuccess = success;
     }
-/*
-    public Exception getCause()
-    {
-        return cause;
-    }
-
-    public void setCause( Exception cause )
-    {
-        this.cause = cause;
-    }
-
-    public String getTask()
-    {
-        return task;
-    }
-
-    public void setCause( String task )
-    {
-        this.task = task;
-    }
-*/
 
     // ----------------------------------------------------------------------
     // Accessors
@@ -252,18 +227,12 @@ public class NutProject
 
     public boolean equals( Object other )
     {
-        if ( other == this )
-        {
+        if ( other == this ) {
             return true;
-        }
-        else if ( !( other instanceof NutProject ) )
-        {
+        } else if ( !( other instanceof NutProject ) ) {
             return false;
-        }
-        else
-        {
+        } else {
             NutProject otherProject = (NutProject) other;
-
             return getId().equals( otherProject.getId() );
         }
     }

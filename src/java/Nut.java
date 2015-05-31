@@ -228,7 +228,6 @@ public class Nut
                     log.info( "Building " + currentProject.getName() );
                     long buildStartTime = System.currentTimeMillis();
                     List<Goal> goals = currentProject.getBuild().getGoals();
-                    currentProject.setLog( log );
                     for ( Iterator g = goals.iterator(); g.hasNext(); ) {
                       Goal   goal       = (Goal)g.next();
                       String goalId     = goal.getId();
