@@ -9,6 +9,7 @@
       <class name="nut.model.BuildTest" />
       <class name="nut.model.DependencyTest" />
       <class name="nut.model.EffectiveModelTest" />
+      <class name="nut.model.GoalTest" />
       <class name="nut.model.ModelTest" />
     </classes>
   </test>
