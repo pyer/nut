@@ -2,6 +2,7 @@ package nut.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import java.lang.reflect.Method;
@@ -23,6 +24,7 @@ import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
+import nut.model.xmlWriter;
 
 import nut.project.BuildFailureException;
 import nut.project.InvalidDependencyVersionException;
@@ -236,6 +238,20 @@ public class NutProject
             return getId().equals( otherProject.getId() );
         }
     }
+
+    // ----------------------------------------------------------------------
+    public void effectiveModel()
+    {
+      try {
+          xmlWriter modelWriter = new xmlWriter();
+          StringWriter sWriter  = new StringWriter();
+          modelWriter.writeModel( sWriter, model );
+          log.info( sWriter.toString() );
+      } catch (IOException e) {
+          log.error("IOException");
+      }
+    }
+
 
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")

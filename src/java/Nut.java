@@ -10,7 +10,6 @@ import nut.project.DuplicateProjectException;
 import nut.project.ProjectBuilder;
 import nut.project.ProjectSorter;
 
-import nut.model.EffectiveModel;
 import nut.model.Goal;
 
 import java.io.File;
@@ -222,8 +221,7 @@ public class Nut
                 NutProject currentProject = (NutProject) it.next();
                 log.line();
                 if( effectiveNut ) {
-                    EffectiveModel em = new EffectiveModel(currentProject.getModel());
-                    log.info( em.getEffectiveModel() );
+                    currentProject.effectiveModel();
                 } else {
                     log.info( "Building " + currentProject.getName() );
                     long buildStartTime = System.currentTimeMillis();
