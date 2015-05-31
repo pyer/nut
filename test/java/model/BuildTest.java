@@ -3,8 +3,42 @@ package nut.model;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
+import java.io.File;
+//import java.io.IOException;
+
+import nut.model.ValidationException;
+
+import nut.project.NutProject;
+import nut.project.ProjectBuilder;
+import nut.project.BuildFailureException;
+
 public class BuildTest
 {
+    @Test
+    public void testHashCodeNullSafe()
+    {
+        new Build().hashCode();
+    }
+
+    @Test
+    public void testEqualsNullSafe()
+    {
+        assertFalse( new Build().equals( null ) );
+    }
+
+    @Test
+    public void testEqualsIdentity()
+    {
+        Build thing = new Build();
+        assertTrue( thing.equals( thing ) );
+    }
+
+    @Test
+    public void testToStringNullSafe()
+    {
+        assertNotNull( new Build().toString() );
+    }
+
     @Test
     public void testTargetDirectory()
     {
@@ -106,28 +140,23 @@ public class BuildTest
     }
 
     @Test
-    public void testHashCodeNullSafe()
-    {
-        new Build().hashCode();
-    }
-
-    @Test
-    public void testEqualsNullSafe()
-    {
-        assertFalse( new Build().equals( null ) );
-    }
-
-    @Test
-    public void testEqualsIdentity()
+    public void testValidate() throws ValidationException
     {
         Build thing = new Build();
-        assertTrue( thing.equals( thing ) );
+        thing.validate();
     }
 
-    @Test
-    public void testToStringNullSafe()
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationException() throws ValidationException
     {
-        assertNotNull( new Build().toString() );
+        try {
+          ProjectBuilder builder = new ProjectBuilder();
+          NutProject project = builder.build( new File("test/resources/badGoal.xml") );
+          project.getBuild().validate();
+        }
+        catch ( BuildFailureException e ) {
+            throw new ValidationException( "Build failure" );
+        }
     }
 
 }
