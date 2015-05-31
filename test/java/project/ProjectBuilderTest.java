@@ -14,7 +14,7 @@ public class ProjectBuilderTest
     public void testProperties()
         throws ProjectBuildingException
     {
-        ProjectBuilder builder = new ProjectBuilder( new Log() );
+        ProjectBuilder builder = new ProjectBuilder();
         NutProject project = builder.build( new File("test/resources/project/nut.xml") );
         assertEquals( "1.1", project.getVersion() );
         assertEquals( "artifact", project.getArtifactId() );

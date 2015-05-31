@@ -199,7 +199,7 @@ public class Nut
                 throw new BuildFailureException(  "Project file '" + POM_FILE + "' not found !" );
             }
 
-            ProjectBuilder builder = new ProjectBuilder(log);
+            ProjectBuilder builder = new ProjectBuilder();
             List<NutProject> projects = collectProjects( builder, files );
             if ( projects.isEmpty() ) {
                 throw new BuildFailureException(  "Project file '" + POM_FILE + "' is empty !" );

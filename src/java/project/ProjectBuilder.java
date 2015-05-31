@@ -2,8 +2,6 @@ package nut.project;
 
 import nut.artifact.Artifact;
 
-import nut.logging.Log;
-
 import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Model;
@@ -50,9 +48,9 @@ public class ProjectBuilder
     private String packagingPath;
     private String nutVersion;
 
-    public ProjectBuilder( Log log )
+    public ProjectBuilder()
     {
-        this.log = log;
+        this.log = new nut.logging.Log();
         // path of packaging models
         this.packagingPath = System.getProperty( "nut.home", "." ) + File.separatorChar + "nut" + File.separatorChar + "packaging";
         this.nutVersion = System.getProperty( "nut.version", "1.0" );
