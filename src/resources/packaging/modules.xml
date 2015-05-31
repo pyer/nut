@@ -1,6 +1,6 @@
 <project>
   <build>
-    <directory>target</directory>
+    <targetDirectory>target</targetDirectory>
 
     <goals>
       <goal>
