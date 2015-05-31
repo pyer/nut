@@ -46,7 +46,7 @@ cd ../model
 javac $options Goal.java Dependency.java Build.java Model.java xmlReader.java xmlWriter.java EffectiveModel.java ValidationException.java
 echo " - project"
 cd ../project
-javac $options InvalidDependencyVersionException.java InvalidProjectModelException.java DuplicateProjectException.java BuildFailureException.java NutProject.java ProjectBuildingException.java ProjectBuilder.java ProjectSorter.java
+javac $options InvalidDependencyVersionException.java DuplicateProjectException.java BuildFailureException.java NutProject.java ProjectBuildingException.java ProjectBuilder.java ProjectSorter.java
 echo " - goals"
 cd ../goals
 javac $options Clean.java

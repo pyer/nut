@@ -1,6 +1,7 @@
 package nut.project;
 
 import nut.artifact.Artifact;
+import nut.logging.Log;
 
 import nut.model.Build;
 import nut.model.Dependency;
@@ -50,7 +51,7 @@ public class ProjectBuilder
 
     public ProjectBuilder()
     {
-        this.log = new nut.logging.Log();
+        this.log = new Log();
         // path of packaging models
         this.packagingPath = System.getProperty( "nut.home", "." ) + File.separatorChar + "nut" + File.separatorChar + "packaging";
         this.nutVersion = System.getProperty( "nut.version", "1.0" );
@@ -108,7 +109,7 @@ public class ProjectBuilder
         }
         catch ( ValidationException e )
         {
-            throw new InvalidProjectModelException( model.getId(), pomLocation, e.getMessage(), e );
+            throw new ProjectBuildingException( model.getId(), e.getMessage(), e );
         }
         return project;
     }
@@ -165,8 +166,8 @@ public class ProjectBuilder
                                                 "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
         }
         catch ( IOException e ) {
-            throw new ProjectBuildingException( projectId, "Failed to build model from file '" +
-                file.getAbsolutePath() + "'.\nError: \'" + e.getLocalizedMessage() + "\'", e );
+            throw new ProjectBuildingException( projectId,
+                                                "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
         }
         return model;
     }
