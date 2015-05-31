@@ -10,6 +10,7 @@ import nut.model.xmlReader;
 import nut.model.ValidationException;
 
 import nut.project.NutProject;
+import nut.project.BuildFailureException;
 import nut.project.InvalidDependencyVersionException;
 
 import nut.xml.pull.XmlPullParserException;
@@ -62,17 +63,17 @@ public class ProjectBuilder
     // ----------------------------------------------------------------------
 
     public NutProject build( File projectFile )
-        throws ProjectBuildingException
+        throws BuildFailureException
     {
         String pomLocation = projectFile.getAbsolutePath();
         // First read the project's nut.xml
-        Model model = readModel( "unknownModel", projectFile );
+        Model model = readModel( projectFile );
         // then read the packaging model if any
         Model packagingModel = null;
         File packagingFile = new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" );
         if( packagingFile.exists() )
         {
-            packagingModel = readModel( "unknownModel", packagingFile );
+            packagingModel = readModel( packagingFile );
         }
         else
         {
@@ -109,7 +110,7 @@ public class ProjectBuilder
         }
         catch ( ValidationException e )
         {
-            throw new ProjectBuildingException( model.getId(), e.getMessage(), e );
+            throw new BuildFailureException( model.getId() + ": " + e.getMessage(), e );
         }
         return project;
     }
@@ -144,8 +145,8 @@ public class ProjectBuilder
     }
 
     // ----------------------------------------------------------------------
-    private Model readModel( String projectId, File file )
-        throws ProjectBuildingException
+    private Model readModel( File file )
+        throws BuildFailureException
     {
         Model model = null;
         try
@@ -158,16 +159,13 @@ public class ProjectBuilder
             reader.close();
         }
         catch ( XmlPullParserException e ) {
-            throw new ProjectBuildingException( projectId,
-                                                "Parse error reading nut.xml: " + e.getMessage(), e );
+            throw new BuildFailureException( "Parse error reading '" + file.getAbsolutePath() + "': "+ e.getMessage(), e );
         }
         catch ( FileNotFoundException e ) {
-            throw new ProjectBuildingException( projectId,
-                                                "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new BuildFailureException( "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
         }
         catch ( IOException e ) {
-            throw new ProjectBuildingException( projectId,
-                                                "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new BuildFailureException( "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
         }
         return model;
     }

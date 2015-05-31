@@ -8,7 +8,6 @@ import nut.project.NutProject;
 import nut.project.BuildFailureException;
 import nut.project.DuplicateProjectException;
 import nut.project.ProjectBuilder;
-import nut.project.ProjectBuildingException;
 import nut.project.ProjectSorter;
 
 import nut.model.EffectiveModel;
@@ -260,12 +259,6 @@ public class Nut
             stats( start );
             throw new Exception( e.getMessage(), e );
         }
-        catch ( ProjectBuildingException e )
-        {
-            log.logFailure( e );
-            stats( start );
-            throw new Exception( e.getMessage(), e );
-        }
         catch ( Throwable t )
         {
             log.logFatal( t );
@@ -295,7 +288,7 @@ public class Nut
     // ----------------------------------------------------------------------
 
     private static List<NutProject> collectProjects( ProjectBuilder builder, List files )
-        throws ProjectBuildingException, BuildFailureException
+        throws BuildFailureException
     {
         List<NutProject> projects = new ArrayList<NutProject>( files.size() );
 

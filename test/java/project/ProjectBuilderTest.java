@@ -3,8 +3,6 @@ package nut.project;
 import java.io.File;
 import java.io.IOException;
 
-import nut.project.BuildFailureException;
-
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -17,7 +15,7 @@ public class ProjectBuilderTest
 
     @Test
     public void testDefaultPackaging()
-        throws ProjectBuildingException
+        throws BuildFailureException
     {
         ProjectBuilder builder = new ProjectBuilder();
         NutProject project = builder.build( new File("test/resources/project/nut.xml") );
@@ -27,7 +25,7 @@ public class ProjectBuilderTest
 //    @Test(enabled=false)
     @Test
     public void testProperties()
-        throws ProjectBuildingException
+        throws BuildFailureException
     {
         ProjectBuilder builder = new ProjectBuilder();
         NutProject project = builder.build( new File("test/resources/project/nut.xml") );
