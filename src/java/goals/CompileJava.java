@@ -66,7 +66,7 @@ public class CompileJava
         for ( int i = 0; i < modelDep.size(); i++ )
         {
             Dependency dep = (Dependency)(modelDep.get(i));
-            Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType(), null );
+            Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
             File file = artifactDep.getFile();
             //log.debug( "scope is " + dep.getScope() + " for " + dep.getId() );
             if( dep.getScope().equals("test") ) {
