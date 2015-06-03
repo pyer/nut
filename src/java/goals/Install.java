@@ -25,11 +25,12 @@ public class Install
         String basedir              = (String)pp.getProperty( "basedir" );
         String repository           = (String)pp.getProperty( "nut.home" );
         String targetDirectory      = project.getBuild().getTargetDirectory();
-        log.debug( "build.directory           = " + targetDirectory );
+        log.debug( "build.targetDirectory     = " + targetDirectory );
 
+        
         String groupId              = project.getGroupId();
         String artifactId           = project.getArtifactId();
-        String version              = project.getVersion();
+        String version              = project.getVersion() + config.getProperty("CLASSIFIER");
         String packaging            = project.getPackaging();
         String artifactFile         = artifactId + "." + packaging;
 

@@ -29,7 +29,7 @@ public class InstallTest
         model.setBuild( build );
         model.setGroupId( "local.group" );
         model.setArtifactId( "artifact" );
-        model.setVersion( "0.0-SNAPSHOT" );
+        model.setVersion( "0.0" );
         model.setPackaging( "file" );
     }
 
@@ -53,7 +53,9 @@ public class InstallTest
         new File( "target/nut.xml" ).createNewFile();
         new File( "target/build/artifact.file" ).createNewFile();
         NutProject project = new NutProject(model);
-        Install.execute(project,null);
+        Properties config = new Properties();
+        config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
+        Install.execute(project,config);
         File installedArtifact = new File( "target/repo2/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
 //      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.file.nut" );
@@ -72,7 +74,9 @@ public class InstallTest
         model.setPackaging( "modules" );
 
         NutProject project = new NutProject(model);
-        Install.execute(project,null);
+        Properties config = new Properties();
+        config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
+        Install.execute(project,config);
         File installedArtifact = new File( "target/repo3/local/group/artifact-0.0-SNAPSHOT.modules" );
         assertFalse( installedArtifact.exists() );
 //      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.modules.nut" );
@@ -92,7 +96,9 @@ public class InstallTest
         new File( "target/nut.xml" ).createNewFile();
         model.setPackaging( "file" );
         NutProject project = new NutProject(model);
-        Install.execute(project,null);
+        Properties config = new Properties();
+        config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
+        Install.execute(project,config);
         File installedArtifact = new File( "target/repo4/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
       }

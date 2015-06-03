@@ -6,9 +6,10 @@ import java.io.StringWriter;
 /**
  * Logger with "standard" output and error output stream.
  */
+
 public class Log
 {
-    private boolean debug = false;
+    private static boolean debug = false;
 
     // ----------------------------------------------------------------------
     // Public methods
@@ -18,6 +19,7 @@ public class Log
     {
         debug = true;
     }
+
     public void debugOff()
     {
         debug = false;

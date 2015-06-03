@@ -46,6 +46,7 @@ public class Nut
         String  goalArg      = null;
         boolean effectiveNut = false;
         boolean noopMode     = false;
+        boolean snapshot     = true;
 
         log = new Log();
         if( args.length>0 ) {
@@ -70,6 +71,9 @@ public class Nut
               }
               else if( args[i].equals("-n") || args[i].equals("--noop") ) {
                  noopMode = true;
+              }
+              else if( args[i].equals("-r") || args[i].equals("--release") ) {
+                 snapshot = false;
               }
               else {
                  if( args[i].startsWith("-") ) {
@@ -101,7 +105,7 @@ public class Nut
         
         try
         {
-            ScanningProject(goalArg, effectiveNut, noopMode);
+            ScanningProject(goalArg, effectiveNut, noopMode, snapshot);
         }
         catch ( Exception e )
         {
@@ -147,6 +151,7 @@ public class Nut
         System.out.println( " -d,--debug       Produce execution debug output" );
         System.out.println( " -e,--effective   Display effective NUT" );
         System.out.println( " -n,--noop        No operation mode (dry run)" );
+        System.out.println( " -r,--release     Build release. Default is snapshot" );
     }
 
     // ----------------------------------------------------------------------
@@ -178,7 +183,9 @@ public class Nut
     // ----------------------------------------------------------------------
     // Project execution
     // ----------------------------------------------------------------------
-    private static void ScanningProject( String goalArgument, boolean effectiveNut, boolean noopMode )
+    private static final String CLASSIFIER = "CLASSIFIER";
+
+    private static void ScanningProject( String goalArgument, boolean effectiveNut, boolean noopMode, boolean snapshot )
         throws Exception
     {
         ProjectSorter sorter;
@@ -230,6 +237,12 @@ public class Nut
                       Goal   goal       = (Goal)g.next();
                       String goalId     = goal.getId();
                       Properties config = goal.getConfiguration();
+                      if( snapshot ) {
+                        config.setProperty( CLASSIFIER, "-SNAPSHOT" );
+                      } else {
+                        config.setProperty( CLASSIFIER, "" );
+                      }
+                      log.debug( "classifier = " + config.getProperty(CLASSIFIER) );
                       if( "build".equals(goalArgument) || goalId.startsWith(goal.getId(goalArgument)) ) {
                         if( noopMode ) {
                           log.info( "Goal " + goalId + " in noop mode" );

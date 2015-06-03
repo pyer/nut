@@ -1,7 +1,9 @@
 2.0
 No plugins to improve speed
 simpler repository layout
-First build with maven or install
+First build with install
+Option -r to build release. Default is snapshot.
+
 
 1.2
 plugins ans dependencies use core version if version is undefined 
