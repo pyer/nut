@@ -102,8 +102,7 @@ public class ProjectBuilder
             }
 
             project = new NutProject( model );
-            Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(),
-                                                     project.getPackaging(), null );
+            Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() );
             project.setArtifact( projectArtifact );
             // Must validate before artifact construction to make sure dependencies are good
             model.validate( );
