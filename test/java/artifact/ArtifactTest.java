@@ -11,29 +11,23 @@ public class ArtifactTest
 
     private Artifact artifact;
 
-    private String groupId = "groupid", artifactId = "artifactId", version = "1.0", type = "type", classifier = "classifier";
+    private String groupId = "groupid", artifactId = "artifactId", version = "1.0", type = "type";
 
     @Test
     public void testPath()
     {
         //System.out.println( artifact.getPath() );
-        artifact = new Artifact( groupId, artifactId, version, type, classifier );
-        assertEquals( groupId + File.separator + artifactId + "-" + version + "-" + classifier + "." + type,
+        artifact = new Artifact( groupId, artifactId, version, type );
+        assertEquals( groupId + File.separator + artifactId + "-" + version + "." + type,
                       artifact.getPath() );
     }
 
     @Test
     public void testToString()
     {
-        artifact = new Artifact( groupId, artifactId, version, type, classifier );
-        assertEquals( groupId + ":" + artifactId + ":" + type + ":" + classifier + ":" + version,
+        artifact = new Artifact( groupId, artifactId, version, type );
+        assertEquals( groupId + ":" + artifactId + ":" + type + ":" + version,
                       artifact.toString() );
     }
 
-    @Test
-    public void testToStringNullClassifier()
-    {
-        artifact = new Artifact( groupId, artifactId, version, type, null );
-        assertEquals( groupId + ":" + artifactId + ":" + type + ":" + version, artifact.toString() );
-    }
 }

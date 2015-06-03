@@ -119,7 +119,6 @@ public class xmlWriter {
             writeTag( "artifactId", dependency.getArtifactId(), serializer );
             writeTag( "version", dependency.getVersion(), serializer );
             writeTag( "type", dependency.getType(), serializer );
-            writeTag( "classifier", dependency.getClassifier(), serializer );
             writeTag( "scope", dependency.getScope(), serializer );
             if ( dependency.getProperties() != null && dependency.getProperties().size() > 0 ) {
                 serializer.startTag( NAMESPACE, "properties" );

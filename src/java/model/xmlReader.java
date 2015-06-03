@@ -164,11 +164,6 @@ public class xmlReader {
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
                 dependency.setType( parser.nextText() );
-            } else if ( parser.getName().equals( "classifier" )  ) {
-                if ( parsed.contains( "classifier" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
-                dependency.setClassifier( parser.nextText() );
             } else if ( parser.getName().equals( "scope" )  ) {
                 if ( parsed.contains( "scope" ) )
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );

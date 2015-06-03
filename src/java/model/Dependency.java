@@ -24,16 +24,12 @@ public class Dependency implements java.io.Serializable {
     private String version = null;
 
     /**
-     * The type of dependency. This defaults to
-     * <code>jar</code>. While it
-     * usually represents the extension on the filename
-     * of the dependency,
-     * that is not always the case. A type can be
-     * mapped to a different
-     * extension and a classifier.
+     * The type of dependency. This defaults to <code>jar</code>.
+     * While it usually represents the extension on the filename
+     * of the dependency, that is not always the case.
+     * A type can be mapped to a different extension.
      * The type often correspongs to the packaging
-     * used, though this is also
-     * not always the case.
+     * used, though this is also not always the case.
      * Some examples are <code>jar</code>,
      * <code>war</code>, <code>ejb-client</code>
      * and <code>test-jar</code>.
@@ -42,11 +38,6 @@ public class Dependency implements java.io.Serializable {
      * this is not a complete list.
      */
     private String type = "jar";
-
-    /**
-     * The classifier of the dependency.
-     */
-    private String classifier;
 
     /**
      *
@@ -110,16 +101,6 @@ public class Dependency implements java.io.Serializable {
     {
         this.type = type;
     } //-- void setType( String ) 
-
-    public String getClassifier()
-    {
-        return this.classifier;
-    } //-- String getClassifier() 
-
-    public void setClassifier( String classifier )
-    {
-        this.classifier = classifier;
-    } //-- void setClassifier( String ) 
 
     public String getScope()
     {

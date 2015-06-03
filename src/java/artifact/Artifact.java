@@ -15,17 +15,15 @@ public class Artifact
     private String artifactId;
     private String version;
     private final String type;
-    private final String classifier;
     
     private String repository;
 
-    public Artifact( String groupId, String artifactId, String version, String type, String classifier )
+    public Artifact( String groupId, String artifactId, String version, String type )
     {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
         this.type = type;
-        this.classifier = classifier;
 
         if ( (groupId == null) || groupId.isEmpty() ) {
             throw new InvalidArtifactRTException( groupId, artifactId, version, type,
@@ -79,25 +77,10 @@ public class Artifact
         return type;
     }
     
-    public String getClassifier()
-    {
-        return classifier;
-    }
-
-    public boolean hasClassifier()
-    {
-        return ( (classifier!=null) && !classifier.isEmpty() );
-    }
-
     public String getPath()
     {
         String group = getGroupId().replace( '.', File.separatorChar );
-        String path  = group+File.separator+artifactId+"-"+getVersion();
-        if ( hasClassifier() ) {
-            path = path + "-" + classifier;
-        }
-        path = path + "." + type;
-        return path;
+        return group + File.separator + artifactId + "-" + getVersion() + "." + type;
     }
 
     public File getFile()
@@ -116,10 +99,6 @@ public class Artifact
         sb.append( getArtifactId() );
         sb.append( ":" );
         sb.append( getType() );
-        if ( hasClassifier() ) {
-            sb.append( ":" );
-            sb.append( getClassifier() );
-        }
         sb.append( ":" );
         sb.append( getVersion() );
         return sb.toString();
