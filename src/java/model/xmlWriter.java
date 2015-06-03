@@ -120,15 +120,6 @@ public class xmlWriter {
             writeTag( "version", dependency.getVersion(), serializer );
             writeTag( "type", dependency.getType(), serializer );
             writeTag( "scope", dependency.getScope(), serializer );
-            if ( dependency.getProperties() != null && dependency.getProperties().size() > 0 ) {
-                serializer.startTag( NAMESPACE, "properties" );
-                for ( Iterator iter = dependency.getProperties().keySet().iterator(); iter.hasNext(); ) {
-                    String key = (String) iter.next();
-                    String value = (String) dependency.getProperties().get( key );
-                    writeTag( "" + key + "", value, serializer );
-                }
-                serializer.endTag( NAMESPACE, "properties" );
-            }
             serializer.endTag( NAMESPACE, tagName );
         }
     } //-- void writeDependency( Dependency, String, XmlSerializer ) 

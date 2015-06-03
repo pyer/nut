@@ -169,15 +169,6 @@ public class xmlReader {
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
                 dependency.setScope( parser.nextText() );
-            } else if ( parser.getName().equals( "properties" )  ) {
-                if ( parsed.contains( "properties" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
-                while ( parser.nextTag() == XmlPullParser.START_TAG ) {
-                    String key = parser.getName();
-                    String value = parser.nextText().trim();
-                    dependency.addProperty( key, value );
-                }
             } else {
                     throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
             }

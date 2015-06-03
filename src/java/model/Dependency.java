@@ -49,11 +49,6 @@ public class Dependency implements java.io.Serializable {
      */
     private String scope = "compile";
 
-    /**
-     * Field properties.
-     */
-    private java.util.Properties properties;
-
     //-----------/
     //- Methods -/
     //-----------/
@@ -111,37 +106,6 @@ public class Dependency implements java.io.Serializable {
     {
         this.scope = scope;
     } //-- void setScope( String ) 
-
-    // -------------------------------------------------------------
-    /**
-     * Method getProperties.
-     * 
-     * @return java.util.Properties
-     */
-    public java.util.Properties getProperties()
-    {
-        if ( this.properties == null )
-        {
-            this.properties = new java.util.Properties();
-        }
-    
-        return this.properties;
-    } //-- java.util.Properties getProperties() 
-
-    public void setProperties( java.util.Properties properties )
-    {
-        this.properties = properties;
-    } //-- void setProperties( java.util.Properties ) 
-
-    public void addProperty( String key, String value )
-    {
-        getProperties().put( key, value );
-    } //-- void addProperty( String, String ) 
-
-    public String getProperty( String property )
-    {
-        return getProperties().getProperty( property );
-    }
 
     // -------------------------------------------------------------
     public String getId()
