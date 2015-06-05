@@ -54,7 +54,7 @@ public class LogTest
         String out = outContent.toString();
         log.debugOff();
         System.setOut(original);
-        assertEquals("[debug] hello\n", out);
+        assertEquals("[ debug ] hello\n", out);
     }
 
     @Test(enabled=false)
@@ -78,7 +78,7 @@ public class LogTest
         new Log().error( "ERROR" );
         String out = outContent.toString();
         System.setErr(original);
-        assertEquals("\033[1;31m[error] ERROR\n\033[1;37m", out);
+        assertEquals("\033[1;31m[ error ] ERROR\n\033[1;37m", out);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class LogTest
         new Log().warn( "WARNING" );
         String out = outContent.toString();
         System.setOut(original);
-        assertEquals("\033[1;33m[warn] WARNING\n\033[1;37m", out);
+        assertEquals("\033[1;33m[ warn  ] WARNING\n\033[1;37m", out);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class LogTest
         new Log().info( "Hello !" );
         String out = outContent.toString();
         System.setOut(original);
-        assertEquals("[info] Hello !\n", out);
+        assertEquals("[ info  ] Hello !\n", out);
     }
 
 }
