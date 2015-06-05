@@ -104,36 +104,36 @@ public class Nut
     // ----------------------------------------------------------------------
     private static void showVersion()
     {
-        System.out.println( "Nut version       : " + System.getProperty( "nut.version", "<unknown>" ) );
-        System.out.println( "Nut home          : " + System.getProperty( "nut.home", "<unknown>" ) );
-        System.out.println( "Nut mode          : " + System.getProperty( "nut.mode", "SNAPSHOT" ) );
-        System.out.println( "Java version      : " + System.getProperty( "java.version", "<unknown>" ) );
-        System.out.println( "Java home         : " + System.getProperty( "java.home", "<unknown>" ) );
-        System.out.println( "Java classpath    : " + System.getProperty( "java.class.path", "<unknown>" ) );
-        System.out.println( "Java vendor       : " + System.getProperty( "java.vendor", "<unknown>" ) );
-        System.out.println( "Operating System  : " + System.getProperty( "os.name", "<unknown>" )
+        log.out( "Nut version       : " + System.getProperty( "nut.version", "<unknown>" ) );
+        log.out( "Nut home          : " + System.getProperty( "nut.home", "<unknown>" ) );
+        log.out( "Nut mode          : " + System.getProperty( "nut.mode", "SNAPSHOT" ) );
+        log.out( "Java version      : " + System.getProperty( "java.version", "<unknown>" ) );
+        log.out( "Java home         : " + System.getProperty( "java.home", "<unknown>" ) );
+        log.out( "Java classpath    : " + System.getProperty( "java.class.path", "<unknown>" ) );
+        log.out( "Java vendor       : " + System.getProperty( "java.vendor", "<unknown>" ) );
+        log.out( "Operating System  : " + System.getProperty( "os.name", "<unknown>" )
                                                    + System.getProperty( "os.version", "<unknown>" ) );
-        System.out.println( "Architecture      : " + System.getProperty( "os.arch", "<unknown>" ) );
-        System.out.println( "Default locale    : " + Locale.getDefault() );
-        System.out.println( "Platform encoding : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
-        System.out.println( "User name         : " + System.getProperty( "user.name", "<unknown encoding>" ) );
-        System.out.println( "User home         : " + System.getProperty( "user.home", "<unknown encoding>" ) );
-        System.out.println( "Working directory : " + System.getProperty( "user.dir", "<unknown encoding>" ) );
+        log.out( "Architecture      : " + System.getProperty( "os.arch", "<unknown>" ) );
+        log.out( "Default locale    : " + Locale.getDefault() );
+        log.out( "Platform encoding : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
+        log.out( "User name         : " + System.getProperty( "user.name", "<unknown encoding>" ) );
+        log.out( "User home         : " + System.getProperty( "user.home", "<unknown encoding>" ) );
+        log.out( "Working directory : " + System.getProperty( "user.dir", "<unknown encoding>" ) );
     }
 
     private static void showHelp()
     {
-        System.out.println( "usage: nut [options] build" );
-        System.out.println( "       nut [options] [goal]" );
-        System.out.println( "\n  where [goal] is one of: clean compile process test pack install deploy" );
-        System.out.println( "\nOptions:" );
-        System.out.println( " -h,--help        Display this help" );
-        System.out.println( " -v,--version     Display version information" );
-        System.out.println( " -D,--define      Define a system property" );
-        System.out.println( " -d,--debug       Produce execution debug output" );
-        System.out.println( " -e,--effective   Display effective NUT" );
-        System.out.println( " -n,--noop        No operation mode (dry run)" );
-        System.out.println( " -r,--release     Release mode. Default is snapshot" );
+        log.out( "usage: nut [options] build" );
+        log.out( "       nut [options] [goal]" );
+        log.out( "\n  where [goal] is one of: clean compile process test pack install deploy" );
+        log.out( "\nOptions:" );
+        log.out( " -h,--help        Display this help" );
+        log.out( " -v,--version     Display version information" );
+        log.out( " -D,--define      Define a system property" );
+        log.out( " -d,--debug       Produce execution debug output" );
+        log.out( " -e,--effective   Display effective NUT" );
+        log.out( " -n,--noop        No operation mode (dry run)" );
+        log.out( " -r,--release     Release mode. Default is snapshot" );
     }
 
     // ----------------------------------------------------------------------
