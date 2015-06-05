@@ -13,28 +13,17 @@ import nut.project.ProjectSorter;
 import java.io.File;
 import java.io.IOException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.TimeZone;
 
 public class Nut
 {
     /** Instance logger */
     private static Log log;
-
-    private static final long MB = 1024 * 1024;
-
-    private static final int MS_PER_SEC = 1000;
-
-    private static final int SEC_PER_MIN = 60;
 
     private static final String POM_FILE = "nut.xml";
 
@@ -100,16 +89,14 @@ public class Nut
             }
         } 
         // everything is ok, let's go 
-        Date start = new Date();
-        log.line();
-        log.info( "Started at " + start );
+        log.start();
         List modules = scanningProject();
         if( modules != null ) {
           buildProject(modules, goalArg, effectiveNut, noopMode, snapshot);
           if( modules.size() > 1 )
             logReactorSummary( modules );
         }
-        logStats( start );
+        log.finish();
         System.exit( 0 );
     }
 
@@ -180,7 +167,7 @@ public class Nut
     // ----------------------------------------------------------------------
     private static List scanningProject()
     {
-        List sortedProjects  = null;
+        List sortedProjects = Collections.EMPTY_LIST;
         try
         {
             log.info( "Scanning for projects..." );
@@ -302,85 +289,15 @@ public class Nut
 
                 if ( project.isBuilt() ) {
                     if ( project.isSuccessful() ) {
-                        log.success( summaryLine( project.getId(), project.getTime() ) );
+                        log.success( project.getId(), project.getTime() );
                     } else {
-                        log.failure( summaryLine( project.getId(), project.getTime() ) );
+                        log.failure( project.getId(), project.getTime() );
                     }
                 } else {
-                    log.warning( summaryLine( project.getId(), -1 ) );
+                    log.warning( project.getId(), -1 );
                 }
             }
             log.line();
-    }
-
-    private static String summaryLine( String name, long time )
-    {
-        StringBuffer messageBuffer = new StringBuffer();
-        messageBuffer.append( name );
-
-        int dotCount = 48;
-        dotCount -= name.length();
-
-        messageBuffer.append( " " );
-        for ( int i = 0; i < dotCount; i++ ) {
-            messageBuffer.append( '.' );
-        }
-
-        messageBuffer.append( " " );
-        if ( time >= 0 ) {
-            messageBuffer.append( getFormattedTime( time ) );
-        } else {
-            messageBuffer.append( "not built" );
-        }
-        return messageBuffer.toString();
-    }
-
-    private static String getFormattedTime( long time )
-    {
-        String pattern = "s.SSS's'";
-        if ( time / 60000L > 0 )
-        {
-            pattern = "m:s" + pattern;
-            if ( time / 3600000L > 0 )
-            {
-                pattern = "H:m" + pattern;
-            }
-        }
-        DateFormat fmt = new SimpleDateFormat( pattern );
-        fmt.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-        return fmt.format( new Date( time ) );
-    }
-
-    private static void logStats( Date start )
-    {
-        Date finish = new Date();
-        long time = finish.getTime() - start.getTime();
-        log.info( "Total time: " + formatTime( time ) );
-        log.info( "Finished at " + finish );
-        log.line();
-    }
-
-    private static String formatTime( long ms )
-    {
-        long secs = ms / MS_PER_SEC;
-        long min = secs / SEC_PER_MIN;
-        secs = secs % SEC_PER_MIN;
-
-        String msg = "";
-        if ( min > 1 ) {
-            msg = min + " minutes ";
-        } else if ( min == 1 ) {
-            msg = "1 minute ";
-        }
-
-        if ( secs > 1 ) {
-            msg += secs + " seconds";
-        } else if ( secs == 1 ) {
-            msg += "1 second";
-        } else if ( min == 0 ) {
-            msg += "< 1 second";
-        }
-        return msg;
     }
 
 }
