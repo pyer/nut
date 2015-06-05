@@ -24,13 +24,17 @@ public class Install
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
         String repository           = (String)pp.getProperty( "nut.home" );
-        String targetDirectory      = project.getBuild().getTargetDirectory();
-        log.debug( "build.targetDirectory     = " + targetDirectory );
+        String mode                 = (String)pp.getProperty( "nut.mode", "SNAPSHOT" );
+        if( "RELEASE".equals( mode ) )
+          mode = "";
+        else
+          mode = "-SNAPSHOT";
 
+        String targetDirectory      = project.getBuild().getTargetDirectory();
         
         String groupId              = project.getGroupId();
         String artifactId           = project.getArtifactId();
-        String version              = project.getVersion() + config.getProperty("CLASSIFIER");
+        String version              = project.getVersion()  + mode;
         String packaging            = project.getPackaging();
         String artifactFile         = artifactId + "." + packaging;
 

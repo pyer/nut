@@ -32,7 +32,6 @@ public class Nut
         String  goalArg      = null;
         boolean effectiveNut = false;
         boolean noopMode     = false;
-        boolean snapshot     = true;
 
         log = new Log();
         if( args.length>0 ) {
@@ -59,7 +58,7 @@ public class Nut
                  noopMode = true;
               }
               else if( args[i].equals("-r") || args[i].equals("--release") ) {
-                 snapshot = false;
+                 System.setProperty( "nut.mode", "RELEASE" );
               }
               else {
                  if( args[i].startsWith("-") ) {
@@ -92,7 +91,7 @@ public class Nut
         log.start();
         List modules = scanningProject();
         if( modules != null ) {
-          buildProject(modules, goalArg, effectiveNut, noopMode, snapshot);
+          buildProject(modules, goalArg, effectiveNut, noopMode);
           if( modules.size() > 1 )
             logReactorSummary( modules );
         }
@@ -107,6 +106,7 @@ public class Nut
     {
         System.out.println( "Nut version       : " + System.getProperty( "nut.version", "<unknown>" ) );
         System.out.println( "Nut home          : " + System.getProperty( "nut.home", "<unknown>" ) );
+        System.out.println( "Nut mode          : " + System.getProperty( "nut.mode", "SNAPSHOT" ) );
         System.out.println( "Java version      : " + System.getProperty( "java.version", "<unknown>" ) );
         System.out.println( "Java home         : " + System.getProperty( "java.home", "<unknown>" ) );
         System.out.println( "Java classpath    : " + System.getProperty( "java.class.path", "<unknown>" ) );
@@ -133,7 +133,7 @@ public class Nut
         System.out.println( " -d,--debug       Produce execution debug output" );
         System.out.println( " -e,--effective   Display effective NUT" );
         System.out.println( " -n,--noop        No operation mode (dry run)" );
-        System.out.println( " -r,--release     Build release. Default is snapshot" );
+        System.out.println( " -r,--release     Release mode. Default is snapshot" );
     }
 
     // ----------------------------------------------------------------------
@@ -210,7 +210,7 @@ public class Nut
     }
 
     // --------------------------------------------------------------------------------
-    private static void buildProject( List sortedProjects, String goalArgument, boolean effectiveNut, boolean noopMode, boolean snapshot )
+    private static void buildProject( List sortedProjects, String goalArgument, boolean effectiveNut, boolean noopMode )
     {
             // iterate over projects, and execute on each...
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
@@ -221,7 +221,7 @@ public class Nut
                     currentProject.effectiveModel();
                 } else {
                   if( !"modules".equals(currentProject.getPackaging()) )
-                    currentProject.build( goalArgument, noopMode, snapshot );
+                    currentProject.build( goalArgument, noopMode );
                 }
             }
     }

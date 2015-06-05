@@ -242,7 +242,7 @@ public class NutProject
     }
 
     // ----------------------------------------------------------------------
-    public void build( String targetGoal, boolean noopMode, boolean snapshot )
+    public void build( String targetGoal, boolean noopMode )
     {
       try {
         time = System.currentTimeMillis();
@@ -254,12 +254,6 @@ public class NutProject
             Goal   goal       = (Goal)g.next();
             String goalId     = goal.getId();
             Properties config = goal.getConfiguration();
-            if( snapshot ) {
-              config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
-            } else {
-              config.setProperty( "CLASSIFIER", "" );
-            }
-            log.debug( "classifier = " + config.getProperty("CLASSIFIER") );
             if( "build".equals(targetGoal) || goalId.startsWith(goal.getId(targetGoal)) ) {
               if( noopMode ) {
                 log.info( "Goal " + goalId + " in noop mode" );
