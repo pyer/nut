@@ -33,6 +33,9 @@ public class Nut
         boolean effectiveNut = false;
         boolean noopMode     = false;
 
+        // Default mode is SNAPSHOT
+        System.setProperty( "nut.mode", "SNAPSHOT" );
+
         log = new Log();
         if( args.length>0 ) {
            for(int i=0; i < args.length ; i++) {
