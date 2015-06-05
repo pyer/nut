@@ -21,6 +21,16 @@ public class Log
     // Public methods
     // ----------------------------------------------------------------------
 
+    public void out( String content )
+    {
+        System.out.println( content );
+    }
+
+    public void err( String content )
+    {
+        System.err.println( content );
+    }
+
     public void debugOn()
     {
         debug = true;
