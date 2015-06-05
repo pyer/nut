@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <groupId>nut.samples</groupId>
+  <artifactId>parent</artifactId>
+  <version>1.0</version>
+
+  <modules>
+    <module>hello2</module>
+    <module>modules</module>
+  </modules>
+
+</project>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <groupId>nut.samples.modules</groupId>
+  <artifactId>Hello</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+</project>
