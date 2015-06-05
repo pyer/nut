@@ -23,9 +23,6 @@ Log.java public methods:
     public void error( CharSequence content, Throwable error )
     public void error( Throwable error )
     public void line()
-    public void logFatal( Throwable t )
-    public void logFailure( Exception e )
-    public void logSuccess( )
 */
 
 public class LogTest

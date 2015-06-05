@@ -10,8 +10,6 @@ import nut.project.DuplicateProjectException;
 import nut.project.ProjectBuilder;
 import nut.project.ProjectSorter;
 
-import nut.model.Goal;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -42,7 +40,6 @@ public class Nut
 
     public static void main( String[] args )
     {
-        int exitCode = 0;
         String  goalArg      = null;
         boolean effectiveNut = false;
         boolean noopMode     = false;
@@ -53,11 +50,11 @@ public class Nut
            for(int i=0; i < args.length ; i++) {
               if(args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?") ) {
                  showHelp();
-                 System.exit( exitCode );
+                 System.exit( 0 );
               }
               else if(args[i].equals("-v") || args[i].equals("--version") ) {
                  showVersion();
-                 System.exit( exitCode );
+                 System.exit( 0 );
               }
               else if(args[i].startsWith("-D") ) {
                  // -Dproperty=value (-Dproperty means -Dproperty=true)
@@ -79,7 +76,7 @@ public class Nut
                  if( args[i].startsWith("-") ) {
                     log.error( "Option [" + args[i] + "] is invalid.\n" );
                     showHelp();
-                    System.exit( 101 );
+                    System.exit( 1 );
                  }
                  // nearly every arg without '-' is a goal
                  if( goalArg==null ) {
@@ -87,35 +84,33 @@ public class Nut
                  } else {
                     log.error( "Too many goals.\n" );
                     showHelp();
-                    System.exit( 102 );
+                    System.exit( 2 );
                  }
               }
            }
         } else {
                  showHelp();
-                 System.exit( 103 );
+                 System.exit( 3 );
         }
         if (effectiveNut==false ) {
             // every goal is 4 characters or more length
             if( goalArg==null || goalArg.length()<4 ) {
                  showHelp();
-                 System.exit( 104 );
+                 System.exit( 4 );
             }
         } 
-        
-        try
-        {
-            ScanningProject(goalArg, effectiveNut, noopMode, snapshot);
+        // everything is ok, let's go 
+        Date start = new Date();
+        log.line();
+        log.info( "Started at " + start );
+        List modules = scanningProject();
+        if( modules != null ) {
+          buildProject(modules, goalArg, effectiveNut, noopMode, snapshot);
+          if( modules.size() > 1 )
+            logReactorSummary( modules );
         }
-        catch ( Exception e )
-        {
-//            e.printStackTrace();
-            exitCode = 100;
-        }
-        finally
-        {
-            System.exit( exitCode );
-        }
+        logStats( start );
+        System.exit( 0 );
     }
 
     // ----------------------------------------------------------------------
@@ -183,18 +178,11 @@ public class Nut
     // ----------------------------------------------------------------------
     // Project execution
     // ----------------------------------------------------------------------
-    private static final String CLASSIFIER = "CLASSIFIER";
-
-    private static void ScanningProject( String goalArgument, boolean effectiveNut, boolean noopMode, boolean snapshot )
-        throws Exception
+    private static List scanningProject()
     {
-        ProjectSorter sorter;
-        List sortedProjects;
-        Date start   = new Date();
+        List sortedProjects  = null;
         try
         {
-            log.line();
-            log.info( "Started at " + start );
             log.info( "Scanning for projects..." );
             List files = Collections.EMPTY_LIST;
             File projectFile = new File( POM_FILE );
@@ -210,8 +198,8 @@ public class Nut
                 throw new BuildFailureException(  "Project file '" + POM_FILE + "' is empty !" );
             }
 
-            sorter = new ProjectSorter( projects );
-            sortedProjects = sorter.getSortedProjects( );
+            ProjectSorter sorter = new ProjectSorter( projects );
+            sortedProjects = sorter.getSortedProjects();
             if ( sorter.hasMultipleProjects() ) {
                 log.line();
                 log.info( "Ordering projects..." );
@@ -221,7 +209,22 @@ public class Nut
                     log.info( "   " + currentProject.getId() );
                 }
             }
-            
+        }
+        catch ( BuildFailureException e ) {
+            log.failure( e );
+        }
+        catch ( DuplicateProjectException e ) {
+            log.failure( e );
+        }
+        catch ( Throwable t ) {
+            log.fatal( t );
+        }
+        return sortedProjects;
+    }
+
+    // --------------------------------------------------------------------------------
+    private static void buildProject( List sortedProjects, String goalArgument, boolean effectiveNut, boolean noopMode, boolean snapshot )
+    {
             // iterate over projects, and execute on each...
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
             {
@@ -230,71 +233,12 @@ public class Nut
                 if( effectiveNut ) {
                     currentProject.effectiveModel();
                 } else {
-                    log.info( "Building " + currentProject.getName() );
-                    long buildStartTime = System.currentTimeMillis();
-                    List<Goal> goals = currentProject.getBuild().getGoals();
-                    for ( Iterator g = goals.iterator(); g.hasNext(); ) {
-                      Goal   goal       = (Goal)g.next();
-                      String goalId     = goal.getId();
-                      Properties config = goal.getConfiguration();
-                      if( snapshot ) {
-                        config.setProperty( CLASSIFIER, "-SNAPSHOT" );
-                      } else {
-                        config.setProperty( CLASSIFIER, "" );
-                      }
-                      log.debug( "classifier = " + config.getProperty(CLASSIFIER) );
-                      if( "build".equals(goalArgument) || goalId.startsWith(goal.getId(goalArgument)) ) {
-                        if( noopMode ) {
-                          log.info( "Goal " + goalId + " in noop mode" );
-                        } else {
-                          currentProject.executeGoal( goalId, config );
-                        }
-                      }
-                    }
-                    currentProject.setStatus( System.currentTimeMillis() - buildStartTime, true );
+                  if( !"modules".equals(currentProject.getPackaging()) )
+                    currentProject.build( goalArgument, noopMode, snapshot );
                 }
             }
-        }
-
-        // --------------------------------------------------------------------------------
-        catch ( BuildFailureException e )
-        {
-            log.logFailure( e );
-            stats( start );
-            throw new Exception( e.getMessage(), e );
-        }
-        catch ( DuplicateProjectException e )
-        {
-            log.logFailure( e );
-            stats( start );
-            throw new Exception( e.getMessage(), e );
-        }
-        catch ( Throwable t )
-        {
-            log.logFatal( t );
-            stats( start );
-            throw new Exception( "Error executing project within the reactor", t );
-        }
-        int failures = logReactorSummary( sorter );
-        if ( failures>0 ) {
-/*            for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
-            {
-                NutProject project = (NutProject) it.next();
-                if ( project.isBuilt() &&  !project.isSuccessful() )
-                {
-                    log.error( "Error for project: " + project.getId() + " (during " + project.getTask() + ")" );
-                    logDiagnostics( project.getCause() );
-                }
-            }
-*/
-            log.info( "BUILD ERRORS" );
-            stats( start );
-            throw new Exception( "Some builds failed" );
-        }
-
-        log.logSuccess( );
-        stats( start );
     }
+
     // ----------------------------------------------------------------------
 
     private static List<NutProject> collectProjects( ProjectBuilder builder, List files )
@@ -338,19 +282,11 @@ public class Nut
         return projects;
     }
 
-
     // ----------------------------------------------------------------------
     // Reporting
     // ----------------------------------------------------------------------
-    // returns the number of failures
-    private static int logReactorSummary( ProjectSorter sorter )
+    private static void logReactorSummary( List modules )
     {
-        int failureCount = 0;
-        if ( sorter.hasMultipleProjects() )
-        {
-            log.info( "" );
-//            log.info( "" );
-
             // -------------------------
             // Reactor Summary:
             // -------------------------
@@ -358,36 +294,26 @@ public class Nut
             // o project-name...........SUCCESS
 
             log.line();
-            log.info( "Summary:" );
-            log.line();
+            log.info( "SUMMARY" );
 
-            for ( Iterator it = sorter.getSortedProjects().iterator(); it.hasNext(); )
+            for ( Iterator it = modules.iterator(); it.hasNext(); )
             {
                 NutProject project = (NutProject) it.next();
 
-                if ( project.isBuilt() )
-                {
-                    if ( project.isSuccessful() )
-                    {
-                        logReactorSummaryLine( project.getId(), "SUCCESS", project.getTime() );
+                if ( project.isBuilt() ) {
+                    if ( project.isSuccessful() ) {
+                        log.success( summaryLine( project.getId(), project.getTime() ) );
+                    } else {
+                        log.failure( summaryLine( project.getId(), project.getTime() ) );
                     }
-                    else
-                    {
-                        logReactorSummaryLine( project.getId(), "FAILED", project.getTime() );
-                        failureCount++;
-                    }
-                }
-                else
-                {
-                    logReactorSummaryLine( project.getId(), "NOT BUILT", -1 );
+                } else {
+                    log.warning( summaryLine( project.getId(), -1 ) );
                 }
             }
             log.line();
-        }
-        return failureCount;
     }
 
-    private static void logReactorSummaryLine( String name, String status, long time )
+    private static String summaryLine( String name, long time )
     {
         StringBuffer messageBuffer = new StringBuffer();
         messageBuffer.append( name );
@@ -396,20 +322,17 @@ public class Nut
         dotCount -= name.length();
 
         messageBuffer.append( " " );
-        for ( int i = 0; i < dotCount; i++ )
-        {
+        for ( int i = 0; i < dotCount; i++ ) {
             messageBuffer.append( '.' );
         }
 
         messageBuffer.append( " " );
-        messageBuffer.append( status );
-        if ( time >= 0 )
-        {
-            messageBuffer.append( " [" );
+        if ( time >= 0 ) {
             messageBuffer.append( getFormattedTime( time ) );
-            messageBuffer.append( "]" );
+        } else {
+            messageBuffer.append( "not built" );
         }
-        log.info( messageBuffer.toString() );
+        return messageBuffer.toString();
     }
 
     private static String getFormattedTime( long time )
@@ -428,7 +351,7 @@ public class Nut
         return fmt.format( new Date( time ) );
     }
 
-    private static void stats( Date start )
+    private static void logStats( Date start )
     {
         Date finish = new Date();
         long time = finish.getTime() - start.getTime();

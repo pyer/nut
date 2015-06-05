@@ -3,6 +3,12 @@ package nut.logging;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Logger with "standard" output and error output stream.
  */
@@ -119,31 +125,78 @@ public class Log
     // Nut log methods
     // ----------------------------------------------------------------------
 
-    public void logFatal( Throwable t )
+    public void build( CharSequence content )
     {
-        error( "FATAL ERROR:" + t.getMessage() );
-        if(debug)
-           t.printStackTrace();
-        line();
+        System.out.print( "\033[1;32m" );
+        print( "BUILD  ", content );
+        System.out.print( "\033[1;37m" );
     }
 
-    public void logFailure( Exception e )
+    public void success( CharSequence content )
     {
-        error( "BUILD FAILURE:" + e.getMessage() );
+        System.out.print( "\033[1;32m" );
+        print( "SUCCESS", content );
+        System.out.print( "\033[1;37m" );
+    }
+
+    public void success( long time )
+    {
+        System.out.print( "\033[1;32m" );
+        print( "SUCCESS", "Done in " + getFormattedTime( time ) );
+        System.out.print( "\033[1;37m" );
+    }
+
+    public void warning( CharSequence content )
+    {
+        System.err.print( "\033[1;33m" );
+        print( "WARNING", content );
+        System.err.print( "\033[1;37m" );
+    }
+
+    public void failure( CharSequence content )
+    {
+        System.err.print( "\033[1;31m" );
+        System.err.println( "[FAILURE] " + content.toString() );
+        System.err.print( "\033[1;37m" );
+    }
+
+    public void failure( Exception e )
+    {
+        System.err.print( "\033[1;31m" );
+        System.err.println( "[FAILURE] " + e.getMessage() );
+        System.err.print( "\033[1;37m" );
         if(debug)
            e.printStackTrace();
-        line();
     }
 
-    public void logSuccess( )
+    public void fatal( Throwable t )
     {
-        info( "BUILD SUCCESSFUL" );
-        line();
+        System.err.print( "\033[1;31m" );
+        System.err.println( "[FATAL] " + t.getMessage() );
+        System.err.print( "\033[1;37m" );
+        if(debug)
+           t.printStackTrace();
     }
 
     // ----------------------------------------------------------------------
     // Private methods
     // ----------------------------------------------------------------------
+
+    private static String getFormattedTime( long time )
+    {
+        String pattern = "s.SSS's'";
+        if ( time / 60000L > 0 )
+        {
+            pattern = "m:s" + pattern;
+            if ( time / 3600000L > 0 )
+            {
+                pattern = "H:m" + pattern;
+            }
+        }
+        DateFormat fmt = new SimpleDateFormat( pattern );
+        fmt.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+        return fmt.format( new Date( time ) );
+    }
 
     private void print( String content )
     {

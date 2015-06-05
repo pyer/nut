@@ -78,11 +78,6 @@ public class NutProject
         return this.buildDone;
     }
 
-    public void buildIsDone()
-    {
-        this.buildDone=true;
-    }
-    
     public boolean isSuccessful()
     {
         return buildSuccess;
@@ -91,12 +86,6 @@ public class NutProject
     public long getTime()
     {
         return time;
-    }
-
-    public void setStatus( long time, boolean success )
-    {
-        this.time = time;
-        this.buildSuccess = success;
     }
 
     // ----------------------------------------------------------------------
@@ -252,10 +241,46 @@ public class NutProject
       }
     }
 
+    // ----------------------------------------------------------------------
+    public void build( String targetGoal, boolean noopMode, boolean snapshot )
+    {
+      try {
+        time = System.currentTimeMillis();
+        buildDone=true;
+        log.build( getName() );
+
+        List<Goal> goals = getBuild().getGoals();
+        for ( Iterator g = goals.iterator(); g.hasNext(); ) {
+            Goal   goal       = (Goal)g.next();
+            String goalId     = goal.getId();
+            Properties config = goal.getConfiguration();
+            if( snapshot ) {
+              config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
+            } else {
+              config.setProperty( "CLASSIFIER", "" );
+            }
+            log.debug( "classifier = " + config.getProperty("CLASSIFIER") );
+            if( "build".equals(targetGoal) || goalId.startsWith(goal.getId(targetGoal)) ) {
+              if( noopMode ) {
+                log.info( "Goal " + goalId + " in noop mode" );
+              } else {
+                executeGoal( goalId, config );
+              }
+            }
+        }
+        buildSuccess = true;
+        time = System.currentTimeMillis() - time;
+        log.success( time );
+      }
+      catch ( BuildFailureException e ) {
+        time = System.currentTimeMillis() - time;
+        log.failure( e );
+      }
+    }
 
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
-    public void executeGoal( String goalName, Properties config )
+    private void executeGoal( String goalName, Properties config )
         throws BuildFailureException
     {
       try {
