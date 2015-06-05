@@ -43,6 +43,29 @@ public class LogTest
         assertTrue( log.equals( log ) );
     }
 
+    @Test
+    public void testOut() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream original = System.out;
+        System.setOut(new PrintStream(outContent));
+        new Log().out( "hello" );
+        String out = outContent.toString();
+        System.setOut(original);
+        assertEquals("hello\n", out);
+    }
+
+    @Test
+    public void testErr() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream original = System.err;
+        System.setErr(new PrintStream(outContent));
+        new Log().err( "hello" );
+        String out = outContent.toString();
+        System.setErr(original);
+        assertEquals("hello\n", out);
+    }
+
+
     @Test(enabled=false)
     public void testDebugOn() {
         PrintStream original = System.out;
