@@ -11,12 +11,12 @@ import java.util.List;
  */
 public class Artifact
 {
-    private String groupId;
-    private String artifactId;
-    private String version;
+    private final String groupId;
+    private final String artifactId;
+    private final String version;
     private final String type;
     
-    private String repository;
+    private final String repository;
 
     public Artifact( String groupId, String artifactId, String version, String type )
     {
@@ -26,32 +26,28 @@ public class Artifact
         this.type = type;
 
         if ( (groupId == null) || groupId.isEmpty() ) {
-            throw new InvalidArtifactRTException( groupId, artifactId, version, type,
-                                                  "The groupId cannot be empty." );
+            throw new InvalidArtifactRTException( "The groupId of the artifact " + this.toString() + " cannot be empty." );
         }
 
-        if ( artifactId == null ) {
-            throw new InvalidArtifactRTException( groupId, artifactId, version, type,
-                                                  "The artifactId cannot be empty." );
+        if ( artifactId == null || artifactId.isEmpty() ) {
+            throw new InvalidArtifactRTException( "The artifactId of the artifact " + this.toString() + " cannot be empty." );
         }
 
-        if ( version == null ) {
-            throw new InvalidArtifactRTException( groupId, artifactId, version, type,
-                                                  "The version cannot be empty." );
+        if ( version == null || version.isEmpty() ) {
+            throw new InvalidArtifactRTException( "The version of the artifact " + this.toString() + " cannot be empty." );
         }
 
-        if ( type == null ) {
-            throw new InvalidArtifactRTException( groupId, artifactId, version, type,
-                                                  "The type cannot be empty." );
+        if ( type == null || type.isEmpty() ) {
+            throw new InvalidArtifactRTException( "The type of the artifact " + this.toString() + " cannot be empty." );
         }
         
         this.repository = System.getProperty( "nut.home" );
         if ( this.repository == null ) {
-            throw new InvalidArtifactRTException( groupId, artifactId, version, type,
-                                                  "The 'nut.home' property is undefined." );
+            throw new InvalidArtifactRTException( "The 'nut.home' system property is undefined." );
         }
     }
 
+    // ----------------------------------------------------------------------
     public String getGroupId()
     {
         return groupId;
@@ -67,11 +63,6 @@ public class Artifact
         return version;
     }
 
-    public void setVersion( String version )
-    {
-        this.version = version;
-    }
-
     public String getType()
     {
         return type;
@@ -85,7 +76,7 @@ public class Artifact
 
     public File getFile()
     {
-        return new File ( repository + File.separator + getPath() );
+        return new File ( this.repository + File.separator + getPath() );
     }
 
     // ----------------------------------------------------------------------
