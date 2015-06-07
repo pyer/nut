@@ -186,32 +186,6 @@ public class Model implements java.io.Serializable
     }
 
     /**
-     * add methods
-     */
-    public void addDependency( Dependency dependency )
-    {
-        if ( !(dependency instanceof Dependency) )
-        {
-            throw new ClassCastException( "Model.addDependencies(dependency) parameter must be instanceof " + Dependency.class.getName() );
-        }
-        getDependencies().add( dependency );
-    }
-
-    public void addModule( String string )
-    {
-        if ( !(string instanceof String) )
-        {
-            throw new ClassCastException( "Model.addModules(string) parameter must be instanceof " + String.class.getName() );
-        }
-        getModules().add( string );
-    }
-
-    public void addProperty( String key, String value )
-    {
-        getProperties().put( key, value );
-    }
-
-    /**
      * get methods
      */
     public List<Dependency> getDependencies()
@@ -245,27 +219,6 @@ public class Model implements java.io.Serializable
     }
 
     /**
-     * remove methods
-     */
-    public void removeDependency( Dependency dependency )
-    {
-        if ( !(dependency instanceof Dependency) )
-        {
-            throw new ClassCastException( "Model.removeDependencies(dependency) parameter must be instanceof " + Dependency.class.getName() );
-        }
-        getDependencies().remove( dependency );
-    }
-
-    public void removeModule( String string )
-    {
-        if ( !(string instanceof String) )
-        {
-            throw new ClassCastException( "Model.removeModules(string) parameter must be instanceof " + String.class.getName() );
-        }
-        getModules().remove( string );
-    }
-
-    /**
      * set  methods
      */
     public void setDependencies( List<Dependency> dependencies )
@@ -283,6 +236,10 @@ public class Model implements java.io.Serializable
         this.properties = properties;
     }
  
+    public void addProperty( String key, String value )
+    {
+        this.properties.put( key, value );
+    }
     /**
      * validate method
      */
