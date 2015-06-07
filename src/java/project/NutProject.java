@@ -252,13 +252,12 @@ public class NutProject
         List<Goal> goals = getBuild().getGoals();
         for ( Iterator g = goals.iterator(); g.hasNext(); ) {
             Goal   goal       = (Goal)g.next();
-            String goalId     = goal.getId();
-            Properties config = goal.getConfiguration();
-            if( "build".equals(targetGoal) || goalId.startsWith(goal.getId(targetGoal)) ) {
+            String goalClass  = goal.toString();
+            if( "build".equals(targetGoal) || goalClass.startsWith(goal.getClassName(targetGoal)) ) {
               if( noopMode ) {
-                log.info( "Goal " + goalId + " in noop mode" );
+                log.info( "Goal " + goalClass + " in noop mode" );
               } else {
-                executeGoal( goalId, config );
+                executeGoal( goalClass, goal.configuration() );
               }
             }
         }

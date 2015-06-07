@@ -73,12 +73,14 @@ public class Goal implements java.io.Serializable
     }
 
     /**
-     * Get the Id, ie full class name, of the goal.
+     * Get the class name of the goal.
      * For example: compile java ==> CompileJava
      * @return String
      */
-    public String getId()
+    public String toString()
     {
+      if( name == null )
+        return "";
       String id = name.substring(0, 1).toUpperCase() + name.substring(1);
       if( hasType() ) {
         return id + type.substring(0, 1).toUpperCase() + type.substring(1);
@@ -86,7 +88,7 @@ public class Goal implements java.io.Serializable
       return id;
     }
 
-    public String getId( String name )
+    public String getClassName( String name )
     {
       if( name==null || name.isEmpty() )
         return "";
@@ -97,7 +99,7 @@ public class Goal implements java.io.Serializable
      * Get the configuration object
      * @return configuration 
      */
-    public java.util.Properties getConfiguration()
+    public java.util.Properties configuration()
     {
         if ( this.configuration == null ) {
             this.configuration = new java.util.Properties();
@@ -105,14 +107,12 @@ public class Goal implements java.io.Serializable
         return this.configuration;
     }
 
-    /**
-     * Set the configuration object.
-     * 
-     * @param configuration
-     */
-    public void setConfiguration( java.util.Properties configuration )
+    public boolean hasConfiguration()
     {
-        this.configuration = configuration;
+        if ( this.configuration == null ) {
+            this.configuration = new java.util.Properties();
+        }
+        return ! this.configuration.isEmpty();
     }
 
     /**
@@ -122,7 +122,7 @@ public class Goal implements java.io.Serializable
      */
     public String getConfigurationValue( String key )
     {
-        return getConfiguration().getProperty( key );
+        return configuration().getProperty( key );
     }
 
     /**
@@ -132,7 +132,7 @@ public class Goal implements java.io.Serializable
      */
     public void setConfigurationValue( String key, String value )
     {
-        getConfiguration().setProperty( key, value );
+        configuration().setProperty( key, value );
     }
 
     /**
@@ -159,4 +159,5 @@ public class Goal implements java.io.Serializable
         if ( name.length() < 1 )
             throw new ValidationException( "goal.name is empty." );
     }
+    
 }

@@ -56,9 +56,9 @@ public class xmlWriter {
             serializer.startTag( NAMESPACE, tagName );
             writeTag( "name", goal.getName(), serializer );
             writeTag( "type", goal.getType(), serializer );
-            if ( goal.getConfiguration() != null && goal.getConfiguration().size() > 0 ) {
+            if ( goal.hasConfiguration() ) {
                 serializer.startTag( NAMESPACE, "configuration" );
-                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {
+                for ( Iterator iter = goal.configuration().keySet().iterator(); iter.hasNext(); ) {
                     String key = (String) iter.next();
                     String value = (String) goal.getConfigurationValue( key );
                     writeTag( "" + key + "", value, serializer );

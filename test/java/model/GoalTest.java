@@ -3,14 +3,6 @@ package nut.model;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-/*
-To be added in tests
-  public java.util.Properties getConfiguration()
-  public void setConfiguration( java.util.Properties configuration )
-  public String getConfigurationValue( String key )
-  public void setConfigurationValue( String key, String value )
-*/
-
 /**
  * Tests {@code Goal}.
  * 
@@ -64,14 +56,31 @@ public class GoalTest
     }
 
     @Test
-    public void testGetId()
+    public void testToString()
     {
       Goal goal = new Goal();
-      assertTrue( goal.getId("test").equals( "Test" ) );
       goal.setName( "test" );
-      assertTrue( goal.getId().equals( "Test" ) );
+      assertEquals( "Test", goal.toString() );
       goal.setType( "id" );
-      assertTrue( goal.getId().equals( "TestId" ) );
+      assertEquals( "TestId", goal.toString() );
+    }
+
+    @Test
+    public void testGetClassName()
+    {
+      Goal goal = new Goal();
+      assertEquals( "Test", goal.getClassName("test") );
+    }
+
+    @Test
+    public void testConfiguration()
+    {
+      Goal goal = new Goal();
+      assertTrue( goal.configuration().isEmpty() );
+      assertFalse( goal.hasConfiguration() );
+      goal.setConfigurationValue( "key", "value" );
+      assertEquals( "value", goal.getConfigurationValue( "key" ) );
+      assertTrue( goal.hasConfiguration() );
     }
 
     @Test
