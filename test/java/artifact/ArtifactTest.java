@@ -93,8 +93,7 @@ public class ArtifactTest
         }
         catch ( InvalidArtifactRTException e ) {
           System.setProperty( "nut.home", repository );
-          throw new InvalidArtifactRTException( groupId, artifactId, version, type,
-                                                  "The 'nut.home' property is undefined." );
+          throw new InvalidArtifactRTException( "The 'nut.home' property is undefined." );
         }
         finally {
           System.setProperty( "nut.home", repository );
