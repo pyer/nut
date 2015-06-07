@@ -3,6 +3,14 @@ package nut.model;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
+/*
+To be added in tests
+  public java.util.Properties getConfiguration()
+  public void setConfiguration( java.util.Properties configuration )
+  public String getConfigurationValue( String key )
+  public void setConfigurationValue( String key, String value )
+*/
+
 /**
  * Tests {@code Goal}.
  * 
@@ -35,21 +43,6 @@ public class GoalTest
         assertNotNull( new Goal().toString() );
     }
 
-/*
-public class Goal implements java.io.Serializable
-  public String getName()
-  public String getType()
-  public String getId()
-  public String getId( String name )
-  public java.util.Properties getConfiguration()
-  public String getConfigurationValue( String key )
-  public void setName( String name )
-  public void setType( String type )
-  public void setConfiguration( java.util.Properties configuration )
-  public void setConfigurationValue( String key, String value )
-  public void validate()
-*/
-
     @Test
     public void testName()
     {
@@ -79,6 +72,45 @@ public class Goal implements java.io.Serializable
       assertTrue( goal.getId().equals( "Test" ) );
       goal.setType( "id" );
       assertTrue( goal.getId().equals( "TestId" ) );
+    }
+
+    @Test
+    public void testDefaultModelEncoding()
+    {
+      Goal goal = new Goal();
+      assertEquals( goal.getModelEncoding(), "UTF-8" );
+    }
+
+    @Test
+    public void testModelEncoding()
+    {
+      String me = "ASCII";
+      Goal goal = new Goal();
+      goal.setModelEncoding( me );
+      assertEquals( goal.getModelEncoding(), me );
+    }
+
+    @Test
+    public void testValidate() throws ValidationException
+    {
+      Goal goal = new Goal();
+      goal.setName( "build" );
+      goal.validate();
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionNullName() throws ValidationException
+    {
+      Goal goal = new Goal();
+      goal.validate();
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionEmptyName() throws ValidationException
+    {
+      Goal goal = new Goal();
+      goal.setName( "" );
+      goal.validate();
     }
 
 }
