@@ -238,7 +238,7 @@ public class Model implements java.io.Serializable
  
     public void addProperty( String key, String value )
     {
-        this.properties.put( key, value );
+        getProperties().put( key, value );
     }
     /**
      * validate method
