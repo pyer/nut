@@ -22,6 +22,11 @@ public class Goal implements java.io.Serializable
      */
     private java.util.Properties configuration;
 
+    /**
+     * The current encoding used when reading/writing this model.
+     */
+    private String modelEncoding = "UTF-8";
+
     //-----------/
     //- Methods -/
     //-----------/
@@ -36,12 +41,30 @@ public class Goal implements java.io.Serializable
     }
 
     /**
+     * Set the name of the goal.
+     * @param name
+     */
+    public void setName( String name )
+    {
+        this.name = name;
+    }
+
+    /**
      * Get the type of the goal.
      * @return String
      */
     public String getType()
     {
         return this.type;
+    }
+
+    /**
+     * Set the type of the goal.
+     * @param type
+     */
+    public void setType( String type )
+    {
+        this.type = type;
     }
 
     private boolean hasType()
@@ -83,34 +106,6 @@ public class Goal implements java.io.Serializable
     }
 
     /**
-     * 
-     * @param  key
-     * @return value
-     */
-    public String getConfigurationValue( String key )
-    {
-        return getConfiguration().getProperty( key );
-    }
-
-    /**
-     * Set the name of the goal.
-     * @param name
-     */
-    public void setName( String name )
-    {
-        this.name = name;
-    }
-
-    /**
-     * Set the type of the goal.
-     * @param type
-     */
-    public void setType( String type )
-    {
-        this.type = type;
-    }
-
-    /**
      * Set the configuration object.
      * 
      * @param configuration
@@ -122,12 +117,35 @@ public class Goal implements java.io.Serializable
 
     /**
      * 
+     * @param  key
+     * @return value
+     */
+    public String getConfigurationValue( String key )
+    {
+        return getConfiguration().getProperty( key );
+    }
+
+    /**
+     * 
      * @param key
      * @param value
      */
     public void setConfigurationValue( String key, String value )
     {
         getConfiguration().setProperty( key, value );
+    }
+
+    /**
+     * The current encoding used when reading/writing this model.
+     */
+    public String getModelEncoding()
+    {
+        return modelEncoding;
+    }
+
+    public void setModelEncoding( String modelEncoding )
+    {
+        this.modelEncoding = modelEncoding;
     }
 
     /**
