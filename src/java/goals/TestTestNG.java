@@ -68,8 +68,8 @@ public class TestTestNG
         String testOutputDirectory  = basedir + File.separator + project.getBuild().getTestOutputDirectory();
         String testReportDirectory  = basedir + File.separator + project.getBuild().getTestReportDirectory();
 
-//        String testSuiteFileName    = basedir + File.separator + project.getBuild().getTestSuiteFile();
-        String testSuiteFileName    = basedir + File.separator + "test/testng.xml";
+        //String testSuiteFileName    = basedir + File.separator + "test/testng.xml";
+        String testSuiteFileName    = basedir + File.separator + config.getProperty("testSuiteFileName", "test/testng.xml");
         log.debug( "test suite   = " + testSuiteFileName);
         log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory );
