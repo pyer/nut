@@ -115,7 +115,7 @@ public class xmlWriter {
     {
         if ( dependency != null ) {
             serializer.startTag( NAMESPACE, tagName );
-            writeTag( "groupeId", dependency.getGroupId(), serializer );
+            writeTag( "groupId", dependency.getGroupId(), serializer );
             writeTag( "artifactId", dependency.getArtifactId(), serializer );
             writeTag( "version", dependency.getVersion(), serializer );
             writeTag( "type", dependency.getType(), serializer );
@@ -143,7 +143,7 @@ public class xmlWriter {
         if ( model != null ) {
             serializer.startTag( NAMESPACE, tagName );
             writeTag( "modelVersion", model.getModelVersion(), serializer );
-            writeTag( "groupeId", model.getGroupId(), serializer );
+            writeTag( "groupId", model.getGroupId(), serializer );
             writeTag( "artifactId", model.getArtifactId(), serializer );
             writeTag( "version", model.getVersion(), serializer );
             writeTag( "packaging", model.getPackaging(), serializer );
