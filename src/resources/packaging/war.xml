@@ -1,10 +1,25 @@
 <project>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.8.7</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <targetDirectory>target</targetDirectory>
     <sourceDirectory>src/java</sourceDirectory>
     <resourceDirectory>src/resources</resourceDirectory>
-    <outputDirectory>target/classes</outputDirectory>
+    <outputDirectory>target/classes/WEB-INF/classes</outputDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
     <testResourceDirectory>test/resources</testResourceDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
@@ -20,16 +35,16 @@
       </goal>
       <goal>
         <name>test</name>
-        <type>testng</type>
+        <type>TestNG</type>
         <configuration>
           <testSuiteFile>test/testng.xml</testSuiteFile>
         </configuration>
       </goal>
       <goal>
-        <name>process</name>
-      </goal>
-      <goal>
         <name>pack</name>
+        <configuration>
+          <classesDirectory>target/classes</classesDirectory>
+        </configuration>
       </goal>
       <goal>
         <name>install</name>

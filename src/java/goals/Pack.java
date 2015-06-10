@@ -24,31 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-/**
-[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-jar-plugin:2.2:jar' --
-[DEBUG]   (f) classesDirectory = C:\ab\plugins\clean\target\classes
-[DEBUG]   (f) defaultManifestFile = C:\ab\plugins\clean\target\classes\META-INF\MANIFEST.MF
-[DEBUG]   (f) finalName = clean-1.0
-[DEBUG]   (f) forceCreation = false
-[DEBUG]   (f) outputDirectory = C:\ab\plugins\clean\target
-[DEBUG]   (f) project = MavenProject: ab.plugins:clean:1.0 @ C:\ab\plugins\clean\pom.xml
-[DEBUG]   (f) useDefaultManifestFile = false
-[DEBUG] -- end configuration --
-[INFO] [jar:jar]
-[DEBUG] isUp2date: false (Input file C:\ab\plugins\clean\target\classes\ab\plugins\clean.class is newer.)
-[INFO] Building jar: C:\ab\plugins\clean\target\clean-1.0.jar
-[DEBUG] adding directory META-INF/
-[DEBUG] adding entry META-INF/MANIFEST.MF
-[DEBUG] adding directory ab/
-[DEBUG] adding directory ab/plugins/
-[DEBUG] adding entry ab/plugins/clean.class
-[DEBUG] adding directory META-INF/maven/
-[DEBUG] adding directory META-INF/maven/ab.plugins/
-[DEBUG] adding directory META-INF/maven/ab.plugins/clean/
-[DEBUG] adding entry META-INF/maven/ab.plugins/clean/pom.xml
-[DEBUG] adding entry META-INF/maven/ab.plugins/clean/pom.properties
- *
- */
 public class Pack
 {
     /** Instance logger */
@@ -63,26 +38,24 @@ public class Pack
         String repository           = (String)pp.getProperty( "nut.home" );
         String targetDirectory      = project.getBuild().getTargetDirectory();
         String sourceDirectory      = project.getBuild().getSourceDirectory();
-//        String testSourceDirectory  = project.getBuild().getTestSourceDirectory();
+        String resourceDirectory    = project.getBuild().getResourceDirectory();
         String outputDirectory      = project.getBuild().getOutputDirectory();
-//        String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
 
         log.debug( "build.directory           = " + targetDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );
-//        log.debug( "build.testSourceDirectory = " + testSourceDirectory );
+        log.debug( "build.resourceDirectory   = " + resourceDirectory );
         log.debug( "build.outputDirectory     = " + outputDirectory );
-//        log.debug( "build.testOutputDirectory = " + testOutputDirectory );
 
         String artifactId           = project.getArtifactId();
         String version              = project.getVersion();
         String packaging            = project.getPackaging();
-        String artifactFile         = artifactId + "." + packaging;
+        String artifactFileName     = artifactId + "." + packaging;
 
         log.debug( "project.artifactId        = " + artifactId );
         log.debug( "project.version           = " + version );
         log.debug( "project.packaging         = " + packaging );
         
-        log.info( "   Packaging \'" + artifactFile + "\'" );
+        log.info( "   Packaging \'" + artifactFileName + "\'" );
 
         if ( artifactId==null || (artifactId.trim().isEmpty() ) )
         {
@@ -105,12 +78,16 @@ public class Pack
 
         if( packaging.equals( "war" ) )
         {
-            archive( artifactFile, basedir + File.separator + targetDirectory, basedir + File.separator + sourceDirectory, "c" );
-            archive( artifactFile, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "u" );
+          String classesDirectory = config.getProperty("classesDirectory", outputDirectory );
+          // jar cvf webapp.war -C src/resources/  WEB-INF
+          // jar uvf webapp.war -C target WEB-INF/classes
+
+          archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + classesDirectory, "c" );
+          archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + resourceDirectory, "u" );
         }
         else
         {
-            archive( artifactFile, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "c" );
+          archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "c" );
         }
         //archive( artifactId + ".src.jar", basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory );
     }
@@ -124,7 +101,7 @@ public class Pack
         args.add( mode + "f" );
         args.add( targetDirectory + File.separator + finalName );
         args.add( "-C" );
-        args.add( outputDirectory + File.separator );
+        args.add( outputDirectory );
         args.add( "." );
         log.debug( "jar: -C " + outputDirectory );
         // ----------------------------------------------------------------------
