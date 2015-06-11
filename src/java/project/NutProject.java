@@ -27,6 +27,8 @@ import nut.model.Model;
 import nut.model.Repository;
 import nut.model.xmlWriter;
 
+import nut.project.DependencyChecker;
+import nut.project.DependencyNotFoundException;
 import nut.project.BuildFailureException;
 import nut.project.InvalidDependencyVersionException;
 
@@ -250,14 +252,11 @@ public class NutProject
       for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
           Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
-          File file = artifactDep.getFile();
           try {
-//            if( !file.isFile() ) {
- //             artifactDep.seek( repositories );
-//            }
-            if( !file.isFile() ) {
-              log.failure("Missing dependency " + dep.getId() );
-            }
+            log.debug( "* check " + artifactDep.toString() );
+            DependencyChecker dc = new DependencyChecker( artifactDep, getModel().getRepositories() );
+          } catch (DependencyNotFoundException e) {
+              log.failure( "Missing dependency " + dep.getId() + "(" + e.getMessage() + ")" );
           } catch (SecurityException e) {
             log.error("Unreadable dependency " + dep.getId() );
           }

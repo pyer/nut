@@ -19,7 +19,7 @@
     <repository>
       <name>Maven Central Repository</name>
       <layout>maven</layout>
-      <url>http://search.maven.org/remotecontent</url>
+      <url>https://repo1.maven.org/maven2</url>
     </repository>
   </repositories>
 

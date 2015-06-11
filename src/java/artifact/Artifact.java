@@ -3,8 +3,15 @@ package nut.artifact;
 import nut.artifact.InvalidArtifactRTException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * Description of an artifact.
@@ -70,8 +77,8 @@ public class Artifact
     
     public String getPath()
     {
-        String group = getGroupId().replace( '.', File.separatorChar );
-        return group + File.separator + artifactId + "-" + getVersion() + "." + type;
+        String group = groupId.replace( '.', File.separatorChar );
+        return group + File.separator + artifactId + "-" + version + "." + type;
     }
 
     public File getFile()
@@ -80,10 +87,47 @@ public class Artifact
     }
 
     // ----------------------------------------------------------------------
-    // seeks a file in a central repository
-//    public void seek( Repository repo )
-//    {
-//    }
+    // relative file path in a maven repository
+    // used to build a URL ('/' instead of separatorChar)
+    // Example: "http://search.maven.org/remotecontent?filepath=org/testng/testng/6.8.7/testng-6.8.7.jar"
+    public String mavenFilePath()
+    {
+        String group = getGroupId().replace( '.', '/' );
+        return '/' + group + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + "." + type;
+    }
+    // ----------------------------------------------------------------------
+    // relative file path in a nut repository
+    // used to build a URL ('/' instead of separatorChar)
+    public String nutFilePath()
+    {
+        String group = getGroupId().replace( '.', '/' );
+        return '/' + group + "/" + artifactId + "-" + version + "." + type;
+    }
+    // ----------------------------------------------------------------------
+    // check if the artifact file is present in the local repository and readable
+    public boolean isPresent()
+        throws SecurityException
+    {
+      return getFile().isFile();
+    }
+
+    public FileInputStream fileInputStream()
+        throws FileNotFoundException
+    {
+        File f = getFile();
+        return new FileInputStream( f );
+    }
+
+    public FileOutputStream fileOutputStream()
+        throws IOException
+    {
+        File f = getFile();
+        //does destination directory exist ?
+        if( !f.getParentFile().exists() ) {
+            f.getParentFile().mkdirs();
+        }
+        return new FileOutputStream( f );
+    }
 
     // ----------------------------------------------------------------------
     // Object overrides
