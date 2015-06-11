@@ -2,6 +2,7 @@ package nut.model;
 
 import nut.model.Build;
 import nut.model.Dependency;
+import nut.model.Repository;
 import nut.model.ValidationException;
 
 import java.util.ArrayList;
@@ -172,8 +173,9 @@ public class Model implements java.io.Serializable
     //- Other members -/
     //-----------------/
 
-    private List<Dependency> dependencies;
     private List<String> modules;
+    private List<Dependency> dependencies;
+    private List<Repository> repositories;
     private Properties properties;
 
     //-----------/
@@ -188,49 +190,56 @@ public class Model implements java.io.Serializable
     /**
      * get methods
      */
+    public List<String> getModules()
+    {
+        if ( this.modules == null ) {
+            this.modules = new ArrayList<String>();
+        }
+        return this.modules;
+    }
+
     public List<Dependency> getDependencies()
     {
-        if ( this.dependencies == null )
-        {
+        if ( this.dependencies == null ) {
             this.dependencies = new ArrayList<Dependency>();
         }
-    
         return this.dependencies;
     }
 
-    public List<String> getModules()
+    public List<Repository> getRepositories()
     {
-        if ( this.modules == null )
-        {
-            this.modules = new ArrayList<String>();
+        if ( this.repositories == null ) {
+            this.repositories = new ArrayList<Repository>();
         }
-    
-        return this.modules;
+        return this.repositories;
     }
 
     public Properties getProperties()
     {
-        if ( this.properties == null )
-        {
+        if ( this.properties == null ) {
             this.properties = new Properties();
         }
-    
         return this.properties;
     }
 
     /**
      * set  methods
      */
-    public void setDependencies( List<Dependency> dependencies )
-    {
-        this.dependencies = dependencies;
-    }
-    
     public void setModules( List<String> modules )
     {
         this.modules = modules;
     }
 
+    public void setDependencies( List<Dependency> dependencies )
+    {
+        this.dependencies = dependencies;
+    }
+    
+    public void setRepositories( List<Repository> repositories )
+    {
+        this.repositories = repositories;
+    }
+    
     public void setProperties( Properties properties )
     {
         this.properties = properties;

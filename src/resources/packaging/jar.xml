@@ -15,6 +15,14 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+      <name>Maven Central Repository</name>
+      <layout>maven</layout>
+      <url>http://search.maven.org/remotecontent</url>
+    </repository>
+  </repositories>
+
   <build>
     <targetDirectory>target</targetDirectory>
     <sourceDirectory>src/java</sourceDirectory>

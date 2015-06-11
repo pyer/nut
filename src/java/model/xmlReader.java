@@ -10,6 +10,7 @@ import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
+import nut.model.Repository;
 
 import nut.xml.pull.XmlPullParser;
 import nut.xml.pull.XmlPullParserException;
@@ -177,6 +178,42 @@ public class xmlReader {
     }
 
     /**
+     * Method parseRepository.
+     * 
+     * @param parser
+     * @throws IOException
+     * @throws XmlPullParserException
+     * @return Repository
+     */
+    private Repository parseRepository( XmlPullParser parser )
+        throws IOException, XmlPullParserException
+    {
+        Repository repository = new Repository();
+        java.util.Set<String> parsed = new java.util.HashSet<String>();
+        while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+            if ( parser.getName().equals( "name" )  ) {
+                if ( parsed.contains( "name" ) )
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                parsed.add( parser.getName() );
+                repository.setName( parser.nextText() );
+            } else if ( parser.getName().equals( "layout" )  ) {
+                if ( parsed.contains( "layout" ) )
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                parsed.add( parser.getName() );
+                repository.setLayout( parser.nextText() );
+            } else if ( parser.getName().equals( "url" )  ) {
+                if ( parsed.contains( "url" ) )
+                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                parsed.add( parser.getName() );
+                repository.setURL( parser.nextText() );
+            } else {
+                    throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+            }
+        }
+        return repository;
+    }
+
+    /**
      * Method parseModel.
      * 
      * @param sReader
@@ -252,8 +289,7 @@ public class xmlReader {
                             throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }
                     }
-                }
-                else if ( parser.getName().equals( "dependencies" )  ) {
+                } else if ( parser.getName().equals( "dependencies" )  ) {
                     if ( parsed.contains( "dependencies" ) )
                         throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                     parsed.add( parser.getName() );
@@ -262,6 +298,19 @@ public class xmlReader {
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
                         if ( parser.getName().equals( "dependency" ) ) {
                             dependencies.add( parseDependency( parser ) );
+                        } else {
+                            throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
+                        }
+                    }
+                } else if ( parser.getName().equals( "repositories" )  ) {
+                    if ( parsed.contains( "repositories" ) )
+                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                    parsed.add( parser.getName() );
+                    java.util.List<Repository> repositories = new java.util.ArrayList<Repository>();
+                    model.setRepositories( repositories );
+                    while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+                        if ( parser.getName().equals( "repository" ) ) {
+                            repositories.add( parseRepository( parser ) );
                         } else {
                             throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }

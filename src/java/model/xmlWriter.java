@@ -125,6 +125,26 @@ public class xmlWriter {
     } //-- void writeDependency( Dependency, String, XmlSerializer ) 
 
     /**
+     * Method writeRepository.
+     * 
+     * @param repository
+     * @param tagName
+     * @param serializer
+     * @throws java.io.IOException
+     */
+    private void writeRepository( Repository repository, String tagName, XmlSerializer serializer )
+        throws java.io.IOException
+    {
+        if ( repository != null ) {
+            serializer.startTag( NAMESPACE, tagName );
+            writeTag( "name", repository.getName(), serializer );
+            writeTag( "layout", repository.getLayout(), serializer );
+            writeTag( "url", repository.getURL(), serializer );
+            serializer.endTag( NAMESPACE, tagName );
+        }
+    }
+
+    /**
      * Method writeModel.
      * 
      * @param sWriter
@@ -167,6 +187,14 @@ public class xmlWriter {
                     writeDependency( o, "dependency", serializer );
                 }
                 serializer.endTag( NAMESPACE, "dependencies" );
+            }
+            if ( model.getRepositories() != null && model.getRepositories().size() > 0 ) {
+                serializer.startTag( NAMESPACE, "repositories" );
+                for ( Iterator iter = model.getRepositories().iterator(); iter.hasNext(); ) {
+                    Repository o = (Repository) iter.next();
+                    writeRepository( o, "repository", serializer );
+                }
+                serializer.endTag( NAMESPACE, "repositories" );
             }
             if ( model.getProperties() != null && model.getProperties().size() > 0 ) {
                 serializer.startTag( NAMESPACE, "properties" );

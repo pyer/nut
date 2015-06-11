@@ -24,6 +24,7 @@ import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
+import nut.model.Repository;
 import nut.model.xmlWriter;
 
 import nut.project.BuildFailureException;
@@ -241,6 +242,27 @@ public class NutProject
       }
     }
 
+    // ----------------------------------------------------------------------
+    // check f every dependency is in the local repository
+    // if not try to dowload it from repositories defined in nut.xml
+    public void checkDependencies()
+    {
+      for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
+          Dependency dep = (Dependency) it.next();
+          Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
+          File file = artifactDep.getFile();
+          try {
+//            if( !file.isFile() ) {
+ //             artifactDep.seek( repositories );
+//            }
+            if( !file.isFile() ) {
+              log.failure("Missing dependency " + dep.getId() );
+            }
+          } catch (SecurityException e) {
+            log.error("Unreadable dependency " + dep.getId() );
+          }
+      }
+    }
     // ----------------------------------------------------------------------
     public void build( String targetGoal, boolean noopMode )
     {

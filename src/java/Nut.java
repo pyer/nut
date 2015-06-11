@@ -223,8 +223,10 @@ public class Nut
                 if( effectiveNut ) {
                     currentProject.effectiveModel();
                 } else {
-                  if( !"modules".equals(currentProject.getPackaging()) )
+                  if( !"modules".equals(currentProject.getPackaging()) ) {
+                    currentProject.checkDependencies();
                     currentProject.build( goalArgument, noopMode );
+                  }
                 }
             }
     }

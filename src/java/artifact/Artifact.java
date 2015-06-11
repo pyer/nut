@@ -80,6 +80,12 @@ public class Artifact
     }
 
     // ----------------------------------------------------------------------
+    // seeks a file in a central repository
+//    public void seek( Repository repo )
+//    {
+//    }
+
+    // ----------------------------------------------------------------------
     // Object overrides
     // ----------------------------------------------------------------------
     public String toString()

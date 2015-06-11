@@ -99,6 +99,7 @@ public class ProjectBuilder
             {
                 model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
                 model.getDependencies().addAll( packagingModel.getDependencies() );
+                model.getRepositories().addAll( packagingModel.getRepositories() );
             }
 
             project = new NutProject( model );
