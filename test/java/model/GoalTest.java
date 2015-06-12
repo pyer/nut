@@ -84,22 +84,6 @@ public class GoalTest
     }
 
     @Test
-    public void testDefaultModelEncoding()
-    {
-      Goal goal = new Goal();
-      assertEquals( goal.getModelEncoding(), "UTF-8" );
-    }
-
-    @Test
-    public void testModelEncoding()
-    {
-      String me = "ASCII";
-      Goal goal = new Goal();
-      goal.setModelEncoding( me );
-      assertEquals( goal.getModelEncoding(), me );
-    }
-
-    @Test
     public void testValidate() throws ValidationException
     {
       Goal goal = new Goal();

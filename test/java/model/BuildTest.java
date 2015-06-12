@@ -167,22 +167,6 @@ public class BuildTest
     }
 
     @Test
-    public void testDefaultModelEncoding()
-    {
-        Build thing = new Build();
-        assertEquals( thing.getModelEncoding(), "UTF-8" );
-    }
-
-    @Test
-    public void testModelEncoding()
-    {
-        String me = "ASCII";
-        Build thing = new Build();
-        thing.setModelEncoding( me );
-        assertEquals( thing.getModelEncoding(), me );
-    }
-
-    @Test
     public void testValidate() throws ValidationException
     {
         Build thing = new Build();

@@ -32,20 +32,4 @@ public class DependencyTest
         assertNotNull( new Dependency().toString() );
     }
 
-    @Test
-    public void testDefaultModelEncoding()
-    {
-        Dependency thing = new Dependency();
-        assertEquals( thing.getModelEncoding(), "UTF-8" );
-    }
-
-    @Test
-    public void testModelEncoding()
-    {
-        String me = "ASCII";
-        Dependency thing = new Dependency();
-        thing.setModelEncoding( me );
-        assertEquals( thing.getModelEncoding(), me );
-    }
-
 }

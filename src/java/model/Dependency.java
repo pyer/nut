@@ -148,26 +148,6 @@ public class Dependency implements java.io.Serializable {
         return getId().hashCode();
     }
 
-    private String modelEncoding = "UTF-8";
-
-    /**
-     * Set an encoding used for reading/writing the model.
-     *
-     * @param modelEncoding the encoding used when reading/writing the model.
-     */
-    public void setModelEncoding( String modelEncoding )
-    {
-        this.modelEncoding = modelEncoding;
-    }
-
-    /**
-     * @return the current encoding used when reading/writing this model.
-     */
-    public String getModelEncoding()
-    {
-        return modelEncoding;
-    }
-
     /**
      * validate method
      * if a dependency version is undefined, it is the same as the project version

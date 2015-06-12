@@ -75,11 +75,6 @@ implements java.io.Serializable
      */
     private List<Goal> goals;
 
-    /**
-     * The current encoding used when reading/writing this model.
-     */
-    private String modelEncoding = "UTF-8";
-
     //-----------/
     //- Methods -/
     //-----------/
@@ -187,19 +182,6 @@ implements java.io.Serializable
     public void setGoals( List<Goal> goals )
     {
         this.goals = goals;
-    }
-
-    /**
-     * The current encoding used when reading/writing this model.
-     */
-    public String getModelEncoding()
-    {
-        return modelEncoding;
-    }
-
-    public void setModelEncoding( String modelEncoding )
-    {
-        this.modelEncoding = modelEncoding;
     }
 
     /**

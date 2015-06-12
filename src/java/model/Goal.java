@@ -22,11 +22,6 @@ public class Goal implements java.io.Serializable
      */
     private java.util.Properties configuration;
 
-    /**
-     * The current encoding used when reading/writing this model.
-     */
-    private String modelEncoding = "UTF-8";
-
     //-----------/
     //- Methods -/
     //-----------/
@@ -133,19 +128,6 @@ public class Goal implements java.io.Serializable
     public void setConfigurationValue( String key, String value )
     {
         configuration().setProperty( key, value );
-    }
-
-    /**
-     * The current encoding used when reading/writing this model.
-     */
-    public String getModelEncoding()
-    {
-        return modelEncoding;
-    }
-
-    public void setModelEncoding( String modelEncoding )
-    {
-        this.modelEncoding = modelEncoding;
     }
 
     /**
