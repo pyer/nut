@@ -10,29 +10,32 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.testng.Assert.*;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 public class ArtifactTest
 {
-  /*
-  public Artifact( String groupId, String artifactId, String version, String type )
-  public String getGroupId()
-  public String getArtifactId()
-  public String getVersion()
-  public String getType()
-  public String getPath()
-  public File getFile()
-  public String mavenFilePath()
-  public String nutFilePath()
-  public boolean isPresent()
-  public FileInputStream fileInputStream()
-  public FileOutputStream fileOutputStream()
-  public String toString()
-  */
-
     private Artifact artifact;
-
+    private String   home;
     private String groupId = "groupid", artifactId = "artifactId", version = "1.0", type = "type";
+    private final String LOCAL_REPO = "target/repository";
+    private final String LOCAL_FILE = "target/repository/groupid/artifactId-1.0.type";
+    
+    @BeforeMethod
+    private void before()
+    {
+        home = System.getProperty( "nut.home" );
+        new File( LOCAL_REPO ).mkdir();
+        new File( LOCAL_REPO + "/groupid" ).mkdir();
+        System.setProperty( "nut.home", LOCAL_REPO );
+    }
+
+    @AfterMethod
+    private void after()
+    {
+        System.setProperty( "nut.home", home );
+    }
 
     @Test
     public void testGetPath()
@@ -46,12 +49,9 @@ public class ArtifactTest
     public void testGetFile()
               throws IOException
     {
-        String repository = System.getProperty( "nut.home" );
-        System.setProperty( "nut.home", "target" );
-        File target = new File( "target/groupid/artifactId-1.0.type" );
+        File target = new File( LOCAL_FILE );
         artifact = new Artifact( groupId, artifactId, version, type );
         assertEquals( target.getCanonicalPath(), artifact.getFile().getCanonicalPath() );
-        System.setProperty( "nut.home", repository );
     }
 
     @Test
@@ -72,27 +72,18 @@ public class ArtifactTest
     public void testIsPresent()
               throws IOException
     {
-        String repository = System.getProperty( "nut.home" );
-        System.setProperty( "nut.home", "target/repo" );
-        new File( "target/repo" ).mkdir();
-        File target = new File( "target/repo/groupid/artifactId-1.0.type" );
-        new File( "target/repo/groupid" ).mkdir();
+        File target = new File( LOCAL_FILE );
         target.createNewFile();
         artifact = new Artifact( groupId, artifactId, version, type );
         assertTrue( artifact.isPresent() );
         target.delete();
-        System.setProperty( "nut.home", repository );
     }
 
     @Test
     public void testFileInputStream()
               throws IOException
     {
-        String repository = System.getProperty( "nut.home" );
-        System.setProperty( "nut.home", "target/repo" );
-        new File( "target/repo" ).mkdir();
-        File target = new File( "target/repo/groupid/artifactId-1.0.type" );
-        new File( "target/repo/groupid" ).mkdir();
+        File target = new File( LOCAL_FILE );
         target.createNewFile();
         FileOutputStream ft = new FileOutputStream(target);
         ft.write( 33 );
@@ -102,7 +93,6 @@ public class ArtifactTest
         int c = f.read();
         f.close();
         target.delete();
-        System.setProperty( "nut.home", repository );
         assertEquals( c, 33 );
     }
 
@@ -110,11 +100,7 @@ public class ArtifactTest
     public void testFileOutputStream()
               throws IOException
     {
-        System.setProperty( "nut.home", "target/repo" );
-        new File( "target/repo" ).mkdir();
-        File target = new File( "target/repo/groupid/artifactId-1.0.type" );
-        new File( "target/repo/groupid" ).mkdir();
-        String repository = System.getProperty( "nut.home" );
+        File target = new File( LOCAL_FILE );
         target.createNewFile();
         artifact = new Artifact( groupId, artifactId, version, type );
         FileOutputStream f = artifact.fileOutputStream();
@@ -122,7 +108,6 @@ public class ArtifactTest
         f.write( 33 );
         f.close();
         target.delete();
-        System.setProperty( "nut.home", repository );
     }
 
     @Test
@@ -185,18 +170,13 @@ public class ArtifactTest
     @Test(expectedExceptions = InvalidArtifactRTException.class)
     public void testNullRepository() throws InvalidArtifactRTException
     {
-        String repository = System.getProperty( "nut.home" );
         Properties sysProps = System.getProperties();
         sysProps.remove("nut.home");
         try {
           new Artifact( groupId, artifactId, version, type );
         }
         catch ( InvalidArtifactRTException e ) {
-          System.setProperty( "nut.home", repository );
           throw new InvalidArtifactRTException( "The 'nut.home' property is undefined." );
-        }
-        finally {
-          System.setProperty( "nut.home", repository );
         }
     }
 
