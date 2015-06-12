@@ -128,7 +128,7 @@ public class Nut
     {
         log.out( "usage: nut [options] build" );
         log.out( "       nut [options] [goal]" );
-        log.out( "\n  where [goal] is one of: clean compile process test pack install deploy" );
+        log.out( "\n  where [goal] is one of: clean compile test pack install deploy" );
         log.out( "\nOptions:" );
         log.out( " -h,--help        Display this help" );
         log.out( " -v,--version     Display version information" );
