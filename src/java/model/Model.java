@@ -21,6 +21,7 @@ import java.util.Properties;
  *   - description
  *   - build
  *   - dependencies
+ *   - repositories
  *   - properties
  *
  */
@@ -270,10 +271,16 @@ public class Model implements java.io.Serializable
                                                 "' is invalid. Aggregator projects require 'modules' as packaging." );
         }
 
-        for ( Iterator it = dependencies.iterator(); it.hasNext(); )
+        for ( Iterator it = getDependencies().iterator(); it.hasNext(); )
         {
             Dependency dep = (Dependency) it.next();
             dep.validate(version);
+        }
+
+        for ( Iterator it = getRepositories().iterator(); it.hasNext(); )
+        {
+            Repository repo = (Repository) it.next();
+            repo.validate();
         }
 
         if ( build != null ) {
