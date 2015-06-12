@@ -71,12 +71,15 @@ public class ProjectBuilder
         // then read the packaging model if any
         Model packagingModel = null;
         File packagingFile = new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" );
-        if( packagingFile.exists() )
-        {
-            packagingModel = readModel( packagingFile );
+        try {
+          log.debug( "Packaging file is " + packagingFile.getCanonicalPath() );
+        } catch (IOException e ) {
+          log.error( e.getMessage() );
         }
-        else
-        {
+    
+        if( packagingFile.exists() ) {
+            packagingModel = readModel( packagingFile );
+        } else {
             log.warn( "No template for packaging '" + model.getPackaging() + "'" );
         }
  
