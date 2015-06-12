@@ -23,7 +23,7 @@ TO DO:
 //---------------------------------/
 //- Imported classes and packages -/
 //---------------------------------/
-//import nut.model.ValidationException;
+import nut.model.ValidationException;
 
 public class Repository implements java.io.Serializable
 {
@@ -91,6 +91,17 @@ public class Repository implements java.io.Serializable
     public void setURL( String url )
     {
         this.url = url;
+    }
+
+    public void validate()
+        throws ValidationException
+    {
+        if ( name == null || name.isEmpty() )
+            throw new ValidationException( "Undefined name for repository " + url );
+        if ( url == null || url.isEmpty() )
+            throw new ValidationException( "Undefined url for repository " + name );
+        if ( layout == null || layout.isEmpty() )
+            throw new ValidationException( "Undefined layout for repository " + name );
     }
 
 }
