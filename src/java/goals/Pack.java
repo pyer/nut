@@ -10,6 +10,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
+// for zip
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.zip.*;
+
 import java.lang.InterruptedException;
 import java.lang.Process;
 import java.lang.Runtime;
@@ -29,6 +36,7 @@ public class Pack
     /** Instance logger */
     private static Log log;
 
+    // ==========================================================================
     public static void execute( Project project, Properties config )
         throws Exception
     {
@@ -63,12 +71,6 @@ public class Pack
             throw new Exception();
         }
         
-        File outputDir = new File( basedir + File.separator + outputDirectory );
-        if ( !outputDir.exists() )
-        {
-            log.error( "\'" + outputDirectory + "\' is empty" );
-            throw new Exception();
-        }
 
         File targetDir = new File( basedir + File.separator + targetDirectory );
         if ( !targetDir.exists() )
@@ -76,22 +78,33 @@ public class Pack
             targetDir.mkdirs();
         }
 
-        if( packaging.equals( "war" ) )
-        {
+        if( packaging.equals( "zip" ) ) {
+          // zip src/resources/* to target/artifact.zip
+          zip( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + resourceDirectory );
+        } else if( packaging.equals( "war" ) ) {
+          File outputDir = new File( basedir + File.separator + outputDirectory );
+          if ( !outputDir.exists() ) {
+            log.error( "\'" + outputDirectory + "\' is empty" );
+            throw new Exception();
+          }
           String classesDirectory = config.getProperty("classesDirectory", outputDirectory );
           // jar cvf webapp.war -C src/resources/  WEB-INF
           // jar uvf webapp.war -C target WEB-INF/classes
 
           archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + classesDirectory, "c" );
           archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + resourceDirectory, "u" );
-        }
-        else
-        {
+        } else {
+          // Default is jar
+          File outputDir = new File( basedir + File.separator + outputDirectory );
+          if ( !outputDir.exists() ) {
+            log.error( "\'" + outputDirectory + "\' is empty" );
+            throw new Exception();
+          }
           archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "c" );
         }
-        //archive( artifactId + ".src.jar", basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory );
     }
 
+    // ==========================================================================
     private static void archive(String finalName, String targetDirectory, String outputDirectory, String mode)
         throws Exception
     {
@@ -122,6 +135,39 @@ public class Pack
             throw new Exception();
         }
         // ----------------------------------------------------------------------
+    }
+
+    // ==========================================================================
+    static final int BUFFER = 2048;
+    private static void zip(String finalName, String targetDirectory, String resourceDirectory)
+        throws Exception
+    {
+        try {
+          BufferedInputStream origin = null;
+          FileOutputStream dest = new FileOutputStream( targetDirectory + File.separator + finalName );
+          ZipOutputStream  out  = new ZipOutputStream( new BufferedOutputStream(dest));
+          byte data[] = new byte[BUFFER];
+          // get a list of files from current directory
+          File f = new File( resourceDirectory );
+          String files[] = f.list();
+          for (int i=0; i<files.length; i++) {
+            log.info("     zipping "+files[i]);
+            FileInputStream fi = new FileInputStream( resourceDirectory + File.separator + files[i] );
+            origin = new BufferedInputStream(fi, BUFFER);
+            ZipEntry entry = new ZipEntry(files[i]);
+            out.putNextEntry(entry);
+            int count;
+            while((count = origin.read(data, 0, BUFFER)) != -1) {
+                 out.write(data, 0, count);
+            }
+            origin.close();
+          }
+          out.close();
+        }
+        catch(Exception e) {
+            log.error( "Failed to zip. Reason: " + e.getMessage(), e );
+            throw new Exception();
+        }
     }
 
 }

@@ -1,0 +1,26 @@
+<project>
+
+  <build>
+    <targetDirectory>target</targetDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <resourceDirectory>src/resources</resourceDirectory>
+    <outputDirectory>target/classes</outputDirectory>
+    <testSourceDirectory>test/java</testSourceDirectory>
+    <testResourceDirectory>test/resources</testResourceDirectory>
+    <testOutputDirectory>target/test-classes</testOutputDirectory>
+    <testReportDirectory>target/test-reports</testReportDirectory>
+
+    <goals>
+      <goal>
+        <name>clean</name>
+      </goal>
+      <goal>
+        <name>pack</name>
+      </goal>
+      <goal>
+        <name>install</name>
+      </goal>
+    </goals>
+  </build>
+
+</project>
