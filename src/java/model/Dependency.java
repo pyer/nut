@@ -157,6 +157,10 @@ public class Dependency implements java.io.Serializable {
     public void validate( String projectVersion )
         throws ValidationException
     {
+        if ( groupId == null )
+            throw new ValidationException( "dependency.groupId must not be null" );
+        if ( artifactId == null )
+            throw new ValidationException( "dependency.artifactId must not be null" );
         if ( !groupId.matches( ID_REGEX ) )
             throw new ValidationException( "dependency.groupId '" + groupId + "' does not match a valid id pattern." );
         if ( !artifactId.matches( ID_REGEX ) )
