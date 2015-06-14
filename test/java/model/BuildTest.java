@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import nut.model.ValidationException;
 
-import nut.project.NutProject;
+import nut.project.Project;
 import nut.project.ProjectBuilder;
 import nut.project.BuildFailureException;
 
@@ -178,7 +178,7 @@ public class BuildTest
     {
         try {
           ProjectBuilder builder = new ProjectBuilder();
-          NutProject project = builder.build( new File("test/resources/badGoal.xml") );
+          Project project = builder.build( new File("test/resources/badGoal.xml") );
           project.getBuild().validate();
         }
         catch ( BuildFailureException e ) {

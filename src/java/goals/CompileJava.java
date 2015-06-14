@@ -1,7 +1,7 @@
 package nut.goals;
 
 import nut.logging.Log;
-import nut.project.NutProject;
+import nut.project.Project;
 import nut.model.Dependency;
 import nut.artifact.Artifact;
 
@@ -42,7 +42,7 @@ public class CompileJava
     /** Instance logger */
     private static Log log;
 
-    public static void execute( NutProject project, Properties config )
+    public static void execute( Project project, Properties config )
         throws Exception
     {
         log = new Log();

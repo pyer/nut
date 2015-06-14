@@ -47,7 +47,7 @@ import nut.logging.Log;
  * <li>We don't want inherited values being written back into the model.
  * </ol>
  */
-public class NutProject
+public class Project
 {
     
     private Model model;
@@ -66,7 +66,7 @@ public class NutProject
     private Exception cause;
     private String task;
 
-    public NutProject( Model model )
+    public Project( Model model )
     {
         this.model = model;
         this.time = 0;
@@ -223,10 +223,10 @@ public class NutProject
     {
         if ( other == this ) {
             return true;
-        } else if ( !( other instanceof NutProject ) ) {
+        } else if ( !( other instanceof Project ) ) {
             return false;
         } else {
-            NutProject otherProject = (NutProject) other;
+            Project otherProject = (Project) other;
             return getId().equals( otherProject.getId() );
         }
     }
@@ -301,7 +301,7 @@ public class NutProject
           log.debug("* execute goal: " + goalName);
           Class cls = Class.forName ("nut.goals." + goalName);
           Class[] cArg = new Class[2];
-          cArg[0] = NutProject.class;
+          cArg[0] = Project.class;
           cArg[1] = Properties.class;
           Method method = cls.getMethod("execute", cArg);
           method.invoke( cls, this, config );

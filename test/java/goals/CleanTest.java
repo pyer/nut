@@ -4,7 +4,7 @@ import nut.logging.Log;
 
 import nut.model.Build;
 import nut.model.Model;
-import nut.project.NutProject;
+import nut.project.Project;
 
 import java.io.File;
 import java.io.Reader;
@@ -34,7 +34,7 @@ public class CleanTest
       Model model = new Model();
       model.addProperty( "basedir", "target" );
       model.setBuild( build );
-      NutProject project = new NutProject(model);
+      Project project = new Project(model);
 
       File d = new File( LOCAL_TARGET );
       d.mkdirs();

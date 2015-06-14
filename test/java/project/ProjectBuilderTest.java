@@ -18,7 +18,7 @@ public class ProjectBuilderTest
         throws BuildFailureException
     {
         ProjectBuilder builder = new ProjectBuilder();
-        NutProject project = builder.build( new File("test/resources/project/nut.xml") );
+        Project project = builder.build( new File("test/resources/project/nut.xml") );
         assertEquals( "modules", project.getModel().getPackaging() );
     }
 
@@ -28,7 +28,7 @@ public class ProjectBuilderTest
         throws BuildFailureException
     {
         ProjectBuilder builder = new ProjectBuilder();
-        NutProject project = builder.build( new File("test/resources/project/nut.xml") );
+        Project project = builder.build( new File("test/resources/project/nut.xml") );
         assertEquals( "1.1", project.getVersion() );
 //        assertEquals( "artifact", project.getArtifactId() );
 //        assertEquals( "test.groupId", project.getGroupId() );

@@ -4,7 +4,7 @@ import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
-import nut.project.NutProject;
+import nut.project.Project;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
@@ -41,17 +41,17 @@ public class ProjectSorter
      * </ul>
      * @throws DuplicateProjectException if any projects are duplicated by id
      */
-    public ProjectSorter( List<NutProject> projects )
+    public ProjectSorter( List<Project> projects )
         throws CycleDetectedException, DuplicateProjectException
     {
         dag = new DAG();
 
-        Map<String,NutProject> projectMap = new HashMap<String,NutProject>();
+        Map<String,Project> projectMap = new HashMap<String,Project>();
         //Map projectMap = new HashMap();
 
         for ( Iterator i = projects.iterator(); i.hasNext(); )
         {
-            NutProject project = (NutProject) i.next();
+            Project project = (Project) i.next();
 
             String id = project.getId();
             if ( dag.getVertex( id ) != null )
@@ -67,7 +67,7 @@ public class ProjectSorter
 
         for ( Iterator i = projects.iterator(); i.hasNext(); )
         {
-            NutProject project = (NutProject) i.next();
+            Project project = (Project) i.next();
 
             String id = project.getId();
 
@@ -84,7 +84,7 @@ public class ProjectSorter
             }
         }
 
-        List<NutProject> sortedProjects = new ArrayList<NutProject>();
+        List<Project> sortedProjects = new ArrayList<Project>();
 
         for ( Iterator i = TopologicalSorter.sort( dag ).iterator(); i.hasNext(); )
         {

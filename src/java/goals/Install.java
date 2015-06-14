@@ -1,7 +1,7 @@
 package nut.goals;
 
 import nut.logging.Log;
-import nut.project.NutProject;
+import nut.project.Project;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +17,7 @@ public class Install
     /** Instance logger */
     private static Log log;
 
-    public static void execute( NutProject project, Properties config )
+    public static void execute( Project project, Properties config )
         throws Exception
     {
         log = new Log();

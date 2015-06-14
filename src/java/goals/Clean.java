@@ -1,7 +1,7 @@
 package nut.goals;
 
 import nut.logging.Log;
-import nut.project.NutProject;
+import nut.project.Project;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +34,7 @@ public class Clean
      *
      * @throws Exception When a directory failed to get deleted.
      */
-    public static void execute( NutProject project, Properties config )
+    public static void execute( Project project, Properties config )
         throws Exception
     {
         log = new Log();

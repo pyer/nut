@@ -9,7 +9,7 @@ import nut.model.Model;
 import nut.model.xmlReader;
 import nut.model.ValidationException;
 
-import nut.project.NutProject;
+import nut.project.Project;
 import nut.project.BuildFailureException;
 import nut.project.InvalidDependencyVersionException;
 
@@ -59,10 +59,10 @@ public class ProjectBuilder
     }
 
     // ----------------------------------------------------------------------
-    // NutProjectBuilder Implementation
+    // ProjectBuilder Implementation
     // ----------------------------------------------------------------------
 
-    public NutProject build( File projectFile )
+    public Project build( File projectFile )
         throws BuildFailureException
     {
         String pomLocation = projectFile.getAbsolutePath();
@@ -95,7 +95,7 @@ public class ProjectBuilder
             }
         }
                 
-        NutProject project = null;
+        Project project = null;
         try
         {
             if( packagingModel != null )
@@ -105,7 +105,7 @@ public class ProjectBuilder
                 model.getRepositories().addAll( packagingModel.getRepositories() );
             }
 
-            project = new NutProject( model );
+            project = new Project( model );
             Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() );
             project.setArtifact( projectArtifact );
             // Must validate before artifact construction to make sure dependencies are good

@@ -4,7 +4,7 @@ import nut.logging.Log;
 
 import nut.artifact.Artifact;
 
-import nut.project.NutProject;
+import nut.project.Project;
 import nut.project.BuildFailureException;
 import nut.project.DuplicateProjectException;
 import nut.project.ProjectBuilder;
@@ -183,7 +183,7 @@ public class Nut
             }
 
             ProjectBuilder builder = new ProjectBuilder();
-            List<NutProject> projects = collectProjects( builder, files );
+            List<Project> projects = collectProjects( builder, files );
             if ( projects.isEmpty() ) {
                 throw new BuildFailureException(  "Project file '" + POM_FILE + "' is empty !" );
             }
@@ -195,7 +195,7 @@ public class Nut
                 log.info( "Ordering projects..." );
                 for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
                 {
-                    NutProject currentProject = (NutProject) it.next();
+                    Project currentProject = (Project) it.next();
                     log.info( "   " + currentProject.getId() );
                 }
             }
@@ -218,7 +218,7 @@ public class Nut
             // iterate over projects, and execute on each...
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
             {
-                NutProject currentProject = (NutProject) it.next();
+                Project currentProject = (Project) it.next();
                 log.line();
                 if( effectiveNut ) {
                     currentProject.effectiveModel();
@@ -233,16 +233,16 @@ public class Nut
 
     // ----------------------------------------------------------------------
 
-    private static List<NutProject> collectProjects( ProjectBuilder builder, List files )
+    private static List<Project> collectProjects( ProjectBuilder builder, List files )
         throws BuildFailureException
     {
-        List<NutProject> projects = new ArrayList<NutProject>( files.size() );
+        List<Project> projects = new ArrayList<Project>( files.size() );
 
         for ( Iterator iterator = files.iterator(); iterator.hasNext(); )
         {
             File file = (File) iterator.next();
             log.debug("   Project " + file.getAbsolutePath());
-            NutProject project = builder.build( file );
+            Project project = builder.build( file );
 
             if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
             //log.info("   Modules:");
@@ -264,7 +264,7 @@ public class Nut
                         moduleFiles.add( new File( modulesRoot, name + "/" + Nut.POM_FILE ) );
                     }
                 }
-                List<NutProject> collectedProjects = collectProjects( builder, moduleFiles );
+                List<Project> collectedProjects = collectProjects( builder, moduleFiles );
                 projects.addAll( collectedProjects );
             }
 
@@ -290,7 +290,7 @@ public class Nut
 
             for ( Iterator it = modules.iterator(); it.hasNext(); )
             {
-                NutProject project = (NutProject) it.next();
+                Project project = (Project) it.next();
 
                 if ( project.isBuilt() ) {
                     if ( project.isSuccessful() ) {

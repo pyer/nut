@@ -4,7 +4,7 @@ import nut.logging.Log;
 
 import nut.model.Build;
 import nut.model.Model;
-import nut.project.NutProject;
+import nut.project.Project;
 
 import java.io.File;
 import java.io.Reader;
@@ -52,7 +52,7 @@ public class InstallTest
         new File( "target/build" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
         new File( "target/build/artifact.file" ).createNewFile();
-        NutProject project = new NutProject(model);
+        Project project = new Project(model);
         Properties config = new Properties();
         config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
         Install.execute(project,config);
@@ -73,7 +73,7 @@ public class InstallTest
         new File( "target/nut.xml" ).createNewFile();
         model.setPackaging( "modules" );
 
-        NutProject project = new NutProject(model);
+        Project project = new Project(model);
         Properties config = new Properties();
         config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
         Install.execute(project,config);
@@ -95,7 +95,7 @@ public class InstallTest
         new File( "target/build" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
         model.setPackaging( "file" );
-        NutProject project = new NutProject(model);
+        Project project = new Project(model);
         Properties config = new Properties();
         config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
         Install.execute(project,config);
