@@ -5,19 +5,14 @@ Repository defines way to seek missing artifacts, ie dependencies
 For example, get testng jar file from Maven central repository is done by:
 wget http://search.maven.org/remotecontent?filepath=org/testng/testng/6.8.7/testng-6.8.7.jar -O testng-6.8.7.jar
 
+<repositories>
   <repository>
     <name>Maven Repository Switchboard</name>
     <layout>maven</layout>
     <url>http://search.maven.org/remotecontent</url>
   </repository>
-
-TO DO:
-
-<repositories>
-  <repository>
-  ...
-  </repository>
 </repositories>
+
 */
 
 //---------------------------------/

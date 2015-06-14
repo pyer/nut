@@ -10,6 +10,7 @@
       <class name="nut.model.DependencyTest" />
       <class name="nut.model.GoalTest" />
       <class name="nut.model.ModelTest" />
+      <class name="nut.model.RepositoryTest" />
     </classes>
   </test>
   <test name="nut.project">

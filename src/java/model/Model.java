@@ -258,8 +258,10 @@ public class Model implements java.io.Serializable
     public void validate()
         throws ValidationException
     {
+        validateStringNotEmpty( "groupId", groupId );
         if ( !groupId.matches( ID_REGEX ) )
             throw new ValidationException( "groupId '" + groupId + "' does not match a valid id pattern." );
+        validateStringNotEmpty( "artifactId", artifactId );
         if ( !artifactId.matches( ID_REGEX ) )
             throw new ValidationException( "artifactId '" + artifactId + "' does not match a valid id pattern." );
 

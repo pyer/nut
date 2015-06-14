@@ -3,10 +3,6 @@ package nut.model;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-/**
- * Tests {@code Repository}.
- * 
- */
 public class RepositoryTest
 {
 
@@ -64,6 +60,60 @@ public class RepositoryTest
       assertNull( repository.getURL() );
       repository.setURL( s );
       assertEquals( repository.getURL(), s );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionNullName() throws ValidationException
+    {
+      Repository repository = new Repository();
+      repository.setURL( "http://repo" );
+      repository.validate( );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionEmptyName() throws ValidationException
+    {
+      Repository repository = new Repository();
+      repository.setName( "" );
+      repository.setURL( "http://repo" );
+      repository.validate( );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionNullURL() throws ValidationException
+    {
+      Repository repository = new Repository();
+      repository.setName( "repo" );
+      repository.validate( );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionEmptyURL() throws ValidationException
+    {
+      Repository repository = new Repository();
+      repository.setName( "repo" );
+      repository.setURL( "" );
+      repository.validate( );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionNullLayout() throws ValidationException
+    {
+      Repository repository = new Repository();
+      repository.setName( "repo" );
+      repository.setURL( "http://repo" );
+      repository.setLayout( null );
+      repository.validate( );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidationExceptionEmptyLayout() throws ValidationException
+    {
+      Repository repository = new Repository();
+      repository.setName( "repo" );
+      repository.setURL( "http://repo" );
+      repository.setLayout( "" );
+      repository.validate( );
     }
 
 }
