@@ -27,6 +27,7 @@
     <classes>
       <class name="nut.goals.CleanTest" />
       <class name="nut.goals.InstallTest" />
+      <class name="nut.goals.PackTest" />
     </classes>
   </test>
 </suite>

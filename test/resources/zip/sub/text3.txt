@@ -1,0 +1,1 @@
+text3 in a sub-folder.

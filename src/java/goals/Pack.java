@@ -146,23 +146,42 @@ public class Pack
           BufferedInputStream origin = null;
           FileOutputStream dest = new FileOutputStream( targetDirectory + File.separator + finalName );
           ZipOutputStream  out  = new ZipOutputStream( new BufferedOutputStream(dest));
+          zipFile( out, resourceDirectory, "" );
+          out.close();
+        }
+        catch(Exception e) {
+            log.error( "Failed to zip. Reason: " + e.getMessage(), e );
+            throw new Exception();
+        }
+    }
+
+    private static void zipFile( ZipOutputStream out, String basedir, String path )
+        throws Exception
+    {
+        try {
+          BufferedInputStream origin = null;
           byte data[] = new byte[BUFFER];
           // get a list of files from current directory
-          File f = new File( resourceDirectory );
-          String files[] = f.list();
-          for (int i=0; i<files.length; i++) {
-            log.info("     zipping "+files[i]);
-            FileInputStream fi = new FileInputStream( resourceDirectory + File.separator + files[i] );
-            origin = new BufferedInputStream(fi, BUFFER);
-            ZipEntry entry = new ZipEntry(files[i]);
-            out.putNextEntry(entry);
-            int count;
-            while((count = origin.read(data, 0, BUFFER)) != -1) {
+          File root = new File( basedir + path );
+          File[] list = root.listFiles();
+          if (list == null) return;
+
+          for ( File f : list ) {
+            if ( f.isDirectory() ) {
+              zipFile( out, basedir, path + File.separator + f.getName() );
+            } else {
+              log.info("     zipping " + path + File.separator + f.getName());
+              FileInputStream fi = new FileInputStream( basedir + path + File.separator + f.getName() );
+              origin = new BufferedInputStream(fi, BUFFER);
+              ZipEntry entry = new ZipEntry( path + File.separator + f.getName() );
+              out.putNextEntry(entry);
+              int count;
+              while((count = origin.read(data, 0, BUFFER)) != -1) {
                  out.write(data, 0, count);
+              }
+              origin.close();
             }
-            origin.close();
           }
-          out.close();
         }
         catch(Exception e) {
             log.error( "Failed to zip. Reason: " + e.getMessage(), e );
