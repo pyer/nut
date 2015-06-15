@@ -139,6 +139,8 @@ public class Pack
 
     // ==========================================================================
     static final int BUFFER = 2048;
+
+    // targetDirectory and resourceDirectory are full path names
     private static void zip(String finalName, String targetDirectory, String resourceDirectory)
         throws Exception
     {
@@ -146,7 +148,7 @@ public class Pack
           BufferedInputStream origin = null;
           FileOutputStream dest = new FileOutputStream( targetDirectory + File.separator + finalName );
           ZipOutputStream  out  = new ZipOutputStream( new BufferedOutputStream(dest));
-          zipFile( out, resourceDirectory, "" );
+          zipFile( out, resourceDirectory + File.separator, "" );
           out.close();
         }
         catch(Exception e) {
@@ -155,6 +157,8 @@ public class Pack
         }
     }
 
+    // This method is called recursively
+    // basedir is a full path name, ending with '/',  and path a relative path name, without trailing '/'
     private static void zipFile( ZipOutputStream out, String basedir, String path )
         throws Exception
     {
@@ -166,14 +170,21 @@ public class Pack
           File[] list = root.listFiles();
           if (list == null) return;
 
+          String fileName;
           for ( File f : list ) {
-            if ( f.isDirectory() ) {
-              zipFile( out, basedir, path + File.separator + f.getName() );
+            if ( path.isEmpty() ) {
+              fileName = f.getName();
             } else {
-              log.info("     zipping " + path + File.separator + f.getName());
-              FileInputStream fi = new FileInputStream( basedir + path + File.separator + f.getName() );
+              fileName = path + File.separator + f.getName();
+            }
+
+            if ( f.isDirectory() ) {
+              zipFile( out, basedir, fileName );
+            } else {
+              log.info("     zipping " + fileName );
+              FileInputStream fi = new FileInputStream( basedir + fileName );
               origin = new BufferedInputStream(fi, BUFFER);
-              ZipEntry entry = new ZipEntry( path + File.separator + f.getName() );
+              ZipEntry entry = new ZipEntry( fileName );
               out.putNextEntry(entry);
               int count;
               while((count = origin.read(data, 0, BUFFER)) != -1) {
