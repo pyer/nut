@@ -267,7 +267,6 @@ public class Project
     {
       try {
         time = System.currentTimeMillis();
-        buildDone=true;
         log.build( getName() );
 
         List<Goal> goals = getBuild().getGoals();
@@ -275,6 +274,8 @@ public class Project
             Goal   goal       = (Goal)g.next();
             String goalClass  = goal.toString();
             if( "build".equals(targetGoal) || goalClass.startsWith(goal.getClassName(targetGoal)) ) {
+              // build is done if at least one goal is executed
+              buildDone=true;
               if( noopMode ) {
                 log.info( "Goal " + goalClass + " in noop mode" );
               } else {
@@ -282,9 +283,13 @@ public class Project
               }
             }
         }
-        buildSuccess = true;
         time = System.currentTimeMillis() - time;
-        log.success( time );
+        if( buildDone ) {
+          buildSuccess = true;
+          log.success( time );
+        } else {
+          log.warning( "Nothing to do: goal '" + targetGoal + "' is unknown in the packaging '" + getPackaging() + "'" );
+        }
       }
       catch ( BuildFailureException e ) {
         time = System.currentTimeMillis() - time;
