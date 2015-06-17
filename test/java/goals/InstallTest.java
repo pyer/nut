@@ -54,12 +54,9 @@ public class InstallTest
         new File( "target/build/artifact.file" ).createNewFile();
         Project project = new Project(model);
         Properties config = new Properties();
-        config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
         Install.execute(project,config);
         File installedArtifact = new File( "target/repo2/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
-//      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.file.nut" );
-//      assertTrue( installedArtifactNut.exists() );
     }
 
     @Test
@@ -75,12 +72,9 @@ public class InstallTest
 
         Project project = new Project(model);
         Properties config = new Properties();
-        config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
         Install.execute(project,config);
         File installedArtifact = new File( "target/repo3/local/group/artifact-0.0-SNAPSHOT.modules" );
         assertFalse( installedArtifact.exists() );
-//      File installedArtifactNut = new File( LOCAL_REPO + "/local/group/artifact-0.0-SNAPSHOT.modules.nut" );
-//      assertTrue( installedArtifactNut.exists() );
     }
 
     @Test
@@ -97,7 +91,6 @@ public class InstallTest
         model.setPackaging( "file" );
         Project project = new Project(model);
         Properties config = new Properties();
-        config.setProperty( "CLASSIFIER", "-SNAPSHOT" );
         Install.execute(project,config);
         File installedArtifact = new File( "target/repo4/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
