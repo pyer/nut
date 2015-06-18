@@ -17,15 +17,19 @@ import org.testng.annotations.Test;
 public class ArtifactTest
 {
     private Artifact artifact;
-    private String   home;
+    private String home;
+    private String basedir;
     private String groupId = "groupid", artifactId = "artifactId", version = "1.0", type = "type";
-    private final String LOCAL_REPO = "target/repository";
-    private final String LOCAL_FILE = "target/repository/groupid/artifactId-1.0.type";
+    private String LOCAL_REPO;
+    private String LOCAL_FILE;
     
     @BeforeMethod
     private void before()
     {
         home = System.getProperty( "nut.home" );
+        basedir = System.getProperty( "basedir" );
+        LOCAL_REPO = basedir + "/target/repository";
+        LOCAL_FILE = basedir + "/target/repository/groupid/artifactId-1.0.type";
         new File( LOCAL_REPO ).mkdir();
         new File( LOCAL_REPO + "/groupid" ).mkdir();
         System.setProperty( "nut.home", LOCAL_REPO );
@@ -41,8 +45,7 @@ public class ArtifactTest
     public void testGetPath()
     {
         artifact = new Artifact( groupId, artifactId, version, type );
-        assertEquals( groupId + File.separator + artifactId + "-" + version + "." + type,
-                      artifact.getPath() );
+        assertEquals( groupId + File.separator + artifactId + "-" + version + "." + type, artifact.getPath() );
     }
 
     @Test
