@@ -63,9 +63,12 @@ public class Nut
               else if( args[i].equals("-r") || args[i].equals("--release") ) {
                  System.setProperty( "nut.mode", "RELEASE" );
               }
+              else if( args[i].equals("-s") || args[i].equals("--snapshot") ) {
+                 System.setProperty( "nut.mode", "SNAPSHOT" );
+              }
               else {
                  if( args[i].startsWith("-") ) {
-                    log.error( "Option [" + args[i] + "] is invalid.\n" );
+                    log.error( "Invalid option '" + args[i] + "'." );
                     showHelp();
                     System.exit( 1 );
                  }
@@ -73,7 +76,7 @@ public class Nut
                  if( goalArg==null ) {
                     goalArg = args[i];
                  } else {
-                    log.error( "Too many goals.\n" );
+                    log.error( "Too many goals." );
                     showHelp();
                     System.exit( 2 );
                  }
@@ -126,7 +129,8 @@ public class Nut
 
     private static void showHelp()
     {
-        log.out( "usage: nut [options] build" );
+        log.out( "" );
+        log.out( "Usage: nut [options] build" );
         log.out( "       nut [options] [goal]" );
         log.out( "\n  where [goal] is one of: clean compile test pack install deploy" );
         log.out( "\nOptions:" );
@@ -137,6 +141,7 @@ public class Nut
         log.out( " -e,--effective   Display effective NUT" );
         log.out( " -n,--noop        No operation mode (dry run)" );
         log.out( " -r,--release     Release mode. Default is snapshot" );
+        log.out( " -s,--snapshot    Snapshot default mode" );
     }
 
     // ----------------------------------------------------------------------
@@ -223,10 +228,8 @@ public class Nut
                 if( effectiveNut ) {
                     currentProject.effectiveModel();
                 } else {
-                  if( !"modules".equals(currentProject.getPackaging()) ) {
                     currentProject.checkDependencies();
                     currentProject.build( goalArgument, noopMode );
-                  }
                 }
             }
     }
