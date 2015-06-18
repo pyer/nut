@@ -1,32 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <groupId>nut</groupId>
-  <artifactId>Nut</artifactId>
+  <artifactId>parent</artifactId>
   <version>2.0</version>
-  <packaging>jar</packaging>
 
-  <name>Nut tool</name>
   <description>
      Nut is a project development management tool inspired by Maven.
      Based on the concept of a project object model: builds, dependency management and distribution publication are all controlled from the declarative file.
   </description>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-      <version>1.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.8.7</version>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>packaging/modules</module>
+    <module>packaging/jar</module>
+    <module>packaging/war</module>
+    <module>packaging/xml</module>
+    <module>packaging/zip</module>
+    <module>Nut</module>
+  </modules>
 
 </project>

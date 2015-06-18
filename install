@@ -27,11 +27,10 @@ cp -a localRepository/* $NUT_HOME/
 
 mkdir -p target/classes 
 
-
 cd $root
 echo "Compiling.."
 options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
-cd $root
+cd $root/Nut
 echo " - logging"
 cd src/java/logging
 javac $options Log.java
@@ -66,9 +65,9 @@ rm -r target
 
 echo "Build packaging"
 mkdir -p $NUT_HOME/nut/packaging
-cp src/resources/packaging/xml.xml     $NUT_HOME/nut/packaging/xml-$NUT_VERSION.xml
-cp src/resources/packaging/jar.xml     $NUT_HOME/nut/packaging/jar-$NUT_VERSION.xml
-cp src/resources/packaging/war.xml     $NUT_HOME/nut/packaging/war-$NUT_VERSION.xml
-cp src/resources/packaging/zip.xml     $NUT_HOME/nut/packaging/zip-$NUT_VERSION.xml
-cp src/resources/packaging/modules.xml $NUT_HOME/nut/packaging/modules-$NUT_VERSION.xml
+cp packaging/xml/src/resources/xml.xml         $NUT_HOME/nut/packaging/xml-$NUT_VERSION.xml
+cp packaging/jar/src/resources/jar.xml         $NUT_HOME/nut/packaging/jar-$NUT_VERSION.xml
+cp packaging/war/src/resources/war.xml         $NUT_HOME/nut/packaging/war-$NUT_VERSION.xml
+cp packaging/zip/src/resources/zip.xml         $NUT_HOME/nut/packaging/zip-$NUT_VERSION.xml
+cp packaging/modules/src/resources/modules.xml $NUT_HOME/nut/packaging/modules-$NUT_VERSION.xml
 echo "Done."

@@ -31,6 +31,7 @@ public class Install
           mode = "-SNAPSHOT";
 
         String targetDirectory      = project.getBuild().getTargetDirectory();
+        String resourceDirectory    = project.getBuild().getResourceDirectory();
         
         String groupId              = project.getGroupId();
         String artifactId           = project.getArtifactId();
@@ -45,7 +46,12 @@ public class Install
         
         log.info( "   Installing \'" + artifactId + "\'" );
         // + "-" + version + "." + packaging
-        if( !packaging.equals("modules") ) {
+        if( packaging.equals("xml") ) {
+                String group = groupId.replace( '.', File.separatorChar );
+                String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
+                String buildName = basedir + File.separator + resourceDirectory + File.separator + artifactId + "." + packaging;
+                copyFile( buildName, artifactName, version );
+        } else if( !packaging.equals("modules") ) {
                 String group = groupId.replace( '.', File.separatorChar );
                 String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 //install: copy target file to local repository
