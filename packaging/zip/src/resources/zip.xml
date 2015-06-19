@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
+  <description>
+     clean targetDirectory
+     pack files from resourceDirectory to targetDirectory/artifactId.type
+     install targetDirectory/artifactId.type in local repository.
+  </description>
 
   <build>
     <targetDirectory>target</targetDirectory>

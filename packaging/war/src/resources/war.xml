@@ -1,4 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
+  <description>
+     clean targetDirectory
+     get missing artifacts from central repository
+     compile files from sourceDirectory to outputDirectory
+     compile files from testSourceDirectory to testOutputDirectory
+     test
+     pack files from classesDirectory to targetDirectory/artifactId.type
+     pack files from resourcesDirectory to targetDirectory/artifactId.type
+     install targetDirectory/artifactId.type in local repository.
+  </description>
 
   <dependencies>
     <dependency>

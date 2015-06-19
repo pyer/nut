@@ -4,4 +4,12 @@
   <artifactId>modules</artifactId>
   <version>2.0</version>
   <packaging>xml</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>nut</groupId>
+      <artifactId>Nut</artifactId>
+      <version>2.0</version>
+    </dependency>
+  </dependencies>
 </project>

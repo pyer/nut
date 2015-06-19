@@ -1,12 +1,12 @@
 2.0
-No plugins to improve speed
-simpler repository layout
-First build with install
+No plugins to improve speed.
+simpler repository layout.
+First build with install script.
 Option -r to build release. Default is snapshot.
 
 
 1.2
-plugins ans dependencies use core version if version is undefined 
+plugins and dependencies use core version if version is undefined 
 junit is replaced by testng
 
 1.1

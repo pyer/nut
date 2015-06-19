@@ -1,7 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
+  <description>
+     clean targetDirectory
+  </description>
+
   <build>
     <targetDirectory>target</targetDirectory>
-
     <goals>
       <goal>
         <name>clean</name>
