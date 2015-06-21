@@ -13,31 +13,21 @@ import nut.model.Model;
 
 import nut.xml.XmlSerializer;
 
-public class xmlWriter {
+public class XmlWriter {
 
     /**
-     * Field NAMESPACE.
-     */
-    private String NAMESPACE;
-
-
-    //-----------/
-    //- Methods -/
-    //-----------/
-
-    /**
-     * Method writeTag.
+     * Method writeElement.
      * 
      * @param tag
      * @param value
      * @param serializer
      * @throws java.io.IOException
      */
-    private void writeTag( String tag, String value, XmlSerializer serializer )
+    private void writeElement( String tag, String value, XmlSerializer serializer )
         throws java.io.IOException
     {
         if ( value != null ) {
-          serializer.startTag( NAMESPACE, tag ).text( value ).endTag( NAMESPACE, tag );
+          serializer.startTag( tag ).text( value ).endTag( tag );
         }
     }
 
@@ -53,19 +43,19 @@ public class xmlWriter {
         throws java.io.IOException
     {
         if ( goal != null ) {
-            serializer.startTag( NAMESPACE, tagName );
-            writeTag( "name", goal.getName(), serializer );
-            writeTag( "type", goal.getType(), serializer );
+            serializer.startTag( tagName );
+            writeElement( "name", goal.getName(), serializer );
+            writeElement( "type", goal.getType(), serializer );
             if ( goal.hasConfiguration() ) {
-                serializer.startTag( NAMESPACE, "configuration" );
+                serializer.startTag( "configuration" );
                 for ( Iterator iter = goal.configuration().keySet().iterator(); iter.hasNext(); ) {
                     String key = (String) iter.next();
                     String value = (String) goal.getConfigurationValue( key );
-                    writeTag( "" + key + "", value, serializer );
+                    writeElement( "" + key + "", value, serializer );
                 }
-                serializer.endTag( NAMESPACE, "configuration" );
+                serializer.endTag( "configuration" );
             }
-            serializer.endTag( NAMESPACE, tagName );
+            serializer.endTag( tagName );
         }
     } //-- void writeGoal( Goal, String, XmlSerializer ) 
 
@@ -81,24 +71,24 @@ public class xmlWriter {
         throws java.io.IOException
     {
         if ( build != null ) {
-            serializer.startTag( NAMESPACE, tagName );
-            writeTag( "sourceDirectory", build.getSourceDirectory(), serializer );
-            writeTag( "resourceDirectory", build.getResourceDirectory(), serializer );
-            writeTag( "testSourceDirectory", build.getTestSourceDirectory(), serializer );
-            writeTag( "testResourceDirectory", build.getTestResourceDirectory(), serializer );
-            writeTag( "targetDirectory", build.getTargetDirectory(), serializer );
-            writeTag( "outputDirectory", build.getOutputDirectory(), serializer );
-            writeTag( "testOutputDirectory", build.getTestOutputDirectory(), serializer );
-            writeTag( "testReportDirectory", build.getTestReportDirectory(), serializer );
+            serializer.startTag( tagName );
+            writeElement( "sourceDirectory", build.getSourceDirectory(), serializer );
+            writeElement( "resourceDirectory", build.getResourceDirectory(), serializer );
+            writeElement( "testSourceDirectory", build.getTestSourceDirectory(), serializer );
+            writeElement( "testResourceDirectory", build.getTestResourceDirectory(), serializer );
+            writeElement( "targetDirectory", build.getTargetDirectory(), serializer );
+            writeElement( "outputDirectory", build.getOutputDirectory(), serializer );
+            writeElement( "testOutputDirectory", build.getTestOutputDirectory(), serializer );
+            writeElement( "testReportDirectory", build.getTestReportDirectory(), serializer );
             if ( build.getGoals() != null && build.getGoals().size() > 0 ) {
-                serializer.startTag( NAMESPACE, "goals" );
+                serializer.startTag( "goals" );
                 for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); ) {
                     Goal o = (Goal) iter.next();
                     writeGoal( o, "goal", serializer );
                 }
-                serializer.endTag( NAMESPACE, "goals" );
+                serializer.endTag( "goals" );
             }
-            serializer.endTag( NAMESPACE, tagName );
+            serializer.endTag( tagName );
         }
     } //-- void writeBuild( Build, String, XmlSerializer ) 
 
@@ -114,13 +104,13 @@ public class xmlWriter {
         throws java.io.IOException
     {
         if ( dependency != null ) {
-            serializer.startTag( NAMESPACE, tagName );
-            writeTag( "groupId", dependency.getGroupId(), serializer );
-            writeTag( "artifactId", dependency.getArtifactId(), serializer );
-            writeTag( "version", dependency.getVersion(), serializer );
-            writeTag( "type", dependency.getType(), serializer );
-            writeTag( "scope", dependency.getScope(), serializer );
-            serializer.endTag( NAMESPACE, tagName );
+            serializer.startTag( tagName );
+            writeElement( "groupId", dependency.getGroupId(), serializer );
+            writeElement( "artifactId", dependency.getArtifactId(), serializer );
+            writeElement( "version", dependency.getVersion(), serializer );
+            writeElement( "type", dependency.getType(), serializer );
+            writeElement( "scope", dependency.getScope(), serializer );
+            serializer.endTag( tagName );
         }
     } //-- void writeDependency( Dependency, String, XmlSerializer ) 
 
@@ -136,11 +126,11 @@ public class xmlWriter {
         throws java.io.IOException
     {
         if ( repository != null ) {
-            serializer.startTag( NAMESPACE, tagName );
-            writeTag( "name", repository.getName(), serializer );
-            writeTag( "layout", repository.getLayout(), serializer );
-            writeTag( "url", repository.getURL(), serializer );
-            serializer.endTag( NAMESPACE, tagName );
+            serializer.startTag( tagName );
+            writeElement( "name", repository.getName(), serializer );
+            writeElement( "layout", repository.getLayout(), serializer );
+            writeElement( "url", repository.getURL(), serializer );
+            serializer.endTag( tagName );
         }
     }
 
@@ -156,56 +146,57 @@ public class xmlWriter {
     {
         String tagName = "project";
         XmlSerializer serializer = new XmlSerializer();
-        serializer.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );
-        serializer.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-line-separator", "\n" );
         serializer.setOutput( sWriter );
-        serializer.startDocument( model.getModelEncoding(), null );
-        if ( model != null ) {
-            serializer.startTag( NAMESPACE, tagName );
-            writeTag( "modelVersion", model.getModelVersion(), serializer );
-            writeTag( "groupId", model.getGroupId(), serializer );
-            writeTag( "artifactId", model.getArtifactId(), serializer );
-            writeTag( "version", model.getVersion(), serializer );
-            writeTag( "packaging", model.getPackaging(), serializer );
-            writeTag( "name", model.getName(), serializer );
-            writeTag( "description", model.getDescription(), serializer );
+        if ( model == null ) {
+            // default encoding
+            serializer.startDocument( "UTF-8" );
+        } else {
+            serializer.startDocument( model.getModelEncoding() );
+            serializer.startTag( tagName );
+            writeElement( "modelVersion", model.getModelVersion(), serializer );
+            writeElement( "groupId", model.getGroupId(), serializer );
+            writeElement( "artifactId", model.getArtifactId(), serializer );
+            writeElement( "version", model.getVersion(), serializer );
+            writeElement( "packaging", model.getPackaging(), serializer );
+            writeElement( "name", model.getName(), serializer );
+            writeElement( "description", model.getDescription(), serializer );
             if ( model.getBuild() != null ) {
                 writeBuild( (Build) model.getBuild(), "build", serializer );
             }
             if ( model.getModules() != null && model.getModules().size() > 0 ) {
-                serializer.startTag( NAMESPACE, "modules" );
+                serializer.startTag( "modules" );
                 for ( Iterator iter = model.getModules().iterator(); iter.hasNext(); ) {
                     String module = (String) iter.next();
-                    writeTag( "module", module, serializer );
+                    writeElement( "module", module, serializer );
                 }
-                serializer.endTag( NAMESPACE, "modules" );
+                serializer.endTag( "modules" );
             }
             if ( model.getDependencies() != null && model.getDependencies().size() > 0 ) {
-                serializer.startTag( NAMESPACE, "dependencies" );
+                serializer.startTag( "dependencies" );
                 for ( Iterator iter = model.getDependencies().iterator(); iter.hasNext(); ) {
                     Dependency o = (Dependency) iter.next();
                     writeDependency( o, "dependency", serializer );
                 }
-                serializer.endTag( NAMESPACE, "dependencies" );
+                serializer.endTag( "dependencies" );
             }
             if ( model.getRepositories() != null && model.getRepositories().size() > 0 ) {
-                serializer.startTag( NAMESPACE, "repositories" );
+                serializer.startTag( "repositories" );
                 for ( Iterator iter = model.getRepositories().iterator(); iter.hasNext(); ) {
                     Repository o = (Repository) iter.next();
                     writeRepository( o, "repository", serializer );
                 }
-                serializer.endTag( NAMESPACE, "repositories" );
+                serializer.endTag( "repositories" );
             }
             if ( model.getProperties() != null && model.getProperties().size() > 0 ) {
-                serializer.startTag( NAMESPACE, "properties" );
+                serializer.startTag( "properties" );
                 for ( Iterator iter = model.getProperties().keySet().iterator(); iter.hasNext(); ) {
                     String key = (String) iter.next();
                     String value = (String) model.getProperties().get( key );
-                    writeTag( "" + key + "", value, serializer );
+                    writeElement( "" + key + "", value, serializer );
                 }
-                serializer.endTag( NAMESPACE, "properties" );
+                serializer.endTag( "properties" );
             }
-            serializer.endTag( NAMESPACE, tagName );
+            serializer.endTag( tagName );
         }
         serializer.endDocument();
     }
