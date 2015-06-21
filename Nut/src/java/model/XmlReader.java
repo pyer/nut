@@ -15,7 +15,7 @@ import nut.model.Repository;
 import nut.xml.pull.XmlPullParser;
 import nut.xml.pull.XmlPullParserException;
 
-public class xmlReader {
+public class XmlReader {
 
     /**
      * Method parseGoal.

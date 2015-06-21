@@ -6,7 +6,7 @@ import nut.logging.Log;
 import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Model;
-import nut.model.xmlReader;
+import nut.model.XmlReader;
 import nut.model.ValidationException;
 
 import nut.project.Project;
@@ -156,7 +156,7 @@ public class ProjectBuilder
         {
             InputStream is        = new FileInputStream(file);
             Reader reader         = new InputStreamReader( is );
-            xmlReader modelReader = new xmlReader();
+            XmlReader modelReader = new XmlReader();
             StringReader sReader  = modelStringReader( reader );
             model = modelReader.parseModel( sReader );
             reader.close();
