@@ -35,4 +35,15 @@ public class ProjectBuilderTest
 //        assertEquals( "artifact", project.getArtifactId() );
 //        assertEquals( "test.groupId", project.getGroupId() );
     }
+
+    @Test
+    public void testNullVersion()
+        throws BuildFailureException
+    {
+        ProjectBuilder builder = new ProjectBuilder();
+        String basedir = System.getProperty( "basedir" );
+        Project project = builder.build( new File(basedir + "/test/resources/nullVersion.xml") );
+        assertEquals( "1.1", project.getVersion() );
+    }
+
 }

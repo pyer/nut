@@ -241,6 +241,16 @@ public class XmlReader {
                         throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                     parsed.add( parser.getName() );
                     model.setModelVersion( parser.nextText() );
+                } else if ( parser.getName().equals( "modelEncoding" )  ) {
+                    if ( parsed.contains( "modelEncoding" ) )
+                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                    parsed.add( parser.getName() );
+                    model.setModelEncoding( parser.nextText() );
+                } else if ( parser.getName().equals( "parent" )  ) {
+                    if ( parsed.contains( "parent" ) )
+                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
+                    parsed.add( parser.getName() );
+                    model.setParent( parser.nextText() );
                 } else if ( parser.getName().equals( "groupId" )  ) {
                     if ( parsed.contains( "groupId" ) )
                         throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );

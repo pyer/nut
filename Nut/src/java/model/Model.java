@@ -58,6 +58,21 @@ public class Model implements java.io.Serializable
     }
 
     /**
+     * Declares a parent xml file which contains common values, for example version or groupId.
+     */
+    private String parent;
+
+    public String getParent()
+    {
+        return this.parent;
+    }
+ 
+    public void setParent( String parent )
+    {
+        this.parent = parent;
+    }
+
+    /**
      * A universally unique identifier for a project.
      * It is normal to use a fully-qualified package name to
      * distinguish it from other projects with a similar name.

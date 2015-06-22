@@ -66,8 +66,21 @@ public class ProjectBuilder
         throws BuildFailureException
     {
         String pomLocation = projectFile.getAbsolutePath();
+        log.debug( "pomLocation = " + pomLocation );
+        String basedir     = projectFile.getAbsoluteFile().getParent();
+        log.debug( "basedir     = " + basedir );
         // First read the project's nut.xml
         Model model = readModel( projectFile );
+        // add basedir property
+        model.addProperty( "basedir", projectFile.getAbsoluteFile().getParent() );
+        // add properties as "nut..."
+        for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
+            String key = (String) en.nextElement();
+            if( key.startsWith( "nut." ) ) {
+                model.addProperty( key, System.getProperty(key) );
+            }
+        }
+
         // then read the packaging model if any
         Model packagingModel = null;
         File packagingFile = new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" );
@@ -76,25 +89,28 @@ public class ProjectBuilder
         } catch (IOException e ) {
           log.error( e.getMessage() );
         }
-    
         if( packagingFile.exists() ) {
             packagingModel = readModel( packagingFile );
         } else {
             log.warn( "No template for packaging '" + model.getPackaging() + "'" );
         }
+        // and at last the parent file
+        Model parentModel = null;
+        if( model.getParent() != null ) {
+          File parentFile = new File( basedir, model.getParent() );
+          try {
+            log.debug( "Parent file is " + parentFile.getCanonicalPath() );
+          } catch (IOException e ) {
+            log.error( e.getMessage() );
+          } 
+          if( parentFile.exists() ) {
+            parentModel = readModel( parentFile );
+          } else {
+            throw new BuildFailureException( model.getId() + ": parent file not found '" + model.getParent() + "'" );
+          }
+        }
  
         //log.info( "Building " + model.getId() );
-        model.addProperty( "basedir", projectFile.getAbsoluteFile().getParent() );
-        // add properties as "nut..."
-        for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); )
-        {
-            String key = (String) en.nextElement();
-            if( key.startsWith( "nut." ) )
-            {
-                model.addProperty( key, System.getProperty(key) );
-            }
-        }
-                
         Project project = null;
         try
         {
@@ -103,6 +119,17 @@ public class ProjectBuilder
                 model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
                 model.getDependencies().addAll( packagingModel.getDependencies() );
                 model.getRepositories().addAll( packagingModel.getRepositories() );
+            }
+
+            if( parentModel != null )
+            {
+                model.setBuild( mergedBuild( model.getBuild(), parentModel.getBuild() ) );
+                model.getDependencies().addAll( parentModel.getDependencies() );
+                model.getRepositories().addAll( parentModel.getRepositories() );
+                if( model.getGroupId() == null )
+                  model.setGroupId( parentModel.getGroupId() );
+                if( model.getVersion() == null )
+                  model.setVersion( parentModel.getVersion() );
             }
 
             project = new Project( model );
