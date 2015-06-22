@@ -3,6 +3,7 @@ No plugins to improve speed.
 simpler repository layout.
 First build with install script.
 Option -r to build release. Default is snapshot.
+parent is a path to another nut file
 
 
 1.2
