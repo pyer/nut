@@ -20,6 +20,8 @@ import java.util.Set;
 
 import nut.artifact.Artifact;
 
+import nut.interpolation.Interpolator;
+
 import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
@@ -246,7 +248,15 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
-    // check f every dependency is in the local repository
+    // replace strings as ${xx} by their values
+    public void interpolateModel()
+    {
+      Interpolator tor = new Interpolator();
+      this.model = tor.interpolatedModel( this.model );
+    }
+    
+    // ----------------------------------------------------------------------
+    // check if every dependency is in the local repository
     // if not try to dowload it from repositories defined in nut.xml
     public void checkDependencies()
     {
@@ -263,6 +273,7 @@ public class Project
           }
       }
     }
+    
     // ----------------------------------------------------------------------
     public void build( String targetGoal, boolean noopMode )
     {

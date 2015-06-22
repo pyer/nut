@@ -228,6 +228,7 @@ public class Nut
                 if( effectiveNut ) {
                     currentProject.effectiveModel();
                 } else {
+                    currentProject.interpolateModel();
                     currentProject.checkDependencies();
                     currentProject.build( goalArgument, noopMode );
                 }
