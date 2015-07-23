@@ -28,6 +28,7 @@ import nut.model.Goal;
 import nut.model.Model;
 import nut.model.Repository;
 import nut.model.XmlWriter;
+import nut.model.JsonWriter;
 
 import nut.project.DependencyChecker;
 import nut.project.DependencyNotFoundException;
@@ -234,21 +235,34 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
-    public void effectiveModel()
+    public void effectiveXmlModel()
     {
       try {
           XmlWriter modelWriter = new XmlWriter();
           StringWriter sWriter  = new StringWriter();
           modelWriter.writeModel( sWriter, model );
-          log.info( "Effective model of " + model.getId() );
+          log.info( "Effective XML model of " + model.getId() );
           log.info( "nut.xml\n" + sWriter.toString() );
       } catch (IOException e) {
           log.error("IOException");
       }
     }
 
+    public void effectiveJsonModel()
+    {
+      try {
+          JsonWriter modelWriter = new JsonWriter();
+          StringWriter sWriter  = new StringWriter();
+          modelWriter.writeModel( sWriter, model );
+          log.info( "Effective JSON model of " + model.getId() );
+          log.info( "nut.json\n" + sWriter.toString() );
+      } catch (IOException e) {
+          log.error("IOException");
+      }
+    }
+
     // ----------------------------------------------------------------------
-    // replace strings as ${xx} by their values
+    // TODO: replace strings as ${xx} by their values
     public void interpolateModel()
     {
       Interpolator tor = new Interpolator();

@@ -30,7 +30,7 @@ public class Nut
     public static void main( String[] args )
     {
         String  goalArg      = null;
-        boolean effectiveNut = false;
+        String  effectiveNut = null; // xml or json
         boolean noopMode     = false;
 
         // Default mode is SNAPSHOT
@@ -54,8 +54,11 @@ public class Nut
               else if( args[i].equals("-d") || args[i].equals("--debug") ) {
                  log.debugOn();
               }
-              else if( args[i].equals("-e") || args[i].equals("--effective") ) {
-                 effectiveNut = true;
+              else if( args[i].equals("-x") || args[i].equals("--xml") ) {
+                 effectiveNut = "xml";
+              }
+              else if( args[i].equals("-j") || args[i].equals("--json") ) {
+                 effectiveNut = "json";
               }
               else if( args[i].equals("-n") || args[i].equals("--noop") ) {
                  noopMode = true;
@@ -86,7 +89,7 @@ public class Nut
                  showHelp();
                  System.exit( 3 );
         }
-        if (effectiveNut==false ) {
+        if (effectiveNut==null ) {
             // every goal is 4 characters or more length
             if( goalArg==null || goalArg.length()<4 ) {
                  showHelp();
@@ -138,7 +141,8 @@ public class Nut
         log.out( " -v,--version     Display version information" );
         log.out( " -D,--define      Define a system property" );
         log.out( " -d,--debug       Produce execution debug output" );
-        log.out( " -e,--effective   Display effective NUT" );
+        log.out( " -x,--xml         Display effective NUT in xml format" );
+        log.out( " -j,--json        Display effective NUT in json format" );
         log.out( " -n,--noop        No operation mode (dry run)" );
         log.out( " -r,--release     Release mode. Default is snapshot" );
         log.out( " -s,--snapshot    Snapshot default mode" );
@@ -218,19 +222,21 @@ public class Nut
     }
 
     // --------------------------------------------------------------------------------
-    private static void buildProject( List sortedProjects, String goalArgument, boolean effectiveNut, boolean noopMode )
+    private static void buildProject( List sortedProjects, String goalArgument, String effectiveNut, boolean noopMode )
     {
             // iterate over projects, and execute on each...
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
             {
                 Project currentProject = (Project) it.next();
                 log.line();
-                if( effectiveNut ) {
-                    currentProject.effectiveModel();
-                } else {
+                if( effectiveNut == null ) {
                     currentProject.interpolateModel();
                     currentProject.checkDependencies();
                     currentProject.build( goalArgument, noopMode );
+                } else if ( "xml".equals(effectiveNut) ) {
+                    currentProject.effectiveXmlModel();
+                } else if ( "json".equals(effectiveNut) ) {
+                    currentProject.effectiveJsonModel();
                 }
             }
     }

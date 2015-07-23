@@ -37,12 +37,15 @@ javac $options Log.java
 echo " - xml"
 cd ../xml
 javac $options XmlPullParserException.java XmlPullParser.java XmlSerializer.java
+echo " - json"
+cd ../json
+javac $options JsonSerializer.java
 echo " - artifact"
 cd ../artifact
 javac $options InvalidArtifactRTException.java Artifact.java
 echo " - model"
 cd ../model
-javac $options Goal.java Dependency.java Build.java Model.java Repository.java XmlReader.java XmlWriter.java ValidationException.java
+javac $options Goal.java Dependency.java Build.java Model.java Repository.java XmlReader.java XmlWriter.java JsonWriter.java ValidationException.java
 echo " - interpolation"
 cd ../interpolation
 javac $options Interpolator.java
