@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.DateFormat;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.HashSet;
+import java.util.Set;
 
 import nut.model.Build;
 import nut.model.Dependency;
@@ -29,7 +34,7 @@ public class XmlReader {
         throws IOException, XmlPullParserException
     {
         Goal goal = new Goal();
-        java.util.Set<String> parsed = new java.util.HashSet<String>();
+        Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
             if ( parser.getName().equals( "name" )  ) {
                 if ( parsed.contains( "name" ) )
@@ -69,7 +74,7 @@ public class XmlReader {
         throws IOException, XmlPullParserException
     {
         Build build = new Build();
-        java.util.Set<String> parsed = new java.util.HashSet<String>();
+        Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
             if ( parser.getName().equals( "sourceDirectory" ) ) {
                 if ( parsed.contains( "sourceDirectory" ) )
@@ -115,7 +120,7 @@ public class XmlReader {
                 if ( parsed.contains( "goals" ) )
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
-                java.util.List<Goal> goals = new java.util.ArrayList<Goal>();
+                List<Goal> goals = new ArrayList<Goal>();
                 build.setGoals( goals );
                 while ( parser.nextTag() == XmlPullParser.START_TAG ) {
                     if ( parser.getName().equals( "goal" ) ) {
@@ -143,7 +148,7 @@ public class XmlReader {
         throws IOException, XmlPullParserException
     {
         Dependency dependency = new Dependency();
-        java.util.Set<String> parsed = new java.util.HashSet<String>();
+        Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
             if ( parser.getName().equals( "groupId" )  ) {
                 if ( parsed.contains( "groupId" ) )
@@ -189,7 +194,7 @@ public class XmlReader {
         throws IOException, XmlPullParserException
     {
         Repository repository = new Repository();
-        java.util.Set<String> parsed = new java.util.HashSet<String>();
+        Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
             if ( parser.getName().equals( "name" )  ) {
                 if ( parsed.contains( "name" ) )
@@ -229,7 +234,7 @@ public class XmlReader {
         parser.next();
 
         Model model = new Model();
-        java.util.Set<String> parsed = new java.util.HashSet<String>();
+        Set<String> parsed = new HashSet<String>();
         int eventType = parser.getEventType();
         boolean foundRoot = false;
         while ( eventType != XmlPullParser.END_DOCUMENT ) {
@@ -290,7 +295,7 @@ public class XmlReader {
                     if ( parsed.contains( "modules" ) )
                         throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                     parsed.add( parser.getName() );
-                    java.util.List<String> modules = new java.util.ArrayList<String>();
+                    List<String> modules = new ArrayList<String>();
                     model.setModules( modules );
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
                         if ( parser.getName().equals( "module" ) ) {
@@ -303,7 +308,7 @@ public class XmlReader {
                     if ( parsed.contains( "dependencies" ) )
                         throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                     parsed.add( parser.getName() );
-                    java.util.List<Dependency> dependencies = new java.util.ArrayList<Dependency>();
+                    List<Dependency> dependencies = new ArrayList<Dependency>();
                     model.setDependencies( dependencies );
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
                         if ( parser.getName().equals( "dependency" ) ) {
@@ -316,7 +321,7 @@ public class XmlReader {
                     if ( parsed.contains( "repositories" ) )
                         throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                     parsed.add( parser.getName() );
-                    java.util.List<Repository> repositories = new java.util.ArrayList<Repository>();
+                    List<Repository> repositories = new ArrayList<Repository>();
                     model.setRepositories( repositories );
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
                         if ( parser.getName().equals( "repository" ) ) {
