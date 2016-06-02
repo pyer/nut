@@ -46,19 +46,18 @@ public class ArtifactTest
     }
 
     @Test
+    public void testGetRepository()
+    {
+        basedir = System.getProperty( "basedir" );
+        artifact = new Artifact( groupId, artifactId, version, type );
+        assertEquals( basedir + "/target/repository", artifact.getRepository() );
+    }
+
+    @Test
     public void testGetPath()
     {
         artifact = new Artifact( groupId, artifactId, version, type );
         assertEquals( groupId + File.separator + artifactId + "-" + version + "." + type, artifact.getPath() );
-    }
-
-    @Test
-    public void testGetFile()
-              throws IOException
-    {
-        File target = new File( LOCAL_FILE );
-        artifact = new Artifact( groupId, artifactId, version, type );
-        assertEquals( target.getCanonicalPath(), artifact.getFile().getCanonicalPath() );
     }
 
     @Test

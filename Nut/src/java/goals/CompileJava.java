@@ -67,23 +67,12 @@ public class CompileJava
         {
             Dependency dep = (Dependency)(modelDep.get(i));
             Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
-            File file = artifactDep.getFile();
-            //log.debug( "scope is " + dep.getScope() + " for " + dep.getId() );
             if( dep.getScope().equals("test") ) {
-                testDependencies.add(file.getAbsolutePath());
+                testDependencies.add(artifactDep.getPath());
             } else {
-                dependencies.add(file.getAbsolutePath());
+                dependencies.add(artifactDep.getPath());
             }
         }
-/*        
-        if ( dependencies!=null )
-        {
-            for ( int i = 0; i < dependencies.size(); i++ )
-            {
-                log.debug( "project.dependency   = " + (String)(dependencies.get(i)) );
-            }
-        }
-*/
 
         /* Compiling sources */
         File outputDir = new File( basedir + File.separator + outputDirectory );
@@ -103,14 +92,14 @@ public class CompileJava
             log.info( "   Compiling " + sourceDirectory );
             compile( sources, dependencies, basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory );
         }
-        
+
         /* Compiling test sources */
         File testOutputDir = new File( basedir + File.separator + testOutputDirectory );
         if ( !testOutputDir.exists() )
         {
             testOutputDir.mkdirs();
         }
-        
+
         List testSources = sourceFiles( new File( basedir + File.separator + testSourceDirectory ) );
         //testSources.addAll(sources);
         if ( testSources.isEmpty() )
@@ -125,7 +114,7 @@ public class CompileJava
             log.info( "   Compiling " + testSourceDirectory );
             compile( testSources, dependencies, basedir + File.separator + testSourceDirectory, basedir + File.separator + testOutputDirectory );
         }
-        
+
     }
 
     private static List<String> sourceFiles( File sourceDir )

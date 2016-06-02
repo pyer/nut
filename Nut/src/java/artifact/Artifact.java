@@ -75,15 +75,15 @@ public class Artifact
         return type;
     }
 
+    public String getRepository()
+    {
+        return this.repository;
+    }
+
     public String getPath()
     {
         String group = groupId.replace( '.', File.separatorChar );
         return this.repository + File.separator + group + File.separator + artifactId + "-" + version + "." + type;
-    }
-
-    public File getFile()
-    {
-        return new File ( getPath() );
     }
 
     // ----------------------------------------------------------------------
@@ -108,20 +108,21 @@ public class Artifact
     public boolean isPresent()
         throws SecurityException
     {
-      return getFile().isFile();
+      File f = new File( getPath() );
+      return f.isFile();
     }
 
     public FileInputStream fileInputStream()
         throws FileNotFoundException
     {
-        File f = getFile();
+        File f = new File( getPath() );
         return new FileInputStream( f );
     }
 
     public FileOutputStream fileOutputStream()
         throws IOException
     {
-        File f = getFile();
+        File f = new File( getPath() );
         //does destination directory exist ?
         if( !f.getParentFile().exists() ) {
             f.getParentFile().mkdirs();
