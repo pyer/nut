@@ -25,9 +25,8 @@ echo "Build nut local repository"
 mkdir -p $NUT_HOME/nut
 cp -a localRepository/* $NUT_HOME/
 
-mkdir -p target/classes 
-
 cd $root
+mkdir -p target/classes
 echo "Compiling.."
 options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
 cd $root/Nut
@@ -51,14 +50,17 @@ cd ../interpolation
 javac $options Interpolator.java
 echo " - project"
 cd ../project
-javac $options DependencyNotFoundException.java InvalidDependencyVersionException.java DuplicateProjectException.java BuildFailureException.java Project.java ProjectBuilder.java ProjectSorter.java DependencyChecker.java
+javac $options DependencyNotFoundException.java DependencyChecker.java BuildException.java Project.java
+echo " - workers"
+cd ../workers
+javac $options AssemblerException.java Assembler.java DuplicateProjectException.java Sorter.java
 echo " - goals"
 cd ../goals
 javac $options Clean.java
 javac $options CompileJava.java
 javac $options Install.java
 javac $options Pack.java
-javac $options TestTestNG.java ../testng/TestListener.java
+javac $options TestNG.java
 echo " - Nut"
 cd ..
 javac $options Nut.java
@@ -67,6 +69,15 @@ cd $root
 echo "Build Nut.jar"
 mkdir -p $NUT_HOME/nut
 jar cf $NUT_HOME/nut/Nut-$NUT_VERSION.jar -C target/classes .
+rm -r target
+
+echo "Build TestNG.jar"
+mkdir -p target/classes
+cd testNG/src/java
+options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
+javac $options TestRunner.java TestListener.java
+cd $root
+jar cf $NUT_HOME/nut/testNG-$NUT_VERSION.jar -C target/classes .
 rm -r target
 
 echo "Build packaging"

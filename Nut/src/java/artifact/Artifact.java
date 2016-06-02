@@ -22,7 +22,7 @@ public class Artifact
     private final String artifactId;
     private final String version;
     private final String type;
-    
+
     private final String repository;
 
     public Artifact( String groupId, String artifactId, String version, String type )
@@ -47,7 +47,7 @@ public class Artifact
         if ( type == null || type.isEmpty() ) {
             throw new InvalidArtifactRTException( "The type of the artifact " + this.toString() + " cannot be empty." );
         }
-        
+
         this.repository = System.getProperty( "nut.home" );
         if ( this.repository == null ) {
             throw new InvalidArtifactRTException( "The 'nut.home' system property is undefined." );
@@ -74,16 +74,16 @@ public class Artifact
     {
         return type;
     }
-    
+
     public String getPath()
     {
         String group = groupId.replace( '.', File.separatorChar );
-        return group + File.separator + artifactId + "-" + version + "." + type;
+        return this.repository + File.separator + group + File.separator + artifactId + "-" + version + "." + type;
     }
 
     public File getFile()
     {
-        return new File ( this.repository + File.separator + getPath() );
+        return new File ( getPath() );
     }
 
     // ----------------------------------------------------------------------

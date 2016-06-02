@@ -18,12 +18,17 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>nut</groupId>
+      <artifactId>testNG</artifactId>
+      <version>2.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>6.8.7</version>
       <scope>test</scope>
-    </dependency>
-  </dependencies>
+    </dependency>  </dependencies>
 
   <repositories>
     <repository>
@@ -53,7 +58,7 @@
       </goal>
       <goal>
         <name>test</name>
-        <type>TestNG</type>
+        <type>NG</type>
         <configuration>
           <testSuiteFile>test/testng.xml</testSuiteFile>
         </configuration>

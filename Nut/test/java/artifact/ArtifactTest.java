@@ -3,6 +3,8 @@ package nut.artifact;
 import nut.artifact.Artifact;
 import nut.artifact.InvalidArtifactRTException;
 
+import nut.logging.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,7 +24,7 @@ public class ArtifactTest
     private String groupId = "groupid", artifactId = "artifactId", version = "1.0", type = "type";
     private String LOCAL_REPO;
     private String LOCAL_FILE;
-    
+
     @BeforeMethod
     private void before()
     {
@@ -33,6 +35,8 @@ public class ArtifactTest
         new File( LOCAL_REPO ).mkdir();
         new File( LOCAL_REPO + "/groupid" ).mkdir();
         System.setProperty( "nut.home", LOCAL_REPO );
+        Log log = new Log();
+        log.info("basedir=" + basedir);
     }
 
     @AfterMethod

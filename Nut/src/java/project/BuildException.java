@@ -4,15 +4,15 @@ package nut.project;
  * One or more builds failed.
  *
  */
-public class BuildFailureException
+public class BuildException
     extends Exception
 {
-    public BuildFailureException( String message )
+    public BuildException( String message )
     {
         super( message );
     }
 
-    public BuildFailureException( String message, Throwable cause )
+    public BuildException( String message, Throwable cause )
     {
         super( message, cause );
     }

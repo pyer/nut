@@ -5,10 +5,11 @@ import nut.logging.Log;
 import nut.artifact.Artifact;
 
 import nut.project.Project;
-import nut.project.BuildFailureException;
-import nut.project.DuplicateProjectException;
-import nut.project.ProjectBuilder;
-import nut.project.ProjectSorter;
+
+import nut.workers.AssemblerException;
+import nut.workers.DuplicateProjectException;
+import nut.workers.Assembler;
+import nut.workers.Sorter;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,8 +96,8 @@ public class Nut
                  showHelp();
                  System.exit( 4 );
             }
-        } 
-        // everything is ok, let's go 
+        }
+        // everything is ok, let's go
         log.start();
         List modules = scanningProject();
         if( modules != null ) {
@@ -188,16 +189,16 @@ public class Nut
             if ( projectFile.exists() ) {
                 files = Collections.singletonList( projectFile );
             } else {
-                throw new BuildFailureException(  "Project file '" + POM_FILE + "' not found !" );
+                throw new AssemblerException(  "Project file '" + POM_FILE + "' not found !" );
             }
 
-            ProjectBuilder builder = new ProjectBuilder();
+            Assembler builder = new Assembler();
             List<Project> projects = collectProjects( builder, files );
             if ( projects.isEmpty() ) {
-                throw new BuildFailureException(  "Project file '" + POM_FILE + "' is empty !" );
+                throw new AssemblerException(  "Project file '" + POM_FILE + "' is empty !" );
             }
 
-            ProjectSorter sorter = new ProjectSorter( projects );
+            Sorter sorter = new Sorter( projects );
             sortedProjects = sorter.getSortedProjects();
             if ( sorter.hasMultipleProjects() ) {
                 log.line();
@@ -209,7 +210,7 @@ public class Nut
                 }
             }
         }
-        catch ( BuildFailureException e ) {
+        catch ( AssemblerException e ) {
             log.failure( e );
         }
         catch ( DuplicateProjectException e ) {
@@ -243,8 +244,8 @@ public class Nut
 
     // ----------------------------------------------------------------------
 
-    private static List<Project> collectProjects( ProjectBuilder builder, List files )
-        throws BuildFailureException
+    private static List<Project> collectProjects( Assembler builder, List files )
+        throws AssemblerException
     {
         List<Project> projects = new ArrayList<Project>( files.size() );
 

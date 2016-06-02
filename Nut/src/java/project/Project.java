@@ -30,10 +30,9 @@ import nut.model.Repository;
 import nut.model.XmlWriter;
 import nut.model.JsonWriter;
 
+import nut.project.BuildException;
 import nut.project.DependencyChecker;
 import nut.project.DependencyNotFoundException;
-import nut.project.BuildFailureException;
-import nut.project.InvalidDependencyVersionException;
 
 import nut.logging.Log;
 
@@ -52,14 +51,14 @@ import nut.logging.Log;
  */
 public class Project
 {
-    
+
     private Model model;
 
     private Artifact artifact;
 
     // Building time
     private long time;
-    // 
+    //
     boolean buildDone;
     boolean buildSuccess;
 
@@ -113,7 +112,7 @@ public class Project
     {
         return model;
     }
-    
+
     public void setDependencies( List<Dependency> dependencies )
     {
         getModel().setDependencies( dependencies );
@@ -268,10 +267,10 @@ public class Project
       Interpolator tor = new Interpolator();
       this.model = tor.interpolatedModel( this.model );
     }
-    
+
     // ----------------------------------------------------------------------
     // check if every dependency is in the local repository
-    // if not try to dowload it from repositories defined in nut.xml
+    // if not try to download it from repositories defined in nut.xml
     public void checkDependencies()
     {
       for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
@@ -287,7 +286,20 @@ public class Project
           }
       }
     }
-    
+
+    // ----------------------------------------------------------------------
+    // returns classpath fir TestNG child process
+    public String getDependenciesClassPath()
+    {
+      String classpath = "";
+      for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
+          Dependency dep = (Dependency) it.next();
+          Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
+          classpath = classpath + ":" + artifactDep.getPath();
+      }
+      return classpath;
+    }
+
     // ----------------------------------------------------------------------
     public void build( String targetGoal, boolean noopMode )
     {
@@ -317,7 +329,7 @@ public class Project
           log.warning( "Nothing to do: goal '" + targetGoal + "' is unknown in the packaging '" + getPackaging() + "'" );
         }
       }
-      catch ( BuildFailureException e ) {
+      catch ( BuildException e ) {
         time = System.currentTimeMillis() - time;
         log.failure( e );
       }
@@ -326,7 +338,7 @@ public class Project
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     private void executeGoal( String goalName, Properties config )
-        throws BuildFailureException
+        throws BuildException
     {
       try {
           log.debug("* execute goal: " + goalName);
@@ -337,20 +349,19 @@ public class Project
           Method method = cls.getMethod("execute", cArg);
           method.invoke( cls, this, config );
       } catch (IllegalArgumentException e) {
-          throw new BuildFailureException( e.getMessage() , e );
+          throw new BuildException( e.getMessage() , e );
       } catch (IllegalAccessException e) {
-          throw new BuildFailureException( e.getMessage() , e );
+          throw new BuildException( e.getMessage() , e );
       } catch (InvocationTargetException e) {
-          throw new BuildFailureException( e.getMessage() , e );
+          throw new BuildException( e.getMessage() , e );
       } catch ( ClassNotFoundException e) {
-          throw new BuildFailureException( "Goal " + goalName + " not found" , e );
+          throw new BuildException( "Goal " + goalName + " not found" , e );
       } catch (NoSuchMethodException e) {
-          throw new BuildFailureException( "Method 'execute' not found" , e );
+          throw new BuildException( "Method 'execute' not found" , e );
       } catch (SecurityException e) {
-          throw new BuildFailureException( e.getMessage() , e );
+          throw new BuildException( e.getMessage() , e );
       } catch (NullPointerException e) {
-          throw new BuildFailureException( e.getMessage() , e );
+          throw new BuildException( e.getMessage() , e );
       }
     }
-
 }

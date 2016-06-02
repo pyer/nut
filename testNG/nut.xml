@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>../nut.xml</parent>
+
+  <groupId>nut</groupId>
+  <artifactId>testNG</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Test NG</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.8.7</version>
+    </dependency>
+  </dependencies>
+
+</project>

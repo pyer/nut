@@ -1,4 +1,4 @@
-package nut.project;
+package nut.workers;
 
 import nut.artifact.Artifact;
 import nut.logging.Log;
@@ -10,8 +10,8 @@ import nut.model.XmlReader;
 import nut.model.ValidationException;
 
 import nut.project.Project;
-import nut.project.BuildFailureException;
-import nut.project.InvalidDependencyVersionException;
+
+import nut.workers.AssemblerException;
 
 import nut.xml.pull.XmlPullParserException;
 
@@ -44,13 +44,13 @@ Notes
  * the inheritance assembler must use models that are unadulterated!
 */
 
-public class ProjectBuilder
+public class Assembler
 {
     private Log log;
     private String packagingPath;
     private String nutVersion;
 
-    public ProjectBuilder()
+    public Assembler()
     {
         this.log = new Log();
         // path of packaging models
@@ -59,11 +59,11 @@ public class ProjectBuilder
     }
 
     // ----------------------------------------------------------------------
-    // ProjectBuilder Implementation
+    // Assembler Implementation
     // ----------------------------------------------------------------------
 
     public Project build( File projectFile )
-        throws BuildFailureException
+        throws AssemblerException
     {
         String pomLocation = projectFile.getAbsolutePath();
         log.debug( "pomLocation = " + pomLocation );
@@ -102,14 +102,14 @@ public class ProjectBuilder
             log.debug( "Parent file is " + parentFile.getCanonicalPath() );
           } catch (IOException e ) {
             log.error( e.getMessage() );
-          } 
+          }
           if( parentFile.exists() ) {
             parentModel = readModel( parentFile );
           } else {
-            throw new BuildFailureException( model.getId() + ": parent file not found '" + model.getParent() + "'" );
+            throw new AssemblerException( model.getId() + ": parent file not found '" + model.getParent() + "'" );
           }
         }
- 
+
         //log.info( "Building " + model.getId() );
         Project project = null;
         try
@@ -140,7 +140,7 @@ public class ProjectBuilder
         }
         catch ( ValidationException e )
         {
-            throw new BuildFailureException( model.getId() + ": " + e.getMessage(), e );
+            throw new AssemblerException( model.getId() + ": " + e.getMessage(), e );
         }
         return project;
     }
@@ -176,7 +176,7 @@ public class ProjectBuilder
 
     // ----------------------------------------------------------------------
     private Model readModel( File file )
-        throws BuildFailureException
+        throws AssemblerException
     {
         Model model = null;
         try
@@ -189,13 +189,13 @@ public class ProjectBuilder
             reader.close();
         }
         catch ( XmlPullParserException e ) {
-            throw new BuildFailureException( "Parse error reading '" + file.getAbsolutePath() + "': "+ e.getMessage(), e );
+            throw new AssemblerException( "Parse error reading '" + file.getAbsolutePath() + "': "+ e.getMessage(), e );
         }
         catch ( FileNotFoundException e ) {
-            throw new BuildFailureException( "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new AssemblerException( "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
         }
         catch ( IOException e ) {
-            throw new BuildFailureException( "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new AssemblerException( "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
         }
         return model;
     }

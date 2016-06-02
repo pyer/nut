@@ -1,4 +1,7 @@
-package nut.project;
+package nut.workers;
+
+import nut.project.Project;
+import nut.workers.AssemblerException;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,31 +9,31 @@ import java.io.IOException;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class ProjectBuilderTest 
+public class AssemblerTest
 {
     @Test
     public void testHashCodeNullSafe() {
-        new ProjectBuilder().hashCode();
+        new Assembler().hashCode();
     }
 
     @Test
     public void testDefaultPackaging()
-        throws BuildFailureException
+        throws AssemblerException
     {
-        ProjectBuilder builder = new ProjectBuilder();
+        Assembler assembler = new Assembler();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.build( new File(basedir + "/test/resources/project/nut.xml") );
+        Project project = assembler.build( new File(basedir + "/test/resources/project/nut.xml") );
         assertEquals( "modules", project.getModel().getPackaging() );
     }
 
 //    @Test(enabled=false)
     @Test
     public void testProperties()
-        throws BuildFailureException
+        throws AssemblerException
     {
-        ProjectBuilder builder = new ProjectBuilder();
+        Assembler assembler = new Assembler();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.build( new File(basedir + "/test/resources/project/nut.xml") );
+        Project project = assembler.build( new File(basedir + "/test/resources/project/nut.xml") );
         assertEquals( "1.1", project.getVersion() );
 //        assertEquals( "artifact", project.getArtifactId() );
 //        assertEquals( "test.groupId", project.getGroupId() );
@@ -38,11 +41,11 @@ public class ProjectBuilderTest
 
     @Test
     public void testNullVersion()
-        throws BuildFailureException
+        throws AssemblerException
     {
-        ProjectBuilder builder = new ProjectBuilder();
+        Assembler assembler = new Assembler();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.build( new File(basedir + "/test/resources/nullVersion.xml") );
+        Project project = assembler.build( new File(basedir + "/test/resources/nullVersion.xml") );
         assertEquals( "1.1", project.getVersion() );
     }
 

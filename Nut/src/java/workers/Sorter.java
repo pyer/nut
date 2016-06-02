@@ -1,10 +1,11 @@
-package nut.project;
+package nut.workers;
 
 import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
 import nut.project.Project;
+import nut.workers.DuplicateProjectException;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
@@ -23,10 +24,9 @@ import java.util.Map;
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  * @version $Id: ProjectSorter.java 495147 2007-01-11 07:47:53Z jvanzyl $
  */
-public class ProjectSorter
+public class Sorter
 {
     private final DAG dag;
-
     private final List sortedProjects;
 
     /**
@@ -41,57 +41,39 @@ public class ProjectSorter
      * </ul>
      * @throws DuplicateProjectException if any projects are duplicated by id
      */
-    public ProjectSorter( List<Project> projects )
+    public Sorter( List<Project> projects )
         throws CycleDetectedException, DuplicateProjectException
     {
         dag = new DAG();
 
         Map<String,Project> projectMap = new HashMap<String,Project>();
-        //Map projectMap = new HashMap();
-
-        for ( Iterator i = projects.iterator(); i.hasNext(); )
-        {
+        for ( Iterator i = projects.iterator(); i.hasNext(); ) {
             Project project = (Project) i.next();
-
             String id = project.getId();
-            if ( dag.getVertex( id ) != null )
-            {
+            if ( dag.getVertex( id ) != null ) {
                 throw new DuplicateProjectException( "Project '" + id + "' is duplicated" );
             }
-
             dag.addVertex( id );
-
             projectMap.put( id, project );
         }
 
-
-        for ( Iterator i = projects.iterator(); i.hasNext(); )
-        {
+        for ( Iterator i = projects.iterator(); i.hasNext(); ) {
             Project project = (Project) i.next();
-
             String id = project.getId();
-
-            for ( Iterator j = project.getDependencies().iterator(); j.hasNext(); )
-            {
+            for ( Iterator j = project.getDependencies().iterator(); j.hasNext(); ) {
                 Dependency dependency = (Dependency) j.next();
-
                 String dependencyId = dependency.getId();
-
-                if ( dag.getVertex( dependencyId ) != null )
-                {
+                if ( dag.getVertex( dependencyId ) != null ) {
                     dag.addEdge( id, dependencyId );
                 }
             }
         }
 
         List<Project> sortedProjects = new ArrayList<Project>();
-
-        for ( Iterator i = TopologicalSorter.sort( dag ).iterator(); i.hasNext(); )
-        {
+        for ( Iterator i = TopologicalSorter.sort( dag ).iterator(); i.hasNext(); ) {
             String id = (String) i.next();
             sortedProjects.add( projectMap.get( id ) );
         }
-
         this.sortedProjects = Collections.unmodifiableList( sortedProjects );
     }
 

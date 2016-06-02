@@ -18,9 +18,9 @@
       <class name="nut.interpolation.InterpolatorTest" />
     </classes>
   </test>
-  <test name="nut.project">
+  <test name="nut.workers">
     <classes>
-      <class name="nut.project.ProjectBuilderTest" />
+      <class name="nut.workers.AssemblerTest" />
     </classes>
   </test>
   <test name="nut.logging">
