@@ -153,13 +153,6 @@ public class Log
         line();
     }
 
-    public void build( CharSequence content )
-    {
-        System.out.print( "\033[1;32m" );
-        print( " BUILD ", content );
-        System.out.print( "\033[1;37m" );
-    }
-
     public void success( CharSequence content )
     {
         System.out.print( "\033[1;32m" );
