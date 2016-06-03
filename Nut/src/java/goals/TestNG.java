@@ -27,8 +27,6 @@ public class TestNG
         Log log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        System.setProperty( "basedir", basedir );
-        String targetDirectory      = basedir + File.separator + project.getBuild().getTargetDirectory();
         String outputDirectory      = basedir + File.separator + project.getBuild().getOutputDirectory();
         String testOutputDirectory  = basedir + File.separator + project.getBuild().getTestOutputDirectory();
         String testReportDirectory  = basedir + File.separator + project.getBuild().getTestReportDirectory();
@@ -46,12 +44,12 @@ public class TestNG
         } else {
             log.info( "   Testing " + testSuiteFileName );
             String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
-            //String classpath = "./target/classes:./target/test-classes:/home/pba/nutRepository/nut/testNG-2.1.jar:/home/pba/nutRepository/javax/servlet/javax.servlet-api-3.1.0.jar:/home/pba/nutRepository/org/slf4j/slf4j-api-1.7.18.jar:/home/pba/nutRepository/org/slf4j/slf4j-nop-1.7.18.jar:/home/pba/nutRepository/org/quartz-scheduler/quartz-2.2.2.jar:/home/pba/nutRepository/com/beust/jcommander-1.7.jar:/home/pba/nutRepository/org/testng/testng-6.8.7.jar:/home/pba/nutRepository/ch/qos/logback/logback-core-1.1.6.jar";
             String classpath = testOutputDirectory + ":" + outputDirectory + project.getDependenciesClassPath();
             log.debug("classpath = " + classpath);
             //"java -Xmx512M -classpath $NUT_HOME/nut/Nut-$NUT_VERSION.jar:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_HOME/com/beust/jcommander-1.7.jar:$NUT_HOME/org/testng/testng-6.8.7.jar:/home/pba/nutRepository/javax/servlet/javax.servlet-api-3.1.0.jar:/home/pba/nutRepository/org/slf4j/slf4j-api-1.7.18.jar:/home/pba/nutRepository/org/quartz-scheduler/quartz-2.2.2.jar nut.Nut "-Dversion=$NUT_VERSION" "-Dhome=$NUT_HOME" $*";
             // Run a java app in a separate system process
-            ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "nut.TestRunner", testSuiteFileName, testReportDirectory);
+            ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,
+                                                  "nut.TestRunner", testSuiteFileName, testReportDirectory);
             pb.inheritIO();
             Process proc = pb.start();
             int returnCode = proc.waitFor();
