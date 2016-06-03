@@ -305,7 +305,6 @@ public class Project
     {
       try {
         time = System.currentTimeMillis();
-        log.build( getName() );
 
         List<Goal> goals = getBuild().getGoals();
         for ( Iterator g = goals.iterator(); g.hasNext(); ) {
@@ -315,7 +314,7 @@ public class Project
               // build is done if at least one goal is executed
               buildDone=true;
               if( noopMode ) {
-                log.info( "Goal " + goalClass + " in noop mode" );
+                log.info( "NOOP: " + goalClass + " " + getName() );
               } else {
                 executeGoal( goalClass, goal.configuration() );
               }
@@ -324,9 +323,8 @@ public class Project
         time = System.currentTimeMillis() - time;
         if( buildDone ) {
           buildSuccess = true;
-          log.success( time );
         } else {
-          log.warning( "Nothing to do: goal '" + targetGoal + "' is unknown in the packaging '" + getPackaging() + "'" );
+          log.warning( "No goal '" + targetGoal + "' in the packaging '" + getPackaging() + "' for " + getName() );
         }
       }
       catch ( BuildException e ) {
@@ -357,7 +355,7 @@ public class Project
       } catch ( ClassNotFoundException e) {
           throw new BuildException( "Goal " + goalName + " not found" , e );
       } catch (NoSuchMethodException e) {
-          throw new BuildException( "Method 'execute' not found" , e );
+          throw new BuildException( "Method 'execute' not found in " + goalName, e );
       } catch (SecurityException e) {
           throw new BuildException( e.getMessage() , e );
       } catch (NullPointerException e) {
