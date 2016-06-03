@@ -39,10 +39,8 @@ public class TestNG
         log.debug( "test reports = " + testReportDirectory);
 
         File testSuiteFile = new File( testSuiteFileName );
-        if ( !testSuiteFile.exists() ) {
-            log.warn( "   No test" );
-        } else {
-            log.info( "   Testing " + testSuiteFileName );
+        if ( testSuiteFile.exists() ) {
+            log.debug( "Testing " + testSuiteFileName );
             String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
             String classpath = testOutputDirectory + ":" + outputDirectory + project.getDependenciesClassPath();
             log.debug("classpath = " + classpath);

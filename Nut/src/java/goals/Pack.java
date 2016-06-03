@@ -62,15 +62,15 @@ public class Pack
         log.debug( "project.artifactId        = " + artifactId );
         log.debug( "project.version           = " + version );
         log.debug( "project.packaging         = " + packaging );
-        
-        log.info( "   Packaging \'" + artifactFileName + "\'" );
+
+        log.info( "Packaging \'" + artifactFileName + "\'" );
 
         if ( artifactId==null || (artifactId.trim().isEmpty() ) )
         {
             log.error( "\'project.artifactId\' property is undefined" );
             throw new Exception();
         }
-        
+
 
         File targetDir = new File( basedir + File.separator + targetDirectory );
         if ( !targetDir.exists() )
@@ -181,7 +181,7 @@ public class Pack
             if ( f.isDirectory() ) {
               zipFile( out, basedir, fileName );
             } else {
-              log.info("     zipping " + fileName );
+              log.info("   zipping " + fileName );
               FileInputStream fi = new FileInputStream( basedir + fileName );
               origin = new BufferedInputStream(fi, BUFFER);
               ZipEntry entry = new ZipEntry( fileName );

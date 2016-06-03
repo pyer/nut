@@ -1,4 +1,4 @@
-<suite name="Nut test Suite">
+<suite name="Nut test Suite" verbose="0">
   <test name="nut.artifact">
     <classes>
       <class name="nut.artifact.ArtifactTest" />

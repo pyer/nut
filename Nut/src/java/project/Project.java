@@ -329,7 +329,7 @@ public class Project
       }
       catch ( BuildException e ) {
         time = System.currentTimeMillis() - time;
-        log.failure( e );
+        log.failure( getName() );
       }
     }
 

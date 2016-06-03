@@ -32,7 +32,7 @@ public class Install
 
         String targetDirectory      = project.getBuild().getTargetDirectory();
         String resourceDirectory    = project.getBuild().getResourceDirectory();
-        
+
         String groupId              = project.getGroupId();
         String artifactId           = project.getArtifactId();
         String version              = project.getVersion()  + mode;
@@ -43,8 +43,8 @@ public class Install
         log.debug( "project.artifactId        = " + artifactId );
         log.debug( "project.version           = " + version );
         log.debug( "project.packaging         = " + packaging );
-        
-        log.info( "   Installing \'" + artifactId + "\'" );
+
+        log.info( "Installing \'" + artifactId + "\'" );
         // + "-" + version + "." + packaging
         if( packaging.equals("xml") ) {
                 String group = groupId.replace( '.', File.separatorChar );
@@ -100,7 +100,7 @@ public class Install
           FileInputStream in = new FileInputStream(sourceFile);
            //create FileOutputStream object for destination file
           FileOutputStream out = new FileOutputStream(destinationFile);
- 
+
           byte[] b = new byte[1024];
           int noOfBytes = 0;
           //read bytes from source file and write to destination file
@@ -109,8 +109,8 @@ public class Install
           }
           //close the streams
           in.close();
-          out.close();      
- 
+          out.close();
+
         }
         catch(FileNotFoundException fnf) {
             log.error( "Specified file not found :" + fnf );

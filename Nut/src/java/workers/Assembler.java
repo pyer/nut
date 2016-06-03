@@ -92,7 +92,7 @@ public class Assembler
         if( packagingFile.exists() ) {
             packagingModel = readModel( packagingFile );
         } else {
-            log.warn( "No template for packaging '" + model.getPackaging() + "'" );
+            log.debug( "No template for packaging '" + model.getPackaging() + "'" );
         }
         // and at last the parent file
         Model parentModel = null;

@@ -18,7 +18,7 @@ public class TestListener extends TestListenerAdapter {
     sysout = System.out;
     //stdout = new PrintStream(new FileOutputStream("/dev/null"));
     //System.setOut(stdout);
-    info("   Testing " + tc.getName());
+    info("Testing " + tc.getName());
   }
 
   @Override
@@ -28,18 +28,26 @@ public class TestListener extends TestListenerAdapter {
   }
 
   @Override
+  public void onTestStart(ITestResult result) {
+  }
+
+  @Override
+  public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+  }
+
+  @Override
   public void onTestFailure(ITestResult tr) {
-    error("     " + tr.getName()+ " failed");
+    error("    " + tr.getName()+ " failed");
   }
 
   @Override
   public void onTestSkipped(ITestResult tr) {
-    warn("      Skip " + tr.getName());
+    warn( "    Skip " + tr.getName());
   }
 
   @Override
   public void onTestSuccess(ITestResult tr) {
-    info("     " + tr.getName()+ " succeded");
+    info( "    " + tr.getName()+ " succeded");
   }
 
   private void print( String prefix, String content )
@@ -70,5 +78,4 @@ public class TestListener extends TestListenerAdapter {
       print( " error ", content );
       print( "\033[1;37m" );
   }
-
 }

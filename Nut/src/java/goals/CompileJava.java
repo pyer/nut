@@ -85,11 +85,11 @@ public class CompileJava
         List sources = sourceFiles( new File( basedir + File.separator + sourceDirectory ) );
         if ( sources.isEmpty() )
         {
-            log.warn( "Source directory " + sourceDirectory + " is empty" );
+            log.warn( "No source code for " + project.getName() );
         }
         else
         {
-            log.info( "   Compiling " + sourceDirectory );
+            log.info( "Compiling " + sourceDirectory );
             compile( sources, dependencies, basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory );
         }
 
@@ -104,14 +104,14 @@ public class CompileJava
         //testSources.addAll(sources);
         if ( testSources.isEmpty() )
         {
-            log.warn( "Test source directory " + testSourceDirectory + " is empty" );
+            log.warn( "No test for " + project.getName() );
         }
         else
         {
             if ( !testDependencies.isEmpty() )
                 dependencies.addAll(testDependencies);
             dependencies.add( basedir + File.separator + outputDirectory );
-            log.info( "   Compiling " + testSourceDirectory );
+            log.info( "Compiling " + testSourceDirectory );
             compile( testSources, dependencies, basedir + File.separator + testSourceDirectory, basedir + File.separator + testOutputDirectory );
         }
 

@@ -41,9 +41,9 @@ public class Clean
         Properties pp  = project.getModel().getProperties();
         String basedir = (String)pp.getProperty( "basedir" );
         String targetDirectory = project.getBuild().getTargetDirectory();
-        
+
         File directoryPath = new File( basedir + File.separator + targetDirectory );
-        log.info( "   Cleaning " + directoryPath.getPath() );
+        log.info( "Cleaning " + directoryPath.getPath() );
         removeDirectory( directoryPath );
     }
 
