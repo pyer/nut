@@ -76,7 +76,7 @@ public class ArtifactTest
     public void testMavenFilePath()
     {
         artifact = new Artifact( groupId, artifactId, version, type );
-        assertEquals( "/igroupid/artifactId/1.0/artifactId-1.0.type", artifact.mavenFilePath() );
+        assertEquals( "/groupid/artifactId/1.0/artifactId-1.0.type", artifact.mavenFilePath() );
     }
 
     @Test
