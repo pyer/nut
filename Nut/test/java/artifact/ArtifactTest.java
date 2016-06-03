@@ -1,9 +1,9 @@
 package nut.artifact;
 
+import nut.logging.Log;
+
 import nut.artifact.Artifact;
 import nut.artifact.InvalidArtifactRTException;
-
-import nut.logging.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.testng.Assert.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -25,39 +27,49 @@ public class ArtifactTest
     private String LOCAL_REPO;
     private String LOCAL_FILE;
 
-    @BeforeMethod
-    private void before()
+    @BeforeTest
+    private void beforeT()
     {
-        home = System.getProperty( "nut.home" );
+        home = System.getProperty( "nut.home", "." );
         basedir = System.getProperty( "basedir" );
         LOCAL_REPO = basedir + "/target/repository";
         LOCAL_FILE = basedir + "/target/repository/groupid/artifactId-1.0.type";
+        System.setProperty( "nut.home", LOCAL_REPO );
+    }
+
+    @AfterTest
+    private void afterT()
+    {
+        System.setProperty( "nut.home", home );
+    }
+
+    @BeforeMethod
+    private void beforeM()
+    {
+        System.setProperty( "nut.home", LOCAL_REPO );
         new File( LOCAL_REPO ).mkdir();
         new File( LOCAL_REPO + "/groupid" ).mkdir();
-        System.setProperty( "nut.home", LOCAL_REPO );
-        Log log = new Log();
-        log.info("basedir=" + basedir);
     }
 
     @AfterMethod
-    private void after()
+    private void afterM()
     {
-        System.setProperty( "nut.home", home );
+      new File( LOCAL_REPO + "/groupid" ).delete();
+      new File( LOCAL_REPO ).delete();
     }
 
     @Test
     public void testGetRepository()
     {
-        basedir = System.getProperty( "basedir" );
         artifact = new Artifact( groupId, artifactId, version, type );
-        assertEquals( basedir + "/target/repository", artifact.getRepository() );
+        assertEquals( LOCAL_REPO, artifact.getRepository() );
     }
 
     @Test
     public void testGetPath()
     {
         artifact = new Artifact( groupId, artifactId, version, type );
-        assertEquals( groupId + File.separator + artifactId + "-" + version + "." + type, artifact.getPath() );
+        assertEquals( LOCAL_FILE, artifact.getPath() );
     }
 
     @Test

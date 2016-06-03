@@ -2,6 +2,7 @@ package nut.workers;
 
 import nut.project.Project;
 import nut.workers.AssemblerException;
+import nut.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
