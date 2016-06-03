@@ -160,13 +160,6 @@ public class Log
         System.out.print( "\033[1;37m" );
     }
 
-    public void success( long time )
-    {
-        System.out.print( "\033[1;32m" );
-        print( "SUCCESS", "Done in " + getFormattedTime( time ) );
-        System.out.print( "\033[1;37m" );
-    }
-
     public void success( String name, long time )
     {
         System.out.print( "\033[1;32m" );
