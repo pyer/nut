@@ -33,7 +33,7 @@ public class TestNG
         //String testSuiteFileName    = basedir + File.separator + "test/testng.xml";
         String testSuiteFileName    = basedir + File.separator + config.getProperty("testSuiteFileName", "test/testng.xml");
         log.debug( "basedir      = " + basedir);
-        log.debug( "src classes  = " + outputDirectory);
+        log.debug( "main classe  = " + outputDirectory);
         log.debug( "test suite   = " + testSuiteFileName);
         log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory);

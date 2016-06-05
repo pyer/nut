@@ -58,7 +58,7 @@ public class BuildTest
         String dir = "java";
         Build thing = new Build();
         // check default value
-        assertEquals( thing.getSourceDirectory(), "src/java" );
+        assertEquals( thing.getSourceDirectory(), "main/java" );
         // check set value
         thing.setSourceDirectory( dir );
         assertEquals( thing.getSourceDirectory(), dir );
@@ -70,7 +70,7 @@ public class BuildTest
         String dir = "resources";
         Build thing = new Build();
         // check default value
-        assertEquals( thing.getResourceDirectory(), "src/resources" );
+        assertEquals( thing.getResourceDirectory(), "main/resources" );
         // check set value
         thing.setResourceDirectory( dir );
         assertEquals( thing.getResourceDirectory(), dir );

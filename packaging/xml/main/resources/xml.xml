@@ -5,7 +5,7 @@
   </description>
   <build>
     <targetDirectory>target</targetDirectory>
-    <resourceDirectory>src/resources</resourceDirectory>
+    <resourceDirectory>main/resources</resourceDirectory>
     <goals>
       <goal>
         <name>install</name>

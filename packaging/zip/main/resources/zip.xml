@@ -8,8 +8,8 @@
 
   <build>
     <targetDirectory>target</targetDirectory>
-    <sourceDirectory>src/java</sourceDirectory>
-    <resourceDirectory>src/resources</resourceDirectory>
+    <sourceDirectory>main/java</sourceDirectory>
+    <resourceDirectory>main/resources</resourceDirectory>
     <outputDirectory>target/classes</outputDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
     <testResourceDirectory>test/resources</testResourceDirectory>

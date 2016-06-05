@@ -25,13 +25,13 @@ implements java.io.Serializable
      * in this directory when the project is built.
      * The path given is relative to the project descriptor.
      */
-    private String sourceDirectory = "src/java";
+    private String sourceDirectory = "main/java";
 
     /**
      * This element specifies a directory containing the resources of the project.
      * The path given is relative to the project descriptor.
      */
-    private String resourceDirectory = "src/resources";
+    private String resourceDirectory = "main/resources";
 
     /**
      * This element specifies a directory containing the unit test
