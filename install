@@ -50,10 +50,10 @@ cd ../interpolation
 javac $options Interpolator.java
 echo " - project"
 cd ../project
-javac $options DependencyNotFoundException.java DependencyChecker.java BuildException.java Project.java
+javac $options DependencyNotFoundException.java DependencyChecker.java BuildException.java Project.java ProjectBuilder.java
 echo " - workers"
 cd ../workers
-javac $options AssemblerException.java Assembler.java DuplicateProjectException.java Sorter.java
+javac $options DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java
 echo " - goals"
 cd ../goals
 javac $options Clean.java

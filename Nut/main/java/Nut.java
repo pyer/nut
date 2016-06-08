@@ -6,10 +6,12 @@ import nut.artifact.Artifact;
 
 import nut.project.Project;
 
-import nut.workers.AssemblerException;
 import nut.workers.DuplicateProjectException;
-import nut.workers.Assembler;
+import nut.workers.Scanner;
+import nut.workers.ScannerException;
 import nut.workers.Sorter;
+
+import org.codehaus.plexus.util.dag.CycleDetectedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +27,6 @@ public class Nut
 {
     /** Instance logger */
     private static Log log;
-
-    private static final String POM_FILE = "nut.xml";
 
     public static void main( String[] args )
     {
@@ -99,11 +99,34 @@ public class Nut
         }
         // everything is ok, let's go
         log.start();
-        List modules = scanningProject();
-        if( modules != null ) {
-          buildProject(modules, goalArg, effectiveNut, noopMode);
-          if( modules.size() > 1 )
-            logReactorSummary( modules );
+        List projects = Collections.EMPTY_LIST;
+        Scanner scan = new Scanner();
+        projects = scan.getProjects();
+
+        List sortedProjects = Collections.EMPTY_LIST;
+        if( projects != null ) {
+          try {
+            Sorter sorter = new Sorter( projects );
+            sortedProjects = sorter.getSortedProjects();
+            if ( sorter.hasMultipleProjects() ) {
+              log.line();
+              log.info( "Ordering projects..." );
+              for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
+              {
+                  Project currentProject = (Project) it.next();
+                  log.info( "   " + currentProject.getId() );
+              }
+            }
+            buildProject(sortedProjects, goalArg, effectiveNut, noopMode);
+            if( sortedProjects.size() > 1 )
+              logReactorSummary( sortedProjects );
+          } catch(CycleDetectedException e) {
+            log.failure(e.getMessage());
+          } catch(DuplicateProjectException e) {
+            log.failure(e.getMessage());
+          } catch(Exception e) {
+            log.failure(e.getMessage());
+          }
         }
         log.finish();
         System.exit( 0 );
@@ -175,53 +198,6 @@ public class Nut
             log.debug("Define " + name + "=" + value );
     }
 
-    // ----------------------------------------------------------------------
-    // Project execution
-    // ----------------------------------------------------------------------
-    private static List scanningProject()
-    {
-        List sortedProjects = Collections.EMPTY_LIST;
-        try
-        {
-            log.info( "Scanning for projects..." );
-            List files = Collections.EMPTY_LIST;
-            File projectFile = new File( POM_FILE );
-            if ( projectFile.exists() ) {
-                files = Collections.singletonList( projectFile );
-            } else {
-                throw new AssemblerException(  "Project file '" + POM_FILE + "' not found !" );
-            }
-
-            Assembler builder = new Assembler();
-            List<Project> projects = collectProjects( builder, files );
-            if ( projects.isEmpty() ) {
-                throw new AssemblerException(  "Project file '" + POM_FILE + "' is empty !" );
-            }
-
-            Sorter sorter = new Sorter( projects );
-            sortedProjects = sorter.getSortedProjects();
-            if ( sorter.hasMultipleProjects() ) {
-                log.line();
-                log.info( "Ordering projects..." );
-                for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
-                {
-                    Project currentProject = (Project) it.next();
-                    log.info( "   " + currentProject.getId() );
-                }
-            }
-        }
-        catch ( AssemblerException e ) {
-            log.failure( e );
-        }
-        catch ( DuplicateProjectException e ) {
-            log.failure( e );
-        }
-        catch ( Throwable t ) {
-            log.fatal( t );
-        }
-        return sortedProjects;
-    }
-
     // --------------------------------------------------------------------------------
     private static void buildProject( List sortedProjects, String goalArgument, String effectiveNut, boolean noopMode )
     {
@@ -243,52 +219,9 @@ public class Nut
     }
 
     // ----------------------------------------------------------------------
-
-    private static List<Project> collectProjects( Assembler builder, List files )
-        throws AssemblerException
-    {
-        List<Project> projects = new ArrayList<Project>( files.size() );
-
-        for ( Iterator iterator = files.iterator(); iterator.hasNext(); )
-        {
-            File file = (File) iterator.next();
-            log.debug("   Project " + file.getAbsolutePath());
-            Project project = builder.build( file );
-
-            if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
-            //log.info("   Modules:");
-                File modulesRoot = file.getParentFile();
-
-                // Initial ordering is as declared in the modules section
-                List<File> moduleFiles = new ArrayList<File>( project.getModules().size() );
-                for ( Iterator i = project.getModules().iterator(); i.hasNext(); )
-                {
-                    String name = (String) i.next();
-                    log.info("   - Module " + name);
-                    if ( name.trim().isEmpty() ) {
-                        log.warn( "Empty module detected. Please check you don't have any empty module definitions." );
-                        continue;
-                    }
-
-                    File moduleFile = new File( modulesRoot, name );
-                    if ( moduleFile.exists() && moduleFile.isDirectory() ) {
-                        moduleFiles.add( new File( modulesRoot, name + "/" + Nut.POM_FILE ) );
-                    }
-                }
-                List<Project> collectedProjects = collectProjects( builder, moduleFiles );
-                projects.addAll( collectedProjects );
-            }
-
-            projects.add( project );
-        }
-
-        return projects;
-    }
-
-    // ----------------------------------------------------------------------
     // Reporting
     // ----------------------------------------------------------------------
-    private static void logReactorSummary( List modules )
+    private static void logReactorSummary( List projects )
     {
             // -------------------------
             // Reactor Summary:
@@ -299,7 +232,7 @@ public class Nut
             log.line();
             log.info( "SUMMARY" );
 
-            for ( Iterator it = modules.iterator(); it.hasNext(); )
+            for ( Iterator it = projects.iterator(); it.hasNext(); )
             {
                 Project project = (Project) it.next();
 
@@ -315,5 +248,4 @@ public class Nut
             }
             log.line();
     }
-
 }

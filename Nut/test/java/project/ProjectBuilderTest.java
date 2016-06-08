@@ -1,7 +1,8 @@
-package nut.workers;
+package nut.project;
 
 import nut.project.Project;
-import nut.workers.AssemblerException;
+import nut.project.ProjectBuilder;
+import nut.project.BuildException;
 import nut.logging.Log;
 
 import java.io.File;
@@ -10,18 +11,18 @@ import java.io.IOException;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class AssemblerTest
+public class ProjectBuilderTest
 {
     @Test
     public void testHashCodeNullSafe() {
-        new Assembler().hashCode();
+        new ProjectBuilder().hashCode();
     }
 
     @Test
     public void testDefaultPackaging()
-        throws AssemblerException
+        throws BuildException
     {
-        Assembler assembler = new Assembler();
+        ProjectBuilder assembler = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
         Project project = assembler.build( new File(basedir + "/test/resources/project/nut.xml") );
         assertEquals( "modules", project.getModel().getPackaging() );
@@ -30,9 +31,9 @@ public class AssemblerTest
 //    @Test(enabled=false)
     @Test
     public void testProperties()
-        throws AssemblerException
+        throws BuildException
     {
-        Assembler assembler = new Assembler();
+        ProjectBuilder assembler = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
         Project project = assembler.build( new File(basedir + "/test/resources/project/nut.xml") );
         assertEquals( "1.1", project.getVersion() );
@@ -42,9 +43,9 @@ public class AssemblerTest
 
     @Test
     public void testNullVersion()
-        throws AssemblerException
+        throws BuildException
     {
-        Assembler assembler = new Assembler();
+        ProjectBuilder assembler = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
         Project project = assembler.build( new File(basedir + "/test/resources/nullVersion.xml") );
         assertEquals( "1.1", project.getVersion() );

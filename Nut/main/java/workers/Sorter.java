@@ -41,7 +41,7 @@ public class Sorter
      * </ul>
      * @throws DuplicateProjectException if any projects are duplicated by id
      */
-    public Sorter( List<Project> projects )
+    public Sorter( List projects )
         throws CycleDetectedException, DuplicateProjectException
     {
         dag = new DAG();

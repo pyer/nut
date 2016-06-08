@@ -1,4 +1,4 @@
-package nut.workers;
+package nut.project;
 
 import nut.artifact.Artifact;
 import nut.logging.Log;
@@ -10,8 +10,7 @@ import nut.model.XmlReader;
 import nut.model.ValidationException;
 
 import nut.project.Project;
-
-import nut.workers.AssemblerException;
+import nut.project.BuildException;
 
 import nut.xml.pull.XmlPullParserException;
 
@@ -44,13 +43,13 @@ Notes
  * the inheritance assembler must use models that are unadulterated!
 */
 
-public class Assembler
+public class ProjectBuilder
 {
     private Log log;
     private String packagingPath;
     private String nutVersion;
 
-    public Assembler()
+    public ProjectBuilder()
     {
         this.log = new Log();
         // path of packaging models
@@ -59,11 +58,11 @@ public class Assembler
     }
 
     // ----------------------------------------------------------------------
-    // Assembler Implementation
+    // Build Implementation
     // ----------------------------------------------------------------------
 
     public Project build( File projectFile )
-        throws AssemblerException
+        throws BuildException
     {
         String pomLocation = projectFile.getAbsolutePath();
         log.debug( "pomLocation = " + pomLocation );
@@ -106,7 +105,7 @@ public class Assembler
           if( parentFile.exists() ) {
             parentModel = readModel( parentFile );
           } else {
-            throw new AssemblerException( model.getId() + ": parent file not found '" + model.getParent() + "'" );
+            throw new BuildException( model.getId() + ": parent file not found '" + model.getParent() + "'" );
           }
         }
 
@@ -140,7 +139,7 @@ public class Assembler
         }
         catch ( ValidationException e )
         {
-            throw new AssemblerException( model.getId() + ": " + e.getMessage(), e );
+            throw new BuildException( model.getId() + ": " + e.getMessage(), e );
         }
         return project;
     }
@@ -176,7 +175,7 @@ public class Assembler
 
     // ----------------------------------------------------------------------
     private Model readModel( File file )
-        throws AssemblerException
+        throws BuildException
     {
         Model model = null;
         try
@@ -189,13 +188,13 @@ public class Assembler
             reader.close();
         }
         catch ( XmlPullParserException e ) {
-            throw new AssemblerException( "Parse error reading '" + file.getAbsolutePath() + "': "+ e.getMessage(), e );
+            throw new BuildException( "Parse error reading '" + file.getAbsolutePath() + "': "+ e.getMessage(), e );
         }
         catch ( FileNotFoundException e ) {
-            throw new AssemblerException( "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new BuildException( "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
         }
         catch ( IOException e ) {
-            throw new AssemblerException( "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new BuildException( "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
         }
         return model;
     }

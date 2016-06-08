@@ -10,8 +10,8 @@ import java.util.Arrays;
 import nut.model.ValidationException;
 
 import nut.project.Project;
-import nut.workers.Assembler;
-import nut.workers.AssemblerException;
+import nut.project.ProjectBuilder;
+import nut.project.BuildException;
 
 public class BuildTest
 {
@@ -177,11 +177,11 @@ public class BuildTest
     public void testValidationException() throws ValidationException
     {
         try {
-          Assembler builder = new Assembler();
+          ProjectBuilder builder = new ProjectBuilder();
           Project project = builder.build( new File("test/resources/badGoal.xml") );
           project.getBuild().validate();
         }
-        catch ( AssemblerException e ) {
+        catch ( BuildException e ) {
             throw new ValidationException( "Build failure" );
         }
     }
