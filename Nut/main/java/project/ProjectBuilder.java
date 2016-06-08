@@ -1,7 +1,6 @@
 package nut.project;
 
 import nut.artifact.Artifact;
-import nut.logging.Log;
 
 import nut.model.Build;
 import nut.model.Dependency;
@@ -45,13 +44,11 @@ Notes
 
 public class ProjectBuilder
 {
-    private Log log;
     private String packagingPath;
     private String nutVersion;
 
     public ProjectBuilder()
     {
-        this.log = new Log();
         // path of packaging models
         this.packagingPath = System.getProperty( "nut.home", "." ) + File.separatorChar + "nut" + File.separatorChar + "packaging";
         this.nutVersion = System.getProperty( "nut.version", "1.0" );
@@ -65,9 +62,7 @@ public class ProjectBuilder
         throws BuildException
     {
         String pomLocation = projectFile.getAbsolutePath();
-        log.debug( "pomLocation = " + pomLocation );
         String basedir     = projectFile.getAbsoluteFile().getParent();
-        log.debug( "basedir     = " + basedir );
         // First read the project's nut.xml
         Model model = readModel( projectFile );
         // add basedir property
@@ -83,25 +78,15 @@ public class ProjectBuilder
         // then read the packaging model if any
         Model packagingModel = null;
         File packagingFile = new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" );
-        try {
-          log.debug( "Packaging file is " + packagingFile.getCanonicalPath() );
-        } catch (IOException e ) {
-          log.error( e.getMessage() );
-        }
         if( packagingFile.exists() ) {
             packagingModel = readModel( packagingFile );
         } else {
-            log.debug( "No template for packaging '" + model.getPackaging() + "'" );
+            throw new BuildException( "Packaging file not found '" + packagingFile + "'" );
         }
         // and at last the parent file
         Model parentModel = null;
         if( model.getParent() != null ) {
           File parentFile = new File( basedir, model.getParent() );
-          try {
-            log.debug( "Parent file is " + parentFile.getCanonicalPath() );
-          } catch (IOException e ) {
-            log.error( e.getMessage() );
-          }
           if( parentFile.exists() ) {
             parentModel = readModel( parentFile );
           } else {
@@ -110,36 +95,28 @@ public class ProjectBuilder
         }
 
         //log.info( "Building " + model.getId() );
-        Project project = null;
-        try
-        {
-            if( packagingModel != null )
-            {
-                model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
-                model.getDependencies().addAll( packagingModel.getDependencies() );
-                model.getRepositories().addAll( packagingModel.getRepositories() );
-            }
-
-            if( parentModel != null )
-            {
-                model.setBuild( mergedBuild( model.getBuild(), parentModel.getBuild() ) );
-                model.getDependencies().addAll( parentModel.getDependencies() );
-                model.getRepositories().addAll( parentModel.getRepositories() );
-                if( model.getGroupId() == null )
-                  model.setGroupId( parentModel.getGroupId() );
-                if( model.getVersion() == null )
-                  model.setVersion( parentModel.getVersion() );
-            }
-
-            project = new Project( model );
-            Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() );
-            project.setArtifact( projectArtifact );
-            // Must validate before artifact construction to make sure dependencies are good
-            model.validate( );
+        if( packagingModel != null ) {
+          model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
+          model.getDependencies().addAll( packagingModel.getDependencies() );
+          model.getRepositories().addAll( packagingModel.getRepositories() );
         }
-        catch ( ValidationException e )
-        {
-            throw new BuildException( model.getId() + ": " + e.getMessage(), e );
+        if( parentModel != null ) {
+          model.setBuild( mergedBuild( model.getBuild(), parentModel.getBuild() ) );
+          model.getDependencies().addAll( parentModel.getDependencies() );
+          model.getRepositories().addAll( parentModel.getRepositories() );
+          if( model.getGroupId() == null )
+            model.setGroupId( parentModel.getGroupId() );
+          if( model.getVersion() == null )
+            model.setVersion( parentModel.getVersion() );
+        }
+        Project project = new Project( model );
+        Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() );
+        try {
+          project.setArtifact( projectArtifact );
+          // Must validate before artifact construction to make sure dependencies are good
+          model.validate( );
+        } catch ( ValidationException e ) {
+          throw new BuildException( model.getId() + ": " + e.getMessage(), e );
         }
         return project;
     }
