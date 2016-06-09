@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+  <parent>../parent.xml</parent>
+
+  <groupId>test.groupId</groupId>
+  <artifactId>artifact</artifactId>
+
+</project>

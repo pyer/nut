@@ -9,46 +9,89 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.testng.Assert.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
 public class ProjectBuilderTest
 {
-    @Test
-    public void testHashCodeNullSafe() {
-        new ProjectBuilder().hashCode();
+    private String home;
+    private String basedir;
+
+    @BeforeTest
+    private void before() {
+      home = System.getProperty( "nut.home", "." );
+      basedir = System.getProperty( "basedir" );
+      System.setProperty( "nut.home", basedir + "/test/resources" );
     }
 
-    @Test
-    public void testDefaultPackaging()
-        throws BuildException
-    {
-        ProjectBuilder assembler = new ProjectBuilder();
-        String basedir = System.getProperty( "basedir" );
-        Project project = assembler.build( new File(basedir + "/test/resources/project/nut.xml") );
-        assertEquals( "modules", project.getModel().getPackaging() );
+    @AfterTest
+    private void after() {
+      System.setProperty( "nut.home", home );
     }
 
 //    @Test(enabled=false)
     @Test
-    public void testProperties()
-        throws BuildException
-    {
-        ProjectBuilder assembler = new ProjectBuilder();
-        String basedir = System.getProperty( "basedir" );
-        Project project = assembler.build( new File(basedir + "/test/resources/project/nut.xml") );
-        assertEquals( "1.1", project.getVersion() );
-//        assertEquals( "artifact", project.getArtifactId() );
-//        assertEquals( "test.groupId", project.getGroupId() );
+    public void testHashCodeNullSafe() {
+      new ProjectBuilder().hashCode();
+    }
+
+    @Test(expectedExceptions = BuildException.class)
+    public void testUnknownProjectFile() throws BuildException {
+      ProjectBuilder builder = new ProjectBuilder();
+      String basedir = System.getProperty( "basedir" );
+      Project project = builder.build( new File(basedir + "/test/resources/no.xml") );
     }
 
     @Test
-    public void testNullVersion()
-        throws BuildException
-    {
-        ProjectBuilder assembler = new ProjectBuilder();
-        String basedir = System.getProperty( "basedir" );
-        Project project = assembler.build( new File(basedir + "/test/resources/nullVersion.xml") );
-        assertEquals( "1.1", project.getVersion() );
+    public void testNutHomeProperty() throws BuildException {
+      ProjectBuilder builder = new ProjectBuilder();
+      String basedir = System.getProperty( "basedir" );
+      Project project = builder.build( new File(basedir + "/test/resources/project/nut.xml") );
+      String value = project.getModel().getProperties().getProperty( "nut.home" );
+      assertTrue( value.length() > 2 );
     }
 
+    @Test
+    public void testDefaultPackaging() throws BuildException {
+        ProjectBuilder builder = new ProjectBuilder();
+        String basedir = System.getProperty( "basedir" );
+        Project project = builder.build( new File(basedir + "/test/resources/project/nut.xml") );
+        assertEquals( "modules", project.getModel().getPackaging() );
+    }
+
+    @Test(expectedExceptions = BuildException.class)
+    public void testUnkownPackaging() throws BuildException {
+        ProjectBuilder builder = new ProjectBuilder();
+        String basedir = System.getProperty( "basedir" );
+        Project project = builder.build( new File(basedir + "/test/resources/project/unknownpackaging.xml") );
+    }
+
+    @Test
+    public void testProjectArtifact() throws BuildException {
+        ProjectBuilder builder = new ProjectBuilder();
+        String basedir = System.getProperty( "basedir" );
+        Project project = builder.build( new File(basedir + "/test/resources/project/nut.xml") );
+        assertEquals( "1.1", project.getVersion() );
+        assertEquals( "artifact", project.getArtifactId() );
+        assertEquals( "test.groupId", project.getGroupId() );
+    }
+
+    @Test
+    public void testMergedParent() throws BuildException {
+        ProjectBuilder builder = new ProjectBuilder();
+        String basedir = System.getProperty( "basedir" );
+        Project project = builder.build( new File(basedir + "/test/resources/project/child.xml") );
+        assertEquals( "1.1", project.getVersion() );
+        assertEquals( "artifact", project.getArtifactId() );
+        assertEquals( "test.groupId", project.getGroupId() );
+    }
+
+    @Test
+    public void testNullVersion() throws BuildException {
+        ProjectBuilder builder = new ProjectBuilder();
+        String basedir = System.getProperty( "basedir" );
+        Project project = builder.build( new File(basedir + "/test/resources/nullVersion.xml") );
+        assertEquals( "1.1", project.getVersion() );
+    }
 }
