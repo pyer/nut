@@ -181,12 +181,9 @@ public class Project
     public String getName()
     {
         // TODO: this should not be allowed to be null.
-        if ( getModel().getName() != null )
-        {
+        if ( getModel().getName() != null ) {
             return getModel().getName();
-        }
-        else
-        {
+        } else {
             return getId();
         }
     }
@@ -204,11 +201,8 @@ public class Project
     public Build getBuild()
     {
         Build build = getModel().getBuild();
-
-        if ( build == null )
-        {
+        if ( build == null ) {
             build = new Build();
-
             getModel().setBuild( build );
         }
         return build;
@@ -288,7 +282,7 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
-    // returns classpath fir TestNG child process
+    // returns classpath for TestNG child process
     public String getDependenciesClassPath()
     {
       String classpath = "";
