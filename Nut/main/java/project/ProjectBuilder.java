@@ -83,14 +83,12 @@ public class ProjectBuilder
         } else {
             throw new BuildException( "Packaging file not found '" + packagingFile + "'" );
         }
-        // and at last the parent file
+        // and at last the parent file if any
         Model parentModel = null;
         if( model.getParent() != null ) {
           File parentFile = new File( basedir, model.getParent() );
           if( parentFile.exists() ) {
             parentModel = readModel( parentFile );
-          } else {
-            throw new BuildException( model.getId() + ": parent file not found '" + model.getParent() + "'" );
           }
         }
 
