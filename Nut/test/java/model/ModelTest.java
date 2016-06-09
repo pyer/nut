@@ -31,4 +31,30 @@ public class ModelTest
         assertNotNull( new Model().toString() );
     }
 
+    @Test
+    public void testModelId()
+    {
+        Model model = new Model();
+        model.setGroupId("group");
+        model.setArtifactId("artifact");
+        model.setVersion("1.0");
+        assertEquals( model.getId(), "group:artifact:1.0" );
+    }
+
+    @Test
+    public void testModelDefaultPackaging()
+    {
+        Model model = new Model();
+        assertEquals( model.getPackaging(), "modules" );
+    }
+
+    @Test
+    public void testModelPackaging()
+    {
+        Model model = new Model();
+        model.setPackaging("zip");
+        assertEquals( model.getPackaging(), "zip" );
+    }
+
+
 }

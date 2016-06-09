@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 
+ *
  * project is the root of the model descriptor.
  * The following table lists all of the possible child elements.
  *   - groupID
@@ -35,7 +35,7 @@ public class Model implements java.io.Serializable
     public String getModelEncoding()
     {
         return modelEncoding;
-    }          
+    }
 
     public void setModelEncoding( String modelEncoding )
     {
@@ -51,7 +51,7 @@ public class Model implements java.io.Serializable
     {
         return this.modelVersion;
     }
- 
+
     public void setModelVersion( String modelVersion )
     {
         this.modelVersion = modelVersion;
@@ -66,7 +66,7 @@ public class Model implements java.io.Serializable
     {
         return this.parent;
     }
- 
+
     public void setParent( String parent )
     {
         this.parent = parent;
@@ -110,7 +110,7 @@ public class Model implements java.io.Serializable
      * The current version of the artifact produced by this project.
      */
     private String version;
-    
+
     public String getVersion()
     {
         return this.version;
@@ -141,7 +141,7 @@ public class Model implements java.io.Serializable
      * The full name of the project.
      */
     private String name;
-    
+
     public String getName()
     {
         return this.name;
@@ -151,7 +151,7 @@ public class Model implements java.io.Serializable
     {
         this.name = name;
     }
-    
+
     /**
      * A detailed description of the project,
      * whenever it needs to describe the project, such as on the web site.
@@ -250,17 +250,17 @@ public class Model implements java.io.Serializable
     {
         this.dependencies = dependencies;
     }
-    
+
     public void setRepositories( List<Repository> repositories )
     {
         this.repositories = repositories;
     }
-    
+
     public void setProperties( Properties properties )
     {
         this.properties = properties;
     }
- 
+
     public void addProperty( String key, String value )
     {
         getProperties().put( key, value );
@@ -308,7 +308,6 @@ public class Model implements java.io.Serializable
     // ----------------------------------------------------------------------
     // Field validation
     // ----------------------------------------------------------------------
-
     private void validateStringNotEmpty( String fieldName, String string )
         throws ValidationException
     {
