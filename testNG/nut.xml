@@ -6,7 +6,9 @@
   <artifactId>testNG</artifactId>
   <packaging>jar</packaging>
 
-  <name>Test NG</name>
+  <description>
+     Test NG launcher
+  </description>
 
   <dependencies>
     <dependency>
