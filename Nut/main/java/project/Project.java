@@ -173,21 +173,6 @@ public class Project
         return getModel().getPackaging();
     }
 
-    public void setName( String name )
-    {
-        getModel().setName( name );
-    }
-
-    public String getName()
-    {
-        // TODO: this should not be allowed to be null.
-        if ( getModel().getName() != null ) {
-            return getModel().getName();
-        } else {
-            return getId();
-        }
-    }
-
     public void setDescription( String description )
     {
         getModel().setDescription( description );
@@ -307,7 +292,7 @@ public class Project
               // build is done if at least one goal is executed
               buildDone=true;
               if( noopMode ) {
-                log.info( "NOOP: " + getName() );
+                log.info( "NOOP: " + goal.getClassName() + " " + getId() );
               } else {
                 executeGoal( goal.getClassName(), goal.configuration() );
               }
@@ -317,12 +302,12 @@ public class Project
         if( buildDone ) {
           buildSuccess = true;
         } else {
-          log.warning( "No goal '" + targetGoal + "' in the packaging '" + getPackaging() + "' for " + getName() );
+          log.warning( "No goal '" + targetGoal + "' in the packaging '" + getPackaging() + "' for " + getId() );
         }
       }
       catch ( BuildException e ) {
         time = System.currentTimeMillis() - time;
-        log.failure( getName() );
+        log.failure( getId() );
       }
     }
 

@@ -138,21 +138,6 @@ public class Model implements java.io.Serializable
     }
 
     /**
-     * The full name of the project.
-     */
-    private String name;
-
-    public String getName()
-    {
-        return this.name;
-    }
-
-    public void setName( String name )
-    {
-        this.name = name;
-    }
-
-    /**
      * A detailed description of the project,
      * whenever it needs to describe the project, such as on the web site.
      */

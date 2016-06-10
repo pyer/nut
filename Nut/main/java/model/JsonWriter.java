@@ -135,7 +135,6 @@ public class JsonWriter {
             serializer.element( "artifactId", model.getArtifactId() );
             serializer.element( "version", model.getVersion() );
             serializer.element( "packaging", model.getPackaging() );
-            serializer.element( "name", model.getName() );
             serializer.element( "description", model.getDescription() );
             if ( model.getBuild() != null ) {
                 writeBuild( (Build) model.getBuild() );

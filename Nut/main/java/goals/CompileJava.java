@@ -85,7 +85,7 @@ public class CompileJava
         List sources = sourceFiles( new File( basedir + File.separator + sourceDirectory ) );
         if ( sources.isEmpty() )
         {
-            log.warn( "No source code for " + project.getName() );
+            log.warn( "No source code for " + project.getId() );
         }
         else
         {
@@ -104,7 +104,7 @@ public class CompileJava
         //testSources.addAll(sources);
         if ( testSources.isEmpty() )
         {
-            log.warn( "No test for " + project.getName() );
+            log.warn( "No test for " + project.getId() );
         }
         else
         {

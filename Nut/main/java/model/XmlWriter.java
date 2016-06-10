@@ -162,7 +162,6 @@ public class XmlWriter {
             writeElement( "artifactId", model.getArtifactId(), serializer );
             writeElement( "version", model.getVersion(), serializer );
             writeElement( "packaging", model.getPackaging(), serializer );
-            writeElement( "name", model.getName(), serializer );
             writeElement( "description", model.getDescription(), serializer );
             if ( model.getBuild() != null ) {
                 writeBuild( (Build) model.getBuild(), "build", serializer );
