@@ -15,7 +15,7 @@ public class Goal implements java.io.Serializable
 
     private String name;
 
-    private String type;
+    private String className;
 
     /**
      * The configuration as properties.
@@ -45,54 +45,44 @@ public class Goal implements java.io.Serializable
     }
 
     /**
-     * Get the type of the goal.
+     * Get the className of the goal.
      * @return String
      */
-    public String getType()
+    public String getClassName()
     {
-        return this.type;
-    }
-
-    /**
-     * Set the type of the goal.
-     * @param type
-     */
-    public void setType( String type )
-    {
-        this.type = type;
-    }
-
-    private boolean hasType()
-    {
-        return ( (type!=null) && !type.isEmpty() );
-    }
-
-    /**
-     * Get the class name of the goal.
-     * For example: compile java ==> CompileJava
-     * @return String
-     */
-    public String toString()
-    {
-      if( name == null )
-        return "";
-      String id = name.substring(0, 1).toUpperCase() + name.substring(1);
-      if( hasType() ) {
-        return id + type.substring(0, 1).toUpperCase() + type.substring(1);
+      if( this.className==null || this.className.isEmpty() ) {
+        return this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
       }
-      return id;
+      return this.className;
     }
 
     public String getClassName( String name )
     {
       if( name==null || name.isEmpty() )
         return "";
-      return name.substring(0, 1).toUpperCase() + name.substring(1);
+      if( this.className==null || this.className.isEmpty() ) {
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
+      }
+      return this.className;
+    }
+
+    /**
+     * Set the className of the goal.
+     * @param className
+     */
+    public void setClassName( String className )
+    {
+        this.className = className;
+    }
+
+    public boolean hasClassName()
+    {
+        return( (className!=null) && !className.isEmpty() );
     }
 
     /**
      * Get the configuration object
-     * @return configuration 
+     * @return configuration
      */
     public java.util.Properties configuration()
     {
@@ -111,7 +101,7 @@ public class Goal implements java.io.Serializable
     }
 
     /**
-     * 
+     *
      * @param  key
      * @return value
      */
@@ -121,7 +111,7 @@ public class Goal implements java.io.Serializable
     }
 
     /**
-     * 
+     *
      * @param key
      * @param value
      */
@@ -138,8 +128,7 @@ public class Goal implements java.io.Serializable
     {
         if ( name == null )
             throw new ValidationException( "goal.name is null." );
-        if ( name.length() < 1 )
+        if ( name.length() < 2 )
             throw new ValidationException( "goal.name is empty." );
     }
-    
 }

@@ -50,11 +50,10 @@
       </goal>
       <goal>
         <name>compile</name>
-        <type>java</type>
+        <class>CompileJava</class>
       </goal>
       <goal>
         <name>test</name>
-        <type>TestNG</type>
         <configuration>
           <testSuiteFile>test/testng.xml</testSuiteFile>
         </configuration>

@@ -17,7 +17,7 @@ public class XmlWriter {
 
     /**
      * Method writeElement.
-     * 
+     *
      * @param tag
      * @param value
      * @param serializer
@@ -33,7 +33,7 @@ public class XmlWriter {
 
     /**
      * Method writeGoal.
-     * 
+     *
      * @param goal
      * @param tagName
      * @param serializer
@@ -45,7 +45,9 @@ public class XmlWriter {
         if ( goal != null ) {
             serializer.startTag( tagName );
             writeElement( "name", goal.getName(), serializer );
-            writeElement( "type", goal.getType(), serializer );
+            if ( goal.hasClassName() ) {
+                writeElement( "class", goal.getClassName(), serializer );
+            }
             if ( goal.hasConfiguration() ) {
                 serializer.startTag( "configuration" );
                 for ( Iterator iter = goal.configuration().keySet().iterator(); iter.hasNext(); ) {
@@ -57,11 +59,11 @@ public class XmlWriter {
             }
             serializer.endTag( tagName );
         }
-    } //-- void writeGoal( Goal, String, XmlSerializer ) 
+    } //-- void writeGoal( Goal, String, XmlSerializer )
 
     /**
      * Method writeBuild.
-     * 
+     *
      * @param build
      * @param tagName
      * @param serializer
@@ -90,11 +92,11 @@ public class XmlWriter {
             }
             serializer.endTag( tagName );
         }
-    } //-- void writeBuild( Build, String, XmlSerializer ) 
+    } //-- void writeBuild( Build, String, XmlSerializer )
 
     /**
      * Method writeDependency.
-     * 
+     *
      * @param dependency
      * @param tagName
      * @param serializer
@@ -112,11 +114,11 @@ public class XmlWriter {
             writeElement( "scope", dependency.getScope(), serializer );
             serializer.endTag( tagName );
         }
-    } //-- void writeDependency( Dependency, String, XmlSerializer ) 
+    } //-- void writeDependency( Dependency, String, XmlSerializer )
 
     /**
      * Method writeRepository.
-     * 
+     *
      * @param repository
      * @param tagName
      * @param serializer
@@ -136,7 +138,7 @@ public class XmlWriter {
 
     /**
      * Method writeModel.
-     * 
+     *
      * @param sWriter
      * @param model
      * @throws java.io.IOException

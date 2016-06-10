@@ -19,7 +19,7 @@ import java.util.Properties;
  *
  * @goal test
  */
-public class TestNG
+public class Test
 {
     public static void execute( Project project, Properties config )
         throws Exception

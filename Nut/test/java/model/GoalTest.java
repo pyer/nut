@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 /**
  * Tests {@code Goal}.
- * 
+ *
  */
 public class GoalTest
 {
@@ -45,28 +45,20 @@ public class GoalTest
     }
 
     @Test
-    public void testType()
+    public void testClassName()
     {
-      String s = "test_goal";
+      String s = "GoalClass";
       Goal goal = new Goal();
-      // Default type is null
-      assertNull( goal.getType() );
-      goal.setType( s );
-      assertTrue( goal.getType().equals( s ) );
+      goal.setName("goalName");
+      assertFalse( goal.hasClassName() );
+      // Default class name is name
+      assertTrue( goal.getClassName().equals( "GoalName" ) );
+      goal.setClassName( s );
+      assertTrue( goal.getClassName().equals( s ) );
     }
 
     @Test
-    public void testToString()
-    {
-      Goal goal = new Goal();
-      goal.setName( "test" );
-      assertEquals( "Test", goal.toString() );
-      goal.setType( "id" );
-      assertEquals( "TestId", goal.toString() );
-    }
-
-    @Test
-    public void testGetClassName()
+    public void testDefaultClassName()
     {
       Goal goal = new Goal();
       assertEquals( "Test", goal.getClassName("test") );

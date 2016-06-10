@@ -302,15 +302,14 @@ public class Project
 
         List<Goal> goals = getBuild().getGoals();
         for ( Iterator g = goals.iterator(); g.hasNext(); ) {
-            Goal   goal       = (Goal)g.next();
-            String goalClass  = goal.toString();
-            if( "build".equals(targetGoal) || goalClass.startsWith(goal.getClassName(targetGoal)) ) {
+            Goal goal = (Goal)g.next();
+            if( targetGoal.equals("build") || targetGoal.equals(goal.getName()) ) {
               // build is done if at least one goal is executed
               buildDone=true;
               if( noopMode ) {
-                log.info( "NOOP: " + goalClass + " " + getName() );
+                log.info( "NOOP: " + getName() );
               } else {
-                executeGoal( goalClass, goal.configuration() );
+                executeGoal( goal.getClassName(), goal.configuration() );
               }
             }
         }

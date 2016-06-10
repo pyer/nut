@@ -19,7 +19,7 @@ public class JsonWriter {
 
     /**
      * Method writeGoal.
-     * 
+     *
      * @param goal
      * @throws java.io.IOException
      */
@@ -29,7 +29,9 @@ public class JsonWriter {
         if ( goal != null ) {
             serializer.startObject(null);
             serializer.element( "name", goal.getName() );
-            serializer.element( "type", goal.getType() );
+            if ( goal.hasClassName() ) {
+                serializer.element( "class", goal.getClassName() );
+            }
             if ( goal.hasConfiguration() ) {
                 serializer.startObject( "configuration" );
                 for ( Iterator iter = goal.configuration().keySet().iterator(); iter.hasNext(); ) {
@@ -45,7 +47,7 @@ public class JsonWriter {
 
     /**
      * Method writeBuild.
-     * 
+     *
      * @param build
      * @throws java.io.IOException
      */
@@ -78,7 +80,7 @@ public class JsonWriter {
 
     /**
      * Method writeDependency.
-     * 
+     *
      * @param dependency
      * @throws java.io.IOException
      */
@@ -98,7 +100,7 @@ public class JsonWriter {
 
     /**
      * Method writeRepository.
-     * 
+     *
      * @param repository
      * @throws java.io.IOException
      */
@@ -116,7 +118,7 @@ public class JsonWriter {
 
     /**
      * Method writeModel.
-     * 
+     *
      * @param sWriter
      * @param model
      * @throws java.io.IOException

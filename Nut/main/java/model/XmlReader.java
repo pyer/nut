@@ -24,7 +24,7 @@ public class XmlReader {
 
     /**
      * Method parseGoal.
-     * 
+     *
      * @param parser
      * @throws IOException
      * @throws XmlPullParserException
@@ -41,11 +41,11 @@ public class XmlReader {
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
                 goal.setName( parser.nextText() );
-            } else if ( parser.getName().equals( "type" )  ) {
-                if ( parsed.contains( "type" ) )
+            } else if ( parser.getName().equals( "class" )  ) {
+                if ( parsed.contains( "class" ) )
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
                 parsed.add( parser.getName() );
-                goal.setType( parser.nextText() );
+                goal.setClassName( parser.nextText() );
             } else if ( parser.getName().equals( "configuration" )  ) {
                 if ( parsed.contains( "configuration" ) )
                     throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
@@ -64,7 +64,7 @@ public class XmlReader {
 
     /**
      * Method parseBuild.
-     * 
+     *
      * @param parser
      * @throws IOException
      * @throws XmlPullParserException
@@ -138,7 +138,7 @@ public class XmlReader {
 
     /**
      * Method parseDependency.
-     * 
+     *
      * @param parser
      * @throws IOException
      * @throws XmlPullParserException
@@ -184,7 +184,7 @@ public class XmlReader {
 
     /**
      * Method parseRepository.
-     * 
+     *
      * @param parser
      * @throws IOException
      * @throws XmlPullParserException
@@ -220,7 +220,7 @@ public class XmlReader {
 
     /**
      * Method parseModel.
-     * 
+     *
      * @param sReader
      * @throws IOException
      * @throws XmlPullParserException
