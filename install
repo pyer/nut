@@ -60,6 +60,7 @@ javac $options Clean.java
 javac $options CompileJava.java
 javac $options Install.java
 javac $options Pack.java
+javac $options PackWar.java
 javac $options Test.java
 echo " - Nut"
 cd ..
