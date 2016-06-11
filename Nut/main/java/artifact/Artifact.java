@@ -104,6 +104,11 @@ public class Artifact
         return '/' + group + "/" + artifactId + "-" + version + "." + type;
     }
     // ----------------------------------------------------------------------
+    public String nutFileName()
+    {
+        return artifactId + "-" + version + "." + type;
+    }
+    // ----------------------------------------------------------------------
     // check if the artifact file is present in the local repository and readable
     public boolean isPresent()
         throws SecurityException
