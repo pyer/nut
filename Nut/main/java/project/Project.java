@@ -273,8 +273,10 @@ public class Project
       String classpath = "";
       for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
-          Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
-          classpath = classpath + ":" + artifactDep.getPath();
+          if( dep.getScope().equals("test") || dep.getScope().equals("compile") ) {
+              Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
+              classpath = classpath + ":" + artifactDep.getPath();
+          }
       }
       return classpath;
     }
