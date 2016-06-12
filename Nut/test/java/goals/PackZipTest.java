@@ -15,12 +15,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-public class PackTest
+public class PackZipTest
 {
     private final String LOCAL_REPO = "target/repository";
     private Model model = new Model();
     private Project project;
-    
+
     @BeforeMethod
     private void before()
     {
@@ -48,7 +48,7 @@ public class PackTest
         throws Exception
     {
         Properties config = new Properties();
-        Pack.execute(project,config);
+        PackZip.execute(project,config);
         File packedArtifact = new File( "target/artifact.zip" );
         assertTrue( packedArtifact.exists() );
     }

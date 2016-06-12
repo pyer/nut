@@ -65,6 +65,7 @@
       </goal>
       <goal>
         <name>pack</name>
+        <class>PackJar</class>
       </goal>
       <goal>
         <name>install</name>

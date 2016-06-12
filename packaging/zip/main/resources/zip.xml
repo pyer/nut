@@ -2,8 +2,8 @@
 <project>
   <description>
      clean targetDirectory
-     pack files from resourceDirectory to targetDirectory/artifactId.type
-     install targetDirectory/artifactId.type in local repository.
+     pack files from resourceDirectory to targetDirectory/artifactId.zip
+     install targetDirectory/artifactId.zip in local repository.
   </description>
 
   <build>
@@ -22,6 +22,7 @@
       </goal>
       <goal>
         <name>pack</name>
+        <class>PackZip</class>
       </goal>
       <goal>
         <name>install</name>

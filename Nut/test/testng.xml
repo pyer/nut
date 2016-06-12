@@ -32,7 +32,7 @@
     <classes>
       <class name="nut.goals.CleanTest" />
       <class name="nut.goals.InstallTest" />
-      <class name="nut.goals.PackTest" />
+      <class name="nut.goals.PackZipTest" />
     </classes>
   </test>
 </suite>
