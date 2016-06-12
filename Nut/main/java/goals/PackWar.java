@@ -120,7 +120,7 @@ public class PackWar
         }
         for ( Iterator it = project.getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
-          if( "runtime".equals(dep.getScope())) {
+          if( dep.getScope().equals("runtime") || dep.getScope().equals("compile") ) {
             Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
             String path = artifactDep.getPath();
             log.debug("** " + path);
