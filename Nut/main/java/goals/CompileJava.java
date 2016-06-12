@@ -70,7 +70,9 @@ public class CompileJava
             if( dep.getScope().equals("test") ) {
                 testDependencies.add(artifactDep.getPath());
             } else {
-                dependencies.add(artifactDep.getPath());
+              if( dep.getScope().equals("compile") ) {
+                  dependencies.add(artifactDep.getPath());
+              }
             }
         }
 
