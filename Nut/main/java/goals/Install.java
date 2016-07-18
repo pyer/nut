@@ -37,7 +37,6 @@ public class Install
         String artifactId           = project.getArtifactId();
         String version              = project.getVersion()  + mode;
         String packaging            = project.getPackaging();
-        String artifactFile         = artifactId + "." + packaging;
 
         log.debug( "project.groupId           = " + groupId );
         log.debug( "project.artifactId        = " + artifactId );

@@ -64,9 +64,6 @@ public class Project
 
     private Log log;
 
-    // in case of failure
-    private Exception cause;
-
     public Project( Model model )
     {
         this.model = model;

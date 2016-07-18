@@ -28,7 +28,7 @@ public class ArtifactTest
     private String LOCAL_FILE;
 
     @BeforeTest
-    private void beforeT()
+    public void beforeT()
     {
         home = System.getProperty( "nut.home", "." );
         basedir = System.getProperty( "basedir" );
@@ -38,13 +38,13 @@ public class ArtifactTest
     }
 
     @AfterTest
-    private void afterT()
+    public void afterT()
     {
         System.setProperty( "nut.home", home );
     }
 
     @BeforeMethod
-    private void beforeM()
+    public void beforeM()
     {
         System.setProperty( "nut.home", LOCAL_REPO );
         new File( LOCAL_REPO ).mkdir();
@@ -52,7 +52,7 @@ public class ArtifactTest
     }
 
     @AfterMethod
-    private void afterM()
+    public void afterM()
     {
       new File( LOCAL_REPO + "/groupid" ).delete();
       new File( LOCAL_REPO ).delete();

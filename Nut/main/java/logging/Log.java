@@ -219,11 +219,6 @@ public class Log
     private static final int MS_PER_SEC  = 1000;
     private static final int SEC_PER_MIN = 60;
 
-    private void print( String content )
-    {
-        System.out.print( content );
-    }
-
     private void print( String prefix, CharSequence content )
     {
         System.out.println( "[" + prefix + "] " + content.toString() );

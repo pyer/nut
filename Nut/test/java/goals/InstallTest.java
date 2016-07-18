@@ -16,11 +16,8 @@ import org.testng.annotations.BeforeTest;
 
 public class InstallTest
 {
-    private final String LOCAL_REPO = "target/repository";
     private Model model = new Model();
     
-//    @BeforeTest
-//    public void setup()
     private void setup()
     {
         model.addProperty( "basedir", "target" );

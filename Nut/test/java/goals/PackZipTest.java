@@ -22,7 +22,7 @@ public class PackZipTest
     private Project project;
 
     @BeforeMethod
-    private void before()
+    public void before()
     {
         project = new Project(model);
         model.addProperty( "nut.home", LOCAL_REPO );
@@ -38,11 +38,12 @@ public class PackZipTest
         model.setPackaging( "zip" );
     }
 
+/*
     @AfterMethod
-    private void after()
+    public void after()
     {
     }
-
+*/
     @Test
     public void testBasicZipFile()
         throws Exception

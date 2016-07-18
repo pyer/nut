@@ -16,17 +16,16 @@ import org.testng.annotations.Test;
 public class ProjectBuilderTest
 {
     private String home;
-    private String basedir;
 
     @BeforeTest
-    private void before() {
+    public void before() {
       home = System.getProperty( "nut.home", "." );
-      basedir = System.getProperty( "basedir" );
+      String basedir = System.getProperty( "basedir" );
       System.setProperty( "nut.home", basedir + "/test/resources" );
     }
 
     @AfterTest
-    private void after() {
+    public void after() {
       System.setProperty( "nut.home", home );
     }
 
@@ -40,7 +39,7 @@ public class ProjectBuilderTest
     public void testUnknownProjectFile() throws BuildException {
       ProjectBuilder builder = new ProjectBuilder();
       String basedir = System.getProperty( "basedir" );
-      Project project = builder.build( new File(basedir + "/test/resources/no.xml") );
+      builder.build( new File(basedir + "/test/resources/no.xml") );
     }
 
     @Test
@@ -64,7 +63,7 @@ public class ProjectBuilderTest
     public void testUnkownPackaging() throws BuildException {
         ProjectBuilder builder = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.build( new File(basedir + "/test/resources/project/unknownpackaging.xml") );
+        builder.build( new File(basedir + "/test/resources/project/unknownpackaging.xml") );
     }
 
     @Test

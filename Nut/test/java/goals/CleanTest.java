@@ -1,7 +1,5 @@
 package nut.goals;
 
-import nut.logging.Log;
-
 import nut.model.Build;
 import nut.model.Model;
 import nut.project.Project;
@@ -28,7 +26,6 @@ public class CleanTest
     @Test
     public void testExecute()
     {
-      Log log = new Log();
       Build build = new Build();
       build.setTargetDirectory( "local-target" );
       Model model = new Model();
@@ -41,11 +38,6 @@ public class CleanTest
       File f = new File( LOCAL_TARGET + "/dummy" );
       try
       {
-/*
-File directory = new File (".");
-log.info("Current directory's canonical path: " + directory.getCanonicalPath());
-log.info("Current directory's absolute  path: " + directory.getAbsolutePath());
-*/
         f.createNewFile();
         assertTrue( f.exists() );
         Clean.execute(project, null);

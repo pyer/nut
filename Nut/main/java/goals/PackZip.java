@@ -29,7 +29,6 @@ public class PackZip
         log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String repository           = (String)pp.getProperty( "nut.home" );
         String targetDirectory      = project.getBuild().getTargetDirectory();
         String resourceDirectory    = project.getBuild().getResourceDirectory();
 
