@@ -25,6 +25,7 @@ import java.util.Properties;
 
 public class Nut
 {
+    private static int retCode = 0;
     /** Instance logger */
     private static Log log;
 
@@ -119,17 +120,20 @@ public class Nut
             }
             buildProject(sortedProjects, goalArg, effectiveNut, noopMode);
             if( sortedProjects.size() > 1 )
-              logReactorSummary( sortedProjects );
+               logReactorSummary( sortedProjects );
           } catch(CycleDetectedException e) {
             log.failure(e.getMessage());
+            retCode = 5;
           } catch(DuplicateProjectException e) {
             log.failure(e.getMessage());
+            retCode = 6;
           } catch(Exception e) {
             log.failure(e.getMessage());
+            retCode = 7;
           }
         }
         log.finish();
-        System.exit( 0 );
+        System.exit( retCode );
     }
 
     // ----------------------------------------------------------------------
@@ -210,6 +214,9 @@ public class Nut
                     currentProject.interpolateModel();
                     currentProject.checkDependencies();
                     currentProject.build( goalArgument, noopMode );
+                    if ( currentProject.isBuilt() && !currentProject.isSuccessful() ) {
+                      retCode += 9;
+                    }
                 } else if ( "xml".equals(effectiveNut) ) {
                     currentProject.effectiveXmlModel();
                 } else if ( "json".equals(effectiveNut) ) {
@@ -228,7 +235,6 @@ public class Nut
             // -------------------------
             // o project-name...........FAILED
             // o project-name...........SUCCESS
-
             log.line();
             log.info( "SUMMARY" );
 
