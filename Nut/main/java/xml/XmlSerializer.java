@@ -134,39 +134,17 @@ public class XmlSerializer {
                     pos = i + 1;
                 } else if(ch < 32) {
                     //in XML 1.0 only legal character are #x9 | #xA | #xD
-                    if( ch == 9 || ch == 10 || ch == 13) {
-                        // pass through
-
-                        //                    } else if(ch == 13) { //escape
-                        //                        if(i > pos) out.write(text.substring(pos, i));
-                        //                        out.write("&#");
-                        //                        out.write(Integer.toString(ch));
-                        //                        out.write(';');
-                        //                        pos = i + 1;
-                    } else {
+                    if( ch != 9 && ch != 10 && ch != 13) {
                         throw new IllegalStateException(
                             "character "+Integer.toString(ch)+" is not allowed in XML 1.0");
-                        // in XML 1.1 legal are [#x1-#xD7FF]
-                        //              if(ch > 0) {
-                        //                  if(i > pos) out.write(text.substring(pos, i));
-                        //                  out.write("&#");
-                        //                  out.write(Integer.toString(ch));
-                        //                  out.write(';');
-                        //                  pos = i + 1;
-                        //              } else {
-                        //              throw new IllegalStateException(
-                        //                  "character zero is not allowed in XML 1.1 output"+getLocation());
-                        //              }
                     }
                 }
-
         }
         if(pos > 0) {
             out.write(text.substring(pos));
         } else {
             out.write(text);  // this is shortcut to the most common case
         }
-
         return this;
     }
 
