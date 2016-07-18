@@ -60,8 +60,6 @@ public class PackZip
     }
 
     // ==========================================================================
-    static final int BUFFER = 2048;
-
     // targetDirectory and resourceDirectory are full path names
     private static void zip(String finalName, String targetDirectory, String resourceDirectory)
         throws Exception
@@ -83,6 +81,7 @@ public class PackZip
     private static void zipFile( ZipOutputStream out, String basedir, String path )
         throws Exception
     {
+        int BUFFER = 2048;
         try {
           BufferedInputStream origin = null;
           byte data[] = new byte[BUFFER];
