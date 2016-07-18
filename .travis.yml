@@ -2,4 +2,4 @@ language: java
 
 install: ./install
 
-script: nut build 
+script: ./nut build 

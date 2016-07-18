@@ -4,6 +4,9 @@
 #maven specific
 target
 
+#appli specific
+nut
+
 ## generic files to ignore
 *~
 *.lock
