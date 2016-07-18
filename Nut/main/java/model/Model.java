@@ -32,6 +32,63 @@ public class Model implements java.io.Serializable
      */
     private String modelEncoding = "UTF-8";
 
+    /**
+     * Declares to which version of project descriptor this POM conforms.
+     */
+    private String modelVersion;
+
+    /**
+     * Declares a parent xml file which contains common values, for example version or groupId.
+     */
+    private String parent;
+
+    /**
+     * A universally unique identifier for a project.
+     * It is normal to use a fully-qualified package name to
+     * distinguish it from other projects with a similar name.
+     */
+    private String groupId;
+
+    /**
+     * The identifier for this artifact that is unique within the
+     * group given by the group ID.
+     * An artifact is something that is either produced or used by a project.
+     */
+    private String artifactId;
+
+    /**
+     * The current version of the artifact produced by this project.
+     */
+    private String version;
+
+    /**
+     * The packaging of artifact this project produces, for example: jar, zip
+     * modules is a special packaging type.
+     */
+    private String packaging = "modules";
+
+    /**
+     * A detailed description of the project,
+     * whenever it needs to describe the project, such as on the web site.
+     */
+    private String description;
+
+    /**
+     * Informations required to build the project.
+     */
+    private Build build;
+
+    /**
+     * Other variables
+     */
+    private List<String> modules;
+    private List<Dependency> dependencies;
+    private List<Repository> repositories;
+    private Properties properties;
+
+    /**
+     * Public methods
+     */
     public String getModelEncoding()
     {
         return modelEncoding;
@@ -41,11 +98,6 @@ public class Model implements java.io.Serializable
     {
         this.modelEncoding = modelEncoding;
     }
-
-    /**
-     * Declares to which version of project descriptor this POM conforms.
-     */
-    private String modelVersion;
 
     public String getModelVersion()
     {
@@ -57,11 +109,6 @@ public class Model implements java.io.Serializable
         this.modelVersion = modelVersion;
     }
 
-    /**
-     * Declares a parent xml file which contains common values, for example version or groupId.
-     */
-    private String parent;
-
     public String getParent()
     {
         return this.parent;
@@ -71,13 +118,6 @@ public class Model implements java.io.Serializable
     {
         this.parent = parent;
     }
-
-    /**
-     * A universally unique identifier for a project.
-     * It is normal to use a fully-qualified package name to
-     * distinguish it from other projects with a similar name.
-     */
-    private String groupId;
 
     public String getGroupId()
     {
@@ -89,13 +129,6 @@ public class Model implements java.io.Serializable
         this.groupId = groupId;
     }
 
-    /**
-     * The identifier for this artifact that is unique within the
-     * group given by the group ID.
-     * An artifact is something that is either produced or used by a project.
-     */
-    private String artifactId;
-
     public String getArtifactId()
     {
         return this.artifactId;
@@ -105,11 +138,6 @@ public class Model implements java.io.Serializable
     {
         this.artifactId = artifactId;
     }
-
-    /**
-     * The current version of the artifact produced by this project.
-     */
-    private String version;
 
     public String getVersion()
     {
@@ -121,12 +149,6 @@ public class Model implements java.io.Serializable
         this.version = version;
     }
 
-    /**
-     * The packaging of artifact this project produces, for example: jar, zip
-     * modules is a special packaging type.
-     */
-    private String packaging = "modules";
-
     public String getPackaging()
     {
         return this.packaging;
@@ -136,13 +158,6 @@ public class Model implements java.io.Serializable
     {
         this.packaging = packaging;
     }
-
-    /**
-     * A detailed description of the project,
-     * whenever it needs to describe the project, such as on the web site.
-     */
-
-    private String description;
 
     public String getDescription()
     {
@@ -154,11 +169,6 @@ public class Model implements java.io.Serializable
         this.description = description;
     }
 
-    /**
-     * Informations required to build the project.
-     */
-    private Build build;
-
     public Build getBuild()
     {
         return this.build;
@@ -169,34 +179,25 @@ public class Model implements java.io.Serializable
         this.build = build;
     }
 
-
-    //-----------------/
-    //- Other members -/
-    //-----------------/
-
-    private List<String> modules;
-    private List<Dependency> dependencies;
-    private List<Repository> repositories;
-    private Properties properties;
-
-    //-----------/
-    //- Methods -/
-    //-----------/
-
+    /**
+     * Other public methods
+     */
     public String getId()
     {
         return getGroupId() + ":" + getArtifactId() + ":" + getVersion();
     }
 
-    /**
-     * get methods
-     */
     public List<String> getModules()
     {
         if ( this.modules == null ) {
             this.modules = new ArrayList<String>();
         }
         return this.modules;
+    }
+
+    public void setModules( List<String> modules )
+    {
+        this.modules = modules;
     }
 
     public List<Dependency> getDependencies()
@@ -207,6 +208,11 @@ public class Model implements java.io.Serializable
         return this.dependencies;
     }
 
+    public void setDependencies( List<Dependency> dependencies )
+    {
+        this.dependencies = dependencies;
+    }
+
     public List<Repository> getRepositories()
     {
         if ( this.repositories == null ) {
@@ -215,30 +221,17 @@ public class Model implements java.io.Serializable
         return this.repositories;
     }
 
+    public void setRepositories( List<Repository> repositories )
+    {
+        this.repositories = repositories;
+    }
+
     public Properties getProperties()
     {
         if ( this.properties == null ) {
             this.properties = new Properties();
         }
         return this.properties;
-    }
-
-    /**
-     * set  methods
-     */
-    public void setModules( List<String> modules )
-    {
-        this.modules = modules;
-    }
-
-    public void setDependencies( List<Dependency> dependencies )
-    {
-        this.dependencies = dependencies;
-    }
-
-    public void setRepositories( List<Repository> repositories )
-    {
-        this.repositories = repositories;
     }
 
     public void setProperties( Properties properties )
@@ -250,14 +243,14 @@ public class Model implements java.io.Serializable
     {
         getProperties().put( key, value );
     }
-    /**
-     * validate method
-     */
-    private static final String ID_REGEX = "[A-Za-z0-9_\\-.]+";
 
+    /**
+     * Whole project validation
+     */
     public void validate()
         throws ValidationException
     {
+        String ID_REGEX = "[A-Za-z0-9_\\-.]+";
         validateStringNotEmpty( "groupId", groupId );
         if ( !groupId.matches( ID_REGEX ) )
             throw new ValidationException( "groupId '" + groupId + "' does not match a valid id pattern." );
@@ -290,9 +283,9 @@ public class Model implements java.io.Serializable
         }
     }
 
-    // ----------------------------------------------------------------------
-    // Field validation
-    // ----------------------------------------------------------------------
+    /**
+     * Field validation
+     */
     private void validateStringNotEmpty( String fieldName, String string )
         throws ValidationException
     {
