@@ -22,7 +22,6 @@ public class ArtifactTest
 {
     private Artifact artifact;
     private String home;
-    private String basedir;
     private String groupId = "groupid", artifactId = "artifactId", version = "1.0", type = "type";
     private String LOCAL_REPO;
     private String LOCAL_FILE;
@@ -31,7 +30,7 @@ public class ArtifactTest
     public void beforeT()
     {
         home = System.getProperty( "nut.home", "." );
-        basedir = System.getProperty( "basedir" );
+        String basedir = System.getProperty( "basedir" );
         LOCAL_REPO = basedir + "/target/repository";
         LOCAL_FILE = basedir + "/target/repository/groupid/artifactId-1.0.type";
         System.setProperty( "nut.home", LOCAL_REPO );

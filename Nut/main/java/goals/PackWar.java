@@ -65,7 +65,8 @@ public class PackWar
         // copy dependencies files to libTargetDirectory
         String libTargetDirectory = config.getProperty("libTargetDirectory");
         if (libTargetDirectory != null) {
-          copyDependencies(project, basedir + File.separator + resourceDirectory, basedir + File.separator + libTargetDirectory);
+          //copyDependencies(project, basedir + File.separator + resourceDirectory, basedir + File.separator + libTargetDirectory);
+          copyDependencies(project, File.separator + libTargetDirectory);
         }
 
         String archiveName = basedir + File.separator + targetDirectory + File.separator + artifactFileName;
@@ -106,7 +107,7 @@ public class PackWar
       }
     }
     // ==========================================================================
-    private static void copyDependencies(Project project, String sourceDirectory, String targetDirectory)
+    private static void copyDependencies(Project project, String targetDirectory)
         throws Exception
     {
       log.debug("* copy dependencies to " + targetDirectory);
