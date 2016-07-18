@@ -26,7 +26,6 @@ import java.util.Map;
  */
 public class Sorter
 {
-    private final DAG dag;
     private final List sortedProjects;
 
     /**
@@ -44,7 +43,7 @@ public class Sorter
     public Sorter( List projects )
         throws CycleDetectedException, DuplicateProjectException
     {
-        dag = new DAG();
+        DAG dag = new DAG();
 
         Map<String,Project> projectMap = new HashMap<String,Project>();
         for ( Iterator i = projects.iterator(); i.hasNext(); ) {

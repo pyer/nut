@@ -66,7 +66,6 @@ public class Project
 
     // in case of failure
     private Exception cause;
-    private String task;
 
     public Project( Model model )
     {
@@ -257,7 +256,7 @@ public class Project
           Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
           try {
             log.debug( "* check " + artifactDep.toString() );
-            DependencyChecker dc = new DependencyChecker( artifactDep, getModel().getRepositories() );
+            new DependencyChecker( artifactDep, getModel().getRepositories() );
           } catch (DependencyNotFoundException e) {
               log.failure( "Missing dependency " + dep.getId() + "(" + e.getMessage() + ")" );
           } catch (SecurityException e) {

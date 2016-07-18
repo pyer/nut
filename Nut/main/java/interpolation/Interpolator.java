@@ -1,6 +1,6 @@
 package nut.interpolation;
 
-import nut.artifact.Artifact;
+// import nut.artifact.Artifact;
 
 import nut.model.Build;
 import nut.model.Dependency;
@@ -9,7 +9,7 @@ import nut.model.Model;
 import nut.model.Repository;
 import nut.model.XmlWriter;
 
-import nut.logging.Log;
+// import nut.logging.Log;
 
 /**
  * Interpolator replaces every data as "${xx} by the value of the xx property.
@@ -21,20 +21,8 @@ import nut.logging.Log;
 public class Interpolator
 {
     private Model model;
-
-    private Artifact artifact;
-
-    // Building time
-    private long time;
-    //
-    boolean buildDone;
-    boolean buildSuccess;
-
-    private Log log;
-
-    // in case of failure
-    private Exception cause;
-    private String task;
+//    private Artifact artifact;
+//    private Log log;
 
     public Interpolator()
     {
@@ -42,6 +30,7 @@ public class Interpolator
 
     public Model interpolatedModel( Model model )
     {
-      return model;
+      this.model = model;
+      return this.model;
     }
 }

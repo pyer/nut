@@ -49,7 +49,6 @@ public class ProjectBuilder
     public Project build( File projectFile )
         throws BuildException
     {
-        String pomLocation = projectFile.getAbsolutePath();
         String basedir     = projectFile.getAbsoluteFile().getParent();
         // First read the project's nut.xml
         Model model = readModel( projectFile );

@@ -62,7 +62,6 @@ public class DependencyChecker
       FileOutputStream fos;
       // Use this for reading the data.
       byte[] buffer = new byte[8000];
-      String s;
       String request;
       if ( "nut".equals( repository.getLayout() ) ) {
         request = repository.getURL() + artifact.nutFilePath();
