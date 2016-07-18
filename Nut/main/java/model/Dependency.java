@@ -152,11 +152,10 @@ public class Dependency implements java.io.Serializable {
      * validate method
      * if a dependency version is undefined, it is the same as the project version
      */
-    private static final String ID_REGEX = "[A-Za-z0-9_\\-.]+";
-
     public void validate( String projectVersion )
         throws ValidationException
     {
+        String ID_REGEX = "[A-Za-z0-9_\\-.]+";
         if ( groupId == null )
             throw new ValidationException( "dependency.groupId must not be null" );
         if ( artifactId == null )
