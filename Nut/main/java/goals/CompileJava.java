@@ -48,7 +48,6 @@ public class CompileJava
         log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String repository           = (String)pp.getProperty( "nut.home" );
         String sourceDirectory      = project.getBuild().getSourceDirectory();
         String testSourceDirectory  = project.getBuild().getTestSourceDirectory();
         String outputDirectory      = project.getBuild().getOutputDirectory();

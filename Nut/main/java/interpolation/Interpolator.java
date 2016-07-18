@@ -20,17 +20,16 @@ import nut.model.XmlWriter;
  */
 public class Interpolator
 {
-    private Model model;
+//    private Model model;
 //    private Artifact artifact;
 //    private Log log;
 
-    public Interpolator()
-    {
-    }
+//    public Interpolator()
+//    {
+//    }
 
     public Model interpolatedModel( Model model )
     {
-      this.model = model;
-      return this.model;
+      return model;
     }
 }

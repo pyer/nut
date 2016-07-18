@@ -340,6 +340,9 @@ public class XmlReader {
             }
             eventType = parser.next();
         }
+        if (!foundRoot) {
+            throw new XmlPullParserException( "'project' tag not found", parser, null );
+        }
         return model;
     }
 

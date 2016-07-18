@@ -68,7 +68,6 @@ public class PackZip
         throws Exception
     {
         try {
-          BufferedInputStream origin = null;
           FileOutputStream dest = new FileOutputStream( targetDirectory + File.separator + finalName );
           ZipOutputStream  out  = new ZipOutputStream( new BufferedOutputStream(dest));
           zipFile( out, resourceDirectory + File.separator, "" );
