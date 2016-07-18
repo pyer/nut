@@ -5,7 +5,6 @@
   <version>1.0</version>
 
   <modules>
-    <module>hello</module>
     <module>fail</module>
     <module>bye</module>
   </modules>
