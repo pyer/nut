@@ -446,10 +446,6 @@ public class XmlPullParser
      */
     protected boolean allStringsInterned;
 
-    protected void resetStringCache() {
-        //System.out.println("resetStringCache() minimum called");
-    }
-
     protected String newString(char[] cbuf, int off, int len) {
         return new String(cbuf, off, len);
     }
@@ -802,8 +798,6 @@ public class XmlPullParser
         xmlDeclVersion = null;
         xmlDeclStandalone = null;
         xmlDeclContent = null;
-
-        resetStringCache();
     }
 
     public XmlPullParser() {
