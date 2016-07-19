@@ -1,15 +1,6 @@
 package nut.interpolation;
 
-// import nut.artifact.Artifact;
-
-import nut.model.Build;
-import nut.model.Dependency;
-import nut.model.Goal;
 import nut.model.Model;
-import nut.model.Repository;
-import nut.model.XmlWriter;
-
-// import nut.logging.Log;
 
 /**
  * Interpolator replaces every data as "${xx} by the value of the xx property.
@@ -30,6 +21,7 @@ public class Interpolator
 
     public Model interpolatedModel( Model model )
     {
+      // This method is intentionally empty
       return model;
     }
 }

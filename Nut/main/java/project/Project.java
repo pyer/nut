@@ -1,22 +1,14 @@
 package nut.project;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import nut.artifact.Artifact;
 
@@ -26,7 +18,6 @@ import nut.model.Build;
 import nut.model.Dependency;
 import nut.model.Goal;
 import nut.model.Model;
-import nut.model.Repository;
 import nut.model.XmlWriter;
 import nut.model.JsonWriter;
 
