@@ -1,13 +1,10 @@
 package nut.goals;
 
-import nut.logging.Log;
-
 import nut.model.Build;
 import nut.model.Model;
 import nut.project.Project;
 
 import java.io.File;
-import java.io.Reader;
 import java.util.Properties;
 
 import static org.testng.Assert.*;

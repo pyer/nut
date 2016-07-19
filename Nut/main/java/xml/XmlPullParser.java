@@ -904,7 +904,7 @@ public class XmlPullParser
     }
 
 
-    public void setInput(java.io.InputStream inputStream, String inputEncoding)
+    public void setInput(InputStream inputStream, String inputEncoding)
         throws XmlPullParserException
     {
         if(inputStream == null) {

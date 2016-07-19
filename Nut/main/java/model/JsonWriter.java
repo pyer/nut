@@ -1,10 +1,7 @@
 package nut.model;
 
-import java.io.Writer;
 import java.io.StringWriter;
-import java.text.DateFormat;
 import java.util.Iterator;
-import java.util.Locale;
 
 import nut.model.Build;
 import nut.model.Dependency;

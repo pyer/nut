@@ -44,12 +44,12 @@ public class Install
 
         log.info( "Installing \'" + artifactId + "\'" );
         // + "-" + version + "." + packaging
-        if( packaging.equals("xml") ) {
+        if( "xml".equals(packaging) ) {
                 String group = groupId.replace( '.', File.separatorChar );
                 String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 String buildName = basedir + File.separator + resourceDirectory + File.separator + artifactId + "." + packaging;
                 copyFile( buildName, artifactName, version );
-        } else if( !packaging.equals("modules") ) {
+        } else if( !"modules".equals(packaging) ) {
                 String group = groupId.replace( '.', File.separatorChar );
                 String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 //install: copy target file to local repository
