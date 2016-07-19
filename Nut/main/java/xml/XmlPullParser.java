@@ -437,23 +437,6 @@ public class XmlPullParser
     protected final static String PROPERTY_LOCATION =
         "http://xmlpull.org/v1/doc/properties.html#location";
 
-    /**
-     * Implementation notice:
-     * the is instance variable that controls if newString() is interning.
-     * <p><b>NOTE:</b> newStringIntern <b>always</b> returns interned strings
-     * and newString MAY return interned String depending on this variable.
-     * <p><b>NOTE:</b> by default in this minimal implementation it is false!
-     */
-    protected boolean allStringsInterned;
-
-    protected String newString(char[] cbuf, int off, int len) {
-        return new String(cbuf, off, len);
-    }
-
-    protected String newStringIntern(char[] cbuf, int off, int len) {
-        return (new String(cbuf, off, len)).intern();
-    }
-
     private static final boolean TRACE_SIZING = false;
 
     // NOTE: features are not resetable and typically defaults to false ...
@@ -479,6 +462,23 @@ public class XmlPullParser
     protected String elUri[];
     //protected String elValue[];
     protected int elNamespaceCount[];
+
+    /**
+     * Implementation notice:
+     * the is instance variable that controls if newString() is interning.
+     * <p><b>NOTE:</b> newStringIntern <b>always</b> returns interned strings
+     * and newString MAY return interned String depending on this variable.
+     * <p><b>NOTE:</b> by default in this minimal implementation it is false!
+     */
+    protected boolean allStringsInterned;
+
+    protected String newString(char[] cbuf, int off, int len) {
+        return new String(cbuf, off, len);
+    }
+
+    protected String newStringIntern(char[] cbuf, int off, int len) {
+        return (new String(cbuf, off, len)).intern();
+    }
 
 
 

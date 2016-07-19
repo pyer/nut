@@ -120,25 +120,27 @@ public class XmlSerializer {
         {
             //TODO: check if doing char[] text.getChars() would be faster than getCharAt(i) ...
             char ch = text.charAt(i);
-                if(ch == '&') {
-                    if(i > pos) out.write(text.substring(pos, i));
-                    out.write("&amp;");
-                    pos = i + 1;
-                } else if(ch == '<') {
-                    if(i > pos) out.write(text.substring(pos, i));
-                    out.write("&lt;");
-                    pos = i + 1;
-                } else if(ch == '>') {
-                    if(i > pos) out.write(text.substring(pos, i));
-                    out.write("&gt;");
-                    pos = i + 1;
-                } else if(ch < 32) {
+            if(ch == '&') {
+                if(i > pos) out.write(text.substring(pos, i));
+                out.write("&amp;");
+                pos = i + 1;
+            } else if(ch == '<') {
+                if(i > pos) out.write(text.substring(pos, i));
+                out.write("&lt;");
+                pos = i + 1;
+            } else if(ch == '>') {
+                if(i > pos) out.write(text.substring(pos, i));
+                out.write("&gt;");
+                pos = i + 1;
+            /* other characters are ignored
+            } else if(ch < 32) {
                     //in XML 1.0 only legal character are #x9 | #xA | #xD
                     if( ch != 9 && ch != 10 && ch != 13) {
                         throw new IllegalStateException(
                             "character "+Integer.toString(ch)+" is not allowed in XML 1.0");
                     }
-                }
+            */
+            }
         }
         if(pos > 0) {
             out.write(text.substring(pos));

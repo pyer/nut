@@ -31,7 +31,7 @@ public class Nut
 
     public static void main( String[] args )
     {
-        String  goalArg      = null;
+        String  goalArg      = "";
         String  effectiveNut = null; // xml or json
         boolean noopMode     = false;
 
@@ -78,7 +78,7 @@ public class Nut
                     System.exit( 1 );
                  }
                  // nearly every arg without '-' is a goal
-                 if( goalArg==null ) {
+                 if( goalArg=="" ) {
                     goalArg = args[i];
                  } else {
                     log.error( "Too many goals." );
@@ -91,12 +91,10 @@ public class Nut
                  showHelp();
                  System.exit( 3 );
         }
-        if (effectiveNut==null ) {
-            // every goal is 4 characters or more length
-            if( goalArg==null || goalArg.length()<4 ) {
+        // every goal is 4 characters long or more
+        if (effectiveNut==null && goalArg.length()<4 ) {
                  showHelp();
                  System.exit( 4 );
-            }
         }
         // everything is ok, let's go
         log.start();

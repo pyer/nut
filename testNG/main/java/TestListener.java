@@ -10,7 +10,6 @@ import org.testng.ITestResult;
 
 public class TestListener extends TestListenerAdapter {
   private static PrintStream sysout;
-  //private static PrintStream stdout;
 
   @Override
   public void onStart(ITestContext tc) {
@@ -29,10 +28,12 @@ public class TestListener extends TestListenerAdapter {
 
   @Override
   public void onTestStart(ITestResult result) {
+    // This method is intentionally empty.
   }
 
   @Override
   public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+    // This method is intentionally empty.
   }
 
   @Override
