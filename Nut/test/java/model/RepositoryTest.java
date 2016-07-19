@@ -15,7 +15,7 @@ public class RepositoryTest
     @Test
     public void testEqualsNullSafe()
     {
-        assertFalse( new Repository() == null );
+        assertFalse( new Repository().equals( null ) );
     }
 
     @Test

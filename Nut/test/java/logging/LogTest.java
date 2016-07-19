@@ -34,7 +34,7 @@ public class LogTest
 
     @Test
     public void testEqualsNullSafe() {
-        assertFalse( new Log() == null );
+        assertFalse( new Log().equals( null ) );
     }
 
     @Test

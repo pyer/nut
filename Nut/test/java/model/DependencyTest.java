@@ -16,7 +16,7 @@ public class DependencyTest
     @Test
     public void testEqualsNullSafe()
     {
-        assertFalse( new Dependency() == null );
+        assertFalse( new Dependency().equals( null ) );
     }
 
     @Test
