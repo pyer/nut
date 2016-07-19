@@ -12,9 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.zip.*;
 
-import java.lang.Process;
-import java.lang.Runtime;
-
 import java.util.Properties;
 
 public class PackZip

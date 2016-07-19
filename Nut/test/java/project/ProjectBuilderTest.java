@@ -6,7 +6,6 @@ import nut.project.BuildException;
 import nut.logging.Log;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeTest;
