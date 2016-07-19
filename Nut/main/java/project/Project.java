@@ -50,8 +50,8 @@ public class Project
     // Building time
     private long time;
     //
-    boolean buildDone;
-    boolean buildSuccess;
+    private boolean buildDone;
+    private boolean buildSuccess;
 
     private Log log;
 
@@ -260,7 +260,7 @@ public class Project
       String classpath = "";
       for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
-          if( dep.getScope().equals("test") || dep.getScope().equals("compile") ) {
+          if( "test".equals(dep.getScope()) || "compile".equals(dep.getScope()) ) {
               Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
               classpath = classpath + ":" + artifactDep.getPath();
           }
@@ -277,7 +277,7 @@ public class Project
         List<Goal> goals = getBuild().getGoals();
         for ( Iterator g = goals.iterator(); g.hasNext(); ) {
             Goal goal = (Goal)g.next();
-            if( targetGoal.equals("build") || targetGoal.equals(goal.getName()) ) {
+            if( "build".equals(targetGoal) || goal.getName().equals(targetGoal) ) {
               // build is done if at least one goal is executed
               buildDone=true;
               if( noopMode ) {

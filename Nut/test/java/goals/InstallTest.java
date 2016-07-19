@@ -18,7 +18,7 @@ public class InstallTest
 {
     private Model model = new Model();
     
-    private void setup()
+    private void setupTest()
     {
         model.addProperty( "basedir", "target" );
         Build build = new Build();
@@ -43,7 +43,7 @@ public class InstallTest
     public void testBasicInstallFile()
         throws Exception
     {
-        setup();
+        setupTest();
         model.addProperty( "nut.home", "target/repo2" );
         new File( "target/repo2" ).mkdir();
         new File( "target/build" ).mkdir();
@@ -60,7 +60,7 @@ public class InstallTest
     public void testInstallModules()
         throws Exception
     {
-        setup();
+        setupTest();
         model.addProperty( "nut.home", "target/repo3" );
         new File( "target/repo3" ).mkdir();
         new File( "target/build" ).mkdir();
@@ -80,7 +80,7 @@ public class InstallTest
     {
       try
       {
-        setup();
+        setupTest();
         model.addProperty( "nut.home", "target/repo4" );
         new File( "target/repo4" ).mkdir();
         new File( "target/build" ).mkdir();
