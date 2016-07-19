@@ -78,7 +78,7 @@ public class Nut
                     System.exit( 1 );
                  }
                  // nearly every arg without '-' is a goal
-                 if( goalArg=="" ) {
+                 if( goalArg.equals("") ) {
                     goalArg = args[i];
                  } else {
                     log.error( "Too many goals." );
