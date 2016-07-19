@@ -216,9 +216,6 @@ public class Log
     // ----------------------------------------------------------------------
     // Private methods
     // ----------------------------------------------------------------------
-    private static final int MS_PER_SEC  = 1000;
-    private static final int SEC_PER_MIN = 60;
-
     private void print( String prefix, CharSequence content )
     {
         System.out.println( "[" + prefix + "] " + content.toString() );
@@ -262,6 +259,9 @@ public class Log
 
     private String formatTime( long ms )
     {
+        final int MS_PER_SEC  = 1000;
+        final int SEC_PER_MIN = 60;
+
         long secs = ms / MS_PER_SEC;
         long min = secs / SEC_PER_MIN;
         secs = secs % SEC_PER_MIN;

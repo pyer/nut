@@ -82,11 +82,9 @@ public class Install
             throw new Exception();
         }
         //check destination exists
-        if ( destinationFile.exists() ) {
-            if( !version.endsWith("-SNAPSHOT") ) {
-                log.error( "File " + destination + " already exists" );
-                throw new Exception();
-            }
+        if ( destinationFile.exists() && !version.endsWith("-SNAPSHOT") ) {
+            log.error( "File " + destination + " already exists" );
+            throw new Exception();
         }
 
         try {
