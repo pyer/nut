@@ -1,8 +1,6 @@
 package nut.workers;
 
 import nut.model.Dependency;
-import nut.model.Goal;
-import nut.model.Model;
 import nut.project.Project;
 import nut.workers.DuplicateProjectException;
 
