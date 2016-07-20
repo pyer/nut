@@ -19,7 +19,7 @@ public class GoalTest
     @Test
     public void testEqualsNullSafe()
     {
-        assertFalse( new Goal().equals( null ) );
+        assertNotNull( new Goal() );
     }
 
     @Test

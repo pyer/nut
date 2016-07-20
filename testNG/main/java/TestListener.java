@@ -1,6 +1,5 @@
 package nut;
 
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import org.testng.TestListenerAdapter;
