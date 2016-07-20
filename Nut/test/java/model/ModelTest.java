@@ -15,7 +15,7 @@ public class ModelTest
     @Test
     public void testEqualsNullSafe()
     {
-        assertFalse( new Model().equals( null ) );
+        assertNotNull( new Model() );
     }
 
     @Test

@@ -24,7 +24,7 @@ public class BuildTest
     @Test
     public void testEqualsNullSafe()
     {
-        assertFalse( new Build().equals( null ) );
+        assertNotNull( new Build() );
     }
 
     @Test
