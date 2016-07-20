@@ -12,7 +12,7 @@ import nut.json.JsonSerializer;
 
 public class JsonWriter {
 
-    JsonSerializer serializer;
+    private JsonSerializer serializer;
 
     /**
      * Method writeGoal.
