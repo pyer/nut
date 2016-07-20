@@ -25,6 +25,25 @@ public class XmlReader {
     /**
      * Method parseGoal.
      *
+     * @param tag   which is read from xml file
+     * @param name  of the tag
+     * @param set   HashSet of valid values
+     */
+    private boolean tagEquals( String value, String name, Set<String> set )
+        throws XmlPullParserException
+    {
+      boolean ret = value.equals( name );
+      if ( ret ) {
+         if ( set.contains( name ) )
+            throw new XmlPullParserException( "Duplicated tag: '" + name + "'" );
+         set.add( name );
+      }
+      return ret;
+    }
+
+    /**
+     * Method parseGoal.
+     *
      * @param parser
      * @throws IOException
      * @throws XmlPullParserException
@@ -36,27 +55,18 @@ public class XmlReader {
         Goal goal = new Goal();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
-            if ( parser.getName().equals( "name" )  ) {
-                if ( parsed.contains( "name" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            if ( tagEquals( parser.getName(), "name", parsed ) ) {
                 goal.setName( parser.nextText() );
-            } else if ( parser.getName().equals( "class" )  ) {
-                if ( parsed.contains( "class" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "class", parsed ) ) {
                 goal.setClassName( parser.nextText() );
-            } else if ( parser.getName().equals( "configuration" )  ) {
-                if ( parsed.contains( "configuration" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "configuration", parsed ) ) {
                 while ( parser.nextTag() == XmlPullParser.START_TAG ) {
                     String key = parser.getName();
                     String value = parser.nextText().trim();
                     goal.setConfigurationValue( key, value );
                 }
             } else {
-                    throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
             }
         }
         return goal;
@@ -76,50 +86,23 @@ public class XmlReader {
         Build build = new Build();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
-            if ( parser.getName().equals( "sourceDirectory" ) ) {
-                if ( parsed.contains( "sourceDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            if ( tagEquals( parser.getName(), "sourceDirectory", parsed ) ) {
                 build.setSourceDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "resourceDirectory" ) ) {
-                if ( parsed.contains( "resourceDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "resourceDirectory", parsed ) ) {
                 build.setResourceDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "testSourceDirectory" ) ) {
-                if ( parsed.contains( "testSourceDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "testSourceDirectory", parsed ) ) {
                 build.setTestSourceDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "testResourceDirectory" ) ) {
-                if ( parsed.contains( "testResourceDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "testResourceDirectory", parsed ) ) {
                 build.setTestResourceDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "targetDirectory" )  ) {
-                if ( parsed.contains( "targetDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "targetDirectory", parsed ) ) {
                 build.setTargetDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "outputDirectory" )  ) {
-                if ( parsed.contains( "outputDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "outputDirectory", parsed ) ) {
                 build.setOutputDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "testOutputDirectory" )  ) {
-                if ( parsed.contains( "testOutputDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "testOutputDirectory", parsed ) ) {
                 build.setTestOutputDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "testReportDirectory" )  ) {
-                if ( parsed.contains( "testReportDirectory" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "testReportDirectory", parsed ) ) {
                 build.setTestReportDirectory( parser.nextText() );
-            } else if ( parser.getName().equals( "goals" )  ) {
-                if ( parsed.contains( "goals" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "goals", parsed ) ) {
                 List<Goal> goals = new ArrayList<Goal>();
                 build.setGoals( goals );
                 while ( parser.nextTag() == XmlPullParser.START_TAG ) {
@@ -130,7 +113,7 @@ public class XmlReader {
                     }
                 }
             } else {
-                    throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
             }
         }
         return build;
@@ -150,33 +133,18 @@ public class XmlReader {
         Dependency dependency = new Dependency();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
-            if ( parser.getName().equals( "groupId" )  ) {
-                if ( parsed.contains( "groupId" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            if ( tagEquals( parser.getName(), "groupId", parsed ) ) {
                 dependency.setGroupId( parser.nextText() );
-            } else if ( parser.getName().equals( "artifactId" )  ) {
-                if ( parsed.contains( "artifactId" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "artifactId", parsed ) ) {
                 dependency.setArtifactId( parser.nextText() );
-            } else if ( parser.getName().equals( "version" )  ) {
-                if ( parsed.contains( "version" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "version", parsed ) ) {
                 dependency.setVersion( parser.nextText() );
-            } else if ( parser.getName().equals( "type" )  ) {
-                if ( parsed.contains( "type" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "type", parsed ) ) {
                 dependency.setType( parser.nextText() );
-            } else if ( parser.getName().equals( "scope" )  ) {
-                if ( parsed.contains( "scope" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "scope", parsed ) ) {
                 dependency.setScope( parser.nextText() );
             } else {
-                    throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
             }
         }
         return dependency;
@@ -196,23 +164,14 @@ public class XmlReader {
         Repository repository = new Repository();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() == XmlPullParser.START_TAG ) {
-            if ( parser.getName().equals( "name" )  ) {
-                if ( parsed.contains( "name" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            if ( tagEquals( parser.getName(), "name", parsed ) ) {
                 repository.setName( parser.nextText() );
-            } else if ( parser.getName().equals( "layout" )  ) {
-                if ( parsed.contains( "layout" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "layout", parsed ) ) {
                 repository.setLayout( parser.nextText() );
-            } else if ( parser.getName().equals( "url" )  ) {
-                if ( parsed.contains( "url" ) )
-                    throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                parsed.add( parser.getName() );
+            } else if ( tagEquals( parser.getName(), "url", parsed ) ) {
                 repository.setURL( parser.nextText() );
             } else {
-                    throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
             }
         }
         return repository;
@@ -241,55 +200,25 @@ public class XmlReader {
             if ( eventType == XmlPullParser.START_TAG ) {
                 if ( parser.getName().equals( "project" ) ) {
                     foundRoot = true;
-                } else if ( parser.getName().equals( "modelVersion" )  ) {
-                    if ( parsed.contains( "modelVersion" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "modelVersion", parsed ) ) {
                     model.setModelVersion( parser.nextText() );
-                } else if ( parser.getName().equals( "modelEncoding" )  ) {
-                    if ( parsed.contains( "modelEncoding" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "modelEncoding", parsed ) ) {
                     model.setModelEncoding( parser.nextText() );
-                } else if ( parser.getName().equals( "parent" )  ) {
-                    if ( parsed.contains( "parent" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "parent", parsed ) ) {
                     model.setParent( parser.nextText() );
-                } else if ( parser.getName().equals( "groupId" )  ) {
-                    if ( parsed.contains( "groupId" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "groupId", parsed ) ) {
                     model.setGroupId( parser.nextText() );
-                } else if ( parser.getName().equals( "artifactId" )  ) {
-                    if ( parsed.contains( "artifactId" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "artifactId", parsed ) ) {
                     model.setArtifactId( parser.nextText() );
-                } else if ( parser.getName().equals( "version" )  ) {
-                    if ( parsed.contains( "version" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "version", parsed ) ) {
                     model.setVersion( parser.nextText() );
-                } else if ( parser.getName().equals( "packaging" )  ) {
-                    if ( parsed.contains( "packaging" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "packaging", parsed ) ) {
                     model.setPackaging( parser.nextText() );
-                } else if ( parser.getName().equals( "description" )  ) {
-                    if ( parsed.contains( "description" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "description", parsed ) ) {
                     model.setDescription( parser.nextText() );
-                } else if ( parser.getName().equals( "build" )  ) {
-                    if ( parsed.contains( "build" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "build", parsed ) ) {
                     model.setBuild( parseBuild( parser ) );
-                } else if ( parser.getName().equals( "modules" )  ) {
-                    if ( parsed.contains( "modules" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "modules", parsed ) ) {
                     List<String> modules = new ArrayList<String>();
                     model.setModules( modules );
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
@@ -299,10 +228,7 @@ public class XmlReader {
                             throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }
                     }
-                } else if ( parser.getName().equals( "dependencies" )  ) {
-                    if ( parsed.contains( "dependencies" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "dependencies", parsed ) ) {
                     List<Dependency> dependencies = new ArrayList<Dependency>();
                     model.setDependencies( dependencies );
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
@@ -312,10 +238,7 @@ public class XmlReader {
                             throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }
                     }
-                } else if ( parser.getName().equals( "repositories" )  ) {
-                    if ( parsed.contains( "repositories" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "repositories", parsed ) ) {
                     List<Repository> repositories = new ArrayList<Repository>();
                     model.setRepositories( repositories );
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
@@ -325,10 +248,7 @@ public class XmlReader {
                             throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }
                     }
-                } else if ( parser.getName().equals( "properties" )  ) {
-                    if ( parsed.contains( "properties" ) )
-                        throw new XmlPullParserException( "Duplicated tag: '" + parser.getName() + "'", parser, null );
-                    parsed.add( parser.getName() );
+                } else if ( tagEquals( parser.getName(), "properties", parsed ) ) {
                     while ( parser.nextTag() == XmlPullParser.START_TAG ) {
                         String key = parser.getName();
                         String value = parser.nextText().trim();
@@ -345,5 +265,4 @@ public class XmlReader {
         }
         return model;
     }
-
 }
