@@ -148,7 +148,7 @@ public class XmlWriter {
         serializer.setOutput( sWriter );
         if ( model == null ) {
             // default encoding
-            serializer.startDocument( "UTF-8" );
+            serializer.startDocument();
         } else {
             serializer.startDocument();
             serializer.startTag( tagName );
