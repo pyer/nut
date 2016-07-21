@@ -1,5 +1,6 @@
 package nut.goals;
 
+import nut.goals.GoalException;
 import nut.logging.Log;
 import nut.project.Project;
 
@@ -17,8 +18,9 @@ public class PackJar
 
     // ==========================================================================
     public static void execute( Project project, Properties config )
-        throws Exception
+        throws GoalException
     {
+        String msg;
         log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
@@ -44,8 +46,9 @@ public class PackJar
         log.info( "Packaging \'" + artifactFileName + "\'" );
 
         if ( artifactId==null || (artifactId.trim().isEmpty() ) ) {
-            log.error( "\'project.artifactId\' property is undefined" );
-            throw new Exception();
+            msg = "\'project.artifactId\' property is undefined";
+            log.error(msg);
+            throw new GoalException(msg);
         }
 
         File targetDir = new File( basedir + File.separator + targetDirectory );
@@ -55,15 +58,16 @@ public class PackJar
 
         File outputDir = new File( basedir + File.separator + outputDirectory );
         if ( !outputDir.exists() ) {
-            log.error( "\'" + outputDirectory + "\' is empty" );
-            throw new Exception();
+            msg = "\'" + outputDirectory + "\' is empty";
+            log.error(msg);
+            throw new GoalException(msg);
         }
         archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "c" );
     }
 
     // ==========================================================================
     private static void archive(String finalName, String targetDirectory, String outputDirectory, String mode)
-        throws Exception
+        throws GoalException
     {
         // ----------------------------------------------------------------------
         List<String> args = new ArrayList<String>();
@@ -80,13 +84,15 @@ public class PackJar
         try {
             Process child = Runtime.getRuntime().exec(command);
             int status = child.waitFor();
-            if ( status != 0 )
-            {
-                throw new Exception();
+            if ( status != 0 ) {
+                throw new GoalException("Error in child process");
             }
+        } catch ( InterruptedException e ) {
+            log.error( "Failed to archive: " + e.getMessage(), e );
+            throw new GoalException(e.getMessage());
         } catch ( IOException e ) {
-            log.error( "Failed to archive. Reason: " + e.getMessage(), e );
-            throw new Exception();
+            log.error( "Failed to archive: " + e.getMessage(), e );
+            throw new GoalException(e.getMessage());
         }
         // ----------------------------------------------------------------------
     }

@@ -1,5 +1,6 @@
 package nut.goals;
 
+import nut.goals.GoalException;
 import nut.logging.Log;
 import nut.project.Project;
 
@@ -21,7 +22,7 @@ public class PackZip
 
     // ==========================================================================
     public static void execute( Project project, Properties config )
-        throws Exception
+        throws GoalException
     {
         log = new Log();
         Properties pp               = project.getModel().getProperties();
@@ -45,7 +46,7 @@ public class PackZip
 
         if ( artifactId==null || (artifactId.trim().isEmpty() ) ) {
             log.error( "\'project.artifactId\' property is undefined" );
-            throw new Exception();
+            throw new GoalException("Undefined property");
         }
 
         File targetDir = new File( basedir + File.separator + targetDirectory );
@@ -59,7 +60,7 @@ public class PackZip
     // ==========================================================================
     // targetDirectory and resourceDirectory are full path names
     private static void zip(String finalName, String targetDirectory, String resourceDirectory)
-        throws Exception
+        throws GoalException
     {
         try {
           FileOutputStream dest = new FileOutputStream( targetDirectory + File.separator + finalName );
@@ -69,14 +70,14 @@ public class PackZip
         }
         catch(Exception e) {
             log.error( "Failed to zip. Reason: " + e.getMessage(), e );
-            throw new Exception();
+            throw new GoalException(e.getMessage());
         }
     }
 
     // This method is called recursively
     // basedir is a full path name, ending with '/',  and path a relative path name, without trailing '/'
     private static void zipFile( ZipOutputStream out, String basedir, String path )
-        throws Exception
+        throws GoalException
     {
         int BUFFER = 2048;
         try {
@@ -113,7 +114,7 @@ public class PackZip
         }
         catch(Exception e) {
             log.error( "Failed to zip. Reason: " + e.getMessage(), e );
-            throw new Exception();
+            throw new GoalException(e.getMessage());
         }
     }
 

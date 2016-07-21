@@ -1,5 +1,6 @@
 package nut.goals;
 
+import nut.goals.GoalException;
 import nut.logging.Log;
 import nut.project.Project;
 
@@ -17,7 +18,7 @@ public class Install
     private static Log log;
 
     public static void execute( Project project, Properties config )
-        throws Exception
+        throws GoalException
     {
         log = new Log();
         Properties pp               = project.getModel().getProperties();
@@ -71,19 +72,22 @@ public class Install
      *                    overwriting).
      */
     public static void copyFile( final String source, final String destination, final String version )
-        throws Exception
+        throws GoalException
     {
+        String msg;
         File destinationFile = new File( destination );
         File sourceFile = new File( source );
         //check source exists
         if ( !sourceFile.exists() ) {
-            log.error( "File " + source + " does not exist" );
-            throw new Exception();
+            msg = "File " + source + " does not exist";
+            log.error(msg);
+            throw new GoalException(msg);
         }
         //check destination exists
         if ( destinationFile.exists() && !version.endsWith("-SNAPSHOT") ) {
-            log.error( "File " + destination + " already exists" );
-            throw new Exception();
+            msg = "File " + destination + " already exists";
+            log.error(msg);
+            throw new GoalException(msg);
         }
 
         try {
@@ -109,16 +113,19 @@ public class Install
 
         }
         catch(FileNotFoundException fnf) {
-            log.error( "Specified file not found :" + fnf );
-            throw new Exception();
+            msg = "Specified file not found :" + fnf;
+            log.error(msg);
+            throw new GoalException(msg);
         }
         catch(IOException ioe) {
-            log.error( "Error while copying file :" + ioe );
-            throw new Exception();
+            msg = "Error while copying file :" + ioe;
+            log.error(msg);
+            throw new GoalException(msg);
         }
         if ( sourceFile.length() != destinationFile.length() ) {
-            log.error( "Failed to copy full contents from " + source + " to " + destination );
-            throw new Exception();
+            msg = "Failed to copy full contents from " + source + " to " + destination;
+            log.error(msg);
+            throw new GoalException(msg);
         }
     }
 

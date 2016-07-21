@@ -1,6 +1,7 @@
 package nut.goals;
 
 import nut.logging.Log;
+import nut.goals.GoalException;
 import nut.project.Project;
 import nut.model.Dependency;
 import nut.artifact.Artifact;
@@ -25,7 +26,7 @@ public class CompileJava
     private static Log log;
 
     public static void execute( Project project, Properties config )
-        throws Exception
+        throws GoalException
     {
         log = new Log();
         Properties pp               = project.getModel().getProperties();
@@ -130,7 +131,7 @@ public class CompileJava
     }
 
     private static void compile(List sources, List dependencies, String sourceDirectory, String outputDirectory)
-        throws Exception
+        throws GoalException
     {
         int n = 8 + sources.size();
         log.debug("      from \'" + sourceDirectory + "\' to \'" + outputDirectory + "\'" );
@@ -166,7 +167,7 @@ public class CompileJava
         int rc = javac.run(null, null, null, args);
         if ( rc != 0 )
         {
-             throw new Exception();
+             throw new GoalException("Compiler error " + String.valueOf(rc));
         }
     }
 

@@ -1,9 +1,9 @@
 package nut.goals;
 
-import nut.logging.Log;
 import nut.artifact.Artifact;
+import nut.goals.GoalException;
+import nut.logging.Log;
 import nut.model.Dependency;
-
 import nut.project.Project;
 
 import java.io.File;
@@ -25,8 +25,9 @@ public class PackWar
 
     // ==========================================================================
     public static void execute( Project project, Properties config )
-        throws Exception
+        throws GoalException
     {
+        String msg;
         log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
@@ -51,8 +52,9 @@ public class PackWar
         log.info( "Packaging \'" + artifactFileName + "\'" );
 
         if ( artifactId==null || (artifactId.trim().isEmpty() ) ) {
-            log.error( "\'project.artifactId\' property is undefined" );
-            throw new Exception();
+            msg = "\'project.artifactId\' property is undefined";
+            log.error(msg);
+            throw new GoalException(msg);
         }
         // copy resourceDirectory files to resourceTargetDirectory
         String resourceTargetDirectory = config.getProperty("resourceTargetDirectory");
@@ -80,7 +82,7 @@ public class PackWar
 
     // ==========================================================================
     private static void copyResource(String sourceDirectory, String targetDirectory)
-        throws Exception
+        throws GoalException
     {
       log.debug("* copy " + sourceDirectory + " to " + targetDirectory);
       try {
@@ -100,12 +102,12 @@ public class PackWar
         }
       } catch( Exception e ) {
         log.error( "Failed to copy resource file: " + e.getMessage(), e );
-        throw new Exception();
+        throw new GoalException(e.getMessage());
       }
     }
     // ==========================================================================
     private static void copyDependencies(Project project, String targetDirectory)
-        throws Exception
+        throws GoalException
     {
       log.debug("* copy dependencies to " + targetDirectory);
       try {
@@ -126,18 +128,20 @@ public class PackWar
         }
       } catch( Exception e ) {
         log.error( "Failed to copy resource file: " + e.getMessage(), e );
-        throw new Exception();
+        throw new GoalException(e.getMessage());
       }
     }
 
     // ==========================================================================
     private static void archive(String finalName, String sourceDirectory, String mode)
-        throws Exception
+        throws GoalException
     {
+        String msg;
         File dir = new File(sourceDirectory);
         if( !dir.exists() ) {
-          log.error( "\'" + sourceDirectory + "\' is empty" );
-          throw new Exception();
+          msg = "\'" + sourceDirectory + "\' is empty";
+          log.error(msg);
+          throw new GoalException(msg);
         }
         // ----------------------------------------------------------------------
         List<String> args = new ArrayList<String>();
@@ -151,15 +155,19 @@ public class PackWar
         // ----------------------------------------------------------------------
         // build the command line
         String[] command = (String[]) args.toArray( new String[ args.size() ] );
+        // ----------------------------------------------------------------------
         try {
             Process child = Runtime.getRuntime().exec(command);
             int status = child.waitFor();
             if ( status != 0 ) {
-                throw new Exception();
+                throw new GoalException("Error in child process");
             }
-        } catch( IOException e ) {
+        } catch ( InterruptedException e ) {
             log.error( "Failed to archive: " + e.getMessage(), e );
-            throw new Exception();
+            throw new GoalException(e.getMessage());
+        } catch ( IOException e ) {
+            log.error( "Failed to archive: " + e.getMessage(), e );
+            throw new GoalException(e.getMessage());
         }
         // ----------------------------------------------------------------------
     }

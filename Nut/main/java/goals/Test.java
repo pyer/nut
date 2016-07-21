@@ -1,9 +1,11 @@
 package nut.goals;
 
+import nut.goals.GoalException;
 import nut.logging.Log;
 import nut.project.Project;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -14,8 +16,9 @@ import java.util.Properties;
 public class Test
 {
     public static void execute( Project project, Properties config )
-        throws Exception
+        throws GoalException
     {
+        int returnCode = 0;
         Log log = new Log();
         Properties pp               = project.getModel().getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
@@ -41,10 +44,18 @@ public class Test
             ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,
                                                   "nut.TestRunner", testSuiteFileName, testReportDirectory);
             pb.inheritIO();
-            Process proc = pb.start();
-            int returnCode = proc.waitFor();
+            try {
+                Process proc = pb.start();
+                returnCode = proc.waitFor();
+            }
+            catch(IOException e) {
+                throw new GoalException(e.getMessage());
+            }
+            catch(Exception e) {
+                throw new GoalException(e.getMessage());
+            }
             if (returnCode!=0) {
-              throw new Exception("At least one test failed !");
+                throw new GoalException("At least one test failed !");
             }
         }
     }

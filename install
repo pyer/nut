@@ -57,6 +57,7 @@ cd ../workers
 javac $options DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java
 echo " - goals"
 cd ../goals
+javac $options GoalException.java
 javac $options Clean.java
 javac $options CompileJava.java
 javac $options Install.java

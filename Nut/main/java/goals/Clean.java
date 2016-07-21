@@ -1,6 +1,7 @@
 package nut.goals;
 
 import nut.logging.Log;
+import nut.goals.GoalException;
 import nut.project.Project;
 
 import java.io.File;
@@ -32,7 +33,7 @@ public class Clean
      * @throws Exception When a directory failed to get deleted.
      */
     public static void execute( Project project, Properties config )
-        throws Exception
+        throws GoalException
     {
         log = new Log();
         Properties pp  = project.getModel().getProperties();
@@ -52,7 +53,7 @@ public class Clean
      * @throws MojoExecutionException When a directory failed to get deleted.
      */
     private static void removeDirectory( File dir )
-        throws Exception
+        throws GoalException
     {
         if ( dir != null )
         {
@@ -65,7 +66,7 @@ public class Clean
             if ( !dir.isDirectory() )
             {
                 log.error( dir + " is not a directory." );
-                throw new Exception();
+                throw new GoalException( dir + " is not a directory." );
             }
 
             try
@@ -76,12 +77,12 @@ public class Clean
             catch ( IOException e )
             {
                 log.error( "Failed to delete directory: " + dir + ". Reason: " + e.getMessage(), e );
-                throw new Exception();
+                throw new GoalException(e.getMessage());
             }
             catch ( IllegalStateException e )
             {
                 log.error( "Failed to delete directory: " + dir + ". Reason: " + e.getMessage(), e );
-                throw new Exception();
+                throw new GoalException(e.getMessage());
             }
         }
     }
