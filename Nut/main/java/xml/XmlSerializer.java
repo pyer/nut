@@ -33,7 +33,7 @@ public class XmlSerializer {
         out = writer;
     }
 
-    public void startDocument (String encoding) throws IOException
+    public void startDocument() throws IOException
     {
         if(out == null) {
             throw new IllegalStateException("setOutput() must called set before serialization can start");
@@ -41,14 +41,7 @@ public class XmlSerializer {
         startTagIncomplete = false;
         seenTag = false;
         depth = 0;
-
-        out.write("<?xml version=\"1.0\"");
-        if(encoding != null) {
-            out.write(" encoding=\"");
-            out.write(encoding);
-            out.write("\"");
-        }
-        out.write("?>");
+        out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.write(lineSeparator);
     }
 

@@ -150,9 +150,8 @@ public class XmlWriter {
             // default encoding
             serializer.startDocument( "UTF-8" );
         } else {
-            serializer.startDocument( model.getModelEncoding() );
+            serializer.startDocument();
             serializer.startTag( tagName );
-            writeElement( "modelEncoding", model.getModelEncoding(), serializer );
             writeElement( "parent", model.getParent(), serializer );
             writeElement( "groupId", model.getGroupId(), serializer );
             writeElement( "artifactId", model.getArtifactId(), serializer );

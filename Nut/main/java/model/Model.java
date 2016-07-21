@@ -28,11 +28,6 @@ import java.util.Properties;
 public class Model implements java.io.Serializable
 {
     /**
-     * the encoding used when reading/writing the model.
-     */
-    private String modelEncoding = "UTF-8";
-
-    /**
      * Declares a parent xml file which contains common values, for example version or groupId.
      */
     private String parent;
@@ -84,16 +79,6 @@ public class Model implements java.io.Serializable
     /**
      * Public methods
      */
-    public String getModelEncoding()
-    {
-        return modelEncoding;
-    }
-
-    public void setModelEncoding( String modelEncoding )
-    {
-        this.modelEncoding = modelEncoding;
-    }
-
     public String getParent()
     {
         return this.parent;
