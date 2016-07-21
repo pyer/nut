@@ -1,7 +1,5 @@
 package nut.goals;
 
-import nut.logging.Log;
-
 import nut.model.Build;
 import nut.model.Model;
 import nut.project.Project;
@@ -11,7 +9,6 @@ import java.util.Properties;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
-import org.testng.annotations.BeforeTest;
 
 public class InstallTest
 {

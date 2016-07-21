@@ -1,7 +1,6 @@
 package nut.xml;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 public class XmlSerializer {

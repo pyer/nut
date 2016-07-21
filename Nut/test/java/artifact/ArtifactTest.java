@@ -1,7 +1,5 @@
 package nut.artifact;
 
-import nut.logging.Log;
-
 import nut.artifact.Artifact;
 import nut.artifact.InvalidArtifactRTException;
 
