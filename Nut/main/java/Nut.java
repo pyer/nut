@@ -2,13 +2,10 @@ package nut;
 
 import nut.logging.Log;
 
-import nut.artifact.Artifact;
-
 import nut.project.Project;
 
 import nut.workers.DuplicateProjectException;
 import nut.workers.Scanner;
-import nut.workers.ScannerException;
 import nut.workers.Sorter;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;

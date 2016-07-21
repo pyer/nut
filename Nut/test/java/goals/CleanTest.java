@@ -5,8 +5,6 @@ import nut.model.Model;
 import nut.project.Project;
 
 import java.io.File;
-import java.io.Reader;
-import java.util.Properties;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;

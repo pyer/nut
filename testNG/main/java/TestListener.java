@@ -3,7 +3,6 @@ package nut;
 import java.io.PrintStream;
 
 import org.testng.TestListenerAdapter;
-import org.testng.ITestListener;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 

@@ -3,7 +3,6 @@ package nut.project;
 import nut.artifact.Artifact;
 
 import nut.model.Build;
-import nut.model.Dependency;
 import nut.model.Model;
 import nut.model.XmlReader;
 import nut.model.ValidationException;
@@ -13,16 +12,16 @@ import nut.project.BuildException;
 
 import nut.xml.pull.XmlPullParserException;
 
+import java.util.Enumeration;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Enumeration;
 
 /*
 Notes

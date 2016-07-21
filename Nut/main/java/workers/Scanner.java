@@ -86,6 +86,7 @@ public class Scanner
               }
             projects.add( project );
             } catch ( BuildException e ) {
+              log.error( e.getMessage() );
               break;
             }
         }

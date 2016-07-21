@@ -3,7 +3,6 @@ package nut.project;
 import nut.project.Project;
 import nut.project.ProjectBuilder;
 import nut.project.BuildException;
-import nut.logging.Log;
 
 import java.io.File;
 

@@ -152,7 +152,7 @@ public class BuildTest
     public void testGetGoals()
     {
         Build thing = new Build();
-        assertFalse( thing.getGoals().equals( null ) );
+        assertNotNull( thing.getGoals() );
         assertTrue(  thing.getGoals().isEmpty() );
     }
 
