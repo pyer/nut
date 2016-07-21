@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 
-import java.util.Collection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
@@ -44,8 +42,12 @@ public class DependencyChecker
         }
       } catch (SecurityException e) {
         throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' is unreadable." );
-      } catch (Exception e) {
-        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' " + e.getMessage() );
+      } catch (MalformedURLException mue) {
+        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Wrong URL :" + mue );
+      } catch(FileNotFoundException fnf) {
+        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Specified file not found :" + fnf );
+      } catch(IOException ioe) {
+        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Error while writing file :" + ioe );
       }
 
       if( !artifact.isPresent() ) {
@@ -55,12 +57,14 @@ public class DependencyChecker
 
     // ----------------------------------------------------------------------
     private void download( Artifact artifact, Repository repository )
-        throws Exception
+      throws MalformedURLException, FileNotFoundException, IOException
     {
       URL url;
       InputStream    is;
       FileOutputStream fos;
       // Use this for reading the data.
+      int total = 0;
+      int nRead = 0;
       byte[] buffer = new byte[8000];
       String request;
       if ( "nut".equals( repository.getLayout() ) ) {
@@ -78,27 +82,17 @@ public class DependencyChecker
       log.debug( "Download request  : '" + request + "'" );
 
       // Now, trying to download the file
-      try {
-        fos = artifact.fileOutputStream();
-        is = url.openStream();         // throws an IOException
-        //read bytes from source file and write to destination file
-        int total = 0;
-        int nRead = 0;
-        while((nRead = is.read(buffer)) != -1) {
+      fos = artifact.fileOutputStream();
+      is = url.openStream();         // throws an IOException
+      //read bytes from source file and write to destination file
+      while((nRead = is.read(buffer)) != -1) {
           total += nRead;
           fos.write(buffer, 0, nRead);
-        }
-                                                                                                                                                        // Always close files.
-        fos.flush();
-        fos.close();
-        is.close();
-      } catch (MalformedURLException mue) {
-            throw new Exception( "Wrong URL :" + mue );
-      } catch(FileNotFoundException fnf) {
-            throw new Exception( "Specified file not found :" + fnf );
-      } catch(IOException ioe) {
-            throw new Exception( "Error while writing file :" + ioe );
       }
+                                                                                                                                                        // Always close files.
+      fos.flush();
+      fos.close();
+      is.close();
     }
 
 }
