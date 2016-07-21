@@ -197,8 +197,6 @@ public class XmlReader {
             if ( eventType == XmlPullParser.START_TAG ) {
                 if ( parser.getName().equals( "project" ) ) {
                     foundRoot = true;
-                } else if ( tagEquals( parser.getName(), "modelVersion", parsed ) ) {
-                    model.setModelVersion( parser.nextText() );
                 } else if ( tagEquals( parser.getName(), "modelEncoding", parsed ) ) {
                     model.setModelEncoding( parser.nextText() );
                 } else if ( tagEquals( parser.getName(), "parent", parsed ) ) {

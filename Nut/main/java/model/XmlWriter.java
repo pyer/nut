@@ -152,7 +152,6 @@ public class XmlWriter {
         } else {
             serializer.startDocument( model.getModelEncoding() );
             serializer.startTag( tagName );
-            writeElement( "modelVersion", model.getModelVersion(), serializer );
             writeElement( "modelEncoding", model.getModelEncoding(), serializer );
             writeElement( "parent", model.getParent(), serializer );
             writeElement( "groupId", model.getGroupId(), serializer );

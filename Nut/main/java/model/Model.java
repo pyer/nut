@@ -33,11 +33,6 @@ public class Model implements java.io.Serializable
     private String modelEncoding = "UTF-8";
 
     /**
-     * Declares to which version of project descriptor this POM conforms.
-     */
-    private String modelVersion;
-
-    /**
      * Declares a parent xml file which contains common values, for example version or groupId.
      */
     private String parent;
@@ -97,16 +92,6 @@ public class Model implements java.io.Serializable
     public void setModelEncoding( String modelEncoding )
     {
         this.modelEncoding = modelEncoding;
-    }
-
-    public String getModelVersion()
-    {
-        return this.modelVersion;
-    }
-
-    public void setModelVersion( String modelVersion )
-    {
-        this.modelVersion = modelVersion;
     }
 
     public String getParent()
