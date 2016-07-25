@@ -185,33 +185,6 @@ implements java.io.Serializable
     }
 
     /**
-     * merge method
-     *
-     */
-
-    public void merge(Build parent)
-    {
-      if( this.sourceDirectory == null )
-         this.sourceDirectory = parent.getSourceDirectory();
-      if( this.resourceDirectory == null )
-         this.resourceDirectory = parent.getResourceDirectory();
-      if( this.testSourceDirectory == null )
-         this.testSourceDirectory = parent.getTestSourceDirectory();
-      if( this.testResourceDirectory == null )
-         this.testResourceDirectory = parent.getTestResourceDirectory();
-      if( this.targetDirectory == null )
-         this.targetDirectory = parent.getTargetDirectory();
-      if( this.outputDirectory == null )
-         this.outputDirectory = parent.getOutputDirectory();
-      if( this.testOutputDirectory == null )
-         this.testOutputDirectory = parent.getTestOutputDirectory();
-      if( this.testReportDirectory == null )
-         this.testReportDirectory = parent.getTestReportDirectory();
-
-      this.getGoals().addAll( parent.getGoals() );
-    }
-
-    /**
      * validate method
      */
     public void validate()
@@ -223,5 +196,40 @@ implements java.io.Serializable
           Goal goal = (Goal) it.next();
           goal.validate();
         }
+    }
+
+    /**
+     * merge method
+     *
+     */
+    public void merge(Build parent)
+    {
+      mergeMainDirectories(parent);
+      mergeTestDirectories(parent);
+      this.getGoals().addAll( parent.getGoals() );
+    }
+
+    private void mergeMainDirectories(Build parent)
+    {
+      if( this.sourceDirectory == null )
+         this.sourceDirectory = parent.getSourceDirectory();
+      if( this.resourceDirectory == null )
+         this.resourceDirectory = parent.getResourceDirectory();
+      if( this.targetDirectory == null )
+         this.targetDirectory = parent.getTargetDirectory();
+      if( this.outputDirectory == null )
+         this.outputDirectory = parent.getOutputDirectory();
+    }
+
+    private void mergeTestDirectories(Build parent)
+    {
+      if( this.testSourceDirectory == null )
+         this.testSourceDirectory = parent.getTestSourceDirectory();
+      if( this.testResourceDirectory == null )
+         this.testResourceDirectory = parent.getTestResourceDirectory();
+      if( this.testOutputDirectory == null )
+         this.testOutputDirectory = parent.getTestOutputDirectory();
+      if( this.testReportDirectory == null )
+         this.testReportDirectory = parent.getTestReportDirectory();
     }
 }
