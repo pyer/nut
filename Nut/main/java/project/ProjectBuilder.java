@@ -105,26 +105,7 @@ public class ProjectBuilder
         if ( childBuild == null )
             return( parentBuild );
         if ( parentBuild != null )
-        {
-            if( childBuild.getSourceDirectory()==null )
-                 childBuild.setSourceDirectory( parentBuild.getSourceDirectory() );
-            if( childBuild.getResourceDirectory()==null )
-                 childBuild.setResourceDirectory( parentBuild.getResourceDirectory() );
-            if( childBuild.getTestSourceDirectory()==null )
-                 childBuild.setTestSourceDirectory( parentBuild.getTestSourceDirectory() );
-            if( childBuild.getTestResourceDirectory()==null )
-                 childBuild.setTestResourceDirectory( parentBuild.getTestResourceDirectory() );
-            if( childBuild.getTargetDirectory()==null )
-                 childBuild.setTargetDirectory( parentBuild.getTargetDirectory() );
-            if( childBuild.getOutputDirectory()==null )
-                 childBuild.setOutputDirectory( parentBuild.getOutputDirectory() );
-            if( childBuild.getTestOutputDirectory()==null )
-                 childBuild.setTestOutputDirectory( parentBuild.getTestOutputDirectory() );
-            if( childBuild.getTestReportDirectory()==null )
-                 childBuild.setTestReportDirectory( parentBuild.getTestReportDirectory() );
-
-            childBuild.getGoals().addAll( parentBuild.getGoals() );
-        }
+            childBuild.merge( parentBuild );
         return( childBuild );
     }
 

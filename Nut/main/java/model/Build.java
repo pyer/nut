@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Build 
+public class Build
 implements java.io.Serializable
 {
     //--------------------------/
@@ -175,13 +175,40 @@ implements java.io.Serializable
         {
             this.goals = new ArrayList<Goal>();
         }
-    
+
         return this.goals;
     }
 
     public void setGoals( List<Goal> goals )
     {
         this.goals = goals;
+    }
+
+    /**
+     * merge method
+     *
+     */
+
+    public void merge(Build parent)
+    {
+      if( this.sourceDirectory == null )
+         this.sourceDirectory = parent.getSourceDirectory();
+      if( this.resourceDirectory == null )
+         this.resourceDirectory = parent.getResourceDirectory();
+      if( this.testSourceDirectory == null )
+         this.testSourceDirectory = parent.getTestSourceDirectory();
+      if( this.testResourceDirectory == null )
+         this.testResourceDirectory = parent.getTestResourceDirectory();
+      if( this.targetDirectory == null )
+         this.targetDirectory = parent.getTargetDirectory();
+      if( this.outputDirectory == null )
+         this.outputDirectory = parent.getOutputDirectory();
+      if( this.testOutputDirectory == null )
+         this.testOutputDirectory = parent.getTestOutputDirectory();
+      if( this.testReportDirectory == null )
+         this.testReportDirectory = parent.getTestReportDirectory();
+
+      this.getGoals().addAll( parent.getGoals() );
     }
 
     /**
