@@ -5,19 +5,8 @@ import java.io.InputStreamReader;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-
-//import nut.xml.XmlReader;
-//import ab.nut.util.ReaderFactory;
-
-//import java.util.Hashtable;
-
-//TODO best handling of interning issues
-//   have isAllNewStringInterned ???
-
-//TODO handling surrogate pairs: http://www.unicode.org/unicode/faq/utf_bom.html#6
-
-//TODO review code for use of bufAbsoluteStart when keeping pos between next()/fillBuf()
 
 /**
  * Absolutely minimal implementation of XMLPULL V1 API. Encoding handling done with XmlReader
@@ -30,21 +19,6 @@ public class XmlPullParser
  * XML Pull Parser is an interface that defines parsing functionality provided
  * in <a href="http://www.xmlpull.org/">XMLPULL V1 API</a> (visit this website to
  * learn more about API and its implementations).
- *
- * <p>There are following different
- * kinds of parser depending on which features are set:<ul>
- * <li><b>non-validating</b> parser as defined in XML 1.0 spec when
- *   FEATURE_PROCESS_DOCDECL is set to true
- * <li><b>validating parser</b> as defined in XML 1.0 spec when
- *   FEATURE_VALIDATION is true (and that implies that FEATURE_PROCESS_DOCDECL is true)
- * <li>when FEATURE_PROCESS_DOCDECL is false (this is default and
- *   if different value is required necessary must be changed before parsing is started)
- *   then parser behaves like XML 1.0 compliant non-validating parser under condition that
- *  <em>no DOCDECL is present</em> in XML documents
- *   (internal entities can still be defined with defineEntityReplacementText()).
- *   This mode of operation is intended <b>for operation in constrained environments</b> such as J2ME.
- * </ul>
- *
  *
  * <p>There are two key methods: next() and nextToken(). While next() provides
  * access to high level parsing events, nextToken() allows access to lower
@@ -75,13 +49,6 @@ public class XmlPullParser
  * XML version, standalone and encoding from XML declaration
  * in following ways:<ul>
  * <li><b>version</b>:
- *  getProperty(&quot;<a href="http://xmlpull.org/v1/doc/properties.html#xmldecl-version">http://xmlpull.org/v1/doc/properties.html#xmldecl-version</a>&quot;)
- *       returns String ("1.0") or null if XMLDecl was not read or if property is not supported
- * <li><b>standalone</b>:
- *  getProperty(&quot;<a href="http://xmlpull.org/v1/doc/features.html#xmldecl-standalone">http://xmlpull.org/v1/doc/features.html#xmldecl-standalone</a>&quot;)
- *       returns Boolean: null if there was no standalone declaration
- *  or if property is not supported
- *         otherwise returns Boolean(true) if standalone="yes" and Boolean(false) when standalone="no"
  * <li><b>encoding</b>: obtained from getInputEncoding()
  *       null if stream had unknown encoding (not set in setInputStream)
  *           and it was not declared in XMLDecl
@@ -137,15 +104,11 @@ public class XmlPullParser
  * <p>For more details on API usage, please refer to the
  * quick Introduction available at <a href="http://www.xmlpull.org">http://www.xmlpull.org</a>
  *
- * @see #defineEntityReplacementText
  * @see #getName
- * @see #getNamespace
  * @see #getText
  * @see #next
  * @see #nextToken
  * @see #setInput
- * @see #FEATURE_PROCESS_DOCDECL
- * @see #FEATURE_VALIDATION
  * @see #START_DOCUMENT
  * @see #START_TAG
  * @see #TEXT
@@ -155,9 +118,6 @@ public class XmlPullParser
  * @author <a href="http://www-ai.cs.uni-dortmund.de/PERSONAL/haustein.html">Stefan Haustein</a>
  * @author <a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a>
  */
-
-    /** This constant represents the default namespace (empty string "") */
-    String NO_NAMESPACE = "";
 
     // ----------------------------------------------------------------------------
     // EVENT TYPES as reported by next()
@@ -190,38 +150,20 @@ public class XmlPullParser
      * Returned from getEventType(),
      * <a href="#next()">next()</a>, <a href="#nextToken()">nextToken()</a> when
      * a start tag was read.
-     * The name of start tag is available from getName(), its namespace and prefix are
-     * available from getNamespace() and getPrefix()
-     * if <a href='#FEATURE_PROCESS_NAMESPACES'>namespaces are enabled</a>.
-     * See getAttribute* methods to retrieve element attributes.
-     * See getNamespace* methods to retrieve newly declared namespaces.
-     *
+     * The name of start tag is available from getName()
      * @see #next
      * @see #nextToken
      * @see #getName
-     * @see #getPrefix
-     * @see #getNamespace
-     * @see #getAttributeCount
-     * @see #getDepth
-     * @see #getNamespaceCount
-     * @see #getNamespace
-     * @see #FEATURE_PROCESS_NAMESPACES
      */
     public static int START_TAG = 2;
 
     /**
      * Returned from getEventType(), <a href="#next()">next()</a>, or
      * <a href="#nextToken()">nextToken()</a> when an end tag was read.
-     * The name of start tag is available from getName(), its
-     * namespace and prefix are
-     * available from getNamespace() and getPrefix().
-     *
+     * The name of start tag is available from getName()
      * @see #next
      * @see #nextToken
      * @see #getName
-     * @see #getPrefix
-     * @see #getNamespace
-     * @see #FEATURE_PROCESS_NAMESPACES
      */
     public static int END_TAG = 3;
 
@@ -359,88 +301,9 @@ public class XmlPullParser
 
 
     // ----------------------------------------------------------------------------
-    // namespace related features
-
-    /**
-     * This feature determines whether the parser processes
-     * namespaces. As for all features, the default value is false.
-     * <p><strong>NOTE:</strong> The value can not be changed during
-     * parsing an must be set before parsing.
-     *
-     * @see #getFeature
-     * @see #setFeature
-     */
-    String FEATURE_PROCESS_NAMESPACES =
-        "http://xmlpull.org/v1/doc/features.html#process-namespaces";
-
-    /**
-     * This feature determines whether namespace attributes are
-     * exposed via the attribute access methods. Like all features,
-     * the default value is false. This feature cannot be changed
-     * during parsing.
-     *
-     * @see #getFeature
-     * @see #setFeature
-     */
-    String FEATURE_REPORT_NAMESPACE_ATTRIBUTES =
-        "http://xmlpull.org/v1/doc/features.html#report-namespace-prefixes";
-
-    /**
-     * This feature determines whether the document declaration
-     * is processed. If set to false,
-     * the DOCDECL event type is reported by nextToken()
-     * and ignored by next().
-     *
-     * If this featue is activated, then the document declaration
-     * must be processed by the parser.
-     *
-     * <p><strong>Please note:</strong> If the document type declaration
-     * was ignored, entity references may cause exceptions
-     * later in the parsing process.
-     * The default value of this feature is false. It cannot be changed
-     * during parsing.
-     *
-     * @see #getFeature
-     * @see #setFeature
-     */
-    String FEATURE_PROCESS_DOCDECL =
-        "http://xmlpull.org/v1/doc/features.html#process-docdecl";
-
-    /**
-     * If this feature is activated, all validation errors as
-     * defined in the XML 1.0 sepcification are reported.
-     * This implies that FEATURE_PROCESS_DOCDECL is true and both, the
-     * internal and external document type declaration will be processed.
-     * <p><strong>Please Note:</strong> This feature can not be changed
-     * during parsing. The default value is false.
-     *
-     * @see #getFeature
-     * @see #setFeature
-     */
-    String FEATURE_VALIDATION =
-        "http://xmlpull.org/v1/doc/features.html#validation";
-
-    //NOTE: no interning of those strings --> by Java leng spec they MUST be already interned
-    protected final static String XML_URI = "http://www.w3.org/XML/1998/namespace";
-    protected final static String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
-    protected final static String FEATURE_XML_ROUNDTRIP=
-        //"http://xmlpull.org/v1/doc/features.html#xml-roundtrip";
-        "http://xmlpull.org/v1/doc/features.html#xml-roundtrip";
-    protected final static String FEATURE_NAMES_INTERNED =
-        "http://xmlpull.org/v1/doc/features.html#names-interned";
-    protected final static String PROPERTY_XMLDECL_VERSION =
-        "http://xmlpull.org/v1/doc/properties.html#xmldecl-version";
-    protected final static String PROPERTY_XMLDECL_STANDALONE =
-        "http://xmlpull.org/v1/doc/properties.html#xmldecl-standalone";
-    protected final static String PROPERTY_XMLDECL_CONTENT =
-        "http://xmlpull.org/v1/doc/properties.html#xmldecl-content";
-    protected final static String PROPERTY_LOCATION =
-        "http://xmlpull.org/v1/doc/properties.html#location";
-
     private static final boolean TRACE_SIZING = false;
 
     // NOTE: features are not resetable and typically defaults to false ...
-    protected boolean processNamespaces;
     protected boolean roundtripSupported;
 
     // global parser state
@@ -458,29 +321,6 @@ public class XmlPullParser
     protected int elRawNameLine[];
 
     protected String elName[];
-    protected String elPrefix[];
-    protected String elUri[];
-    //protected String elValue[];
-    protected int elNamespaceCount[];
-
-    /**
-     * Implementation notice:
-     * the is instance variable that controls if newString() is interning.
-     * <p><b>NOTE:</b> newStringIntern <b>always</b> returns interned strings
-     * and newString MAY return interned String depending on this variable.
-     * <p><b>NOTE:</b> by default in this minimal implementation it is false!
-     */
-    protected boolean allStringsInterned;
-
-    protected String newString(char[] cbuf, int off, int len) {
-        return new String(cbuf, off, len);
-    }
-
-    protected String newStringIntern(char[] cbuf, int off, int len) {
-        return (new String(cbuf, off, len)).intern();
-    }
-
-
 
     /**
      * Make sure that we have enough space to keep element stack if passed size.
@@ -500,24 +340,9 @@ public class XmlPullParser
             arr = new String[newSize];
             if(needsCopying) System.arraycopy(elName, 0, arr, 0, elStackSize);
             elName = arr;
-            arr = new String[newSize];
-            if(needsCopying) System.arraycopy(elPrefix, 0, arr, 0, elStackSize);
-            elPrefix = arr;
-            arr = new String[newSize];
-            if(needsCopying) System.arraycopy(elUri, 0, arr, 0, elStackSize);
-            elUri = arr;
-
-            int[] iarr = new int[newSize];
-            if(needsCopying) {
-                System.arraycopy(elNamespaceCount, 0, iarr, 0, elStackSize);
-            } else {
-                // special initialization
-                iarr[0] = 0;
-            }
-            elNamespaceCount = iarr;
 
             //TODO: avoid using element raw name ...
-            iarr = new int[newSize];
+            int[] iarr = new int[newSize];
             if(needsCopying) {
                 System.arraycopy(elRawNameEnd, 0, iarr, 0, elStackSize);
             }
@@ -551,122 +376,6 @@ public class XmlPullParser
         }
     }
 
-
-
-    // attribute stack
-    protected int attributeCount;
-    protected String attributeName[];
-    protected int attributeNameHash[];
-    //protected int attributeNameStart[];
-    //protected int attributeNameEnd[];
-    protected String attributePrefix[];
-    protected String attributeUri[];
-    protected String attributeValue[];
-    //protected int attributeValueStart[];
-    //protected int attributeValueEnd[];
-
-
-    /**
-     * Make sure that in attributes temporary array is enough space.
-     */
-    protected  void ensureAttributesCapacity(int size) {
-        final int attrPosSize = attributeName != null ? attributeName.length : 0;
-        if(size >= attrPosSize) {
-            final int newSize = size > 7 ? 2 * size : 8; // = lucky 7 + 1 //25
-            if(TRACE_SIZING) {
-                System.err.println("TRACE_SIZING attrPosSize "+attrPosSize+" ==> "+newSize);
-            }
-            final boolean needsCopying = attrPosSize > 0;
-            String[] arr = null;
-
-            arr = new String[newSize];
-            if(needsCopying) System.arraycopy(attributeName, 0, arr, 0, attrPosSize);
-            attributeName = arr;
-
-            arr = new String[newSize];
-            if(needsCopying) System.arraycopy(attributePrefix, 0, arr, 0, attrPosSize);
-            attributePrefix = arr;
-
-            arr = new String[newSize];
-            if(needsCopying) System.arraycopy(attributeUri, 0, arr, 0, attrPosSize);
-            attributeUri = arr;
-
-            arr = new String[newSize];
-            if(needsCopying) System.arraycopy(attributeValue, 0, arr, 0, attrPosSize);
-            attributeValue = arr;
-
-            if( ! allStringsInterned ) {
-                final int[] iarr = new int[newSize];
-                if(needsCopying) System.arraycopy(attributeNameHash, 0, iarr, 0, attrPosSize);
-                attributeNameHash = iarr;
-            }
-
-            arr = null;
-            // //assert attrUri.length > size
-        }
-    }
-
-    // namespace stack
-    protected int namespaceEnd;
-    protected String namespacePrefix[];
-    protected int namespacePrefixHash[];
-    protected String namespaceUri[];
-
-    protected void ensureNamespacesCapacity(int size) {
-        final int namespaceSize = namespacePrefix != null ? namespacePrefix.length : 0;
-        if(size >= namespaceSize) {
-            final int newSize = size > 7 ? 2 * size : 8; // = lucky 7 + 1 //25
-            if(TRACE_SIZING) {
-                System.err.println("TRACE_SIZING namespaceSize "+namespaceSize+" ==> "+newSize);
-            }
-            final String[] newNamespacePrefix = new String[newSize];
-            final String[] newNamespaceUri = new String[newSize];
-            if(namespacePrefix != null) {
-                System.arraycopy(
-                    namespacePrefix, 0, newNamespacePrefix, 0, namespaceEnd);
-                System.arraycopy(
-                    namespaceUri, 0, newNamespaceUri, 0, namespaceEnd);
-            }
-            namespacePrefix = newNamespacePrefix;
-            namespaceUri = newNamespaceUri;
-
-
-            if( ! allStringsInterned ) {
-                final int[] newNamespacePrefixHash = new int[newSize];
-                if(namespacePrefixHash != null) {
-                    System.arraycopy(
-                        namespacePrefixHash, 0, newNamespacePrefixHash, 0, namespaceEnd);
-                }
-                namespacePrefixHash = newNamespacePrefixHash;
-            }
-            //prefixesSize = newSize;
-            // //assert nsPrefixes.length > size && nsPrefixes.length == newSize
-        }
-    }
-
-    /**
-     * simplistic implementation of hash function that has <b>constant</b>
-     * time to compute - so it also means diminishing hash quality for long strings
-     * but for XML parsing it should be good enough ...
-     */
-    protected static final int fastHash( char ch[], int off, int len ) {
-        if(len == 0) return 0;
-        //assert len >0
-        int hash = ch[off]; // hash at beginning
-        //try {
-        hash = (hash << 7) + ch[ off +  len - 1 ]; // hash at the end
-        //} catch(ArrayIndexOutOfBoundsException aie) {
-        //    aie.printStackTrace(); //should never happen ...
-        //    throw new RuntimeException("this is violation of pre-condition");
-        //}
-        if(len > 16) hash = (hash << 7) + ch[ off + (len / 4)];  // 1/4 from beginning
-        if(len > 8)  hash = (hash << 7) + ch[ off + (len / 2)];  // 1/2 of string size ...
-        // notice that hash is at most done 3 times <<7 so shifted by 21 bits 8 bit value
-        // so max result == 29 bits so it is quite just below 31 bits for long (2^32) ...
-        //assert hash >= 0;
-        return  hash;
-    }
-
     // entity replacement stack
     protected int entityEnd;
 
@@ -677,43 +386,9 @@ public class XmlPullParser
 
     protected int entityNameHash[];
 
-    protected void ensureEntityCapacity() {
-        final int entitySize = entityReplacementBuf != null ? entityReplacementBuf.length : 0;
-        if(entityEnd >= entitySize) {
-            final int newSize = entityEnd > 7 ? 2 * entityEnd : 8; // = lucky 7 + 1 //25
-            if(TRACE_SIZING) {
-                System.err.println("TRACE_SIZING entitySize "+entitySize+" ==> "+newSize);
-            }
-            final String[] newEntityName = new String[newSize];
-            final char[] newEntityNameBuf[] = new char[newSize][];
-            final String[] newEntityReplacement = new String[newSize];
-            final char[] newEntityReplacementBuf[] = new char[newSize][];
-            if(entityName != null) {
-                System.arraycopy(entityName, 0, newEntityName, 0, entityEnd);
-                System.arraycopy(entityNameBuf, 0, newEntityNameBuf, 0, entityEnd);
-                System.arraycopy(entityReplacement, 0, newEntityReplacement, 0, entityEnd);
-                System.arraycopy(entityReplacementBuf, 0, newEntityReplacementBuf, 0, entityEnd);
-            }
-            entityName = newEntityName;
-            entityNameBuf = newEntityNameBuf;
-            entityReplacement = newEntityReplacement;
-            entityReplacementBuf = newEntityReplacementBuf;
-
-            if( ! allStringsInterned ) {
-                final int[] newEntityNameHash = new int[newSize];
-                if(entityNameHash != null) {
-                    System.arraycopy(entityNameHash, 0, newEntityNameHash, 0, entityEnd);
-                }
-                entityNameHash = newEntityNameHash;
-            }
-        }
-    }
-
     // input buffer management
     protected static final int READ_CHUNK_SIZE = 8*1024; //max data chars in one read() call
     protected Reader reader;
-    protected String inputEncoding;
-
 
     protected int bufLoadFactor = 95;  // 99%
     //protected int bufHardLimit;  // only matters when expanding
@@ -758,8 +433,8 @@ public class XmlPullParser
     protected Boolean xmlDeclStandalone;
     protected String xmlDeclContent;
 
-    protected void reset() {
-        //System.out.println("reset() called");
+    public XmlPullParser( StringReader sReader ) {
+        reader = sReader;
         location = null;
         lineNumber = 1;
         columnNumber = 0;
@@ -770,14 +445,7 @@ public class XmlPullParser
 
         depth = 0;
 
-        attributeCount = 0;
-
-        namespaceEnd = 0;
-
         entityEnd = 0;
-
-        reader = null;
-        inputEncoding = null;
 
         preventBufferCompaction = false;
         bufAbsoluteStart = 0;
@@ -800,246 +468,6 @@ public class XmlPullParser
         xmlDeclContent = null;
     }
 
-    public XmlPullParser() {
-    }
-
-
-    /**
-     * Method setFeature
-     *
-     * @param    name                a  String
-     * @param    state               a  boolean
-     *
-     * @throws   XmlPullParserException
-     *
-     */
-    public void setFeature(String name,
-                           boolean state) throws XmlPullParserException
-    {
-        if(name == null) throw new IllegalArgumentException("feature name should not be null");
-        if(FEATURE_PROCESS_NAMESPACES.equals(name)) {
-            if(eventType != START_DOCUMENT) throw new XmlPullParserException(
-                    "namespace processing feature can only be changed before parsing", this, null);
-            processNamespaces = state;
-            //        } else if(FEATURE_REPORT_NAMESPACE_ATTRIBUTES.equals(name)) {
-            //      if(type != START_DOCUMENT) throw new XmlPullParserException(
-            //              "namespace reporting feature can only be changed before parsing", this, null);
-            //            reportNsAttribs = state;
-        } else if(FEATURE_NAMES_INTERNED.equals(name)) {
-            if(state != false) {
-                throw new XmlPullParserException(
-                    "interning names in this implementation is not supported");
-            }
-        } else if(FEATURE_PROCESS_DOCDECL.equals(name)) {
-            if(state != false) {
-                throw new XmlPullParserException(
-                    "processing DOCDECL is not supported");
-            }
-            //} else if(REPORT_DOCDECL.equals(name)) {
-            //    paramNotifyDoctype = state;
-        } else if(FEATURE_XML_ROUNDTRIP.equals(name)) {
-            //if(state == false) {
-            //    throw new XmlPullParserException(
-            //        "roundtrip feature can not be switched off");
-            //}
-            roundtripSupported = state;
-        } else {
-            throw new XmlPullParserException("unsupporte feature "+name);
-        }
-    }
-
-    /** Unknown properties are <string>always</strong> returned as false */
-    public boolean getFeature(String name)
-    {
-        if(name == null) throw new IllegalArgumentException("feature name should not be nulll");
-        if(FEATURE_PROCESS_NAMESPACES.equals(name)) {
-            return processNamespaces;
-            //        } else if(FEATURE_REPORT_NAMESPACE_ATTRIBUTES.equals(name)) {
-            //            return reportNsAttribs;
-        } else if(FEATURE_NAMES_INTERNED.equals(name)) {
-            return false;
-        } else if(FEATURE_PROCESS_DOCDECL.equals(name)) {
-            return false;
-            //} else if(REPORT_DOCDECL.equals(name)) {
-            //    return paramNotifyDoctype;
-        } else if(FEATURE_XML_ROUNDTRIP.equals(name)) {
-            //return true;
-            return roundtripSupported;
-        }
-        return false;
-    }
-
-    public void setProperty(String name,
-                            Object value)
-        throws XmlPullParserException
-    {
-        if(PROPERTY_LOCATION.equals(name)) {
-            location = (String) value;
-        } else {
-            throw new XmlPullParserException("unsupported property: '"+name+"'");
-        }
-    }
-
-
-    public Object getProperty(String name)
-    {
-        if(name == null) throw new IllegalArgumentException("property name should not be nulll");
-        if(PROPERTY_XMLDECL_VERSION.equals(name)) {
-            return xmlDeclVersion;
-        } else if(PROPERTY_XMLDECL_STANDALONE.equals(name)) {
-            return xmlDeclStandalone;
-        } else if(PROPERTY_XMLDECL_CONTENT.equals(name)) {
-            return xmlDeclContent;
-        } else if(PROPERTY_LOCATION.equals(name)) {
-            return location;
-        }
-        return null;
-    }
-
-
-    public void setInput(Reader in) throws XmlPullParserException
-    {
-        reset();
-        reader = in;
-    }
-
-
-    public void setInput(InputStream inputStream, String inputEncoding)
-        throws XmlPullParserException
-    {
-        if(inputStream == null) {
-            throw new IllegalArgumentException("input stream can not be null");
-        }
-        Reader reader;
-        try {
-            if(inputEncoding != null) {
-                reader = new InputStreamReader(inputStream, inputEncoding);
-//ReaderFactory.newReader(inputStream, inputEncoding);
-            } else {
-                reader = new InputStreamReader(inputStream);
-//ReaderFactory.newXmlReader(inputStream);
-            }
-        } catch (UnsupportedEncodingException une) {
-            throw new XmlPullParserException(
-                "could not create reader for encoding "+inputEncoding+" : "+une, this, une);
-        }
-        setInput(reader);
-        //must be  here as reset() was called in setInput() and has set this.inputEncoding to null ...
-        this.inputEncoding = inputEncoding;
-    }
-
-    public String getInputEncoding() {
-        return inputEncoding;
-    }
-
-    public void defineEntityReplacementText(String entityName,
-                                            String replacementText)
-        throws XmlPullParserException
-    {
-        //      throw new XmlPullParserException("not allowed");
-
-        if ( !replacementText.startsWith( "&#" ) && this.entityName != null && replacementText.length() > 1 )
-        {
-            String tmp = replacementText.substring( 1, replacementText.length() - 1 );
-            for ( int i = 0; i < this.entityName.length; i++ )
-            {
-                if ( this.entityName[i] != null && this.entityName[i].equals( tmp ) )
-                {
-                    replacementText = this.entityReplacement[i];
-                }
-            }
-        }
-
-        //protected char[] entityReplacement[];
-        ensureEntityCapacity();
-
-        // this is to make sure that if interning works we will take advantage of it ...
-        this.entityName[entityEnd] = newString(entityName.toCharArray(), 0, entityName.length());
-        entityNameBuf[entityEnd] = entityName.toCharArray();
-
-        entityReplacement[entityEnd] = replacementText;
-        entityReplacementBuf[entityEnd] = replacementText.toCharArray();
-        if(!allStringsInterned) {
-            entityNameHash[ entityEnd ] =
-                fastHash(entityNameBuf[entityEnd], 0, entityNameBuf[entityEnd].length);
-        }
-        ++entityEnd;
-        //TODO disallow < or & in entity replacement text (or ]]>???)
-        // TOOD keepEntityNormalizedForAttributeValue cached as well ...
-    }
-
-    public int getNamespaceCount(int depth)
-        throws XmlPullParserException
-    {
-        if(processNamespaces == false || depth == 0) {
-            return 0;
-        }
-        //int maxDepth = eventType == END_TAG ? this.depth + 1 : this.depth;
-        //if(depth < 0 || depth > maxDepth) throw new IllegalArgumentException(
-        if(depth < 0 || depth > this.depth) throw new IllegalArgumentException(
-                "napespace count mayt be for depth 0.."+this.depth+" not "+depth);
-        return elNamespaceCount[ depth ];
-    }
-
-    public String getNamespacePrefix(int pos)
-        throws XmlPullParserException
-    {
-
-        //int end = eventType == END_TAG ? elNamespaceCount[ depth + 1 ] : namespaceEnd;
-        //if(pos < end) {
-        if(pos < namespaceEnd) {
-            return namespacePrefix[ pos ];
-        } else {
-            throw new XmlPullParserException(
-                "position "+pos+" exceeded number of available namespaces "+namespaceEnd);
-        }
-    }
-
-    public String getNamespaceUri(int pos) throws XmlPullParserException
-    {
-        //int end = eventType == END_TAG ? elNamespaceCount[ depth + 1 ] : namespaceEnd;
-        //if(pos < end) {
-        if(pos < namespaceEnd) {
-            return namespaceUri[ pos ];
-        } else {
-            throw new XmlPullParserException(
-                "position "+pos+" exceedded number of available namespaces "+namespaceEnd);
-        }
-    }
-
-    public String getNamespace( String prefix )
-        //throws XmlPullParserException
-    {
-        //int count = namespaceCount[ depth ];
-        if(prefix != null) {
-            for( int i = namespaceEnd -1; i >= 0; i--) {
-                if( prefix.equals( namespacePrefix[ i ] ) ) {
-                    return namespaceUri[ i ];
-                }
-            }
-            if("xml".equals( prefix )) {
-                return XML_URI;
-            } else if("xmlns".equals( prefix )) {
-                return XMLNS_URI;
-            }
-        } else {
-            for( int i = namespaceEnd -1; i >= 0; i--) {
-                if( namespacePrefix[ i ]  == null) { //"") { //null ) { //TODO check FIXME Alek
-                    return namespaceUri[ i ];
-                }
-            }
-
-        }
-        return null;
-    }
-
-
-    public int getDepth()
-    {
-        return depth;
-    }
-
-
     private static int findFragment(int bufMinPos, char[] b, int start, int end) {
         //System.err.println("bufStart="+bufStart+" b="+printable(new String(b, start, end - start))+" start="+start+" end="+end);
         if(start < bufMinPos) {
@@ -1059,6 +487,46 @@ public class XmlPullParser
         return i;
     }
 
+
+
+    private boolean isWhitespace() throws XmlPullParserException
+    {
+        if(eventType == TEXT || eventType == CDSECT) {
+            if(usePC) {
+                for (int i = pcStart; i <pcEnd; i++)
+                {
+                    if(!isS(pc[ i ])) return false;
+                }
+                return true;
+            } else {
+                for (int i = posStart; i <posEnd; i++)
+                {
+                    if(!isS(buf[ i ])) return false;
+                }
+                return true;
+            }
+        } else if(eventType == IGNORABLE_WHITESPACE) {
+            return true;
+        }
+        throw new XmlPullParserException("no content available to check for whitespaces");
+    }
+
+    /* ************************************************************************* */
+    public int getEventType()
+        throws XmlPullParserException
+    {
+        return eventType;
+    }
+
+    public int getLineNumber()
+    {
+        return lineNumber;
+    }
+
+    public int getColumnNumber()
+    {
+        return columnNumber;
+    }
 
     /**
      * Return string describing current position of parsers as
@@ -1084,37 +552,23 @@ public class XmlPullParser
             +"@"+getLineNumber()+":"+getColumnNumber();
     }
 
-    public int getLineNumber()
-    {
-        return lineNumber;
-    }
-
-    public int getColumnNumber()
-    {
-        return columnNumber;
-    }
 
 
-    public boolean isWhitespace() throws XmlPullParserException
+    public String getName()
     {
-        if(eventType == TEXT || eventType == CDSECT) {
-            if(usePC) {
-                for (int i = pcStart; i <pcEnd; i++)
-                {
-                    if(!isS(pc[ i ])) return false;
-                }
-                return true;
-            } else {
-                for (int i = posStart; i <posEnd; i++)
-                {
-                    if(!isS(buf[ i ])) return false;
-                }
-                return true;
+        if(eventType == START_TAG) {
+            //return elName[ depth - 1 ] ;
+            return elName[ depth ] ;
+        } else if(eventType == END_TAG) {
+            return elName[ depth ] ;
+        } else if(eventType == ENTITY_REF) {
+            if(entityRefName == null) {
+                entityRefName = new String(buf, posStart, posEnd - posStart);
             }
-        } else if(eventType == IGNORABLE_WHITESPACE) {
-            return true;
+            return entityRefName;
+        } else {
+            return null;
         }
-        throw new XmlPullParserException("no content available to check for whitespaces");
     }
 
     public String getText()
@@ -1138,264 +592,6 @@ public class XmlPullParser
         }
         return text;
     }
-
-    public char[] getTextCharacters(int [] holderForStartAndLength)
-    {
-        if( eventType == TEXT ) {
-            if(usePC) {
-                holderForStartAndLength[0] = pcStart;
-                holderForStartAndLength[1] = pcEnd - pcStart;
-                return pc;
-            } else {
-                holderForStartAndLength[0] = posStart;
-                holderForStartAndLength[1] = posEnd - posStart;
-                return buf;
-
-            }
-        } else if( eventType == START_TAG
-                      || eventType == END_TAG
-                      || eventType == CDSECT
-                      || eventType == COMMENT
-                      || eventType == ENTITY_REF
-                      || eventType == PROCESSING_INSTRUCTION
-                      || eventType == IGNORABLE_WHITESPACE
-                      || eventType == DOCDECL)
-        {
-            holderForStartAndLength[0] = posStart;
-            holderForStartAndLength[1] = posEnd - posStart;
-            return buf;
-        } else if(eventType == START_DOCUMENT
-                      || eventType == END_DOCUMENT) {
-            //throw new XmlPullParserException("no content available to read");
-            holderForStartAndLength[0] = holderForStartAndLength[1] = -1;
-            return null;
-        } else {
-            throw new IllegalArgumentException("unknown text eventType: "+eventType);
-        }
-        //      String s = getText();
-        //      char[] cb = null;
-        //      if(s!= null) {
-        //          cb = s.toCharArray();
-        //          holderForStartAndLength[0] = 0;
-        //          holderForStartAndLength[1] = s.length();
-        //      } else {
-        //      }
-        //      return cb;
-    }
-
-    public String getNamespace()
-    {
-        if(eventType == START_TAG) {
-            //return processNamespaces ? elUri[ depth - 1 ] : NO_NAMESPACE;
-            return processNamespaces ? elUri[ depth  ] : NO_NAMESPACE;
-        } else if(eventType == END_TAG) {
-            return processNamespaces ? elUri[ depth ] : NO_NAMESPACE;
-        }
-        return null;
-        //        String prefix = elPrefix[ maxDepth ];
-        //        if(prefix != null) {
-        //            for( int i = namespaceEnd -1; i >= 0; i--) {
-        //                if( prefix.equals( namespacePrefix[ i ] ) ) {
-        //                    return namespaceUri[ i ];
-        //                }
-        //            }
-        //        } else {
-        //            for( int i = namespaceEnd -1; i >= 0; i--) {
-        //                if( namespacePrefix[ i ]  == null ) {
-        //                    return namespaceUri[ i ];
-        //                }
-        //            }
-        //
-        //        }
-        //        return "";
-    }
-
-    public String getName()
-    {
-        if(eventType == START_TAG) {
-            //return elName[ depth - 1 ] ;
-            return elName[ depth ] ;
-        } else if(eventType == END_TAG) {
-            return elName[ depth ] ;
-        } else if(eventType == ENTITY_REF) {
-            if(entityRefName == null) {
-                entityRefName = newString(buf, posStart, posEnd - posStart);
-            }
-            return entityRefName;
-        } else {
-            return null;
-        }
-    }
-
-    public String getPrefix()
-    {
-        if(eventType == START_TAG) {
-            //return elPrefix[ depth - 1 ] ;
-            return elPrefix[ depth ] ;
-        } else if(eventType == END_TAG) {
-            return elPrefix[ depth ] ;
-        }
-        return null;
-        //        if(eventType != START_TAG && eventType != END_TAG) return null;
-        //        int maxDepth = eventType == END_TAG ? depth : depth - 1;
-        //        return elPrefix[ maxDepth ];
-    }
-
-
-    public boolean isEmptyElementTag() throws XmlPullParserException
-    {
-        if(eventType != START_TAG) throw new XmlPullParserException(
-                "parser must be on START_TAG to check for empty element", this, null);
-        return emptyElementTag;
-    }
-
-    public int getAttributeCount()
-    {
-        if(eventType != START_TAG) return -1;
-        return attributeCount;
-    }
-
-    public String getAttributeNamespace(int index)
-    {
-        if(eventType != START_TAG) throw new IndexOutOfBoundsException(
-                "only START_TAG can have attributes");
-        if(processNamespaces == false) return NO_NAMESPACE;
-        if(index < 0 || index >= attributeCount) throw new IndexOutOfBoundsException(
-                "attribute position must be 0.."+(attributeCount-1)+" and not "+index);
-        return attributeUri[ index ];
-    }
-
-    public String getAttributeName(int index)
-    {
-        if(eventType != START_TAG) throw new IndexOutOfBoundsException(
-                "only START_TAG can have attributes");
-        if(index < 0 || index >= attributeCount) throw new IndexOutOfBoundsException(
-                "attribute position must be 0.."+(attributeCount-1)+" and not "+index);
-        return attributeName[ index ];
-    }
-
-    public String getAttributePrefix(int index)
-    {
-        if(eventType != START_TAG) throw new IndexOutOfBoundsException(
-                "only START_TAG can have attributes");
-        if(processNamespaces == false) return null;
-        if(index < 0 || index >= attributeCount) throw new IndexOutOfBoundsException(
-                "attribute position must be 0.."+(attributeCount-1)+" and not "+index);
-        return attributePrefix[ index ];
-    }
-
-    public String getAttributeType(int index) {
-        if(eventType != START_TAG) throw new IndexOutOfBoundsException(
-                "only START_TAG can have attributes");
-        if(index < 0 || index >= attributeCount) throw new IndexOutOfBoundsException(
-                "attribute position must be 0.."+(attributeCount-1)+" and not "+index);
-        return "CDATA";
-    }
-
-    public boolean isAttributeDefault(int index) {
-        if(eventType != START_TAG) throw new IndexOutOfBoundsException(
-                "only START_TAG can have attributes");
-        if(index < 0 || index >= attributeCount) throw new IndexOutOfBoundsException(
-                "attribute position must be 0.."+(attributeCount-1)+" and not "+index);
-        return false;
-    }
-
-    public String getAttributeValue(int index)
-    {
-        if(eventType != START_TAG) throw new IndexOutOfBoundsException(
-                "only START_TAG can have attributes");
-        if(index < 0 || index >= attributeCount) throw new IndexOutOfBoundsException(
-                "attribute position must be 0.."+(attributeCount-1)+" and not "+index);
-        return attributeValue[ index ];
-    }
-
-    public String getAttributeValue(String namespace,
-                                    String name)
-    {
-        if(eventType != START_TAG) throw new IndexOutOfBoundsException(
-                "only START_TAG can have attributes"+getPositionDescription());
-        if(name == null) {
-            throw new IllegalArgumentException("attribute name can not be null");
-        }
-        // TODO make check if namespace is interned!!! etc. for names!!!
-        if(processNamespaces) {
-            if(namespace == null) {
-                namespace = "";
-            }
-
-            for(int i = 0; i < attributeCount; ++i) {
-                if((namespace == attributeUri[ i ] ||
-                        namespace.equals(attributeUri[ i ]) )
-                       //(namespace != null && namespace.equals(attributeUri[ i ]))
-                       // taking advantage of String.intern()
-                       && name.equals(attributeName[ i ]) )
-                {
-                    return attributeValue[i];
-                }
-            }
-        } else {
-            if(namespace != null && namespace.length() == 0) {
-                namespace = null;
-            }
-            if(namespace != null) throw new IllegalArgumentException(
-                    "when namespaces processing is disabled attribute namespace must be null");
-            for(int i = 0; i < attributeCount; ++i) {
-                if(name.equals(attributeName[i]))
-                {
-                    return attributeValue[i];
-                }
-            }
-        }
-        return null;
-    }
-
-
-    public int getEventType()
-        throws XmlPullParserException
-    {
-        return eventType;
-    }
-
-    public void require(int type, String namespace, String name)
-        throws XmlPullParserException, IOException
-    {
-        if(processNamespaces == false && namespace != null) {
-            throw new XmlPullParserException(
-                "processing namespaces must be enabled on parser (or factory)"+
-                    " to have possible namespaces delcared on elements"
-                    +(" (postion:"+ getPositionDescription())+")");
-        }
-        if (type != getEventType()
-                || (namespace != null && !namespace.equals (getNamespace()))
-                || (name != null && !name.equals (getName ())) )
-        {
-            throw new XmlPullParserException (
-                "expected event "+TYPES[ type ]
-                    +(name != null ? " with name '"+name+"'" : "")
-                    +(namespace != null && name != null ? " and" : "")
-                    +(namespace != null ? " with namespace '"+namespace+"'" : "")
-                    +" but got"
-                    +(type != getEventType() ? " "+TYPES[ getEventType() ] : "")
-                    +(name != null && getName() != null && !name.equals (getName ())
-                          ? " name '"+getName()+"'" : "")
-                    +(namespace != null && name != null
-                          && getName() != null && !name.equals (getName ())
-                          && getNamespace() != null && !namespace.equals (getNamespace())
-                          ? " and" : "")
-                    +(namespace != null && getNamespace() != null && !namespace.equals (getNamespace())
-                          ? " namespace '"+getNamespace()+"'" : "")
-                    +(" (postion:"+ getPositionDescription())+")");
-        }
-    }
-
-
-    //    public String readText() throws XmlPullParserException, IOException
-    //    {
-    //        if (getEventType() != TEXT) return "";
-    //        String result = getText();
-    //        next();
-    //        return result;
-    //    }
 
     public String nextText() throws XmlPullParserException, IOException
     {
@@ -1468,6 +664,7 @@ public class XmlPullParser
         return nextImpl();
     }
 
+    /* ************************************************************************* */
 
     protected int nextImpl()
         throws XmlPullParserException, IOException
@@ -1479,7 +676,6 @@ public class XmlPullParser
         if(pastEndTag) {
             pastEndTag = false;
             --depth;
-            namespaceEnd = elNamespaceCount[ depth ]; // less namespaces available
         }
         if(emptyElementTag) {
             emptyElementTag = false;
@@ -1645,7 +841,7 @@ public class XmlPullParser
                     // check if replacement text can be resolved !!!
                     if(resolvedEntity == null) {
                         if(entityRefName == null) {
-                            entityRefName = newString(buf, posStart, posEnd - posStart);
+                            entityRefName = new String(buf, posStart, posEnd - posStart);
                         }
                         throw new XmlPullParserException(
                             "could not resolve entity named '"+printable(entityRefName)+"'",
@@ -2022,7 +1218,7 @@ public class XmlPullParser
     }
 
 
-    public int parseEndTag() throws XmlPullParserException, IOException {
+    private int parseEndTag() throws XmlPullParserException, IOException {
         //ASSUMPTION ch is past "</"
         // [42] ETag ::=  '</' Name S? '>'
         char ch = more();
@@ -2073,41 +1269,25 @@ public class XmlPullParser
                 "expected > to finsh end tag not "+printable(ch)
                     +" from line "+elRawNameLine[depth], this, null);
         }
-
-
-        //namespaceEnd = elNamespaceCount[ depth ]; //FIXME
-
         posEnd = pos;
         pastEndTag = true;
         return eventType = END_TAG;
     }
 
-    public int parseStartTag() throws XmlPullParserException, IOException {
+    private int parseStartTag() throws XmlPullParserException, IOException {
         //ASSUMPTION ch is past <T
-        // [40] STag ::=  '<' Name (S Attribute)* S? '>'
-        // [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
         ++depth; //FIXME
 
         posStart = pos - 2;
 
         emptyElementTag = false;
-        attributeCount = 0;
         // retrieve name
         final int nameStart = pos - 1 + bufAbsoluteStart;
         int colonPos = -1;
         char ch = buf[ pos - 1];
-        if(ch == ':' && processNamespaces) throw new XmlPullParserException(
-                "when namespaces processing enabled colon can not be at element name start",
-                this, null);
         while(true) {
             ch = more();
             if(!isNameChar(ch)) break;
-            if(ch == ':' && processNamespaces) {
-                if(colonPos != -1) throw new XmlPullParserException(
-                        "only one colon is allowed in name of element when namespaces are enabled",
-                        this, null);
-                colonPos = pos - 1 + bufAbsoluteStart;
-            }
         }
 
         // retrieve name
@@ -2125,27 +1305,7 @@ public class XmlPullParser
         elRawNameLine[ depth ] = lineNumber;
 
         String name = null;
-
-        // work on prefixes and namespace URI
-        String prefix = null;
-        if(processNamespaces) {
-            if(colonPos != -1) {
-                prefix = elPrefix[ depth ] = newString(buf, nameStart - bufAbsoluteStart,
-                                                       colonPos - nameStart);
-                name = elName[ depth ] = newString(buf, colonPos + 1 - bufAbsoluteStart,
-                                                   //(pos -1) - (colonPos + 1));
-                                                   pos - 2 - (colonPos - bufAbsoluteStart));
-            } else {
-                prefix = elPrefix[ depth ] = null;
-                name = elName[ depth ] = newString(buf, nameStart - bufAbsoluteStart, elLen);
-            }
-        } else {
-
-            name = elName[ depth ] = newString(buf, nameStart - bufAbsoluteStart, elLen);
-
-        }
-
-
+        name = elName[ depth ] = new String(buf, nameStart - bufAbsoluteStart, elLen);
         while(true) {
 
             while(isS(ch)) { ch = more(); } // skip additional white spaces
@@ -2161,7 +1321,7 @@ public class XmlPullParser
                         "expected > to end empty tag not "+printable(ch), this, null);
                 break;
             } else if(isNameStartChar(ch)) {
-                ch = parseAttribute();
+//                ch = parseAttribute();
                 ch = more();
                 continue;
             } else {
@@ -2171,348 +1331,8 @@ public class XmlPullParser
             //ch = more(); // skip space
         }
 
-        // now when namespaces were declared we can resolve them
-        if(processNamespaces) {
-            String uri = getNamespace(prefix);
-            if(uri == null) {
-                if(prefix == null) { // no prefix and no uri => use default namespace
-                    uri = NO_NAMESPACE;
-                } else {
-                    throw new XmlPullParserException(
-                        "could not determine namespace bound to element prefix "+prefix,
-                        this, null);
-                }
-
-            }
-            elUri[ depth ] = uri;
-
-
-            //String uri = getNamespace(prefix);
-            //if(uri == null && prefix == null) { // no prefix and no uri => use default namespace
-            //  uri = "";
-            //}
-            // resolve attribute namespaces
-            for (int i = 0; i < attributeCount; i++)
-            {
-                final String attrPrefix = attributePrefix[ i ];
-                if(attrPrefix != null) {
-                    final String attrUri = getNamespace(attrPrefix);
-                    if(attrUri == null) {
-                        throw new XmlPullParserException(
-                            "could not determine namespace bound to attribute prefix "+attrPrefix,
-                            this, null);
-
-                    }
-                    attributeUri[ i ] = attrUri;
-                } else {
-                    attributeUri[ i ] = NO_NAMESPACE;
-                }
-            }
-
-            //TODO
-            //[ WFC: Unique Att Spec ]
-            // check namespaced attribute uniqueness contraint!!!
-
-            for (int i = 1; i < attributeCount; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    if( attributeUri[j] == attributeUri[i]
-                           && (allStringsInterned && attributeName[j].equals(attributeName[i])
-                                   || (!allStringsInterned
-                                           && attributeNameHash[ j ] == attributeNameHash[ i ]
-                                           && attributeName[j].equals(attributeName[i])) )
-
-                      ) {
-                        // prepare data for nice error messgae?
-                        String attr1 = attributeName[j];
-                        if(attributeUri[j] != null) attr1 = attributeUri[j]+":"+attr1;
-                        String attr2 = attributeName[i];
-                        if(attributeUri[i] != null) attr2 = attributeUri[i]+":"+attr2;
-                        throw new XmlPullParserException(
-                            "duplicated attributes "+attr1+" and "+attr2, this, null);
-                    }
-                }
-            }
-
-
-        } else { // ! processNamespaces
-
-            //[ WFC: Unique Att Spec ]
-            // check raw attribute uniqueness contraint!!!
-            for (int i = 1; i < attributeCount; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    if((allStringsInterned && attributeName[j].equals(attributeName[i])
-                            || (!allStringsInterned
-                                    && attributeNameHash[ j ] == attributeNameHash[ i ]
-                                    && attributeName[j].equals(attributeName[i])) )
-
-                      ) {
-                        // prepare data for nice error messgae?
-                        final String attr1 = attributeName[j];
-                        final String attr2 = attributeName[i];
-                        throw new XmlPullParserException(
-                            "duplicated attributes "+attr1+" and "+attr2, this, null);
-                    }
-                }
-            }
-        }
-
-        elNamespaceCount[ depth ] = namespaceEnd;
         posEnd = pos;
         return eventType = START_TAG;
-    }
-
-    protected char parseAttribute() throws XmlPullParserException, IOException
-    {
-        // parse attribute
-        // [41] Attribute ::= Name Eq AttValue
-        // [WFC: No External Entity References]
-        // [WFC: No < in Attribute Values]
-        final int prevPosStart = posStart + bufAbsoluteStart;
-        final int nameStart = pos - 1 + bufAbsoluteStart;
-        int colonPos = -1;
-        char ch = buf[ pos - 1 ];
-        if(ch == ':' && processNamespaces) throw new XmlPullParserException(
-                "when namespaces processing enabled colon can not be at attribute name start",
-                this, null);
-
-
-        boolean startsWithXmlns = processNamespaces && ch == 'x';
-        int xmlnsPos = 0;
-
-        ch = more();
-        while(isNameChar(ch)) {
-            if(processNamespaces) {
-                if(startsWithXmlns && xmlnsPos < 5) {
-                    ++xmlnsPos;
-                    if(xmlnsPos == 1) { if(ch != 'm') startsWithXmlns = false; }
-                    else if(xmlnsPos == 2) { if(ch != 'l') startsWithXmlns = false; }
-                    else if(xmlnsPos == 3) { if(ch != 'n') startsWithXmlns = false; }
-                    else if(xmlnsPos == 4) { if(ch != 's') startsWithXmlns = false; }
-                    else if(xmlnsPos == 5) {
-                        if(ch != ':') throw new XmlPullParserException(
-                                "after xmlns in attribute name must be colon"
-                                    +"when namespaces are enabled", this, null);
-                        //colonPos = pos - 1 + bufAbsoluteStart;
-                    }
-                }
-                if(ch == ':') {
-                    if(colonPos != -1) throw new XmlPullParserException(
-                            "only one colon is allowed in attribute name"
-                                +" when namespaces are enabled", this, null);
-                    colonPos = pos - 1 + bufAbsoluteStart;
-                }
-            }
-            ch = more();
-        }
-
-        ensureAttributesCapacity(attributeCount);
-
-        // --- start processing attributes
-        String name = null;
-        String prefix = null;
-        // work on prefixes and namespace URI
-        if(processNamespaces) {
-            if(xmlnsPos < 4) startsWithXmlns = false;
-            if(startsWithXmlns) {
-                if(colonPos != -1) {
-                    //prefix = attributePrefix[ attributeCount ] = null;
-                    final int nameLen = pos - 2 - (colonPos - bufAbsoluteStart);
-                    if(nameLen == 0) {
-                        throw new XmlPullParserException(
-                            "namespace prefix is required after xmlns: "
-                                +" when namespaces are enabled", this, null);
-                    }
-                    name = //attributeName[ attributeCount ] =
-                        newString(buf, colonPos - bufAbsoluteStart + 1, nameLen);
-                    //pos - 1 - (colonPos + 1 - bufAbsoluteStart)
-                }
-            } else {
-                if(colonPos != -1) {
-                    int prefixLen = colonPos - nameStart;
-                    prefix = attributePrefix[ attributeCount ] =
-                        newString(buf, nameStart - bufAbsoluteStart,prefixLen);
-                    //colonPos - (nameStart - bufAbsoluteStart));
-                    int nameLen = pos - 2 - (colonPos - bufAbsoluteStart);
-                    name = attributeName[ attributeCount ] =
-                        newString(buf, colonPos - bufAbsoluteStart + 1, nameLen);
-                    //pos - 1 - (colonPos + 1 - bufAbsoluteStart));
-
-                    //name.substring(0, colonPos-nameStart);
-                } else {
-                    prefix = attributePrefix[ attributeCount ]  = null;
-                    name = attributeName[ attributeCount ] =
-                        newString(buf, nameStart - bufAbsoluteStart,
-                                  pos - 1 - (nameStart - bufAbsoluteStart));
-                }
-                if(!allStringsInterned) {
-                    attributeNameHash[ attributeCount ] = name.hashCode();
-                }
-            }
-
-        } else {
-            // retrieve name
-            name = attributeName[ attributeCount ] =
-                newString(buf, nameStart - bufAbsoluteStart,
-                          pos - 1 - (nameStart - bufAbsoluteStart));
-            ////assert name != null;
-            if(!allStringsInterned) {
-                attributeNameHash[ attributeCount ] = name.hashCode();
-            }
-        }
-
-        // [25] Eq ::=  S? '=' S?
-        while(isS(ch)) { ch = more(); } // skip additional spaces
-        if(ch != '=') throw new XmlPullParserException(
-                "expected = after attribute name", this, null);
-        ch = more();
-        while(isS(ch)) { ch = more(); } // skip additional spaces
-
-        // [10] AttValue ::=   '"' ([^<&"] | Reference)* '"'
-        //                  |  "'" ([^<&'] | Reference)* "'"
-        final char delimit = ch;
-        if(delimit != '"' && delimit != '\'') throw new XmlPullParserException(
-                "attribute value must start with quotation or apostrophe not "
-                    +printable(delimit), this, null);
-        // parse until delimit or < and resolve Reference
-        //[67] Reference ::= EntityRef | CharRef
-        //int valueStart = pos + bufAbsoluteStart;
-
-
-        boolean normalizedCR = false;
-        usePC = false;
-        pcStart = pcEnd;
-        posStart = pos;
-
-        while(true) {
-            ch = more();
-            if(ch == delimit) {
-                break;
-            } if(ch == '<') {
-                throw new XmlPullParserException(
-                    "markup not allowed inside attribute value - illegal < ", this, null);
-            } if(ch == '&') {
-                // extractEntityRef
-                posEnd = pos - 1;
-                if(!usePC) {
-                    final boolean hadCharData = posEnd > posStart;
-                    if(hadCharData) {
-                        // posEnd is already set correctly!!!
-                        joinPC();
-                    } else {
-                        usePC = true;
-                        pcStart = pcEnd = 0;
-                    }
-                }
-                //assert usePC == true;
-
-                final char[] resolvedEntity = parseEntityRef();
-                // check if replacement text can be resolved !!!
-                if(resolvedEntity == null) {
-                    if(entityRefName == null) {
-                        entityRefName = newString(buf, posStart, posEnd - posStart);
-                    }
-                    throw new XmlPullParserException(
-                        "could not resolve entity named '"+printable(entityRefName)+"'",
-                        this, null);
-                }
-                // write into PC replacement text - do merge for replacement text!!!!
-                for (int i = 0; i < resolvedEntity.length; i++)
-                {
-                    if(pcEnd >= pc.length) ensurePC(pcEnd);
-                    pc[pcEnd++] = resolvedEntity[ i ];
-                }
-            } else if(ch == '\t' || ch == '\n' || ch == '\r') {
-                // do attribute value normalization
-                // as described in http://www.w3.org/TR/REC-xml#AVNormalize
-                // TODO add test for it form spec ...
-                // handle EOL normalization ...
-                if(!usePC) {
-                    posEnd = pos - 1;
-                    if(posEnd > posStart) {
-                        joinPC();
-                    } else {
-                        usePC = true;
-                        pcEnd = pcStart = 0;
-                    }
-                }
-                //assert usePC == true;
-                if(pcEnd >= pc.length) ensurePC(pcEnd);
-                if(ch != '\n' || !normalizedCR) {
-                    pc[pcEnd++] = ' '; //'\n';
-                }
-
-            } else {
-                if(usePC) {
-                    if(pcEnd >= pc.length) ensurePC(pcEnd);
-                    pc[pcEnd++] = ch;
-                }
-            }
-            normalizedCR = ch == '\r';
-        }
-
-
-        if(processNamespaces && startsWithXmlns) {
-            String ns = null;
-            if(!usePC) {
-                ns = newStringIntern(buf, posStart, pos - 1 - posStart);
-            } else {
-                ns = newStringIntern(pc, pcStart, pcEnd - pcStart);
-            }
-            ensureNamespacesCapacity(namespaceEnd);
-            int prefixHash = -1;
-            if(colonPos != -1) {
-                if(ns.length() == 0) {
-                    throw new XmlPullParserException(
-                        "non-default namespace can not be declared to be empty string", this, null);
-                }
-                // declare new namespace
-                namespacePrefix[ namespaceEnd ] = name;
-                if(!allStringsInterned) {
-                    prefixHash = namespacePrefixHash[ namespaceEnd ] = name.hashCode();
-                }
-            } else {
-                // declare new default namespace...
-                namespacePrefix[ namespaceEnd ] = null; //""; //null; //TODO check FIXME Alek
-                if(!allStringsInterned) {
-                    prefixHash = namespacePrefixHash[ namespaceEnd ] = -1;
-                }
-            }
-            namespaceUri[ namespaceEnd ] = ns;
-
-            // detect duplicate namespace declarations!!!
-            final int startNs = elNamespaceCount[ depth - 1 ];
-            for (int i = namespaceEnd - 1; i >= startNs; --i)
-            {
-                if(((allStringsInterned || name == null) && namespacePrefix[ i ] == name)
-                       || (!allStringsInterned && name != null &&
-                               namespacePrefixHash[ i ] == prefixHash
-                               && name.equals(namespacePrefix[ i ])
-                          ))
-                {
-                    final String s = name == null ? "default" : "'"+name+"'";
-                    throw new XmlPullParserException(
-                        "duplicated namespace declaration for "+s+" prefix", this, null);
-                }
-            }
-
-            ++namespaceEnd;
-
-        } else {
-            if(!usePC) {
-                attributeValue[ attributeCount ] =
-                    new String(buf, posStart, pos - 1 - posStart);
-            } else {
-                attributeValue[ attributeCount ] =
-                    new String(pc, pcStart, pcEnd - pcStart);
-            }
-            ++attributeCount;
-        }
-        posStart = prevPosStart - bufAbsoluteStart;
-        return ch;
     }
 
     protected char[] charRefOneCharBuf = new char[1];
@@ -2575,13 +1395,13 @@ public class XmlPullParser
                 charRefOneCharBuf = tmp;
                 if ( tokenize )
                 {
-                    text = newString( charRefOneCharBuf, 0, charRefOneCharBuf.length );
+                    text = new String( charRefOneCharBuf, 0, charRefOneCharBuf.length );
                 }
                 return charRefOneCharBuf;
             }
             charRefOneCharBuf[0] = charRef;
             if(tokenize) {
-                text = newString(charRefOneCharBuf, 0, 1);
+                text = new String(charRefOneCharBuf, 0, 1);
             }
             return charRefOneCharBuf;
         } else {
@@ -2660,35 +1480,16 @@ public class XmlPullParser
         throws XmlPullParserException, IOException
 
     {
-        if(!allStringsInterned) {
-            final int hash = fastHash(buf, posStart, posEnd - posStart);
-            LOOP:
-            for (int i = entityEnd - 1; i >= 0; --i)
-            {
-                if(hash == entityNameHash[ i ] && entitNameLen == entityNameBuf[ i ].length) {
-                    final char[] entityBuf = entityNameBuf[ i ];
-                    for (int j = 0; j < entitNameLen; j++)
-                    {
-                        if(buf[posStart + j] != entityBuf[j]) continue LOOP;
-                    }
-                    if(tokenize) text = entityReplacement[ i ];
-                    return entityReplacementBuf[ i ];
-                }
-            }
-        } else {
-            entityRefName = newString(buf, posStart, posEnd - posStart);
-            for (int i = entityEnd - 1; i >= 0; --i)
-            {
-                // take advantage that interning for newStirng is enforced
-                if(entityRefName == entityName[ i ]) {
-                    if(tokenize) text = entityReplacement[ i ];
-                    return entityReplacementBuf[ i ];
-                }
+        entityRefName = new String(buf, posStart, posEnd - posStart);
+        for (int i = entityEnd - 1; i >= 0; --i) {
+            // take advantage that interning for newStirng is enforced
+            if(entityRefName == entityName[ i ]) {
+                if(tokenize) text = entityReplacement[ i ];
+                return entityReplacementBuf[ i ];
             }
         }
         return null;
     }
-
 
     protected void parseComment()
         throws XmlPullParserException, IOException
@@ -2846,7 +1647,7 @@ public class XmlPullParser
                                 if(tokenize) posEnd = pos - 2;
                                 final int off = piTargetStart - bufAbsoluteStart + 3;
                                 final int len = pos - 2 - off;
-                                xmlDeclContent = newString(buf, off, len);
+                                xmlDeclContent = new String(buf, off, len);
                                 return false;
                             }
                         }
@@ -2971,7 +1772,6 @@ public class XmlPullParser
         parseXmlDeclWithVersion(versionStart, versionEnd);
         preventBufferCompaction = false; // allow again buffer commpaction - pos MAY chnage
     }
-    //protected String xmlDeclVersion;
 
     protected void parseXmlDeclWithVersion(int versionStart, int versionEnd)
         throws XmlPullParserException, IOException
@@ -2986,7 +1786,7 @@ public class XmlPullParser
                 "only 1.0 is supported as <?xml version not '"
                     +printable(new String(buf, versionStart, versionEnd - versionStart))+"'", this, null);
         }
-        xmlDeclVersion = newString(buf, versionStart, versionEnd - versionStart);
+        xmlDeclVersion = new String(buf, versionStart, versionEnd - versionStart);
 
         // [80] EncodingDecl ::= S 'encoding' Eq ('"' EncName '"' | "'" EncName "'" )
         char ch = more();
@@ -3028,10 +1828,6 @@ public class XmlPullParser
                 ch = more();
             }
             final int encodingEnd = pos - 1;
-
-
-            // TODO reconcile with setInput encodingName
-            inputEncoding = newString(buf, encodingStart, encodingEnd - encodingStart);
             ch = more();
         }
 
@@ -3413,16 +2209,6 @@ public class XmlPullParser
         return ch;
     }
 
-    //    /**
-    //     * This function returns position of parser in XML input stream
-    //     * (how many <b>characters</b> were processed.
-    //     * <p><b>NOTE:</b> this logical position and not byte offset as encodings
-    //     * such as UTF8 may use more than one byte to encode one character.
-    //     */
-    //    public int getCurrentInputPosition() {
-    //        return pos + bufAbsoluteStart;
-    //    }
-
     protected void ensurePC(int end) {
         //assert end >= pc.length;
         final int newSize = end > READ_CHUNK_SIZE ? 2 * end : 2 * READ_CHUNK_SIZE;
@@ -3603,124 +2389,64 @@ public class XmlPullParser
         return s;
     }
 
-//
-// Imported code from ASF Harmony project rev 770909
-// http://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk/modules/luni/src/main/java/java/lang/Character.java
-//
+    //
+    // Imported code from ASF Harmony project rev 770909
+    // http://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk/modules/luni/src/main/java/java/lang/Character.java
+    //
 
-    private static int toCodePoint( char high, char low )
-    {
-        // See RFC 2781, Section 2.2
-        // http://www.faqs.org/rfcs/rfc2781.html
-        int h = ( high & 0x3FF ) << 10;
-        int l = low & 0x3FF;
-        return ( h | l ) + 0x10000;
-    }
-
-    private static final char MIN_HIGH_SURROGATE = '\uD800';
-    private static final char MAX_HIGH_SURROGATE = '\uDBFF';
-
-    private static boolean isHighSurrogate( char ch )
-    {
-        return ( MIN_HIGH_SURROGATE <= ch && MAX_HIGH_SURROGATE >= ch );
-    }
-
-    private static final int MIN_CODE_POINT = 0x000000;
-    private static final int MAX_CODE_POINT = 0x10FFFF;
-    private static final int MIN_SUPPLEMENTARY_CODE_POINT = 0x10000;
-
-    private static boolean isValidCodePoint( int codePoint )
-    {
-        return ( MIN_CODE_POINT <= codePoint && MAX_CODE_POINT >= codePoint );
-    }
-
-    private static boolean isSupplementaryCodePoint( int codePoint )
-    {
-        return ( MIN_SUPPLEMENTARY_CODE_POINT <= codePoint && MAX_CODE_POINT >= codePoint );
-    }
-
-    /**
-     * TODO add javadoc
-     *
-     * @param codePoint
-     * @return
-     */
-    public static char[] toChars( int codePoint )
-    {
-        if ( !isValidCodePoint( codePoint ) )
+        private static int toCodePoint( char high, char low )
         {
-            throw new IllegalArgumentException();
+            // See RFC 2781, Section 2.2
+            // http://www.faqs.org/rfcs/rfc2781.html
+            int h = ( high & 0x3FF ) << 10;
+            int l = low & 0x3FF;
+            return ( h | l ) + 0x10000;
         }
 
-        if ( isSupplementaryCodePoint( codePoint ) )
+        private static final char MIN_HIGH_SURROGATE = '\uD800';
+        private static final char MAX_HIGH_SURROGATE = '\uDBFF';
+
+        private static boolean isHighSurrogate( char ch )
         {
-            int cpPrime = codePoint - 0x10000;
-            int high = 0xD800 | ( ( cpPrime >> 10 ) & 0x3FF );
-            int low = 0xDC00 | ( cpPrime & 0x3FF );
-            return new char[] { (char) high, (char) low };
+            return ( MIN_HIGH_SURROGATE <= ch && MAX_HIGH_SURROGATE >= ch );
         }
 
-        return new char[] { (char) codePoint };
-    }
+        private static final int MIN_CODE_POINT = 0x000000;
+        private static final int MAX_CODE_POINT = 0x10FFFF;
+        private static final int MIN_SUPPLEMENTARY_CODE_POINT = 0x10000;
+
+        private static boolean isValidCodePoint( int codePoint )
+        {
+            return ( MIN_CODE_POINT <= codePoint && MAX_CODE_POINT >= codePoint );
+        }
+
+        private static boolean isSupplementaryCodePoint( int codePoint )
+        {
+            return ( MIN_SUPPLEMENTARY_CODE_POINT <= codePoint && MAX_CODE_POINT >= codePoint );
+        }
+
+        /**
+         * TODO add javadoc
+         *
+         * @param codePoint
+         * @return
+         */
+        public static char[] toChars( int codePoint )
+        {
+            if ( !isValidCodePoint( codePoint ) )
+            {
+                throw new IllegalArgumentException();
+            }
+
+            if ( isSupplementaryCodePoint( codePoint ) )
+            {
+                int cpPrime = codePoint - 0x10000;
+                int high = 0xD800 | ( ( cpPrime >> 10 ) & 0x3FF );
+                int low = 0xDC00 | ( cpPrime & 0x3FF );
+                return new char[] { (char) high, (char) low };
+            }
+
+            return new char[] { (char) codePoint };
+        }
+
 }
-
-
-/*
- * Indiana University Extreme! Lab Software License, Version 1.2
- *
- * Copyright (C) 2003 The Trustees of Indiana University.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- * 1) All redistributions of source code must retain the above
- *    copyright notice, the list of authors in the original source
- *    code, this list of conditions and the disclaimer listed in this
- *    license;
- *
- * 2) All redistributions in binary form must reproduce the above
- *    copyright notice, this list of conditions and the disclaimer
- *    listed in this license in the documentation and/or other
- *    materials provided with the distribution;
- *
- * 3) Any documentation included with all redistributions must include
- *    the following acknowledgement:
- *
- *      "This product includes software developed by the Indiana
- *      University Extreme! Lab.  For further information please visit
- *      http://www.extreme.indiana.edu/"
- *
- *    Alternatively, this acknowledgment may appear in the software
- *    itself, and wherever such third-party acknowledgments normally
- *    appear.
- *
- * 4) The name "Indiana University" or "Indiana University
- *    Extreme! Lab" shall not be used to endorse or promote
- *    products derived from this software without prior written
- *    permission from Indiana University.  For written permission,
- *    please contact http://www.extreme.indiana.edu/.
- *
- * 5) Products derived from this software may not use "Indiana
- *    University" name nor may "Indiana University" appear in their name,
- *    without prior written permission of the Indiana University.
- *
- * Indiana University provides no reassurances that the source code
- * provided does not infringe the patent or any other intellectual
- * property rights of any other entity.  Indiana University disclaims any
- * liability to any recipient for claims brought by any other entity
- * based on infringement of intellectual property rights or otherwise.
- *
- * LICENSEE UNDERSTANDS THAT SOFTWARE IS PROVIDED "AS IS" FOR WHICH
- * NO WARRANTIES AS TO CAPABILITIES OR ACCURACY ARE MADE. INDIANA
- * UNIVERSITY GIVES NO WARRANTIES AND MAKES NO REPRESENTATION THAT
- * SOFTWARE IS FREE OF INFRINGEMENT OF THIRD PARTY PATENT, COPYRIGHT, OR
- * OTHER PROPRIETARY RIGHTS.  INDIANA UNIVERSITY MAKES NO WARRANTIES THAT
- * SOFTWARE IS FREE FROM "BUGS", "VIRUSES", "TROJAN HORSES", "TRAP
- * DOORS", "WORMS", OR OTHER HARMFUL CODE.  LICENSEE ASSUMES THE ENTIRE
- * RISK AS TO THE PERFORMANCE OF SOFTWARE AND/OR ASSOCIATED MATERIALS,
- * AND TO THE PERFORMANCE AND VALIDITY OF INFORMATION GENERATED USING
- * SOFTWARE.
- */
-
