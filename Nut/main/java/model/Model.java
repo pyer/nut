@@ -6,6 +6,7 @@ import nut.model.Repository;
 import nut.model.ValidationException;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -212,6 +213,19 @@ public class Model implements java.io.Serializable
     public void addProperty( String key, String value )
     {
         getProperties().put( key, value );
+    }
+
+    /**
+     * Add all system properties "nut.*" to model
+     */
+    public void addProperties()
+    {
+      for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
+        String key = (String) en.nextElement();
+        if( key.startsWith( "nut." ) ) {
+            getProperties().put( key, System.getProperty(key) );
+        }
+      }
     }
 
     /**

@@ -12,7 +12,6 @@ import nut.project.BuildException;
 
 import nut.xml.pull.XmlPullParserException;
 
-import java.util.Enumeration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -54,12 +53,7 @@ public class ProjectBuilder
         // add basedir property
         model.addProperty( "basedir", projectFile.getAbsoluteFile().getParent() );
         // add properties as "nut..."
-        for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
-            String key = (String) en.nextElement();
-            if( key.startsWith( "nut." ) ) {
-                model.addProperty( key, System.getProperty(key) );
-            }
-        }
+        model.addProperties();
 
         // then read the packaging model if any
         Model packagingModel = null;
