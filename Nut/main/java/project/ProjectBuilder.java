@@ -87,15 +87,14 @@ public class ProjectBuilder
           if( model.getVersion() == null )
             model.setVersion( parentModel.getVersion() );
         }
-        Project project = new Project( model );
-        Artifact projectArtifact = new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() );
         try {
-          project.setArtifact( projectArtifact );
           // Must validate before artifact construction to make sure dependencies are good
           model.validate( );
         } catch ( ValidationException e ) {
           throw new BuildException( model.getId() + ": " + e.getMessage(), e );
         }
+        Project project = new Project( model );
+        project.setArtifact( new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() ) );
         return project;
     }
 
