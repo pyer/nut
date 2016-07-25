@@ -185,8 +185,7 @@ public class XmlReader {
     public Model parseModel( StringReader sReader )
         throws IOException, XmlPullParserException
     {
-        XmlPullParser parser = new XmlPullParser();
-        parser.setInput( sReader );
+        XmlPullParser parser = new XmlPullParser( sReader );
         parser.next();
 
         Model model = new Model();
