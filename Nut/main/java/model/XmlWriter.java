@@ -39,7 +39,6 @@ public class XmlWriter {
     private void writeGoal( Goal goal, String tagName, XmlSerializer serializer )
         throws java.io.IOException
     {
-        if ( goal != null ) {
             serializer.startTag( tagName );
             writeElement( "name", goal.getName(), serializer );
             if ( goal.hasClassName() ) {
@@ -55,7 +54,6 @@ public class XmlWriter {
                 serializer.endTag( "configuration" );
             }
             serializer.endTag( tagName );
-        }
     } //-- void writeGoal( Goal, String, XmlSerializer )
 
     /**
@@ -69,7 +67,6 @@ public class XmlWriter {
     private void writeBuild( Build build, String tagName, XmlSerializer serializer )
         throws java.io.IOException
     {
-        if ( build != null ) {
             serializer.startTag( tagName );
             writeElement( "sourceDirectory", build.getSourceDirectory(), serializer );
             writeElement( "resourceDirectory", build.getResourceDirectory(), serializer );
@@ -88,7 +85,6 @@ public class XmlWriter {
                 serializer.endTag( "goals" );
             }
             serializer.endTag( tagName );
-        }
     } //-- void writeBuild( Build, String, XmlSerializer )
 
     /**
@@ -102,7 +98,6 @@ public class XmlWriter {
     private void writeDependency( Dependency dependency, String tagName, XmlSerializer serializer )
         throws java.io.IOException
     {
-        if ( dependency != null ) {
             serializer.startTag( tagName );
             writeElement( "groupId", dependency.getGroupId(), serializer );
             writeElement( "artifactId", dependency.getArtifactId(), serializer );
@@ -110,7 +105,6 @@ public class XmlWriter {
             writeElement( "type", dependency.getType(), serializer );
             writeElement( "scope", dependency.getScope(), serializer );
             serializer.endTag( tagName );
-        }
     } //-- void writeDependency( Dependency, String, XmlSerializer )
 
     /**
@@ -124,13 +118,11 @@ public class XmlWriter {
     private void writeRepository( Repository repository, String tagName, XmlSerializer serializer )
         throws java.io.IOException
     {
-        if ( repository != null ) {
             serializer.startTag( tagName );
             writeElement( "name", repository.getName(), serializer );
             writeElement( "layout", repository.getLayout(), serializer );
             writeElement( "url", repository.getURL(), serializer );
             serializer.endTag( tagName );
-        }
     }
 
     /**
@@ -146,22 +138,16 @@ public class XmlWriter {
         String tagName = "project";
         XmlSerializer serializer = new XmlSerializer();
         serializer.setOutput( sWriter );
-        if ( model == null ) {
-            // default encoding
-            serializer.startDocument();
-        } else {
-            serializer.startDocument();
-            serializer.startTag( tagName );
+        serializer.startDocument();
+        serializer.startTag( tagName );
             writeElement( "parent", model.getParent(), serializer );
             writeElement( "groupId", model.getGroupId(), serializer );
             writeElement( "artifactId", model.getArtifactId(), serializer );
             writeElement( "version", model.getVersion(), serializer );
             writeElement( "packaging", model.getPackaging(), serializer );
             writeElement( "description", model.getDescription(), serializer );
-            if ( model.getBuild() != null ) {
-                writeBuild( (Build) model.getBuild(), "build", serializer );
-            }
-            if ( model.getModules() != null && model.getModules().size() > 0 ) {
+            writeBuild( (Build) model.getBuild(), "build", serializer );
+            if ( model.getModules().size() > 0 ) {
                 serializer.startTag( "modules" );
                 for ( Iterator iter = model.getModules().iterator(); iter.hasNext(); ) {
                     String module = (String) iter.next();
@@ -169,7 +155,7 @@ public class XmlWriter {
                 }
                 serializer.endTag( "modules" );
             }
-            if ( model.getDependencies() != null && model.getDependencies().size() > 0 ) {
+            if ( model.getDependencies().size() > 0 ) {
                 serializer.startTag( "dependencies" );
                 for ( Iterator iter = model.getDependencies().iterator(); iter.hasNext(); ) {
                     Dependency o = (Dependency) iter.next();
@@ -177,7 +163,7 @@ public class XmlWriter {
                 }
                 serializer.endTag( "dependencies" );
             }
-            if ( model.getRepositories() != null && model.getRepositories().size() > 0 ) {
+            if ( model.getRepositories().size() > 0 ) {
                 serializer.startTag( "repositories" );
                 for ( Iterator iter = model.getRepositories().iterator(); iter.hasNext(); ) {
                     Repository o = (Repository) iter.next();
@@ -185,7 +171,7 @@ public class XmlWriter {
                 }
                 serializer.endTag( "repositories" );
             }
-            if ( model.getProperties() != null && model.getProperties().size() > 0 ) {
+            if ( model.getProperties().size() > 0 ) {
                 serializer.startTag( "properties" );
                 for ( Iterator iter = model.getProperties().keySet().iterator(); iter.hasNext(); ) {
                     String key = (String) iter.next();
@@ -194,8 +180,7 @@ public class XmlWriter {
                 }
                 serializer.endTag( "properties" );
             }
-            serializer.endTag( tagName );
-        }
+        serializer.endTag( tagName );
         serializer.endDocument();
     }
 

@@ -23,7 +23,6 @@ public class JsonWriter {
     private void writeGoal( Goal goal )
         throws java.io.IOException
     {
-        if ( goal != null ) {
             serializer.startObject(null);
             serializer.element( "name", goal.getName() );
             if ( goal.hasClassName() ) {
@@ -39,7 +38,6 @@ public class JsonWriter {
                 serializer.endObject();
             }
             serializer.endObject();
-        }
     }
 
     /**
@@ -51,7 +49,6 @@ public class JsonWriter {
     private void writeBuild( Build build )
         throws java.io.IOException
     {
-        if ( build != null ) {
             serializer.startObject( "build" );
             serializer.element( "sourceDirectory", build.getSourceDirectory() );
             serializer.element( "resourceDirectory", build.getResourceDirectory() );
@@ -72,7 +69,6 @@ public class JsonWriter {
                 serializer.endObject();
             }
             serializer.endObject();
-        }
     }
 
     /**
@@ -84,7 +80,6 @@ public class JsonWriter {
     private void writeDependency( Dependency dependency )
         throws java.io.IOException
     {
-        if ( dependency != null ) {
             serializer.startObject();
             serializer.element( "groupId", dependency.getGroupId() );
             serializer.element( "artifactId", dependency.getArtifactId() );
@@ -92,7 +87,6 @@ public class JsonWriter {
             serializer.element( "type", dependency.getType() );
             serializer.element( "scope", dependency.getScope() );
             serializer.endObject();
-        }
     }
 
     /**
@@ -104,13 +98,11 @@ public class JsonWriter {
     private void writeRepository( Repository repository )
         throws java.io.IOException
     {
-        if ( repository != null ) {
             serializer.startObject();
             serializer.element( "name", repository.getName() );
             serializer.element( "layout", repository.getLayout() );
             serializer.element( "url", repository.getURL() );
             serializer.endObject();
-        }
     }
 
     /**
@@ -126,58 +118,53 @@ public class JsonWriter {
         serializer = new JsonSerializer(sWriter);
         serializer.startDocument();
         serializer.startObject( "project" );
-        if ( model != null ) {
-            serializer.element( "parent", model.getParent() );
-            serializer.element( "groupId", model.getGroupId() );
-            serializer.element( "artifactId", model.getArtifactId() );
-            serializer.element( "version", model.getVersion() );
-            serializer.element( "packaging", model.getPackaging() );
-            serializer.element( "description", model.getDescription() );
-            if ( model.getBuild() != null ) {
-                writeBuild( (Build) model.getBuild() );
+        serializer.element( "parent", model.getParent() );
+        serializer.element( "groupId", model.getGroupId() );
+        serializer.element( "artifactId", model.getArtifactId() );
+        serializer.element( "version", model.getVersion() );
+        serializer.element( "packaging", model.getPackaging() );
+        serializer.element( "description", model.getDescription() );
+        writeBuild( (Build) model.getBuild() );
+        if ( model.getModules().size() > 0 ) {
+            serializer.startObject( "modules" );
+            serializer.startList( "module" );
+            for ( Iterator iter = model.getModules().iterator(); iter.hasNext(); ) {
+                String module = (String) iter.next();
+                serializer.element( module );
             }
-            if ( model.getModules() != null && model.getModules().size() > 0 ) {
-                serializer.startObject( "modules" );
-                serializer.startList( "module" );
-                for ( Iterator iter = model.getModules().iterator(); iter.hasNext(); ) {
-                    String module = (String) iter.next();
-                    serializer.element( module );
-                }
-                serializer.endList();
-                serializer.endObject();
+            serializer.endList();
+            serializer.endObject();
+        }
+        if ( model.getDependencies().size() > 0 ) {
+            serializer.startObject( "dependencies" );
+            serializer.startList( "dependency" );
+            for ( Iterator iter = model.getDependencies().iterator(); iter.hasNext(); ) {
+                Dependency o = (Dependency) iter.next();
+                writeDependency( o );
             }
-            if ( model.getDependencies() != null && model.getDependencies().size() > 0 ) {
-                serializer.startObject( "dependencies" );
-                serializer.startList( "dependency" );
-                for ( Iterator iter = model.getDependencies().iterator(); iter.hasNext(); ) {
-                    Dependency o = (Dependency) iter.next();
-                    writeDependency( o );
-                }
-                serializer.endList();
-                serializer.endObject();
+            serializer.endList();
+            serializer.endObject();
+        }
+        if ( model.getRepositories().size() > 0 ) {
+            serializer.startObject( "repositories" );
+            serializer.startList( "repository" );
+            for ( Iterator iter = model.getRepositories().iterator(); iter.hasNext(); ) {
+                Repository o = (Repository) iter.next();
+                writeRepository( o );
             }
-            if ( model.getRepositories() != null && model.getRepositories().size() > 0 ) {
-                serializer.startObject( "repositories" );
-                serializer.startList( "repository" );
-                for ( Iterator iter = model.getRepositories().iterator(); iter.hasNext(); ) {
-                    Repository o = (Repository) iter.next();
-                    writeRepository( o );
-                }
-                serializer.endList();
-                serializer.endObject();
+            serializer.endList();
+            serializer.endObject();
+        }
+        if ( model.getProperties().size() > 0 ) {
+            serializer.startObject( "properties" );
+            for ( Iterator iter = model.getProperties().keySet().iterator(); iter.hasNext(); ) {
+                String key = (String) iter.next();
+                String value = (String) model.getProperties().get( key );
+                serializer.element( key, value );
             }
-            if ( model.getProperties() != null && model.getProperties().size() > 0 ) {
-                serializer.startObject( "properties" );
-                for ( Iterator iter = model.getProperties().keySet().iterator(); iter.hasNext(); ) {
-                    String key = (String) iter.next();
-                    String value = (String) model.getProperties().get( key );
-                    serializer.element( key, value );
-                }
-                serializer.endObject();
-            }
+            serializer.endObject();
         }
         serializer.endObject();
         serializer.endDocument();
     }
-
 }
