@@ -51,13 +51,13 @@ public class XmlReader {
     {
         Goal goal = new Goal();
         Set<String> parsed = new HashSet<String>();
-        while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+        while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "name", parsed ) ) {
                 goal.setName( parser.nextText() );
             } else if ( tagEquals( parser.getName(), "class", parsed ) ) {
                 goal.setClassName( parser.nextText() );
             } else if ( tagEquals( parser.getName(), "configuration", parsed ) ) {
-                while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+                while ( parser.nextTag() ) {
                     String key = parser.getName();
                     String value = parser.nextText().trim();
                     goal.setConfigurationValue( key, value );
@@ -82,7 +82,7 @@ public class XmlReader {
     {
         Build build = new Build();
         Set<String> parsed = new HashSet<String>();
-        while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+        while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "sourceDirectory", parsed ) ) {
                 build.setSourceDirectory( parser.nextText() );
             } else if ( tagEquals( parser.getName(), "resourceDirectory", parsed ) ) {
@@ -102,7 +102,7 @@ public class XmlReader {
             } else if ( tagEquals( parser.getName(), "goals", parsed ) ) {
                 List<Goal> goals = new ArrayList<Goal>();
                 build.setGoals( goals );
-                while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+                while ( parser.nextTag() ) {
                     if ( parser.getName().equals( "goal" ) ) {
                         goals.add( parseGoal( parser ) );
                     } else {
@@ -129,7 +129,7 @@ public class XmlReader {
     {
         Dependency dependency = new Dependency();
         Set<String> parsed = new HashSet<String>();
-        while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+        while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "groupId", parsed ) ) {
                 dependency.setGroupId( parser.nextText() );
             } else if ( tagEquals( parser.getName(), "artifactId", parsed ) ) {
@@ -160,7 +160,7 @@ public class XmlReader {
     {
         Repository repository = new Repository();
         Set<String> parsed = new HashSet<String>();
-        while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+        while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "name", parsed ) ) {
                 repository.setName( parser.nextText() );
             } else if ( tagEquals( parser.getName(), "layout", parsed ) ) {
@@ -186,14 +186,12 @@ public class XmlReader {
         throws IOException, XmlPullParserException
     {
         XmlPullParser parser = new XmlPullParser( sReader );
-        parser.next();
-
         Model model = new Model();
         Set<String> parsed = new HashSet<String>();
-        int eventType = parser.getEventType();
         boolean foundRoot = false;
-        while ( eventType != XmlPullParser.END_DOCUMENT ) {
-            if ( eventType == XmlPullParser.START_TAG ) {
+        do {
+            parser.next();
+            if ( parser.isStartOfTag() ) {
                 if ( parser.getName().equals( "project" ) ) {
                     foundRoot = true;
                 } else if ( tagEquals( parser.getName(), "parent", parsed ) ) {
@@ -213,7 +211,7 @@ public class XmlReader {
                 } else if ( tagEquals( parser.getName(), "modules", parsed ) ) {
                     List<String> modules = new ArrayList<String>();
                     model.setModules( modules );
-                    while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+                    while ( parser.nextTag() ) {
                         if ( parser.getName().equals( "module" ) ) {
                             modules.add( parser.nextText() );
                         } else {
@@ -223,7 +221,7 @@ public class XmlReader {
                 } else if ( tagEquals( parser.getName(), "dependencies", parsed ) ) {
                     List<Dependency> dependencies = new ArrayList<Dependency>();
                     model.setDependencies( dependencies );
-                    while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+                    while ( parser.nextTag() ) {
                         if ( parser.getName().equals( "dependency" ) ) {
                             dependencies.add( parseDependency( parser ) );
                         } else {
@@ -233,7 +231,7 @@ public class XmlReader {
                 } else if ( tagEquals( parser.getName(), "repositories", parsed ) ) {
                     List<Repository> repositories = new ArrayList<Repository>();
                     model.setRepositories( repositories );
-                    while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+                    while ( parser.nextTag() ) {
                         if ( parser.getName().equals( "repository" ) ) {
                             repositories.add( parseRepository( parser ) );
                         } else {
@@ -241,7 +239,7 @@ public class XmlReader {
                         }
                     }
                 } else if ( tagEquals( parser.getName(), "properties", parsed ) ) {
-                    while ( parser.nextTag() == XmlPullParser.START_TAG ) {
+                    while ( parser.nextTag() ) {
                         String key = parser.getName();
                         String value = parser.nextText().trim();
                         model.addProperty( key, value );
@@ -250,8 +248,7 @@ public class XmlReader {
                     throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
                 }
             }
-            eventType = parser.next();
-        }
+        } while ( parser.isNotEndOfDocument() );
         if (!foundRoot) {
             throw new XmlPullParserException( "'project' tag not found", parser, null );
         }
