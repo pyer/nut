@@ -1240,21 +1240,23 @@ public class XmlPullParser
     protected char requireInput(char ch, char[] input)
         throws XmlPullParserException, IOException
     {
+        char c = ch;
         for (int i = 0; i < input.length; i++)
         {
-            if(ch != input[i]) {
+            if(c != input[i]) {
                 throw new XmlPullParserException(
                     "expected "+printable(input[i])+" in "+new String(input)
-                        +" and not "+printable(ch), this, null);
+                        +" and not "+printable(c), this, null);
             }
-            ch = more();
+            c = more();
         }
-        return ch;
+        return c;
     }
 
-    protected char skipS(char c)
+    protected char skipS(char ch)
         throws XmlPullParserException, IOException
     {
+        char c = ch;
         while(isS(c)) { c = more(); } // skip additional spaces
         return c;
     }
