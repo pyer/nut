@@ -138,7 +138,6 @@ public class XmlParser
     */
     public boolean nextTag() throws XmlParserException, IOException {
       char ch;
-      int current = depth;
       seenStartTag = false;
       seenEndTag = false;
       text = "";
@@ -320,8 +319,6 @@ public class XmlParser
         // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
         // [17] PITarget         ::=    Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
         //ASSUMPTION: seen <?
-        final int curLine = lineNumber;
-        final int curColumn = columnNumber;
         boolean seenQ = false;
         pos = 0;
         /*            char ch = more();
