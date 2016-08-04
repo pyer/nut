@@ -1,4 +1,4 @@
-package nut.xml.pull;
+package nut.xml;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.io.StringReader;
  * Absolutely minimal implementation of XMLPULL V1 API. Encoding handling done with XmlReader
  */
 
-public class XmlPullParser
+public class XmlParser
 {
 
 /**
@@ -52,7 +52,7 @@ public class XmlPullParser
     /**
      * Class constructor
      */
-    public XmlPullParser( StringReader sReader ) {
+    public XmlParser( StringReader sReader ) {
         reader = sReader;
         location = null;
         lineNumber = 1;
@@ -95,14 +95,14 @@ public class XmlPullParser
 
     /* ************************************************************************* */
 
-    public void parseXmlDecl() throws XmlPullParserException, IOException {
+    public void parseXmlDecl() throws XmlParserException, IOException {
       // [2] prolog: ::= XMLDecl? Misc* (doctypedecl Misc*)? and look for [39] element
       char ch = more();
       // bootstrap parsing with getting first character input!
       // deal with BOM
       // detect BOM and crop it (Unicode int Order Mark)
       if(ch == '\uFFFE') {
-        throw new XmlPullParserException(
+        throw new XmlParserException(
                   "first character in input was UNICODE noncharacter (0xFFFE)"+
                   "- input requires int swapping", this, null);
       }
@@ -122,11 +122,11 @@ public class XmlPullParser
             parsePI();
             break;
           } else {
-            throw new XmlPullParserException(
+            throw new XmlParserException(
                       "expected XML declaration and not <"+printable(ch), this, null);
           }
         } else {
-          throw new XmlPullParserException(
+          throw new XmlParserException(
                     "expected XML declaration and not "+printable(ch), this, null);
         }
       }
@@ -136,7 +136,7 @@ public class XmlPullParser
     * return true if the parser is at the start of a tag
     * return false at the end of a tag or document
     */
-    public boolean nextTag() throws XmlPullParserException, IOException {
+    public boolean nextTag() throws XmlParserException, IOException {
       char ch;
       int current = depth;
       seenStartTag = false;
@@ -170,12 +170,12 @@ public class XmlPullParser
                 //System.out.println("\nnextTag start: <"+getName()+">  text: ["+text+"]");
                 return true;
             } else if(!reachedEnd) {
-                throw new XmlPullParserException(
+                throw new XmlParserException(
                         "unexpected character in tag: "+printable(ch), this, null);
             }
       }
       if(depth>0) {
-        throw new XmlPullParserException(
+        throw new XmlParserException(
                 "unexpected end of file (depth "+depth+")", this, null);
       }
       //System.out.println("nextTag end of document");
@@ -191,7 +191,7 @@ public class XmlPullParser
     }
 
     /* ************************************************************************* */
-    private void parseStartTag() throws XmlPullParserException, IOException {
+    private void parseStartTag() throws XmlParserException, IOException {
         //ASSUMPTION ch is past <T
         emptyElementTag = false;
         char ch;
@@ -207,11 +207,11 @@ public class XmlPullParser
             if(ch == '>') {
               break;
         /*    } else if(ch == '/') {
-                if(emptyElementTag) throw new XmlPullParserException(
+                if(emptyElementTag) throw new XmlParserException(
                         "repeated / in tag declaration", this, null);
                 emptyElementTag = true;
                 ch = more();
-                if(ch != '>') throw new XmlPullParserException(
+                if(ch != '>') throw new XmlParserException(
                         "expected > to end empty tag not "+printable(ch), this, null);
                 break;
           */  } else if(ch == '!') {
@@ -220,20 +220,20 @@ public class XmlPullParser
                     parseComment();
                     break;
                   } else {
-                    throw new XmlPullParserException(
+                    throw new XmlParserException(
                               "unexpected character in markup "+printable(ch), this, null);
                   }
             } else if(isS(ch)) {
               pos = 0;
             } else if(!isNameStartChar(ch)) {
-                throw new XmlPullParserException(
+                throw new XmlParserException(
                     "start tag unexpected character "+printable(ch), this, null);
             }
             ch = more();
         } while(!reachedEnd);
     }
 
-    private void parseEndTag() throws XmlPullParserException, IOException {
+    private void parseEndTag() throws XmlParserException, IOException {
         //ASSUMPTION ch is past "</"
         // [42] ETag ::=  '</' Name S? '>'
         char ch;
@@ -243,20 +243,20 @@ public class XmlPullParser
             ch = more();
         } while(!reachedEnd && isNameChar(ch));
         if(ch != '>') {
-            throw new XmlPullParserException(
+            throw new XmlParserException(
                 "expected > to finish end tag not "+printable(ch)
                     +" from line "+elName[depth], this, null);
         }
         String startTag = elName[depth];
         String endTag = new String(buf, 0, pos-1);
         if( !endTag.equals(startTag)) {
-            throw new XmlPullParserException(
+            throw new XmlParserException(
                 "end tag name </"+endTag+"> must be the same as start tag <"+startTag+">",
                 this, null);
         }
     }
 
-    private void parseText() throws XmlPullParserException, IOException {
+    private void parseText() throws XmlParserException, IOException {
       pos = 0;
       // scan until it hits <
       while(!reachedEnd && more() != '<');
@@ -264,13 +264,13 @@ public class XmlPullParser
       //System.out.println("parseText " + text);
     }
 
-    protected void parseComment() throws XmlPullParserException, IOException {
+    protected void parseComment() throws XmlParserException, IOException {
         // implements XML 1.0 Section 2.5 Comments
 
         //ASSUMPTION: seen <!-
         char ch = more();
         //System.out.println("parseComment");
-        if(ch != '-') throw new XmlPullParserException(
+        if(ch != '-') throw new XmlParserException(
                 "expected <!-- for comment start", this, null);
 
         pos = 0;
@@ -283,7 +283,7 @@ public class XmlPullParser
                 // scan until it hits -->
                 ch = more();
                 if(seenDashDash && ch != '>') {
-                    throw new XmlPullParserException(
+                    throw new XmlParserException(
                         "in comment after two dashes (--) next character must be >"
                             +" not "+printable(ch), this, null);
                 }
@@ -307,14 +307,14 @@ public class XmlPullParser
             }
         } catch(EOFException ex) {
             // detect EOF and create meaningful error ...
-            throw new XmlPullParserException(
+            throw new XmlParserException(
                 "comment started on line "+curLine+" and column "+curColumn+" was not closed",
                 this, ex);
         }
         //System.out.println("End of comment");
     }
 
-    protected void parsePI() throws XmlPullParserException, IOException {
+    protected void parsePI() throws XmlParserException, IOException {
         // implements XML 1.0 Section 2.6 Processing Instructions
 
         // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
@@ -326,7 +326,7 @@ public class XmlPullParser
         pos = 0;
         /*            char ch = more();
             if(isS(ch)) {
-                throw new XmlPullParserException(
+                throw new XmlParserException(
                     "processing instruction PITarget must be exactly after <? and not white space character",
                     this, null);
             }
@@ -348,7 +348,7 @@ public class XmlPullParser
                     // TO DO: check version and encoding
                     /*
                                 if(piTargetStart > 3) {  //<?xml is allowed as first characters in input ...
-                                    throw new XmlPullParserException(
+                                    throw new XmlParserException(
                                         "processing instruction can not have PITarget with reserveld xml name",
                                         this, null);
                                 } else {
@@ -356,7 +356,7 @@ public class XmlPullParser
                                            && buf[piTargetStart+1] != 'm'
                                            && buf[piTargetStart+2] != 'l')
                                     {
-                                        throw new XmlPullParserException(
+                                        throw new XmlParserException(
                                             "XMLDecl must have xml name in lowercase",
                                             this, null);
                                     }
@@ -368,7 +368,7 @@ public class XmlPullParser
                                 return;
                                 */
                     } else {
-                        throw new XmlPullParserException(
+                        throw new XmlParserException(
                                   "processing instruction must begin with xml or XML",
                                   this, null);
                     }

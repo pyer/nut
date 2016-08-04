@@ -10,7 +10,7 @@ import nut.model.ValidationException;
 import nut.project.Project;
 import nut.project.BuildException;
 
-import nut.xml.pull.XmlPullParserException;
+import nut.xml.XmlParserException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -122,7 +122,7 @@ public class ProjectBuilder
             model = modelReader.parseModel( sReader );
             reader.close();
         }
-        catch ( XmlPullParserException e ) {
+        catch ( XmlParserException e ) {
             throw new BuildException( "Parse error reading '" + file.getAbsolutePath() + "': "+ e.getMessage(), e );
         }
         catch ( FileNotFoundException e ) {

@@ -36,7 +36,7 @@ cd main/java/logging
 javac $options Log.java
 echo " - xml"
 cd ../xml
-javac $options XmlPullParserException.java XmlPullParser.java XmlSerializer.java
+javac $options XmlParserException.java XmlParser.java XmlSerializer.java
 echo " - json"
 cd ../json
 javac $options JsonSerializer.java

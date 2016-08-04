@@ -14,8 +14,8 @@ import nut.model.Goal;
 import nut.model.Model;
 import nut.model.Repository;
 
-import nut.xml.pull.XmlPullParser;
-import nut.xml.pull.XmlPullParserException;
+import nut.xml.XmlParser;
+import nut.xml.XmlParserException;
 
 public class XmlReader {
 
@@ -27,12 +27,12 @@ public class XmlReader {
      * @param set   HashSet of valid values
      */
     private boolean tagEquals( String value, String name, Set<String> set )
-        throws XmlPullParserException
+        throws XmlParserException
     {
       boolean ret = value.equals( name );
       if ( ret ) {
          if ( set.contains( name ) )
-            throw new XmlPullParserException( "Duplicated tag: '" + name + "'" );
+            throw new XmlParserException( "Duplicated tag: '" + name + "'" );
          set.add( name );
       }
       return ret;
@@ -43,28 +43,31 @@ public class XmlReader {
      *
      * @param parser
      * @throws IOException
-     * @throws XmlPullParserException
+     * @throws XmlParserException
      * @return Goal
      */
-    private Goal parseGoal( XmlPullParser parser )
-        throws IOException, XmlPullParserException
+    private Goal parseGoal( XmlParser parser )
+        throws IOException, XmlParserException
     {
         Goal goal = new Goal();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "name", parsed ) ) {
-                goal.setName( parser.nextText() );
+                goal.setName( parser.getText() );
             } else if ( tagEquals( parser.getName(), "class", parsed ) ) {
-                goal.setClassName( parser.nextText() );
+                goal.setClassName( parser.getText() );
             } else if ( tagEquals( parser.getName(), "configuration", parsed ) ) {
-                while ( parser.nextTag() ) {
+                do {
+                    parser.nextTag();
                     String key = parser.getName();
-                    String value = parser.nextText().trim();
+                    String value = parser.getText().trim();
                     goal.setConfigurationValue( key, value );
-                }
+                    parser.nextTag(); // end of tag
+                } while(!parser.getName().equals("configuration"));
             } else {
-                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlParserException( "Unrecognized goal tag: '" + parser.getName() + "'", parser, null );
             }
+            parser.nextTag(); // end of tag
         }
         return goal;
     }
@@ -74,31 +77,31 @@ public class XmlReader {
      *
      * @param parser
      * @throws IOException
-     * @throws XmlPullParserException
+     * @throws XmlParserException
      * @return Build
      */
-    private Build parseBuild( XmlPullParser parser )
-        throws IOException, XmlPullParserException
+    private Build parseBuild( XmlParser parser )
+        throws IOException, XmlParserException
     {
         Build build = new Build();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "sourceDirectory", parsed ) ) {
-                build.setSourceDirectory( parser.nextText() );
+                build.setSourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "resourceDirectory", parsed ) ) {
-                build.setResourceDirectory( parser.nextText() );
+                build.setResourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testSourceDirectory", parsed ) ) {
-                build.setTestSourceDirectory( parser.nextText() );
+                build.setTestSourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testResourceDirectory", parsed ) ) {
-                build.setTestResourceDirectory( parser.nextText() );
+                build.setTestResourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "targetDirectory", parsed ) ) {
-                build.setTargetDirectory( parser.nextText() );
+                build.setTargetDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "outputDirectory", parsed ) ) {
-                build.setOutputDirectory( parser.nextText() );
+                build.setOutputDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testOutputDirectory", parsed ) ) {
-                build.setTestOutputDirectory( parser.nextText() );
+                build.setTestOutputDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testReportDirectory", parsed ) ) {
-                build.setTestReportDirectory( parser.nextText() );
+                build.setTestReportDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "goals", parsed ) ) {
                 List<Goal> goals = new ArrayList<Goal>();
                 build.setGoals( goals );
@@ -106,12 +109,13 @@ public class XmlReader {
                     if ( parser.getName().equals( "goal" ) ) {
                         goals.add( parseGoal( parser ) );
                     } else {
-                        throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
+                        throw new XmlParserException( "Unrecognized build association: '" + parser.getName() + "'", parser, null );
                     }
                 }
             } else {
-                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlParserException( "Unrecognized build tag: '" + parser.getName() + "'", parser, null );
             }
+            parser.nextTag(); // end of tag
         }
         return build;
     }
@@ -121,28 +125,29 @@ public class XmlReader {
      *
      * @param parser
      * @throws IOException
-     * @throws XmlPullParserException
+     * @throws XmlParserException
      * @return Dependency
      */
-    private Dependency parseDependency( XmlPullParser parser )
-        throws IOException, XmlPullParserException
+    private Dependency parseDependency( XmlParser parser )
+        throws IOException, XmlParserException
     {
         Dependency dependency = new Dependency();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "groupId", parsed ) ) {
-                dependency.setGroupId( parser.nextText() );
+                dependency.setGroupId( parser.getText() );
             } else if ( tagEquals( parser.getName(), "artifactId", parsed ) ) {
-                dependency.setArtifactId( parser.nextText() );
+                dependency.setArtifactId( parser.getText() );
             } else if ( tagEquals( parser.getName(), "version", parsed ) ) {
-                dependency.setVersion( parser.nextText() );
+                dependency.setVersion( parser.getText() );
             } else if ( tagEquals( parser.getName(), "type", parsed ) ) {
-                dependency.setType( parser.nextText() );
+                dependency.setType( parser.getText() );
             } else if ( tagEquals( parser.getName(), "scope", parsed ) ) {
-                dependency.setScope( parser.nextText() );
+                dependency.setScope( parser.getText() );
             } else {
-                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlParserException( "Unrecognized dependency tag: '" + parser.getName() + "'", parser, null );
             }
+            parser.nextTag(); // end of tag
         }
         return dependency;
     }
@@ -152,24 +157,25 @@ public class XmlReader {
      *
      * @param parser
      * @throws IOException
-     * @throws XmlPullParserException
+     * @throws XmlParserException
      * @return Repository
      */
-    private Repository parseRepository( XmlPullParser parser )
-        throws IOException, XmlPullParserException
+    private Repository parseRepository( XmlParser parser )
+        throws IOException, XmlParserException
     {
         Repository repository = new Repository();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "name", parsed ) ) {
-                repository.setName( parser.nextText() );
+                repository.setName( parser.getText() );
             } else if ( tagEquals( parser.getName(), "layout", parsed ) ) {
-                repository.setLayout( parser.nextText() );
+                repository.setLayout( parser.getText() );
             } else if ( tagEquals( parser.getName(), "url", parsed ) ) {
-                repository.setURL( parser.nextText() );
+                repository.setURL( parser.getText() );
             } else {
-                throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlParserException( "Unrecognized repository tag: '" + parser.getName() + "'", parser, null );
             }
+            parser.nextTag(); // end of tag
         }
         return repository;
     }
@@ -179,78 +185,91 @@ public class XmlReader {
      *
      * @param sReader
      * @throws IOException
-     * @throws XmlPullParserException
+     * @throws XmlParserException
      * @return Model
      */
     public Model parseModel( StringReader sReader )
-        throws IOException, XmlPullParserException
+        throws IOException, XmlParserException
     {
-        XmlPullParser parser = new XmlPullParser( sReader );
+        String tag;
         Model model = new Model();
         Set<String> parsed = new HashSet<String>();
-        boolean foundRoot = false;
-        do {
-            parser.next();
-            if ( parser.isStartOfTag() ) {
-                if ( parser.getName().equals( "project" ) ) {
-                    foundRoot = true;
-                } else if ( tagEquals( parser.getName(), "parent", parsed ) ) {
-                    model.setParent( parser.nextText() );
-                } else if ( tagEquals( parser.getName(), "groupId", parsed ) ) {
-                    model.setGroupId( parser.nextText() );
-                } else if ( tagEquals( parser.getName(), "artifactId", parsed ) ) {
-                    model.setArtifactId( parser.nextText() );
-                } else if ( tagEquals( parser.getName(), "version", parsed ) ) {
-                    model.setVersion( parser.nextText() );
-                } else if ( tagEquals( parser.getName(), "packaging", parsed ) ) {
-                    model.setPackaging( parser.nextText() );
-                } else if ( tagEquals( parser.getName(), "description", parsed ) ) {
-                    model.setDescription( parser.nextText() );
-                } else if ( tagEquals( parser.getName(), "build", parsed ) ) {
+        XmlParser parser = new XmlParser( sReader );
+        parser.parseXmlDecl();
+        parser.nextTag();
+        if (!parser.getName().equals( "project" )) {
+            throw new XmlParserException( "'project' tag not found", parser, null );
+        }
+        while ( !parser.endOfDocument() ) {
+            parser.nextTag();
+            //if( parser.endOfDocument() ) {
+                // </project> not found
+                //throw new XmlParserException( "unexpected end of document", parser, null );
+            //}
+                //if(parser.endOfTag() || parser.endOfDocument())
+                //  continue;
+            if(parser.startTag()) {
+                tag = parser.getName();
+                if ( tagEquals( tag, "artifactId", parsed ) ) {
+                    model.setArtifactId( parser.getText() );
+                } else if ( tagEquals( tag, "groupId", parsed ) ) {
+                    model.setGroupId( parser.getText() );
+                } else if ( tagEquals( tag, "version", parsed ) ) {
+                    model.setVersion( parser.getText() );
+                } else if ( tagEquals( tag, "parent", parsed ) ) {
+                    model.setParent( parser.getText() );
+                } else if ( tagEquals( tag, "packaging", parsed ) ) {
+                    model.setPackaging( parser.getText() );
+                } else if ( tagEquals( tag, "description", parsed ) ) {
+                    model.setDescription( parser.getText() );
+                } else if ( tagEquals( tag, "build", parsed ) ) {
                     model.setBuild( parseBuild( parser ) );
-                } else if ( tagEquals( parser.getName(), "modules", parsed ) ) {
+                } else if ( tagEquals( tag, "modules", parsed ) ) {
                     List<String> modules = new ArrayList<String>();
                     model.setModules( modules );
                     while ( parser.nextTag() ) {
                         if ( parser.getName().equals( "module" ) ) {
-                            modules.add( parser.nextText() );
+                            modules.add( parser.getText() );
+                            parser.nextTag(); // end of tag
                         } else {
-                            throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
+                            throw new XmlParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }
                     }
-                } else if ( tagEquals( parser.getName(), "dependencies", parsed ) ) {
+                } else if ( tagEquals( tag, "dependencies", parsed ) ) {
                     List<Dependency> dependencies = new ArrayList<Dependency>();
                     model.setDependencies( dependencies );
                     while ( parser.nextTag() ) {
                         if ( parser.getName().equals( "dependency" ) ) {
                             dependencies.add( parseDependency( parser ) );
                         } else {
-                            throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
+                            throw new XmlParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }
                     }
-                } else if ( tagEquals( parser.getName(), "repositories", parsed ) ) {
+                } else if ( tagEquals( tag, "repositories", parsed ) ) {
                     List<Repository> repositories = new ArrayList<Repository>();
                     model.setRepositories( repositories );
                     while ( parser.nextTag() ) {
-                        if ( parser.getName().equals( "repository" ) ) {
-                            repositories.add( parseRepository( parser ) );
-                        } else {
-                            throw new XmlPullParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
-                        }
+                         if ( parser.getName().equals( "repository" ) ) {
+                             repositories.add( parseRepository( parser ) );
+                         } else {
+                             throw new XmlParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
+                         }
                     }
-                } else if ( tagEquals( parser.getName(), "properties", parsed ) ) {
-                    while ( parser.nextTag() ) {
-                        String key = parser.getName();
-                        String value = parser.nextText().trim();
-                        model.addProperty( key, value );
-                    }
-                } else {
-                    throw new XmlPullParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
-                }
+                } else if ( tagEquals( tag, "properties", parsed ) ) {
+                  while ( parser.nextTag() ) {
+                       String key = parser.getName();
+                       String value = parser.getText().trim();
+                       model.addProperty( key, value );
+                       parser.nextTag(); // end of tag
+                   }
+               } else {
+                   throw new XmlParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
+               }
+              // End of tag
+              //if (parser.getName().equals( "project" ))
+              //    break;
             }
-        } while ( parser.isNotEndOfDocument() );
-        if (!foundRoot) {
-            throw new XmlPullParserException( "'project' tag not found", parser, null );
+//        } while(!(parser.getName().equals( "project" ) && parser.endOfTag()));
         }
         return model;
     }
