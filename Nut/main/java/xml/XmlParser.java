@@ -1,23 +1,15 @@
 package nut.xml;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.StringReader;
 
 /**
- * Absolutely minimal implementation of XMLPULL V1 API. Encoding handling done with XmlReader
+ * Absolutely minimal implementation of XML parsing. Encoding handling done with XmlReader
+ * https://www.w3.org/TR/2008/REC-xml-20081126/
  */
 
 public class XmlParser
 {
-
-/**
- * XML Pull Parser is an interface that defines parsing functionality provided
- * in <a href="http://www.xmlpull.org/">XMLPULL V1 API</a> (visit this website to
- * learn more about API and its implementations).
- *
- */
-
     // ----------------------------------------------------------------------------
     // global parser state
     protected String location;
@@ -305,6 +297,7 @@ public class XmlParser
 
     protected void parsePI() throws XmlParserException, IOException {
         // implements XML 1.0 Section 2.6 Processing Instructions
+        // <?xml version="1.0" encoding="UTF-8"?>
 
         // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
         // [17] PITarget         ::=    Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
@@ -324,14 +317,16 @@ public class XmlParser
             if(ch == '?') {
                 seenQ = true;
             } else if(ch == '>' && seenQ) {
-              break;  // found end sequence!!!!
+                break;  // found end sequence!!!!
             } else {
                 // [17] PITarget ::= Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
                 if(pos == 3) {
-                    if(  (buf[0] == 'x' || buf[0] == 'X')
-                        && (buf[1] == 'm' || buf[1] == 'M')
-                        && (buf[2] == 'l' || buf[2] == 'L') )
-                    {
+                    if( (buf[0] != 'x' && buf[0] != 'X')
+                     || (buf[1] != 'm' && buf[1] != 'M')
+                     || (buf[2] != 'l' && buf[2] != 'L') ) {
+                        throw new XmlParserException(
+                                  "processing instruction must begin with xml or XML",
+                                  this, null);
                     // TO DO: check version and encoding
                     /*
                                 if(piTargetStart > 3) {  //<?xml is allowed as first characters in input ...
@@ -354,10 +349,6 @@ public class XmlParser
                                 xmlDeclContent = new String(buf, off, len);
                                 return;
                                 */
-                    } else {
-                        throw new XmlParserException(
-                                  "processing instruction must begin with xml or XML",
-                                  this, null);
                     }
                 }
             }
