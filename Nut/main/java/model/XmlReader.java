@@ -202,14 +202,10 @@ public class XmlReader {
         }
         while ( !parser.endOfDocument() ) {
             parser.nextTag();
-            //if( parser.endOfDocument() ) {
-                // </project> not found
-                //throw new XmlParserException( "unexpected end of document", parser, null );
-            //}
-                //if(parser.endOfTag() || parser.endOfDocument())
-                //  continue;
-            if(parser.startTag()) {
-                tag = parser.getName();
+            tag = parser.getName();
+            if(parser.endOfTag()) {
+                continue;
+            } else {
                 if ( tagEquals( tag, "artifactId", parsed ) ) {
                     model.setArtifactId( parser.getText() );
                 } else if ( tagEquals( tag, "groupId", parsed ) ) {
@@ -265,11 +261,7 @@ public class XmlReader {
                } else {
                    throw new XmlParserException( "Unrecognized tag: '" + parser.getName() + "'", parser, null );
                }
-              // End of tag
-              //if (parser.getName().equals( "project" ))
-              //    break;
             }
-//        } while(!(parser.getName().equals( "project" ) && parser.endOfTag()));
         }
         return model;
     }
