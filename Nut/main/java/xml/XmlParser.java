@@ -23,11 +23,9 @@ public class XmlParser
     protected String location;
     protected int lineNumber;
     protected int columnNumber;
-    protected boolean seenRoot;
     protected boolean reachedEnd;
     protected boolean emptyElementTag;
 
-    protected boolean seenStartTag;
     protected boolean seenEndTag;
 
     // element stack
@@ -35,6 +33,7 @@ public class XmlParser
     protected int depth;
 
     protected String elName[];
+    protected String text;
 
     // input buffer management
     protected static final int READ_CHUNK_SIZE = 8*1024; //max data chars in one read() call
@@ -44,10 +43,8 @@ public class XmlParser
     protected char buf[] = new char[BUF_SIZE];
     protected int pos;
 
-    protected String text;
-
-    protected String xmlDeclVersion;
-    protected String xmlDeclContent;
+    // protected String xmlDeclVersion;
+    // protected String xmlDeclContent;
 
     /**
      * Class constructor
@@ -57,7 +54,6 @@ public class XmlParser
         location = null;
         lineNumber = 1;
         columnNumber = 0;
-        seenRoot = false;
         reachedEnd = false;
         emptyElementTag = false;
 
@@ -67,8 +63,8 @@ public class XmlParser
         text = "";
 
         pos = 0;
-        xmlDeclVersion = null;
-        xmlDeclContent = null;
+        //xmlDeclVersion = null;
+        //xmlDeclContent = null;
     }
 
     /* ************************************************************************* */
@@ -81,17 +77,20 @@ public class XmlParser
     }
 
     public boolean endOfDocument() {
-        return reachedEnd;
-    }
-
-    public boolean startTag() {
-        return seenStartTag;
+        return reachedEnd || depth<1;
     }
 
     public boolean endOfTag() {
         return seenEndTag;
     }
 
+    public String getName() {
+      return elName[ depth ];
+    }
+
+    public String getText() {
+      return text;
+    }
 
     /* ************************************************************************* */
 
@@ -138,11 +137,11 @@ public class XmlParser
     */
     public boolean nextTag() throws XmlParserException, IOException {
       char ch;
-      seenStartTag = false;
+      emptyElementTag = false;
       seenEndTag = false;
       text = "";
 
-      //System.out.println("nextTag entry");
+      //println("nextTag entry");
       pos = 0;
       while(!reachedEnd) {
             ch = more();
@@ -153,19 +152,15 @@ public class XmlParser
                   if(ch == '-') {
                     parseComment();
                   }
-            } else if(isS(ch)) {
+            } else if(isSpace(ch)) {
                 continue;
             } else if(ch == '/') {
                 parseEndTag();
-                seenEndTag = true;
                 //System.out.println("\nnextTag end: </"+getName()+">");
-                depth--;
                 return false;
             } else if(isNameChar(ch)){
-                depth++;
                 parseStartTag();
                 parseText();
-                seenStartTag = true;
                 //System.out.println("\nnextTag start: <"+getName()+">  text: ["+text+"]");
                 return true;
             } else if(!reachedEnd) {
@@ -181,39 +176,31 @@ public class XmlParser
       return false;
     }
 
-    public String getName() {
-      return elName[ depth ];
-    }
-
-    public String getText() {
-      return text;
-    }
-
     /* ************************************************************************* */
     private void parseStartTag() throws XmlParserException, IOException {
         //ASSUMPTION ch is past <T
-        emptyElementTag = false;
         char ch;
         do {
             ch = more();
-            //System.out.print(ch);
         } while(isNameChar(ch) && !reachedEnd);
 
+        depth++;
         elName[ depth ] = new String(buf, 0, pos-1);
-        //System.out.println("parseStartTag <" + elName[ depth ] + "> depth="+depth);
         // seek end of tag, '>' or '/>'
         do {
             if(ch == '>') {
               break;
-        /*    } else if(ch == '/') {
-                if(emptyElementTag) throw new XmlParserException(
-                        "repeated / in tag declaration", this, null);
-                emptyElementTag = true;
+            } else if(ch == '/') {
+                if(emptyElementTag)
+                    throw new XmlParserException("repeated / in tag declaration", this, null);
                 ch = more();
-                if(ch != '>') throw new XmlParserException(
-                        "expected > to end empty tag not "+printable(ch), this, null);
+                if(ch != '>')
+                    throw new XmlParserException("expected > to end empty tag, not "+printable(ch), this, null);
+                depth--;
+                emptyElementTag = true;
+                seenEndTag = true;
                 break;
-          */  } else if(ch == '!') {
+            } else if(ch == '!') {
                   ch = more();
                   if(ch == '-') {
                     parseComment();
@@ -222,11 +209,11 @@ public class XmlParser
                     throw new XmlParserException(
                               "unexpected character in markup "+printable(ch), this, null);
                   }
-            } else if(isS(ch)) {
+            } else if(isSpace(ch)) {
               pos = 0;
-            } else if(!isNameStartChar(ch)) {
+            } else if(!isNameChar(ch)) {
                 throw new XmlParserException(
-                    "start tag unexpected character "+printable(ch), this, null);
+                    "unexpected character in tag "+printable(ch), this, null);
             }
             ch = more();
         } while(!reachedEnd);
@@ -246,26 +233,30 @@ public class XmlParser
                 "expected > to finish end tag not "+printable(ch)
                     +" from line "+elName[depth], this, null);
         }
-        String startTag = elName[depth];
-        String endTag = new String(buf, 0, pos-1);
-        if( !endTag.equals(startTag)) {
+        String tag = new String(buf, 0, pos-1);
+        if( !tag.equals(elName[depth])) {
             throw new XmlParserException(
-                "end tag name </"+endTag+"> must be the same as start tag <"+startTag+">",
+                "end tag name </"+tag+"> must be the same as start tag <"+elName[depth]+">",
                 this, null);
         }
+        depth--;
+        seenEndTag = true;
     }
 
     private void parseText() throws XmlParserException, IOException {
       pos = 0;
-      // scan until it hits <
-      while(!reachedEnd && more() != '<');
-      text = new String(buf, 0, pos-1);
+      if(emptyElementTag) {
+        text = "";
+      } else {
+        // scan until it hits <
+        while(!reachedEnd && more() != '<');
+        text = new String(buf, 0, pos-1);
+      }
       //System.out.println("parseText " + text);
     }
 
     protected void parseComment() throws XmlParserException, IOException {
         // implements XML 1.0 Section 2.5 Comments
-
         //ASSUMPTION: seen <!-
         char ch = more();
         //System.out.println("parseComment");
@@ -275,12 +266,17 @@ public class XmlParser
         pos = 0;
         final int curLine = lineNumber;
         final int curColumn = columnNumber;
-        try {
-            boolean seenDash = false;
-            boolean seenDashDash = false;
-            while(true) {
+        boolean seenDash = false;
+        boolean seenDashDash = false;
+        while(true) {
                 // scan until it hits -->
                 ch = more();
+                if(reachedEnd) {
+                    // detect EOF and create meaningful error ...
+                    throw new XmlParserException(
+                        "comment started on line "+curLine+" and column "+curColumn+" was not closed",
+                        this, null);
+                }
                 if(seenDashDash && ch != '>') {
                     throw new XmlParserException(
                         "in comment after two dashes (--) next character must be >"
@@ -303,12 +299,6 @@ public class XmlParser
                 } else {
                     seenDash = false;
                 }
-            }
-        } catch(EOFException ex) {
-            // detect EOF and create meaningful error ...
-            throw new XmlParserException(
-                "comment started on line "+curLine+" and column "+curColumn+" was not closed",
-                this, ex);
         }
         //System.out.println("End of comment");
     }
@@ -322,7 +312,7 @@ public class XmlParser
         boolean seenQ = false;
         pos = 0;
         /*            char ch = more();
-            if(isS(ch)) {
+            if(isSpace(ch)) {
                 throw new XmlParserException(
                     "processing instruction PITarget must be exactly after <? and not white space character",
                     this, null);
@@ -378,8 +368,8 @@ public class XmlParser
     //    protected final static char[] VERSION = {'v','e','r','s','i','o','n'};
     //    protected final static char[] NCODING = {'n','c','o','d','i','n','g'};
 
-    protected final static char[] VERSION = "version".toCharArray();
-    protected final static char[] NCODING = "ncoding".toCharArray();
+    // protected final static char[] VERSION = "version".toCharArray();
+    // protected final static char[] NCODING = "ncoding".toCharArray();
 
 
     protected char more() throws IOException {
@@ -400,63 +390,15 @@ public class XmlParser
       return (char)ret;
     }
 
-    // nameStart / name lookup tables based on XML 1.1 http://www.w3.org/TR/2001/WD-xml11-20011213/
-    protected static final int LOOKUP_MAX = 0x400;
-    protected static final char LOOKUP_MAX_CHAR = (char)LOOKUP_MAX;
-    protected static boolean lookupNameStartChar[] = new boolean[ LOOKUP_MAX ];
-    protected static boolean lookupNameChar[] = new boolean[ LOOKUP_MAX ];
-
-    private static final void setName(char ch) {
-      lookupNameChar[ ch ] = true;
-    }
-
-    private static final void setNameStart(char ch) {
-      lookupNameStartChar[ ch ] = true; setName(ch);
-    }
-
-    static {
-        setNameStart(':');
-        for (char ch = 'A'; ch <= 'Z'; ++ch) setNameStart(ch);
-        setNameStart('_');
-        for (char ch = 'a'; ch <= 'z'; ++ch) setNameStart(ch);
-        for (char ch = '\u00c0'; ch <= '\u02FF'; ++ch) setNameStart(ch);
-        for (char ch = '\u0370'; ch <= '\u037d'; ++ch) setNameStart(ch);
-        for (char ch = '\u037f'; ch < '\u0400'; ++ch) setNameStart(ch);
-
-        setName('-');
-        setName('.');
-        for (char ch = '0'; ch <= '9'; ++ch) setName(ch);
-        setName('\u00b7');
-        for (char ch = '\u0300'; ch <= '\u036f'; ++ch) setName(ch);
-    }
-
-
-    //private final static boolean isNameStartChar(char ch) {
-    protected boolean isNameStartChar(char ch) {
-        return (ch < LOOKUP_MAX_CHAR && lookupNameStartChar[ ch ])
-            || (ch >= LOOKUP_MAX_CHAR && ch <= '\u2027')
-            || (ch >= '\u202A' &&  ch <= '\u218F')
-            || (ch >= '\u2800' &&  ch <= '\uFFEF')
-            ;
-    }
-
     //private final static boolean isNameChar(char ch) {
     protected boolean isNameChar(char ch) {
-        return (ch < LOOKUP_MAX_CHAR && lookupNameChar[ ch ])
-            || (ch >= LOOKUP_MAX_CHAR && ch <= '\u2027')
-            || (ch >= '\u202A' &&  ch <= '\u218F')
-            || (ch >= '\u2800' &&  ch <= '\uFFEF')
-            ;
+        return ( (ch >= 'A' && ch <= 'Z')
+              || (ch >= 'a' && ch <= 'z') );
     }
 
-    protected boolean isS(char ch) {
+    protected boolean isSpace(char ch) {
         return (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t');
-        // || (supportXml11 && (ch == '\u0085' || ch == '\u2028');
     }
-
-    //protected boolean isChar(char ch) { return (ch < '\uD800' || ch > '\uDFFF')
-    //  ch != '\u0000' ch < '\uFFFE'
-
 
     //protected char printable(char ch) { return ch; }
     protected String printable(char ch) {
@@ -481,8 +423,7 @@ public class XmlParser
         for(int i = 0; i < sLen; ++i) {
             buf.append(printable(s.charAt(i)));
         }
-        s = buf.toString();
-        return s;
+        return buf.toString();
     }
 
 }
