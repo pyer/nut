@@ -63,7 +63,7 @@ public class XmlReader {
                     String value = parser.getText().trim();
                     goal.setConfigurationValue( key, value );
                     parser.nextTag(); // end of tag
-                } while(!parser.getName().equals("configuration"));
+                } while(parser.getName().equals("configuration"));
             } else {
                 throw new XmlParserException( "Unrecognized goal tag: '" + parser.getName() + "'", parser, null );
             }

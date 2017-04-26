@@ -4,4 +4,18 @@
   <artifactId>text</artifactId>
   <version>2.0</version>
   <packaging>zip</packaging>
+
+  <build>
+   <goals>
+    <goal>
+     <name>pack</name>
+     <class>Script</class>
+     <configuration>
+      <command>/bin/touch</command>
+      <script>touched</script>
+     </configuration>
+    </goal>
+   </goals>
+  </build>
+                                                                          
 </project>
