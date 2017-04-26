@@ -36,17 +36,17 @@ public class TestListener extends TestListenerAdapter {
 
   @Override
   public void onTestFailure(ITestResult tr) {
-    error("    " + tr.getName()+ " failed");
+    error("    " + tr.getInstanceName() + "." + tr.getName());
   }
 
   @Override
   public void onTestSkipped(ITestResult tr) {
-    warn( "    Skip " + tr.getName());
+    warn( "    Skip " + tr.getInstanceName() + "." + tr.getName());
   }
 
   @Override
   public void onTestSuccess(ITestResult tr) {
-    info( "    " + tr.getName()+ " succeded");
+    success( "    " + tr.getInstanceName() + "." + tr.getName());
   }
 
   private void print( String prefix, String content )
@@ -62,6 +62,13 @@ public class TestListener extends TestListenerAdapter {
   private void info( String content )
   {
       print( " info  ", content );
+  }
+
+  public void success( String content )
+  {
+      print( "\033[1;32m" );
+      print( "success", content );
+      print( "\033[1;37m" );
   }
 
   private void warn( String content )
