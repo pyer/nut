@@ -19,13 +19,6 @@ import nut.xml.XmlParserException;
 
 public class XmlReader {
 
-    /**
-     * Method parseGoal.
-     *
-     * @param tag   which is read from xml file
-     * @param name  of the tag
-     * @param set   HashSet of valid values
-     */
     private boolean tagEquals( String value, String name, Set<String> set )
         throws XmlParserException
     {
@@ -57,15 +50,12 @@ public class XmlReader {
             } else if ( tagEquals( parser.getName(), "class", parsed ) ) {
                 goal.setClassName( parser.getText() );
             } else if ( tagEquals( parser.getName(), "configuration", parsed ) ) {
-                do {
-                    parser.nextTag();
+                while ( parser.nextTag() ) {
                     String key = parser.getName();
                     String value = parser.getText().trim();
                     goal.setConfigurationValue( key, value );
-                    parser.nextTag(); // end of tag
-                } while(parser.getName().equals("configuration"));
-            } else {
-                throw new XmlParserException( "Unrecognized goal tag: '" + parser.getName() + "'", parser, null );
+                }
+//                parser.nextTag(); // end of tag
             }
             parser.nextTag(); // end of tag
         }
