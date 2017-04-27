@@ -11,6 +11,7 @@
       <class name="nut.model.GoalTest" />
       <class name="nut.model.ModelTest" />
       <class name="nut.model.RepositoryTest" />
+      <class name="nut.model.XmlReaderTest" />
     </classes>
   </test>
   <test name="nut.interpolation">
