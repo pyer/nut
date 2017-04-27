@@ -185,7 +185,7 @@ public class XmlReader {
         Model model = new Model();
         Set<String> parsed = new HashSet<String>();
         XmlParser parser = new XmlParser( sReader );
-        parser.parseXmlDecl();
+        parser.skipBOM();
         parser.nextTag();
         if (!parser.getName().equals( "project" )) {
             throw new XmlParserException( "'project' tag not found", parser, null );

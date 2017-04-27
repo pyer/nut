@@ -86,8 +86,7 @@ public class XmlParser
 
     /* ************************************************************************* */
 
-    public void parseXmlDecl() throws XmlParserException, IOException {
-      // [2] prolog: ::= XMLDecl? Misc* (doctypedecl Misc*)? and look for [39] element
+    public void skipBOM() throws XmlParserException, IOException {
       char ch = more();
       // bootstrap parsing with getting first character input!
       // deal with BOM
@@ -100,26 +99,6 @@ public class XmlParser
       if(ch == '\uFEFF') {
         // skipping UNICODE int Order Mark (so called BOM)
         ch = more();
-      }
-      while(!reachedEnd) {
-        pos = 0;
-        // deal with Misc
-        // [27] Misc ::= Comment | PI | S
-        // deal with docdecl --> mark it!
-        // else parseStartTag seen <[^/]
-        if(ch == '<') {
-          ch = more();
-          if(ch == '?') {
-            parsePI();
-            break;
-          } else {
-            throw new XmlParserException(
-                      "expected XML declaration and not <"+printable(ch), this, null);
-          }
-        } else {
-          throw new XmlParserException(
-                    "expected XML declaration and not "+printable(ch), this, null);
-        }
       }
     }
 
@@ -140,10 +119,13 @@ public class XmlParser
             if(ch == '<') {
                 pos = 0;
             } else if(ch == '!') {
-                  ch = more();
-                  if(ch == '-') {
+                ch = more();
+                if(ch == '-') {
                     parseComment();
-                  }
+                }
+            } else if(ch == '?') {
+                parsePI();
+                continue;
             } else if(isSpace(ch)) {
                 continue;
             } else if(ch == '/') {
