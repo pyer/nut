@@ -46,9 +46,9 @@ public class XmlWriter {
             }
             if ( goal.hasConfiguration() ) {
                 serializer.startTag( "configuration" );
-                for ( Iterator iter = goal.configuration().keySet().iterator(); iter.hasNext(); ) {
+                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {
                     String key = (String) iter.next();
-                    String value = (String) goal.getConfigurationValue( key );
+                    String value = (String) goal.getConfiguration().getProperty( key );
                     writeElement( "" + key + "", value, serializer );
                 }
                 serializer.endTag( "configuration" );

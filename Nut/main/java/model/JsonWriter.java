@@ -30,9 +30,9 @@ public class JsonWriter {
             }
             if ( goal.hasConfiguration() ) {
                 serializer.startObject( "configuration" );
-                for ( Iterator iter = goal.configuration().keySet().iterator(); iter.hasNext(); ) {
+                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {
                     String key = (String) iter.next();
-                    String value = (String) goal.getConfigurationValue( key );
+                    String value = (String) goal.getConfiguration().getProperty( key );
                     serializer.element( key, value );
                 }
                 serializer.endObject();

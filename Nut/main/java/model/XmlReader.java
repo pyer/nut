@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import nut.model.Build;
@@ -43,22 +44,21 @@ public class XmlReader {
         throws IOException, XmlParserException
     {
         Goal goal = new Goal();
+        Properties configuration = new Properties();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "name", parsed ) ) {
                 goal.setName( parser.getText() );
             } else if ( tagEquals( parser.getName(), "class", parsed ) ) {
                 goal.setClassName( parser.getText() );
-            } else if ( tagEquals( parser.getName(), "configuration", parsed ) ) {
-                while ( parser.nextTag() ) {
-                    String key = parser.getName();
-                    String value = parser.getText().trim();
-                    goal.setConfigurationValue( key, value );
-                }
-//                parser.nextTag(); // end of tag
+            } else if ( tagEquals( parser.getName(), "testSuiteFile", parsed ) ) {
+                configuration.setProperty( parser.getName(), parser.getText() );
+            } else if ( tagEquals( parser.getName(), "scriptFile", parsed ) ) {
+                configuration.setProperty( parser.getName(), parser.getText() );
             }
             parser.nextTag(); // end of tag
         }
+        goal.setConfiguration( configuration );
         return goal;
     }
 
@@ -80,6 +80,8 @@ public class XmlReader {
                 build.setSourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "resourceDirectory", parsed ) ) {
                 build.setResourceDirectory( parser.getText() );
+            } else if ( tagEquals( parser.getName(), "webappDirectory", parsed ) ) {
+                build.setWebappDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testSourceDirectory", parsed ) ) {
                 build.setTestSourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testResourceDirectory", parsed ) ) {
@@ -99,7 +101,7 @@ public class XmlReader {
                     if ( parser.getName().equals( "goal" ) ) {
                         goals.add( parseGoal( parser ) );
                     } else {
-                        throw new XmlParserException( "Unrecognized build association: '" + parser.getName() + "'", parser, null );
+                        throw new XmlParserException( "Unrecognized goals association: '" + parser.getName() + "'", parser, null );
                     }
                 }
             } else {
