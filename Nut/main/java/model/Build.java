@@ -34,6 +34,12 @@ implements java.io.Serializable
     private String resourceDirectory = "main/resources";
 
     /**
+     * This element specifies a directory containing the web application sources.
+     * The path given is relative to the project descriptor.
+     */
+    private String webappDirectory = "main/webapp";
+
+    /**
      * This element specifies a directory containing the unit test
      * source of the project.
      * The generated build system will compile this directory
@@ -104,10 +110,21 @@ implements java.io.Serializable
         return this.resourceDirectory;
     }
 
+    public void setWebappDirectory( String webappDirectory )
+    {
+        this.webappDirectory = webappDirectory;
+    }
+
+    public String getWebappDirectory()
+    {
+        return this.webappDirectory;
+    }
+
     public void setResourceDirectory( String resourceDirectory )
     {
         this.resourceDirectory = resourceDirectory;
     }
+
 
     public String getTestSourceDirectory()
     {
