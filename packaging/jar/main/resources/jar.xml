@@ -59,9 +59,7 @@
       </goal>
       <goal>
         <name>test</name>
-        <configuration>
-          <testSuiteFile>test/testng.xml</testSuiteFile>
-        </configuration>
+        <testSuiteFile>test/testng.xml</testSuiteFile>
       </goal>
       <goal>
         <name>pack</name>

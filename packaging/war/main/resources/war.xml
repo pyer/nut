@@ -42,9 +42,10 @@
 
   <build>
     <targetDirectory>target</targetDirectory>
+    <outputDirectory>target/classes</outputDirectory>
     <sourceDirectory>main/java</sourceDirectory>
     <resourceDirectory>main/resources</resourceDirectory>
-    <outputDirectory>target/classes/WEB-INF/classes</outputDirectory>
+    <webappDirectory>main/webapp</webappDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
     <testResourceDirectory>test/resources</testResourceDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
@@ -60,19 +61,11 @@
       </goal>
       <goal>
         <name>test</name>
-        <configuration>
-          <testSuiteFile>test/testng.xml</testSuiteFile>
-        </configuration>
+        <testSuiteFile>test/testng.xml</testSuiteFile>
       </goal>
       <goal>
         <name>pack</name>
         <class>PackWar</class>
-        <configuration>
-          <classesDirectory>target/classes</classesDirectory>
-          <webappDirectory>main/webapp</webappDirectory>
-          <resourceTargetDirectory>target/classes/WEB-INF/classes</resourceTargetDirectory>
-          <libTargetDirectory>target/classes/WEB-INF/lib</libTargetDirectory>
-        </configuration>
       </goal>
       <goal>
         <name>install</name>

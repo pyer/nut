@@ -283,7 +283,7 @@ public class Project
               if( noopMode ) {
                 log.info( "NOOP: " + goal.getClassName() + " " + getId() );
               } else {
-                executeGoal( goal.getClassName(), goal.configuration() );
+                executeGoal( goal.getClassName(), goal.getConfiguration() );
               }
             }
         }
