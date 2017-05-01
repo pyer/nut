@@ -1,5 +1,7 @@
 package nut.model;
 
+import java.util.Properties;
+
 import nut.model.ValidationException;
 
 //---------------------------------/
@@ -20,7 +22,7 @@ public class Goal implements java.io.Serializable
     /**
      * The configuration as properties.
      */
-    private java.util.Properties configuration;
+    private Properties configuration;
 
     //-----------/
     //- Methods -/
@@ -84,40 +86,25 @@ public class Goal implements java.io.Serializable
      * Get the configuration object
      * @return configuration
      */
-    public java.util.Properties configuration()
+    public Properties getConfiguration()
     {
         if ( this.configuration == null ) {
-            this.configuration = new java.util.Properties();
+            this.configuration = new Properties();
         }
         return this.configuration;
+    }
+
+    public void setConfiguration( Properties config )
+    {
+        this.configuration = config;
     }
 
     public boolean hasConfiguration()
     {
         if ( this.configuration == null ) {
-            this.configuration = new java.util.Properties();
+            this.configuration = new Properties();
         }
         return ! this.configuration.isEmpty();
-    }
-
-    /**
-     *
-     * @param  key
-     * @return value
-     */
-    public String getConfigurationValue( String key )
-    {
-        return configuration().getProperty( key );
-    }
-
-    /**
-     *
-     * @param key
-     * @param value
-     */
-    public void setConfigurationValue( String key, String value )
-    {
-        configuration().setProperty( key, value );
     }
 
     /**

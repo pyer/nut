@@ -3,6 +3,8 @@ package nut.model;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
+import java.util.Properties;
+
 /**
  * Tests {@code Goal}.
  *
@@ -68,11 +70,13 @@ public class GoalTest
     public void testConfiguration()
     {
       Goal goal = new Goal();
-      assertTrue( goal.configuration().isEmpty() );
+      Properties configuration = new Properties();
+      configuration.setProperty( "key", "value" );
+      assertTrue( goal.getConfiguration().isEmpty() );
       assertFalse( goal.hasConfiguration() );
-      goal.setConfigurationValue( "key", "value" );
-      assertEquals( "value", goal.getConfigurationValue( "key" ) );
+      goal.setConfiguration( configuration );
       assertTrue( goal.hasConfiguration() );
+      assertEquals( "value", goal.getConfiguration().getProperty( "key" ) );
     }
 
     @Test
