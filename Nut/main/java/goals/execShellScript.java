@@ -15,16 +15,13 @@ import java.util.Properties;
  *
        <goal>
          <name>???</name>
-         <class>Script</class>
-         <configuration>
-           <command>/bin/sh</command>
-           <script>src/script/xxx</script>
-         </configuration>
+         <class>execShellScript</class>
+         <scriptFile>src/script/xxx</scriptFile>
        </goal>
  *
  * @goal test
  */
-public class Script
+public class execShellScript
 {
     public static void execute( Project project, Properties config )
         throws GoalException
@@ -33,22 +30,16 @@ public class Script
         Properties pp          = project.getModel().getProperties();
         String basedir         = (String)pp.getProperty( "basedir" );
         String outputDirectory = basedir + File.separator + project.getBuild().getOutputDirectory();
-        String command         = config.getProperty("command", "/bin/sh");
-        String script          = basedir + File.separator + config.getProperty("script", "");
+        String scriptFile      = basedir + File.separator + config.getProperty("scriptFile", "");
         log.debug( "basedir = " + basedir);
-        log.debug( "command = " + command);
-        log.debug( "script  = " + script);
-        for ( Enumeration en = config.propertyNames(); en.hasMoreElements(); ) {
-          String key = (String) en.nextElement();
-          log.debug( "configuration["+key+"] = " + config.getProperty(key));
-        }
+        log.debug( "script  = " + scriptFile);
 
-        ProcessBuilder pb = new ProcessBuilder(command, script);
+        ProcessBuilder pb = new ProcessBuilder("/bin/sh", scriptFile);
         pb.inheritIO();
         try {
             Process proc = pb.start();
             if (proc.waitFor() != 0) {;
-                throw new GoalException("'" + command + " " + script + "' failed !");
+                throw new GoalException("'" + scriptFile + "' failed !");
             }
         }
         catch(IOException e) {
