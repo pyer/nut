@@ -15,13 +15,13 @@ import java.util.Properties;
  *
        <goal>
          <name>???</name>
-         <class>execShellScript</class>
+         <class>ExecShellScript</class>
          <scriptFile>src/script/xxx</scriptFile>
        </goal>
  *
  * @goal test
  */
-public class execShellScript
+public class ExecShellScript
 {
     public static void execute( Project project, Properties config )
         throws GoalException

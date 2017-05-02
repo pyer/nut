@@ -64,7 +64,7 @@ javac $options Install.java
 javac $options PackJar.java
 javac $options PackWar.java
 javac $options PackZip.java
-javac $options Script.java
+javac $options ExecShellScript.java
 javac $options Test.java
 echo " - Nut"
 cd ..
