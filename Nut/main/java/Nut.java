@@ -38,7 +38,7 @@ public class Nut
                  showHelp();
                  System.exit( 0 );
               }
-              else if(args[i].equals("-v") || args[i].equals("--version") ) {
+              else if(args[i].equals("-v") || args[i].equals("--version")  || args[i].equals("version") ) {
                  showVersion();
                  System.exit( 0 );
               }
@@ -84,10 +84,13 @@ public class Nut
                  showHelp();
                  System.exit( 3 );
         }
+        if ("list".equals(goalArg)) {
+          effectiveNut=goalArg;
+        }
         // every goal is 4 characters long or more
         if (effectiveNut==null && goalArg.length()<4 ) {
-                 showHelp();
-                 System.exit( 4 );
+          showHelp();
+          System.exit( 4 );
         }
         // everything is ok, let's go
         log.start();
@@ -151,20 +154,29 @@ public class Nut
 
     private static void showHelp()
     {
-        log.out( "" );
-        log.out( "Usage: nut [options] build" );
-        log.out( "       nut [options] [goal]" );
-        log.out( "\n  where [goal] is one of: clean compile test pack install deploy" );
+        log.out( "\nUsage:" );
+        log.out( "    nut [options]" );
+        log.out( "    nut build [options]" );
+        log.out( "    nut help" );
+        log.out( "    nut version" );
+        log.out( "    nut list [options]" );
+        log.out( "    nut <goal> [options]" );
+        log.out( "\nOperations:" );
+        log.out( "  build    Build project, execute every goal" );
+        log.out( "  help     Display this help" );
+        log.out( "  version  Display version information" );
+        log.out( "  list     List project's goals" );
+        log.out( "  <goal>   Execute one of the project's goals" );
         log.out( "\nOptions:" );
-        log.out( " -h,--help        Display this help" );
-        log.out( " -v,--version     Display version information" );
-        log.out( " -D,--define      Define a system property" );
-        log.out( " -d,--debug       Produce execution debug output" );
-        log.out( " -x,--xml         Display effective NUT in xml format" );
-        log.out( " -j,--json        Display effective NUT in json format" );
-        log.out( " -n,--noop        No operation mode (dry run)" );
-        log.out( " -r,--release     Release mode. Default is snapshot" );
-        log.out( " -s,--snapshot    Snapshot default mode" );
+        log.out( "  -h,--help        Display this help" );
+        log.out( "  -v,--version     Display version information" );
+        log.out( "  -D,--define      Define a system property" );
+        log.out( "  -d,--debug       Produce execution debug output" );
+        log.out( "  -x,--xml         Display effective NUT in xml format" );
+        log.out( "  -j,--json        Display effective NUT in json format" );
+        log.out( "  -n,--noop        No operation mode (dry run)" );
+        log.out( "  -r,--release     Release mode. Default is snapshot" );
+        log.out( "  -s,--snapshot    Snapshot default mode" );
     }
 
     // ----------------------------------------------------------------------
@@ -208,6 +220,8 @@ public class Nut
                     if ( currentProject.isBuilt() && !currentProject.isSuccessful() ) {
                       retCode += 9;
                     }
+                } else if ( "list".equals(effectiveNut) ) {
+                    currentProject.goalsNames();
                 } else if ( "xml".equals(effectiveNut) ) {
                     currentProject.effectiveXmlModel();
                 } else if ( "json".equals(effectiveNut) ) {

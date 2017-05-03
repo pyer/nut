@@ -200,6 +200,21 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
+    public void goalsNames()
+    {
+      Build build = model.getBuild();
+      if ( build.getGoals() != null && build.getGoals().size() > 0 ) {
+        String list = "Goals list of " + model.getId() + " = ";
+        for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); ) {
+          Goal goal = (Goal) iter.next();
+          list += goal.getName() + " ";
+        }
+        log.info(list);
+      } else {
+        log.warn("No goal for this project");
+      }
+    }
+
     public void effectiveXmlModel()
     {
       try {
