@@ -23,6 +23,18 @@ public class PackWar
     /** Instance logger */
     private static Log log;
 
+/*
+<configuration>
+  <classesDirectory>target/classes</classesDirectory>
+  <webappDirectory>main/webapp</webappDirectory>
+  <resourceTargetDirectory>target/classes/WEB-INF/classes</resourceTargetDirectory>
+  <libTargetDirectory>target/classes/WEB-INF/lib</libTargetDirectory>
+</configuration>
+
+<webappDirectory>main/webapp</webappDirectory>
+<libOutputDirectory>target/classes/WEB-INF/lib</libOutputDirectory>
+
+*/
     // ==========================================================================
     public static void execute( Project project, Properties config )
         throws GoalException
@@ -34,10 +46,13 @@ public class PackWar
         String targetDirectory      = project.getBuild().getTargetDirectory();
         String sourceDirectory      = project.getBuild().getSourceDirectory();
         String resourceDirectory    = project.getBuild().getResourceDirectory();
+        String webappDirectory      = project.getBuild().getWebappDirectory();
         String outputDirectory      = project.getBuild().getOutputDirectory();
+
         log.debug( "build.directory           = " + targetDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );
         log.debug( "build.resourceDirectory   = " + resourceDirectory );
+        log.debug( "build.webappDirectory     = " + webappDirectory );
         log.debug( "build.outputDirectory     = " + outputDirectory );
 
         String artifactId           = project.getArtifactId();
@@ -56,28 +71,18 @@ public class PackWar
             log.error(msg);
             throw new GoalException(msg);
         }
-        // copy resourceDirectory files to resourceTargetDirectory
-        String resourceTargetDirectory = config.getProperty("resourceTargetDirectory");
-        if (resourceTargetDirectory != null) {
-          copyResource(basedir + File.separator + resourceDirectory, basedir + File.separator + resourceTargetDirectory);
-        }
-        // copy dependencies files to libTargetDirectory
-        String libTargetDirectory = config.getProperty("libTargetDirectory");
-        if (libTargetDirectory != null) {
-          //copyDependencies(project, basedir + File.separator + resourceDirectory, basedir + File.separator + libTargetDirectory);
-          copyDependencies(project, File.separator + libTargetDirectory);
-        }
+        // copy resourceDirectory files
+        copyResource(basedir + File.separator + resourceDirectory, basedir + File.separator + targetDirectory + "/WEB-INF/classes");
+
+        // copy compiled files
+        copyResource(basedir + File.separator + outputDirectory, basedir + File.separator + targetDirectory + "/WEB-INF/classes");
+
+        // copy dependencies files
+        copyDependencies(project, basedir + File.separator + targetDirectory + "/WEB-INF/lib");
 
         String archiveName = basedir + File.separator + targetDirectory + File.separator + artifactFileName;
-        String dirName;
-
-        dirName = basedir + File.separator + config.getProperty("webappDirectory", "main/webapp");
-        log.debug( "configuration.webappDirectory    = " + dirName );
-        archive( archiveName, dirName, "c" );
-
-        dirName = basedir + File.separator + config.getProperty("classesDirectory", "target/classes");
-        log.debug( "configuration.classesDirectory   = " + dirName );
-        archive( archiveName, dirName, "u" );
+        archive( archiveName, basedir + File.separator + webappDirectory, "c" );
+        archive( archiveName, basedir + File.separator + targetDirectory, "u" );
     }
 
     // ==========================================================================
