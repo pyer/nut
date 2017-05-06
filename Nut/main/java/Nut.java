@@ -1,12 +1,11 @@
 package nut;
 
+import nut.build.DuplicateProjectException;
+import nut.build.Scanner;
+import nut.build.Sorter;
+
 import nut.logging.Log;
-
 import nut.project.Project;
-
-import nut.workers.DuplicateProjectException;
-import nut.workers.Scanner;
-import nut.workers.Sorter;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 

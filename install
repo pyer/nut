@@ -54,13 +54,10 @@ cd ../project
 javac $options DependencyNotFoundException.java DependencyChecker.java ProjectException.java Project.java
 echo " - build"
 cd ../build
-javac $options BuildException.java ProjectBuilder.java
+javac $options BuildException.java ProjectBuilder.java DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java
 cd archive
 javac $options Archiver.java ArchiverException.java
 cd ..
-echo " - workers"
-cd ../workers
-javac $options DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java
 echo " - goals"
 cd ../goals
 javac $options GoalException.java

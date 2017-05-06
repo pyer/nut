@@ -1,10 +1,10 @@
-package nut.workers;
+package nut.build;
 
 import nut.logging.Log;
 import nut.build.BuildException;
 import nut.build.ProjectBuilder;
 import nut.project.Project;
-import nut.workers.ScannerException;
+import nut.build.ScannerException;
 
 import java.io.File;
 

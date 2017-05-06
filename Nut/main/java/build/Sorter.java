@@ -1,8 +1,8 @@
-package nut.workers;
+package nut.build;
 
 import nut.model.Dependency;
 import nut.project.Project;
-import nut.workers.DuplicateProjectException;
+import nut.build.DuplicateProjectException;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;

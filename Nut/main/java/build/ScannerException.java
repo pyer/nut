@@ -1,4 +1,4 @@
-package nut.workers;
+package nut.build;
 
 /**
  * project scan failed.

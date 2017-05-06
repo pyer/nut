@@ -1,4 +1,4 @@
-package nut.workers;
+package nut.build;
 
 /**
  * Exception that occurs when the project list contains duplicate projects instead of ignoring one.
