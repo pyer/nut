@@ -21,7 +21,7 @@ import nut.model.Model;
 import nut.model.XmlWriter;
 import nut.model.JsonWriter;
 
-import nut.project.BuildException;
+import nut.project.ProjectException;
 import nut.project.DependencyChecker;
 import nut.project.DependencyNotFoundException;
 
@@ -309,7 +309,7 @@ public class Project
           log.warning( "No goal '" + targetGoal + "' in the packaging '" + getPackaging() + "' for " + getId() );
         }
       }
-      catch ( BuildException e ) {
+      catch ( ProjectException e ) {
         time = System.currentTimeMillis() - time;
         log.failure( getId() );
       }
@@ -318,7 +318,7 @@ public class Project
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     private void executeGoal( String goalName, Properties config )
-        throws BuildException
+        throws ProjectException
     {
       try {
           log.debug("* execute goal: " + goalName);
@@ -329,19 +329,19 @@ public class Project
           Method method = cls.getMethod("execute", cArg);
           method.invoke( cls, this, config );
       } catch (IllegalArgumentException e) {
-          throw new BuildException( e.getMessage() , e );
+          throw new ProjectException( e.getMessage() , e );
       } catch (IllegalAccessException e) {
-          throw new BuildException( e.getMessage() , e );
+          throw new ProjectException( e.getMessage() , e );
       } catch (InvocationTargetException e) {
-          throw new BuildException( e.getMessage() , e );
+          throw new ProjectException( e.getMessage() , e );
       } catch ( ClassNotFoundException e) {
-          throw new BuildException( "Goal " + goalName + " not found" , e );
+          throw new ProjectException( "Goal " + goalName + " not found" , e );
       } catch (NoSuchMethodException e) {
-          throw new BuildException( "Method 'execute' not found in " + goalName, e );
+          throw new ProjectException( "Method 'execute' not found in " + goalName, e );
       } catch (SecurityException e) {
-          throw new BuildException( e.getMessage() , e );
+          throw new ProjectException( e.getMessage() , e );
       } catch (NullPointerException e) {
-          throw new BuildException( e.getMessage() , e );
+          throw new ProjectException( e.getMessage() , e );
       }
     }
 }

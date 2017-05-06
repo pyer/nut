@@ -4,6 +4,11 @@
       <class name="nut.artifact.ArtifactTest" />
     </classes>
   </test>
+  <test name="nut.build">
+    <classes>
+      <class name="nut.build.ProjectBuilderTest" />
+    </classes>
+</test>
   <test name="nut.build.archive">
     <classes>
       <class name="nut.build.archive.ArchiverTest" />
@@ -22,11 +27,6 @@
   <test name="nut.interpolation">
     <classes>
       <class name="nut.interpolation.InterpolatorTest" />
-    </classes>
-  </test>
-  <test name="nut.project">
-    <classes>
-      <class name="nut.project.ProjectBuilderTest" />
     </classes>
   </test>
   <test name="nut.logging">

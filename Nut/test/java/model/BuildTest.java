@@ -7,11 +7,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import nut.build.ProjectBuilder;
+import nut.build.BuildException;
 import nut.model.ValidationException;
-
 import nut.project.Project;
-import nut.project.ProjectBuilder;
-import nut.project.BuildException;
 
 public class BuildTest
 {

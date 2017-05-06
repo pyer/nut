@@ -1,8 +1,8 @@
-package nut.project;
+package nut.build;
 
+import nut.build.ProjectBuilder;
+import nut.build.BuildException;
 import nut.project.Project;
-import nut.project.ProjectBuilder;
-import nut.project.BuildException;
 
 import java.io.File;
 

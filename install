@@ -43,10 +43,6 @@ javac $options JsonSerializer.java
 echo " - artifact"
 cd ../artifact
 javac $options InvalidArtifactRTException.java Artifact.java
-echo " - build"
-cd ../build/archive
-javac $options Archiver.java ArchiverException.java
-cd ..
 echo " - model"
 cd ../model
 javac $options Goal.java Dependency.java Build.java Model.java Repository.java XmlReader.java XmlWriter.java JsonWriter.java ValidationException.java
@@ -55,7 +51,13 @@ cd ../interpolation
 javac $options Interpolator.java
 echo " - project"
 cd ../project
-javac $options DependencyNotFoundException.java DependencyChecker.java BuildException.java Project.java ProjectBuilder.java
+javac $options DependencyNotFoundException.java DependencyChecker.java ProjectException.java Project.java
+echo " - build"
+cd ../build
+javac $options BuildException.java ProjectBuilder.java
+cd archive
+javac $options Archiver.java ArchiverException.java
+cd ..
 echo " - workers"
 cd ../workers
 javac $options DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java

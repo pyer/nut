@@ -1,15 +1,12 @@
-package nut.project;
+package nut.build;
 
 import nut.artifact.Artifact;
-
+import nut.build.BuildException;
 import nut.model.Build;
 import nut.model.Model;
 import nut.model.XmlReader;
 import nut.model.ValidationException;
-
 import nut.project.Project;
-import nut.project.BuildException;
-
 import nut.xml.XmlParserException;
 
 import java.io.File;
