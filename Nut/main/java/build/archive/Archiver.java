@@ -57,20 +57,20 @@ public class Archiver
       }
     }
 
-    public void addDirectory( File directory )
+    public void addDirectory( String directory )
         throws ArchiverException
     {
-      if ( directory.isDirectory() ) {
-          archiveDir(directory.getAbsolutePath());
+      if ( new File(directory).isDirectory() ) {
+          archiveDir(directory);
       } else {
-          throw new ArchiverException( directory.getAbsolutePath() + " isn't a directory." );
+          throw new ArchiverException( directory + " isn't a directory." );
       }
     }
 
-    public void addFile( String path, File file )
+    public void addFile( String path, String fileName )
         throws ArchiverException
     {
-        archiveFile( path+"/", file.getPath() );
+        archiveFile( path + File.separator, fileName );
     }
 
     // ==========================================================================

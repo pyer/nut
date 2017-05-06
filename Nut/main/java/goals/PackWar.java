@@ -1,6 +1,8 @@
 package nut.goals;
 
 import nut.artifact.Artifact;
+import nut.build.archive.Archiver;
+import nut.build.archive.ArchiverException;
 import nut.goals.GoalException;
 import nut.logging.Log;
 import nut.model.Dependency;
@@ -42,7 +44,7 @@ public class PackWar
         String msg;
         log = new Log();
         Properties pp               = project.getModel().getProperties();
-        String basedir              = (String)pp.getProperty( "basedir" );
+        String basedir              = (String)pp.getProperty( "basedir" ) + File.separator;
         String targetDirectory      = project.getBuild().getTargetDirectory();
         String sourceDirectory      = project.getBuild().getSourceDirectory();
         String resourceDirectory    = project.getBuild().getResourceDirectory();
@@ -71,6 +73,24 @@ public class PackWar
             log.error(msg);
             throw new GoalException(msg);
         }
+        try {
+          String archiveName = basedir + File.separator + targetDirectory + File.separator + artifactFileName;
+          Archiver zip = new Archiver();
+          zip.setDestFile( new File(archiveName) );
+          zip.create();
+          zip.addDirectory(basedir + webappDirectory);
+//          zip.addDirectory(basedir + targetDirectory);
+/*
+          // copy resourceDirectory files
+          zip.addDirectory(new File(basedir + resourceDirectory));
+          // copy compiled files
+          zip.addDirectory(new File(basedir + outputDirectory));
+*/
+          zip.close();
+        } catch(ArchiverException e) {
+          throw new GoalException(e.getMessage());
+        }
+/*
         // copy resourceDirectory files
         copyResource(basedir + File.separator + resourceDirectory, basedir + File.separator + targetDirectory + "/WEB-INF/classes");
 
@@ -83,6 +103,7 @@ public class PackWar
         String archiveName = basedir + File.separator + targetDirectory + File.separator + artifactFileName;
         archive( archiveName, basedir + File.separator + webappDirectory, "c" );
         archive( archiveName, basedir + File.separator + targetDirectory, "u" );
+*/
     }
 
     // ==========================================================================

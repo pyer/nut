@@ -14,12 +14,12 @@ public class ArchiverTest
     public void testDestFile()
         throws ArchiverException
     {
-        String zipName = "/target/archive/testDestFile.zip";
-        String basedir = System.getProperty( "basedir" );
+        String zipName = "target/archive/testDestFile.zip";
+        String basedir = System.getProperty( "basedir" ) + File.separator;
         Archiver zip = new Archiver();
         File target = new File(basedir+zipName);
         zip.setDestFile( target );
-        File targetDir = new File( basedir+"/target/archive" );
+        File targetDir = new File( basedir+"target/archive" );
         assertTrue( targetDir.exists() );
         assertEquals( target.compareTo(zip.getDestFile()), 0 );
     }
@@ -28,13 +28,13 @@ public class ArchiverTest
     public void testAddDirectory()
         throws ArchiverException
     {
-        String zipName = "/target/archive/testAddDirectory.zip";
-        String basedir = System.getProperty( "basedir" );
+        String zipName = "target/archive/testAddDirectory.zip";
+        String basedir = System.getProperty( "basedir" ) + File.separator;
         Archiver zip = new Archiver();
         File target = new File(basedir+zipName);
         zip.setDestFile( target );
         zip.create();
-        zip.addDirectory( new File(basedir+"/test/resources/zip") );
+        zip.addDirectory( basedir+"test/resources/zip" );
         zip.close();
         assertTrue( target.exists() );
         assertEquals( target.length(), 436 );
@@ -44,13 +44,13 @@ public class ArchiverTest
     public void testAddFile()
         throws ArchiverException
     {
-        String zipName = "/target/archive/testAddFile.zip";
-        String basedir = System.getProperty( "basedir" );
+        String zipName = "target/archive/testAddFile.zip";
+        String basedir = System.getProperty( "basedir" ) + File.separator;
         Archiver zip = new Archiver();
         File target = new File(basedir+zipName);
         zip.setDestFile( target );
         zip.create();
-        zip.addFile( basedir+"/test", new File("resources/parent.xml") );
+        zip.addFile( basedir+"test", "resources/parent.xml" );
         zip.close();
         assertTrue( target.exists() );
         assertEquals( target.length(), 267 );
@@ -60,14 +60,14 @@ public class ArchiverTest
     public void testFullArchive()
         throws ArchiverException
     {
-        String zipName = "/target/archive/testFullArchive.zip";
-        String basedir = System.getProperty( "basedir" );
+        String zipName = "target/archive/testFullArchive.zip";
+        String basedir = System.getProperty( "basedir" ) + File.separator;
         Archiver zip = new Archiver();
         File target = new File(basedir+zipName);
         zip.setDestFile( target );
         zip.create();
-        zip.addDirectory( new File(basedir+"/test/resources/zip") );
-        zip.addFile( basedir+"/test", new File("resources/parent.xml") );
+        zip.addDirectory( basedir+"test/resources/zip" );
+        zip.addFile( basedir+"test", "resources/parent.xml" );
         zip.close();
         assertTrue( target.exists() );
         assertEquals( target.length(), 681 );
