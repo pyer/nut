@@ -4,6 +4,11 @@
       <class name="nut.artifact.ArtifactTest" />
     </classes>
   </test>
+  <test name="nut.build.archive">
+    <classes>
+      <class name="nut.build.archive.ArchiverTest" />
+    </classes>
+  </test>
   <test name="nut.model">
     <classes>
       <class name="nut.model.BuildTest" />

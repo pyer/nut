@@ -43,6 +43,10 @@ javac $options JsonSerializer.java
 echo " - artifact"
 cd ../artifact
 javac $options InvalidArtifactRTException.java Artifact.java
+echo " - build"
+cd ../build/archive
+javac $options Archiver.java ArchiverException.java
+cd ..
 echo " - model"
 cd ../model
 javac $options Goal.java Dependency.java Build.java Model.java Repository.java XmlReader.java XmlWriter.java JsonWriter.java ValidationException.java
