@@ -35,6 +35,7 @@ public class XmlReaderTest
     {
         XmlReader xml = new XmlReader();
         Model model = xml.parseModel( new StringReader("") );
+        assertNotNull( model );
     }
 
     @Test(expectedExceptions = XmlParserException.class)
@@ -42,6 +43,7 @@ public class XmlReaderTest
     {
         XmlReader xml = new XmlReader();
         Model model = xml.parseModel( new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") );
+        assertNotNull( model );
     }
 
     @Test
