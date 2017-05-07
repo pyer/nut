@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import java.nio.file.CopyOption;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -73,64 +75,71 @@ public class PackWar
             log.error(msg);
             throw new GoalException(msg);
         }
+
+        try {
+          // copy resourceDirectory files
+          copyResources(basedir + resourceDirectory, basedir + targetDirectory + "/webapp/WEB-INF/classes");
+          // copy compiled files
+          copyResources(basedir + outputDirectory,   basedir + targetDirectory + "/webapp/WEB-INF/classes");
+          // copy dependencies files
+          copyDependencies(project, basedir + targetDirectory + "/webapp/WEB-INF/lib");
+        } catch(IOException e) {
+          throw new GoalException(e.getMessage());
+        }
+
         try {
           String archiveName = basedir + File.separator + targetDirectory + File.separator + artifactFileName;
           Archiver zip = new Archiver();
           zip.setDestFile( new File(archiveName) );
           zip.create();
           zip.addDirectory(basedir + webappDirectory);
-//          zip.addDirectory(basedir + targetDirectory);
-/*
-          // copy resourceDirectory files
-          zip.addDirectory(new File(basedir + resourceDirectory));
-          // copy compiled files
-          zip.addDirectory(new File(basedir + outputDirectory));
-*/
+          zip.addDirectory(basedir + targetDirectory + File.separator + "webapp");
           zip.close();
         } catch(ArchiverException e) {
           throw new GoalException(e.getMessage());
         }
-/*
-        // copy resourceDirectory files
-        copyResource(basedir + File.separator + resourceDirectory, basedir + File.separator + targetDirectory + "/WEB-INF/classes");
-
-        // copy compiled files
-        copyResource(basedir + File.separator + outputDirectory, basedir + File.separator + targetDirectory + "/WEB-INF/classes");
-
-        // copy dependencies files
-        copyDependencies(project, basedir + File.separator + targetDirectory + "/WEB-INF/lib");
-
-        String archiveName = basedir + File.separator + targetDirectory + File.separator + artifactFileName;
-        archive( archiveName, basedir + File.separator + webappDirectory, "c" );
-        archive( archiveName, basedir + File.separator + targetDirectory, "u" );
-*/
     }
 
     // ==========================================================================
-    private static void copyResource(String sourceDirectory, String targetDirectory)
-        throws GoalException
-    {
-      log.debug("* copy " + sourceDirectory + " to " + targetDirectory);
-      try {
-        File targetDir = new File(targetDirectory);
-        if(!targetDir.exists()){
-          targetDir.mkdirs();
+    private static void copyResources(String sourceDirectory, String targetDirectory)
+      throws IOException {
+        log.debug("* copy " + sourceDirectory + " to " + targetDirectory);
+        File source = new File(sourceDirectory);
+        File dest   = new File(targetDirectory);
+        CopyOption options = StandardCopyOption.COPY_ATTRIBUTES;
+        if (source.isDirectory())
+            copyFolder(source, dest, options);
+        else {
+            ensureParentFolder(dest);
+            copyFile(source, dest, options);
         }
-        File sourceDir = new File(sourceDirectory);
-        String[] paths = sourceDir.list();
-        // for each name in the path array
-        for(String path:paths) {
-            // copy each file to output directory
-            log.debug("** " + path);
-            Path from = Paths.get(sourceDirectory + File.separator + path);
-            Path to   = Paths.get(targetDirectory + File.separator + path);
-            Files.copy(from, to);
-        }
-      } catch( Exception e ) {
-        log.error( "Failed to copy resource file: " + e.getMessage(), e );
-        throw new GoalException(e.getMessage());
-      }
     }
+
+    private static void copyFolder(File source, File dest, CopyOption... options) throws IOException {
+        if (!dest.exists())
+            dest.mkdirs();
+        File[] contents = source.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                File newFile = new File(dest.getAbsolutePath() + File.separator + f.getName());
+                if (f.isDirectory())
+                    copyFolder(f, newFile, options);
+                else
+                    copyFile(f, newFile, options);
+            }
+        }
+    }
+
+    private static void copyFile(File source, File dest, CopyOption... options) throws IOException {
+        Files.copy(source.toPath(), dest.toPath(), options);
+    }
+
+    private static void ensureParentFolder(File file) {
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists())
+            parent.mkdirs();
+    }
+
     // ==========================================================================
     private static void copyDependencies(Project project, String targetDirectory)
         throws GoalException
@@ -159,42 +168,4 @@ public class PackWar
     }
 
     // ==========================================================================
-    private static void archive(String finalName, String sourceDirectory, String mode)
-        throws GoalException
-    {
-        String msg;
-        File dir = new File(sourceDirectory);
-        if( !dir.exists() ) {
-          msg = "\'" + sourceDirectory + "\' is empty";
-          log.error(msg);
-          throw new GoalException(msg);
-        }
-        // ----------------------------------------------------------------------
-        List<String> args = new ArrayList<String>();
-        args.add( "jar" );
-        args.add( mode + "f" );
-        args.add( finalName );
-        args.add( "-C" );
-        args.add( sourceDirectory );
-        args.add( "." );
-        log.debug( "jar: -C " + sourceDirectory );
-        // ----------------------------------------------------------------------
-        // build the command line
-        String[] command = (String[]) args.toArray( new String[ args.size() ] );
-        // ----------------------------------------------------------------------
-        try {
-            Process child = Runtime.getRuntime().exec(command);
-            int status = child.waitFor();
-            if ( status != 0 ) {
-                throw new GoalException("Error in child process");
-            }
-        } catch ( InterruptedException e ) {
-            log.error( "Failed to archive: " + e.getMessage(), e );
-            throw new GoalException(e.getMessage());
-        } catch ( IOException e ) {
-            log.error( "Failed to archive: " + e.getMessage(), e );
-            throw new GoalException(e.getMessage());
-        }
-        // ----------------------------------------------------------------------
-    }
 }
