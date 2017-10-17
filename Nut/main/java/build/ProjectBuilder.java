@@ -90,7 +90,8 @@ public class ProjectBuilder
         } catch ( ValidationException e ) {
           throw new BuildException( model.getId() + ": " + e.getMessage(), e );
         }
-        Project project = new Project( model );
+        Project project = new Project();
+        project.setModel( model );
         project.setArtifact( new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() ) );
         return project;
     }

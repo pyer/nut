@@ -55,9 +55,12 @@ public class Project
 
     private Log log;
 
-    public Project( Model model )
+    // ----------------------------------------------------------------------
+    // Constructor
+    // ----------------------------------------------------------------------
+
+    public Project()
     {
-        this.model = model;
         this.time = 0;
         this.buildDone = false;
         this.buildSuccess = false;
@@ -65,6 +68,11 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
+    public void setModel( Model model )
+    {
+        this.model = model;
+    }
+
     public boolean isBuilt()
     {
         return this.buildDone;
