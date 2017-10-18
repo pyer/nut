@@ -48,6 +48,9 @@ public class Nut
               else if( args[i].equals("-d") || args[i].equals("--debug") ) {
                  log.debugOn();
               }
+              else if( args[i].equals("-e") || args[i].equals("--effective") ) {
+                 effectiveNut = "xml";
+              }
               else if( args[i].equals("-x") || args[i].equals("--xml") ) {
                  effectiveNut = "xml";
               }
@@ -170,12 +173,13 @@ public class Nut
         log.out( "  -h,--help        Display this help" );
         log.out( "  -D,--define      Define a system property" );
         log.out( "  -d,--debug       Produce execution debug output" );
-        log.out( "  -x,--xml         Display effective NUT in xml format" );
+        log.out( "  -e,--effective   Display effective NUT in xml format" );
         log.out( "  -j,--json        Display effective NUT in json format" );
         log.out( "  -n,--noop        No operation mode (dry run)" );
         log.out( "  -r,--release     Release mode. Default is snapshot" );
         log.out( "  -s,--snapshot    Snapshot default mode" );
         log.out( "  -v,--version     Display version information" );
+        log.out( "  -x,--xml         Display effective NUT in xml format" );
     }
 
     // ----------------------------------------------------------------------
