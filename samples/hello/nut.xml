@@ -4,4 +4,8 @@
   <artifactId>Hello</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
+  <description>
+    Build : nut build
+    Run   : java -cp target/Hello.jar Hello
+  </description>
 </project>
