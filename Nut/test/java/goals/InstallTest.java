@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 public class InstallTest
 {
     private Model model = new Model();
-    
+
     private void setupTest()
     {
         model.addProperty( "basedir", "target" );
@@ -45,7 +45,8 @@ public class InstallTest
         new File( "target/build" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
         new File( "target/build/artifact.file" ).createNewFile();
-        Project project = new Project(model);
+        Project project = new Project();
+        project.setModel(model);
         Properties config = new Properties();
         Install.execute(project,config);
         File installedArtifact = new File( "target/repo2/local/group/artifact-0.0-SNAPSHOT.file" );
@@ -63,7 +64,8 @@ public class InstallTest
         new File( "target/nut.xml" ).createNewFile();
         model.setPackaging( "modules" );
 
-        Project project = new Project(model);
+        Project project = new Project();
+        project.setModel(model);
         Properties config = new Properties();
         Install.execute(project,config);
         File installedArtifact = new File( "target/repo3/local/group/artifact-0.0-SNAPSHOT.modules" );
@@ -82,7 +84,8 @@ public class InstallTest
         new File( "target/build" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
         model.setPackaging( "file" );
-        Project project = new Project(model);
+        Project project = new Project();
+        project.setModel(model);
         Properties config = new Properties();
         Install.execute(project,config);
         File installedArtifact = new File( "target/repo4/local/group/artifact-0.0-SNAPSHOT.file" );

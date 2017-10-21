@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 public class CleanTest
 {
     private final String LOCAL_TARGET = "target/local-target";
-    
+
     @Test
     public void testCreateTarget()
     {
@@ -20,7 +20,7 @@ public class CleanTest
       d.mkdirs();
       assertTrue( d.exists() );
     }
-    
+
     @Test
     public void testExecute()
     {
@@ -29,7 +29,8 @@ public class CleanTest
       Model model = new Model();
       model.addProperty( "basedir", "target" );
       model.setBuild( build );
-      Project project = new Project(model);
+      Project project = new Project();
+      project.setModel(model);
 
       File d = new File( LOCAL_TARGET );
       d.mkdirs();
@@ -48,4 +49,3 @@ public class CleanTest
       assertFalse( d.exists() );
     }
 }
-

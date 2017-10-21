@@ -16,12 +16,11 @@ public class PackZipTest
 {
     private final String LOCAL_REPO = "target/repository";
     private Model model = new Model();
-    private Project project;
+    private Project project = new Project();
 
     @BeforeMethod
     public void before()
     {
-        project = new Project(model);
         model.addProperty( "nut.home", LOCAL_REPO );
         model.addProperty( "basedir", "." );
         new File( LOCAL_REPO ).mkdir();
@@ -33,6 +32,7 @@ public class PackZipTest
         model.setArtifactId( "artifact" );
         model.setVersion( "0.0" );
         model.setPackaging( "zip" );
+        project.setModel(model);
     }
 
 /*
