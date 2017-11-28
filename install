@@ -19,8 +19,6 @@ EOF
 
 chmod +x nut
 #sudo install nut /usr/bin/
-#rm nut
-mv nut ~/bin/
 
 echo "Build nut local repository"
 [ -d $NUT_HOME ] && rm -r $NUT_HOME
