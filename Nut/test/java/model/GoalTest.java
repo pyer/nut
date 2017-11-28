@@ -47,26 +47,6 @@ public class GoalTest
     }
 
     @Test
-    public void testClassName()
-    {
-      String s = "GoalClass";
-      Goal goal = new Goal();
-      goal.setName("goalName");
-      assertFalse( goal.hasClassName() );
-      // Default class name is name
-      assertTrue( goal.getClassName().equals( "GoalName" ) );
-      goal.setClassName( s );
-      assertTrue( goal.getClassName().equals( s ) );
-    }
-
-    @Test
-    public void testDefaultClassName()
-    {
-      Goal goal = new Goal();
-      assertEquals( "Test", goal.getClassName("test") );
-    }
-
-    @Test
     public void testConfiguration()
     {
       Goal goal = new Goal();

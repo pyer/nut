@@ -20,6 +20,7 @@ EOF
 chmod +x nut
 #sudo install nut /usr/bin/
 #rm nut
+mv nut ~/bin/
 
 echo "Build nut local repository"
 [ -d $NUT_HOME ] && rm -r $NUT_HOME
@@ -62,7 +63,7 @@ echo " - goals"
 cd ../goals
 javac $options GoalException.java
 javac $options Clean.java
-javac $options CompileJava.java
+javac $options CompileJar.java
 javac $options Install.java
 javac $options PackJar.java
 javac $options PackWar.java
@@ -88,12 +89,4 @@ cd $root
 jar cf $NUT_HOME/nut/testNG-$NUT_VERSION.jar -C target/classes .
 cp $NUT_HOME/nut/testNG-$NUT_VERSION.jar $NUT_HOME/nut/testNG-2.1.jar
 rm -r target
-
-echo "Build packaging"
-mkdir -p $NUT_HOME/nut/packaging
-cp packaging/xml/main/resources/xml.xml         $NUT_HOME/nut/packaging/xml-$NUT_VERSION.xml
-cp packaging/jar/main/resources/jar.xml         $NUT_HOME/nut/packaging/jar-$NUT_VERSION.xml
-cp packaging/war/main/resources/war.xml         $NUT_HOME/nut/packaging/war-$NUT_VERSION.xml
-cp packaging/zip/main/resources/zip.xml         $NUT_HOME/nut/packaging/zip-$NUT_VERSION.xml
-cp packaging/modules/main/resources/modules.xml $NUT_HOME/nut/packaging/modules-$NUT_VERSION.xml
 echo "Done."

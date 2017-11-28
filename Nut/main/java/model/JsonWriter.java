@@ -25,9 +25,6 @@ public class JsonWriter {
     {
             serializer.startObject(null);
             serializer.element( "name", goal.getName() );
-            if ( goal.hasClassName() ) {
-                serializer.element( "class", goal.getClassName() );
-            }
             if ( goal.hasConfiguration() ) {
                 serializer.startObject( "configuration" );
                 for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {

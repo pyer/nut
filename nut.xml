@@ -10,11 +10,6 @@
   </description>
 
   <modules>
-    <module>packaging/modules</module>
-    <module>packaging/jar</module>
-    <module>packaging/war</module>
-    <module>packaging/xml</module>
-    <module>packaging/zip</module>
     <module>Nut</module>
     <module>testNG</module>
   </modules>

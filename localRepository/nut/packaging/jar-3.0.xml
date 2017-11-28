@@ -55,7 +55,6 @@
       </goal>
       <goal>
         <name>compile</name>
-        <class>CompileJava</class>
       </goal>
       <goal>
         <name>test</name>
@@ -63,7 +62,6 @@
       </goal>
       <goal>
         <name>pack</name>
-        <class>PackJar</class>
       </goal>
       <goal>
         <name>install</name>

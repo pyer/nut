@@ -1,3 +1,6 @@
+3.0
+Each goal calls two 'execute' methods from "Goal" and "GoalPackaging" classes
+
 2.0
 No plugins to improve speed.
 simpler repository layout.

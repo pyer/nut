@@ -41,9 +41,6 @@ public class XmlWriter {
     {
             serializer.startTag( tagName );
             writeElement( "name", goal.getName(), serializer );
-            if ( goal.hasClassName() ) {
-                writeElement( "class", goal.getClassName(), serializer );
-            }
             if ( goal.hasConfiguration() ) {
                 serializer.startTag( "configuration" );
                 for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {

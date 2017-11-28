@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
-  <parent>../../nut.xml</parent>
-
-  <groupId>nut.packaging</groupId>
-  <artifactId>xml</artifactId>
-  <packaging>xml</packaging>
-</project>

@@ -20,7 +20,7 @@ import javax.tools.ToolProvider;
  * Compiles application sources
  *
  */
-public class CompileJava
+public class CompileJar
 {
     /** Instance logger */
     private static Log log;

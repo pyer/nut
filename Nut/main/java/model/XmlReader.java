@@ -49,8 +49,6 @@ public class XmlReader {
         while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "name", parsed ) ) {
                 goal.setName( parser.getText() );
-            } else if ( tagEquals( parser.getName(), "class", parsed ) ) {
-                goal.setClassName( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testSuiteFile", parsed ) ) {
                 configuration.setProperty( parser.getName(), parser.getText() );
             } else if ( tagEquals( parser.getName(), "scriptFile", parsed ) ) {

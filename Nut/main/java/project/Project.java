@@ -304,9 +304,11 @@ public class Project
               // build is done if at least one goal is executed
               buildDone=true;
               if( noopMode ) {
-                log.info( "NOOP: " + goal.getClassName() + " " + getId() );
+                log.info( "NOOP: " + goal.getName() + " " + getId() );
               } else {
-                executeGoal( goal.getClassName(), goal.getConfiguration() );
+                // Call GoalPackaging.execute then Goal.execute for each goal
+                executeGoal( camelCase(goal.getName())+camelCase(getPackaging()), goal.getConfiguration() );
+                executeGoal( camelCase(goal.getName()), goal.getConfiguration() );
               }
             }
         }
@@ -318,11 +320,17 @@ public class Project
         }
       }
       catch ( ProjectException e ) {
+        log.debug("Project exception " + e.getMessage());
         time = System.currentTimeMillis() - time;
         log.failure( getId() );
       }
     }
 
+    // ----------------------------------------------------------------------
+    private String camelCase( String name ) {
+      return name.substring(0, 1).toUpperCase() + name.substring(1);
+    }
+   
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     private void executeGoal( String goalName, Properties config )
@@ -343,7 +351,8 @@ public class Project
       } catch (InvocationTargetException e) {
           throw new ProjectException( e.getMessage() , e );
       } catch ( ClassNotFoundException e) {
-          throw new ProjectException( "Goal " + goalName + " not found" , e );
+          // throw new ProjectException( "Goal " + goalName + " not found" , e );
+          log.debug("  Goal " + goalName + " not found");
       } catch (NoSuchMethodException e) {
           throw new ProjectException( "Method 'execute' not found in " + goalName, e );
       } catch (SecurityException e) {

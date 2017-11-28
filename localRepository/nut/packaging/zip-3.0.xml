@@ -22,7 +22,6 @@
       </goal>
       <goal>
         <name>pack</name>
-        <class>PackZip</class>
       </goal>
       <goal>
         <name>install</name>

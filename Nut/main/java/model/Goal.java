@@ -17,8 +17,6 @@ public class Goal implements java.io.Serializable
 
     private String name;
 
-    private String className;
-
     /**
      * The configuration as properties.
      */
@@ -44,42 +42,6 @@ public class Goal implements java.io.Serializable
     public void setName( String name )
     {
         this.name = name;
-    }
-
-    /**
-     * Get the className of the goal.
-     * @return String
-     */
-    public String getClassName()
-    {
-      if( this.className==null || this.className.isEmpty() ) {
-        return this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
-      }
-      return this.className;
-    }
-
-    public String getClassName( String name )
-    {
-      if( name==null || name.isEmpty() )
-        return "";
-      if( this.className==null || this.className.isEmpty() ) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
-      }
-      return this.className;
-    }
-
-    /**
-     * Set the className of the goal.
-     * @param className
-     */
-    public void setClassName( String className )
-    {
-        this.className = className;
-    }
-
-    public boolean hasClassName()
-    {
-        return( (className!=null) && !className.isEmpty() );
     }
 
     /**
