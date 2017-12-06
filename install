@@ -61,7 +61,7 @@ echo " - goals"
 cd ../goals
 javac $options GoalException.java
 javac $options Clean.java
-javac $options CompileJar.java
+javac $options Compile.java
 javac $options Install.java
 javac $options PackJar.java
 javac $options PackWar.java
