@@ -41,7 +41,7 @@ public class ProjectBuilder
     // Build Implementation
     // ----------------------------------------------------------------------
 
-    public Project build( File projectFile )
+    public Project launch( File projectFile )
         throws BuildException
     {
         String basedir     = projectFile.getAbsoluteFile().getParent();
@@ -72,11 +72,13 @@ public class ProjectBuilder
         //log.info( "Building " + model.getId() );
         if( packagingModel != null ) {
           model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
+          model.getGoals().addAll( packagingModel.getGoals() );
           model.getDependencies().addAll( packagingModel.getDependencies() );
           model.getRepositories().addAll( packagingModel.getRepositories() );
         }
         if( parentModel != null ) {
           model.setBuild( mergedBuild( model.getBuild(), parentModel.getBuild() ) );
+          model.getGoals().addAll( parentModel.getGoals() );
           model.getDependencies().addAll( parentModel.getDependencies() );
           model.getRepositories().addAll( parentModel.getRepositories() );
           if( model.getGroupId() == null )

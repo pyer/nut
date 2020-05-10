@@ -59,7 +59,7 @@ public class Scanner
             File file = (File) iterator.next();
             log.debug("   Project " + file.getAbsolutePath());
             try {
-              Project project = builder.build( file );
+              Project project = builder.launch( file );
               if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
               //log.info("   Modules:");
                 File modulesRoot = file.getParentFile();

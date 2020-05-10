@@ -23,7 +23,7 @@ public class Nut
 
     public static void main( String[] args )
     {
-        String  goalArg      = "";
+        String  wantedGoal      = "";
         String  effectiveNut = null; // xml or json
         boolean noopMode     = false;
 
@@ -73,8 +73,8 @@ public class Nut
                     System.exit( 1 );
                  }
                  // nearly every arg without '-' is a goal
-                 if( "".equals(goalArg) ) {
-                    goalArg = args[i];
+                 if( "".equals(wantedGoal) ) {
+                    wantedGoal = args[i];
                  } else {
                     log.error( "Too many goals." );
                     showHelp();
@@ -86,11 +86,11 @@ public class Nut
                  showHelp();
                  System.exit( 3 );
         }
-        if ("list".equals(goalArg)) {
-          effectiveNut=goalArg;
+        if ("list".equals(wantedGoal)) {
+          effectiveNut=wantedGoal;
         }
         // every goal is 4 characters long or more
-        if (effectiveNut==null && goalArg.length()<4 ) {
+        if (effectiveNut==null && wantedGoal.length()<4 ) {
           showHelp();
           System.exit( 4 );
         }
@@ -114,7 +114,7 @@ public class Nut
                   log.info( "   " + currentProject.getId() );
               }
             }
-            buildProject(sortedProjects, goalArg, effectiveNut, noopMode);
+            buildProject(sortedProjects, wantedGoal, effectiveNut, noopMode);
             if( sortedProjects.size() > 1 )
                logReactorSummary( sortedProjects );
           } catch(CycleDetectedException e) {
@@ -209,7 +209,7 @@ public class Nut
     }
 
     // --------------------------------------------------------------------------------
-    private static void buildProject( List sortedProjects, String goalArgument, String effectiveNut, boolean noopMode )
+    private static void buildProject( List sortedProjects, String wantedGoal, String effectiveNut, boolean noopMode )
     {
             // iterate over projects, and execute on each...
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
@@ -219,12 +219,12 @@ public class Nut
                 if( effectiveNut == null ) {
                     currentProject.interpolateModel();
                     currentProject.checkDependencies();
-                    currentProject.build( goalArgument, noopMode );
+                    currentProject.build( wantedGoal, noopMode );
                     if ( currentProject.isBuilt() && !currentProject.isSuccessful() ) {
                       retCode += 9;
                     }
                 } else if ( "list".equals(effectiveNut) ) {
-                    currentProject.goalsNames();
+                    currentProject.listOfGoals();
                 } else if ( "xml".equals(effectiveNut) ) {
                     currentProject.effectiveXmlModel();
                 } else if ( "json".equals(effectiveNut) ) {

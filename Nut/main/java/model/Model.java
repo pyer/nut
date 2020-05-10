@@ -2,6 +2,7 @@ package nut.model;
 
 import nut.model.Build;
 import nut.model.Dependency;
+import nut.model.Goal;
 import nut.model.Repository;
 import nut.model.ValidationException;
 
@@ -21,6 +22,7 @@ import java.util.Properties;
  *   - packaging
  *   - description
  *   - build
+ *   - goals
  *   - dependencies
  *   - repositories
  *   - properties
@@ -73,6 +75,7 @@ public class Model implements java.io.Serializable
      * Other variables
      */
     private List<String> modules;
+    private List<Goal> goals;
     private List<Dependency> dependencies;
     private List<Repository> repositories;
     private Properties properties;
@@ -171,6 +174,19 @@ public class Model implements java.io.Serializable
         this.modules = modules;
     }
 
+    public List<Goal> getGoals()
+    {
+        if ( this.goals == null ) {
+            this.goals = new ArrayList<Goal>();
+        }
+        return this.goals;
+    }
+
+    public void setGoals( List<Goal> goals )
+    {
+        this.goals = goals;
+    }
+
     public List<Dependency> getDependencies()
     {
         if ( this.dependencies == null ) {
@@ -231,8 +247,7 @@ public class Model implements java.io.Serializable
     /**
      * Whole project validation
      */
-    public void validate()
-        throws ValidationException
+    public void validate() throws ValidationException
     {
         String ID_REGEX = "[A-Za-z0-9_\\-.]+";
         validateStringNotEmpty( "groupId", groupId );
@@ -248,6 +263,12 @@ public class Model implements java.io.Serializable
         if ( !getModules().isEmpty() && !"modules".equals( packaging ) ) {
             throw new ValidationException( "Packaging '" + packaging +
                                                 "' is invalid. Aggregator projects require 'modules' as packaging." );
+        }
+
+        for ( Iterator it = getGoals().iterator(); it.hasNext(); )
+        {
+            Goal g = (Goal) it.next();
+            g.validate();
         }
 
         for ( Iterator it = getDependencies().iterator(); it.hasNext(); )

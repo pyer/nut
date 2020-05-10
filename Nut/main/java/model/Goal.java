@@ -45,6 +45,7 @@ public class Goal implements java.io.Serializable
     }
 
     /**
+    /**
      * Get the configuration object
      * @return configuration
      */
@@ -72,8 +73,7 @@ public class Goal implements java.io.Serializable
     /**
      * validate method
      */
-    public void validate()
-        throws ValidationException
+    public void validate() throws ValidationException
     {
         if ( name == null )
             throw new ValidationException( "goal.name is null." );

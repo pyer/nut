@@ -15,29 +15,6 @@ public class JsonWriter {
     private JsonSerializer serializer;
 
     /**
-     * Method writeGoal.
-     *
-     * @param goal
-     * @throws java.io.IOException
-     */
-    private void writeGoal( Goal goal )
-        throws java.io.IOException
-    {
-            serializer.startObject(null);
-            serializer.element( "name", goal.getName() );
-            if ( goal.hasConfiguration() ) {
-                serializer.startObject( "configuration" );
-                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {
-                    String key = (String) iter.next();
-                    String value = (String) goal.getConfiguration().getProperty( key );
-                    serializer.element( key, value );
-                }
-                serializer.endObject();
-            }
-            serializer.endObject();
-    }
-
-    /**
      * Method writeBuild.
      *
      * @param build
@@ -55,14 +32,28 @@ public class JsonWriter {
             serializer.element( "outputDirectory", build.getOutputDirectory() );
             serializer.element( "testOutputDirectory", build.getTestOutputDirectory() );
             serializer.element( "testReportDirectory", build.getTestReportDirectory() );
-            if ( build.getGoals() != null && build.getGoals().size() > 0 ) {
-                serializer.startObject( "goals" );
-                serializer.startList( "goal" );
-                for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); ) {
-                    Goal o = (Goal) iter.next();
-                    writeGoal( o );
+            serializer.element( "suite", build.getSuite() );
+            serializer.endObject();
+    }
+
+    /**
+     * Method writeGoal.
+     *
+     * @param goal
+     * @throws java.io.IOException
+     */
+    private void writeGoal( Goal goal )
+        throws java.io.IOException
+    {
+            serializer.startObject(null);
+            serializer.element( "name", goal.getName() );
+            if ( goal.hasConfiguration() ) {
+                serializer.startObject( "configuration" );
+                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {
+                    String key = (String) iter.next();
+                    String value = (String) goal.getConfiguration().getProperty( key );
+                    serializer.element( key, value );
                 }
-                serializer.endList();
                 serializer.endObject();
             }
             serializer.endObject();
@@ -128,6 +119,17 @@ public class JsonWriter {
             for ( Iterator iter = model.getModules().iterator(); iter.hasNext(); ) {
                 String module = (String) iter.next();
                 serializer.element( module );
+            }
+            serializer.endList();
+            serializer.endObject();
+        }
+        
+        if ( model.getGoals().size() > 0 ) {
+            serializer.startObject( "goals" );
+            serializer.startList( "goal" );
+            for ( Iterator iter = model.getGoals().iterator(); iter.hasNext(); ) {
+                Goal o = (Goal) iter.next();
+                writeGoal( o );
             }
             serializer.endList();
             serializer.endObject();

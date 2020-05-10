@@ -16,17 +16,21 @@
     <testOutputDirectory>target/test-classes</testOutputDirectory>
     <testReportDirectory>target/test-reports</testReportDirectory>
 
-    <goals>
-      <goal>
-        <name>clean</name>
-      </goal>
-      <goal>
-        <name>pack</name>
-      </goal>
-      <goal>
-        <name>install</name>
-      </goal>
-    </goals>
+    <suite>clean pack install</suite>
   </build>
+
+  <goals>
+    <goal>
+      <name>clean</name>
+    </goal>
+    <goal>
+      <name>pack</name>
+    </goal>
+    <goal>
+      <name>install</name>
+    </goal>
+  </goals>
+
+</project>
 
 </project>

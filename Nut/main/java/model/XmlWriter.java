@@ -29,6 +29,30 @@ public class XmlWriter {
     }
 
     /**
+     * Method writeBuild.
+     *
+     * @param build
+     * @param tagName
+     * @param serializer
+     * @throws java.io.IOException
+     */
+    private void writeBuild( Build build, String tagName, XmlSerializer serializer )
+        throws java.io.IOException
+    {
+            serializer.startTag( tagName );
+            writeElement( "sourceDirectory", build.getSourceDirectory(), serializer );
+            writeElement( "resourceDirectory", build.getResourceDirectory(), serializer );
+            writeElement( "testSourceDirectory", build.getTestSourceDirectory(), serializer );
+            writeElement( "testResourceDirectory", build.getTestResourceDirectory(), serializer );
+            writeElement( "targetDirectory", build.getTargetDirectory(), serializer );
+            writeElement( "outputDirectory", build.getOutputDirectory(), serializer );
+            writeElement( "testOutputDirectory", build.getTestOutputDirectory(), serializer );
+            writeElement( "testReportDirectory", build.getTestReportDirectory(), serializer );
+            writeElement( "suite", build.getSuite(), serializer );
+            serializer.endTag( tagName );
+    } //-- void writeBuild( Build, String, XmlSerializer )
+
+    /**
      * Method writeGoal.
      *
      * @param goal
@@ -52,37 +76,6 @@ public class XmlWriter {
             }
             serializer.endTag( tagName );
     } //-- void writeGoal( Goal, String, XmlSerializer )
-
-    /**
-     * Method writeBuild.
-     *
-     * @param build
-     * @param tagName
-     * @param serializer
-     * @throws java.io.IOException
-     */
-    private void writeBuild( Build build, String tagName, XmlSerializer serializer )
-        throws java.io.IOException
-    {
-            serializer.startTag( tagName );
-            writeElement( "sourceDirectory", build.getSourceDirectory(), serializer );
-            writeElement( "resourceDirectory", build.getResourceDirectory(), serializer );
-            writeElement( "testSourceDirectory", build.getTestSourceDirectory(), serializer );
-            writeElement( "testResourceDirectory", build.getTestResourceDirectory(), serializer );
-            writeElement( "targetDirectory", build.getTargetDirectory(), serializer );
-            writeElement( "outputDirectory", build.getOutputDirectory(), serializer );
-            writeElement( "testOutputDirectory", build.getTestOutputDirectory(), serializer );
-            writeElement( "testReportDirectory", build.getTestReportDirectory(), serializer );
-            if ( build.getGoals() != null && build.getGoals().size() > 0 ) {
-                serializer.startTag( "goals" );
-                for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); ) {
-                    Goal o = (Goal) iter.next();
-                    writeGoal( o, "goal", serializer );
-                }
-                serializer.endTag( "goals" );
-            }
-            serializer.endTag( tagName );
-    } //-- void writeBuild( Build, String, XmlSerializer )
 
     /**
      * Method writeDependency.
@@ -151,6 +144,14 @@ public class XmlWriter {
                     writeElement( "module", module, serializer );
                 }
                 serializer.endTag( "modules" );
+            }
+            if ( model.getGoals().size() > 0 ) {
+                serializer.startTag( "goals" );
+                for ( Iterator iter = model.getGoals().iterator(); iter.hasNext(); ) {
+                    Goal o = (Goal) iter.next();
+                    writeGoal( o, "goal", serializer );
+                }
+                serializer.endTag( "goals" );
             }
             if ( model.getDependencies().size() > 0 ) {
                 serializer.startTag( "dependencies" );

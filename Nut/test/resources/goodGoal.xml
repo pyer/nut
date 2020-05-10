@@ -9,12 +9,12 @@
       <suite>clean compile</suite>
   </build>
 
-  <goals>
+   <goals>
       <goal>
         <name>clean</name>
       </goal>
       <goal>
-        <name></name>
+        <name>compile</name>
       </goal>
   </goals>
 

@@ -87,5 +87,6 @@ cd $root
 jar cf $NUT_HOME/nut/testNG-$NUT_VERSION.jar -C target/classes .
 cp $NUT_HOME/nut/testNG-$NUT_VERSION.jar $NUT_HOME/nut/testNG-2.1.jar
 rm -r target
+echo "Install /usr/bin/nut'"
+sudo install nut /usr/bin/
 echo "Done."
-echo "Completing installation with 'sudo install nut /usr/bin/'"

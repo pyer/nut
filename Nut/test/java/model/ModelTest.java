@@ -1,7 +1,11 @@
 package nut.model;
 
-import static org.testng.Assert.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import nut.model.Goal;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 public class ModelTest
 {
@@ -56,5 +60,117 @@ public class ModelTest
         assertEquals( model.getPackaging(), "zip" );
     }
 
+    @Test
+    public void testGetGoals()
+    {
+        Model model = new Model();
+        assertNotNull( model.getGoals() );
+        assertTrue( model.getGoals().isEmpty() );
+    }
+
+    @Test
+    public void testSetGoals()
+    {
+        Model model = new Model();
+        Goal goal = new Goal();
+        ArrayList<Goal> goals = new ArrayList<Goal>(Arrays.asList(goal));
+        model.setGoals( goals );
+        assertFalse( model.getGoals().isEmpty() );
+    }
+/*
+    @Test
+    public void testValidate() throws ValidationException
+    {
+        Model model = new Model();
+        model.validate();
+    }
+*/
+}
+/*
+
+    public void validate() throws ValidationException
+    {
+        String ID_REGEX = "[A-Za-z0-9_\\-.]+";
+        validateStringNotEmpty( "groupId", groupId );
+        if ( !groupId.matches( ID_REGEX ) )
+            throw new ValidationException( "groupId '" + groupId + "' does not match a valid id pattern." );
+        validateStringNotEmpty( "artifactId", artifactId );
+        if ( !artifactId.matches( ID_REGEX ) )
+            throw new ValidationException( "artifactId '" + artifactId + "' does not match a valid id pattern." );
+
+        validateStringNotEmpty( "version", version );
+        validateStringNotEmpty( "packaging", packaging );
+
+        if ( !getModules().isEmpty() && !"modules".equals( packaging ) ) {
+            throw new ValidationException( "Packaging '" + packaging +
+                                                "' is invalid. Aggregator projects require 'modules' as packaging." );
+        }
+
+        for ( Iterator it = getGoals().iterator(); it.hasNext(); )
+        {
+            Goal g = (Goal) it.next();
+            g.validate();
+        }
+
+        for ( Iterator it = getDependencies().iterator(); it.hasNext(); )
+        {
+            Dependency dep = (Dependency) it.next();
+            dep.validate(version);
+        }
+
+        for ( Iterator it = getRepositories().iterator(); it.hasNext(); )
+        {
+            Repository repo = (Repository) it.next();
+            repo.validate();
+        }
+
+        if ( build != null ) {
+            build.validate();
+        }
+    }
+
+    private void validateStringNotEmpty( String fieldName, String string )
+        throws ValidationException
+    {
+        if ( string == null )
+            throw new ValidationException( "'" + fieldName + "' is null." );
+        if ( string.length() <1 )
+            throw new ValidationException( "'" + fieldName + "' is empty." );
+    }
 
 }
+
+
+
+
+
+    @Test
+    public void testValidateGoodGoal() throws ValidationException
+    {
+        Model model = new Model();
+        Goal goal = new Goal();
+        ArrayList<Goal> goals = new ArrayList<Goal>(Arrays.asList(goal));
+        model.setGoals( goals );
+        try {
+          ProjectBuilder builder = new ProjectBuilder();
+          Project project = builder.build( new File("test/resources/goodGoal.xml") );
+          project.getBuild().validate();
+        }
+        catch ( BuildException e ) {
+            throw new ValidationException( "Build failure" );
+        }
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateBadGoal() throws ValidationException
+    {
+        try {
+          ProjectBuilder builder = new ProjectBuilder();
+          Project project = builder.build( new File("test/resources/badGoal.xml") );
+          project.getBuild().validate();
+        }
+        catch ( BuildException e ) {
+            throw new ValidationException( "Build failure" );
+        }
+    }
+*/

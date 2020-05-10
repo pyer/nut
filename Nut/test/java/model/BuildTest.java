@@ -148,21 +148,12 @@ public class BuildTest
     }
 
     @Test
-    public void testGetGoals()
+    public void testSuite()
     {
+        String s = "clean";
         Build thing = new Build();
-        assertNotNull( thing.getGoals() );
-        assertTrue(  thing.getGoals().isEmpty() );
-    }
-
-    @Test
-    public void testSetGoals()
-    {
-        Build thing = new Build();
-        Goal goal = new Goal();
-        ArrayList<Goal> goals = new ArrayList<Goal>(Arrays.asList(goal));
-        thing.setGoals( goals );
-        assertFalse( thing.getGoals().isEmpty() );
+        thing.setSuite( s );
+        assertEquals( thing.getSuite(), s );
     }
 
     @Test
@@ -171,13 +162,26 @@ public class BuildTest
         Build thing = new Build();
         thing.validate();
     }
-
-    @Test(expectedExceptions = ValidationException.class)
-    public void testValidationException() throws ValidationException
+/*
+    @Test
+    public void testValidateGoodGoal() throws ValidationException
     {
         try {
           ProjectBuilder builder = new ProjectBuilder();
-          Project project = builder.build( new File("test/resources/badGoal.xml") );
+          Project project = builder.launch( new File("test/resources/goodGoal.xml") );
+          project.getBuild().validate();
+        }
+        catch ( BuildException e ) {
+            throw new ValidationException( "Build failure" );
+        }
+    }
+*/
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateBadGoal() throws ValidationException
+    {
+        try {
+          ProjectBuilder builder = new ProjectBuilder();
+          Project project = builder.launch( new File("test/resources/badGoal.xml") );
           project.getBuild().validate();
         }
         catch ( BuildException e ) {

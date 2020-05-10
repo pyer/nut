@@ -6,10 +6,12 @@
   <build>
     <targetDirectory>target</targetDirectory>
     <resourceDirectory>main/resources</resourceDirectory>
-    <goals>
-      <goal>
-        <name>install</name>
-      </goal>
-    </goals>
+    <suite>clean</suite>
   </build>
+
+  <goals>
+    <goal>
+      <name>install</name>
+    </goal>
+  </goals>
 </project>

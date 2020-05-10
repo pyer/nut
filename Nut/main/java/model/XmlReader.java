@@ -33,34 +33,6 @@ public class XmlReader {
     }
 
     /**
-     * Method parseGoal.
-     *
-     * @param parser
-     * @throws IOException
-     * @throws XmlParserException
-     * @return Goal
-     */
-    private Goal parseGoal( XmlParser parser )
-        throws IOException, XmlParserException
-    {
-        Goal goal = new Goal();
-        Properties configuration = new Properties();
-        Set<String> parsed = new HashSet<String>();
-        while ( parser.nextTag() ) {
-            if ( tagEquals( parser.getName(), "name", parsed ) ) {
-                goal.setName( parser.getText() );
-            } else if ( tagEquals( parser.getName(), "testSuiteFile", parsed ) ) {
-                configuration.setProperty( parser.getName(), parser.getText() );
-            } else if ( tagEquals( parser.getName(), "scriptFile", parsed ) ) {
-                configuration.setProperty( parser.getName(), parser.getText() );
-            }
-            parser.nextTag(); // end of tag
-        }
-        goal.setConfiguration( configuration );
-        return goal;
-    }
-
-    /**
      * Method parseBuild.
      *
      * @param parser
@@ -92,22 +64,42 @@ public class XmlReader {
                 build.setTestOutputDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testReportDirectory", parsed ) ) {
                 build.setTestReportDirectory( parser.getText() );
-            } else if ( tagEquals( parser.getName(), "goals", parsed ) ) {
-                List<Goal> goals = new ArrayList<Goal>();
-                build.setGoals( goals );
-                while ( parser.nextTag() ) {
-                    if ( parser.getName().equals( "goal" ) ) {
-                        goals.add( parseGoal( parser ) );
-                    } else {
-                        throw new XmlParserException( "Unrecognized goals association: '" + parser.getName() + "'", parser, null );
-                    }
-                }
+            } else if ( tagEquals( parser.getName(), "suite", parsed ) ) {
+                build.setSuite( parser.getText() );
             } else {
                 throw new XmlParserException( "Unrecognized build tag: '" + parser.getName() + "'", parser, null );
             }
             parser.nextTag(); // end of tag
         }
         return build;
+    }
+
+    /**
+     * Method parseGoal.
+     *
+     * @param parser
+     * @throws IOException
+     * @throws XmlParserException
+     * @return Goal
+     */
+    private Goal parseGoal( XmlParser parser )
+        throws IOException, XmlParserException
+    {
+        Goal goal = new Goal();
+        Properties configuration = new Properties();
+        Set<String> parsed = new HashSet<String>();
+        while ( parser.nextTag() ) {
+            if ( tagEquals( parser.getName(), "name", parsed ) ) {
+                goal.setName( parser.getText() );
+            } else if ( tagEquals( parser.getName(), "testSuiteFile", parsed ) ) {
+                configuration.setProperty( parser.getName(), parser.getText() );
+            } else if ( tagEquals( parser.getName(), "scriptFile", parsed ) ) {
+                configuration.setProperty( parser.getName(), parser.getText() );
+            }
+            parser.nextTag(); // end of tag
+        }
+        goal.setConfiguration( configuration );
+        return goal;
     }
 
     /**
@@ -217,6 +209,16 @@ public class XmlReader {
                         if ( parser.getName().equals( "module" ) ) {
                             modules.add( parser.getText() );
                             parser.nextTag(); // end of tag
+                        } else {
+                            throw new XmlParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
+                        }
+                    }
+                } else if ( tagEquals( tag, "goals", parsed ) ) {
+                    List<Goal> goals = new ArrayList<Goal>();
+                    model.setGoals( goals );
+                    while ( parser.nextTag() ) {
+                        if ( parser.getName().equals( "goal" ) ) {
+                            goals.add( parseGoal( parser ) );
                         } else {
                             throw new XmlParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }

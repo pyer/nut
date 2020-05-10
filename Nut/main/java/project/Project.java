@@ -208,19 +208,23 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
-    public void goalsNames()
+    public void listOfGoals()
     {
-      Build build = model.getBuild();
-      if ( build.getGoals() != null && build.getGoals().size() > 0 ) {
-        String list = "Goals list of " + model.getId() + " = ";
-        for ( Iterator iter = build.getGoals().iterator(); iter.hasNext(); ) {
+//      String list = "Goals list of " + model.getId() + " = ";
+      String list = "Goals list of : ";
+      for ( Iterator iter = getModel().getGoals().iterator(); iter.hasNext(); ) {
           Goal goal = (Goal) iter.next();
           list += goal.getName() + " ";
-        }
-        log.info(list);
-      } else {
-        log.warn("No goal for this project");
       }
+      log.info(list);
+
+      String suite = getModel().getBuild().getSuite();
+      if ( suite != null ) {
+        log.info("Suite of goals:" + suite);
+      } else {
+        log.warn("This project has no suite of goals.");
+      }
+
     }
 
     public void effectiveXmlModel()
@@ -292,31 +296,41 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
-    public void build( String targetGoal, boolean noopMode )
+    public void build( String target, boolean noopMode )
     {
       try {
         time = System.currentTimeMillis();
+        String[] suite = { target };
+        if( "build".equals(target) ) {
+          // if build is the wanted goal, every goal in the build suite is executed
+            suite = getBuild().getSuite().split(" ");
+        }
 
-        List<Goal> goals = getBuild().getGoals();
-        for ( Iterator g = goals.iterator(); g.hasNext(); ) {
+        List<Goal> goals = getModel().getGoals();
+        for (int i=0; i<suite.length; i++) {
+          // looking for the goal
+          for ( Iterator g = goals.iterator(); g.hasNext(); ) {
             Goal goal = (Goal)g.next();
-            if( "build".equals(targetGoal) || goal.getName().equals(targetGoal) ) {
+            if( goal.getName().equals(suite[i]) ) {
               // build is done if at least one goal is executed
               buildDone=true;
               if( noopMode ) {
                 log.info( "NOOP: " + goal.getName() + " " + getId() );
               } else {
-                // Call GoalPackaging.execute then Goal.execute for each goal
-                executeGoal( camelCase(goal.getName())+camelCase(getPackaging()), goal.getConfiguration() );
-                executeGoal( camelCase(goal.getName()), goal.getConfiguration() );
+                if ( goal.getName().equals("pack") ) { 
+                  executeGoal( camelCase(goal.getName())+camelCase(getPackaging()), goal.getConfiguration() );
+                } else {
+                  executeGoal( camelCase(goal.getName()), goal.getConfiguration() );
+                }
               }
             }
+          }
         }
         time = System.currentTimeMillis() - time;
         if( buildDone ) {
           buildSuccess = true;
         } else {
-          log.warning( "No goal '" + targetGoal + "' in the packaging '" + getPackaging() + "' for " + getId() );
+          log.warning( "No goal '" + target + "' in the packaging '" + getPackaging() + "' for " + getId() );
         }
       }
       catch ( ProjectException e ) {

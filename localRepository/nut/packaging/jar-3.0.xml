@@ -49,24 +49,26 @@
     <testOutputDirectory>target/test-classes</testOutputDirectory>
     <testReportDirectory>target/test-reports</testReportDirectory>
 
-    <goals>
-      <goal>
-        <name>clean</name>
-      </goal>
-      <goal>
-        <name>compile</name>
-      </goal>
-      <goal>
-        <name>test</name>
-        <testSuiteFile>test/testng.xml</testSuiteFile>
-      </goal>
-      <goal>
-        <name>pack</name>
-      </goal>
-      <goal>
-        <name>install</name>
-      </goal>
-    </goals>
+    <suite>clean compile test pack install</suite>
   </build>
+
+  <goals>
+    <goal>
+      <name>clean</name>
+    </goal>
+    <goal>
+      <name>compile</name>
+    </goal>
+    <goal>
+      <name>test</name>
+      <testSuiteFile>test/testng.xml</testSuiteFile>
+    </goal>
+    <goal>
+      <name>pack</name>
+    </goal>
+    <goal>
+      <name>install</name>
+    </goal>
+  </goals>
 
 </project>

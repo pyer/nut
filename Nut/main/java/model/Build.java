@@ -1,14 +1,8 @@
 package nut.model;
 
-import nut.model.Goal;
 import nut.model.ValidationException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-public class Build
-implements java.io.Serializable
+public class Build implements java.io.Serializable
 {
     //--------------------------/
     //- Class/Member Variables -/
@@ -77,9 +71,9 @@ implements java.io.Serializable
     private String testReportDirectory = "target/test-reports";
 
     /**
-     * Field goals.
+     * Suite of goals to execute.
      */
-    private List<Goal> goals;
+    private String suite = "clean";
 
     //-----------/
     //- Methods -/
@@ -186,33 +180,23 @@ implements java.io.Serializable
         this.testReportDirectory = testReportDirectory;
     }
 
-    public List<Goal> getGoals()
+    public String getSuite()
     {
-        if ( this.goals == null )
-        {
-            this.goals = new ArrayList<Goal>();
-        }
-
-        return this.goals;
+        return this.suite;
     }
 
-    public void setGoals( List<Goal> goals )
+    public void setSuite( String suite )
     {
-        this.goals = goals;
+        this.suite = suite;
     }
 
     /**
      * validate method
      */
-    public void validate()
-        throws ValidationException
+    public void validate() throws ValidationException
     {
-        List goals = this.getGoals();
-        for ( Iterator it = goals.iterator(); it.hasNext(); )
-        {
-          Goal goal = (Goal) it.next();
-          goal.validate();
-        }
+        if ( this.suite == null )
+            throw new ValidationException( "build.suite must not be null" );
     }
 
     /**
@@ -221,9 +205,10 @@ implements java.io.Serializable
      */
     public void merge(Build parent)
     {
+      if( this.suite == null )
+         this.suite = parent.getSuite();
       mergeMainDirectories(parent);
       mergeTestDirectories(parent);
-      this.getGoals().addAll( parent.getGoals() );
     }
 
     private void mergeMainDirectories(Build parent)
