@@ -286,11 +286,17 @@ public class Project
       try {
         time = System.currentTimeMillis();
         String[] suite = { target };
+        int len = suite.length;
         if( "build".equals(target) ) {
           // if build is the wanted goal, every goal in the build suite is executed
-            suite = getModel().getBuild().split(" ");
+          String modelBuild = getModel().getBuild();
+          if ( modelBuild == null ) {
+            len = 0;
+          } else {
+            suite = modelBuild.split(" ");
+            len = suite.length;
+          }
         }
-        int len=suite.length;
         for (int i=0; i<len; i++) {
           String step=suite[i];
           // build is done if at least one goal is executed
@@ -308,11 +314,8 @@ public class Project
         time = System.currentTimeMillis() - time;
         if( buildDone ) {
           buildSuccess = true;
-        } else {
-          log.warning( "No goal '" + target + "' in the packaging '" + getPackaging() + "' for " + getId() );
         }
-      }
-      catch ( ProjectException e ) {
+      } catch ( ProjectException e ) {
         log.debug("Project exception " + e.getMessage());
         time = System.currentTimeMillis() - time;
         log.failure( getId() );
