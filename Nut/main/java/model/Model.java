@@ -1,8 +1,7 @@
 package nut.model;
 
-import nut.model.Build;
 import nut.model.Dependency;
-import nut.model.Goal;
+import nut.model.Layout;
 import nut.model.Repository;
 import nut.model.ValidationException;
 
@@ -22,7 +21,7 @@ import java.util.Properties;
  *   - packaging
  *   - description
  *   - build
- *   - goals
+ *   - layout
  *   - dependencies
  *   - repositories
  *   - properties
@@ -67,15 +66,15 @@ public class Model implements java.io.Serializable
     private String description;
 
     /**
-     * Informations required to build the project.
+     * List of steps to build the project.
      */
-    private Build build;
+    private String build;
 
     /**
      * Other variables
      */
+    private Layout layout;
     private List<String> modules;
-    private List<Goal> goals;
     private List<Dependency> dependencies;
     private List<Repository> repositories;
     private Properties properties;
@@ -143,12 +142,12 @@ public class Model implements java.io.Serializable
         this.description = description;
     }
 
-    public Build getBuild()
+    public String getBuild()
     {
         return this.build;
     }
 
-    public void setBuild( Build build )
+    public void setBuild( String build )
     {
         this.build = build;
     }
@@ -174,17 +173,17 @@ public class Model implements java.io.Serializable
         this.modules = modules;
     }
 
-    public List<Goal> getGoals()
+    public Layout getLayout()
     {
-        if ( this.goals == null ) {
-            this.goals = new ArrayList<Goal>();
+        if ( this.layout == null ) {
+            this.layout = new Layout();
         }
-        return this.goals;
+        return this.layout;
     }
 
-    public void setGoals( List<Goal> goals )
+    public void setLayout( Layout layout )
     {
-        this.goals = goals;
+        this.layout = layout;
     }
 
     public List<Dependency> getDependencies()
@@ -265,12 +264,6 @@ public class Model implements java.io.Serializable
                                                 "' is invalid. Aggregator projects require 'modules' as packaging." );
         }
 
-        for ( Iterator it = getGoals().iterator(); it.hasNext(); )
-        {
-            Goal g = (Goal) it.next();
-            g.validate();
-        }
-
         for ( Iterator it = getDependencies().iterator(); it.hasNext(); )
         {
             Dependency dep = (Dependency) it.next();
@@ -283,9 +276,6 @@ public class Model implements java.io.Serializable
             repo.validate();
         }
 
-        if ( build != null ) {
-            build.validate();
-        }
     }
 
     /**

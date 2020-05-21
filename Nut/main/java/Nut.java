@@ -23,9 +23,8 @@ public class Nut
 
     public static void main( String[] args )
     {
-        String  wantedGoal      = "";
-        String  effectiveNut = null; // xml or json
-        boolean noopMode     = false;
+        String  wantedGoal = null;
+        boolean noopMode   = false;
 
         // Default mode is SNAPSHOT
         System.setProperty( "nut.mode", "SNAPSHOT" );
@@ -36,47 +35,28 @@ public class Nut
               if(args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?") ) {
                  showHelp();
                  System.exit( 0 );
-              }
-              else if(args[i].equals("-v") || args[i].equals("--version")  || args[i].equals("version") ) {
-                 showVersion();
-                 System.exit( 0 );
-              }
-              else if(args[i].startsWith("-D") ) {
+              } else if(args[i].startsWith("-D") ) {
                  // -Dproperty=value (-Dproperty means -Dproperty=true)
                  setDefine(args[i]);
-              }
-              else if( args[i].equals("-d") || args[i].equals("--debug") ) {
+              } else if( args[i].equals("-d") || args[i].equals("--debug") ) {
                  log.debugOn();
-              }
-              else if( args[i].equals("-e") || args[i].equals("--effective") ) {
-                 effectiveNut = "xml";
-              }
-              else if( args[i].equals("-x") || args[i].equals("--xml") ) {
-                 effectiveNut = "xml";
-              }
-              else if( args[i].equals("-j") || args[i].equals("--json") ) {
-                 effectiveNut = "json";
-              }
-              else if( args[i].equals("-n") || args[i].equals("--noop") ) {
+              } else if( args[i].equals("-n") || args[i].equals("--noop") ) {
                  noopMode = true;
-              }
-              else if( args[i].equals("-r") || args[i].equals("--release") ) {
+              } else if( args[i].equals("-r") || args[i].equals("--release") ) {
                  System.setProperty( "nut.mode", "RELEASE" );
-              }
-              else if( args[i].equals("-s") || args[i].equals("--snapshot") ) {
+              } else if( args[i].equals("-s") || args[i].equals("--snapshot") ) {
                  System.setProperty( "nut.mode", "SNAPSHOT" );
-              }
-              else {
+              } else {
                  if( args[i].startsWith("-") ) {
                     log.error( "Invalid option '" + args[i] + "'." );
                     showHelp();
                     System.exit( 1 );
                  }
                  // nearly every arg without '-' is a goal
-                 if( "".equals(wantedGoal) ) {
+                 if( wantedGoal == null ) {
                     wantedGoal = args[i];
                  } else {
-                    log.error( "Too many goals." );
+                    log.error( "Too many goals" );
                     showHelp();
                     System.exit( 2 );
                  }
@@ -86,14 +66,18 @@ public class Nut
                  showHelp();
                  System.exit( 3 );
         }
-        if ("list".equals(wantedGoal)) {
-          effectiveNut=wantedGoal;
-        }
-        // every goal is 4 characters long or more
-        if (effectiveNut==null && wantedGoal.length()<4 ) {
+
+        // every goal is 3 characters long or more
+        if (wantedGoal==null || wantedGoal.length()<3 ) {
+          log.error( "Unknown goal" );
           showHelp();
           System.exit( 4 );
         }
+        if ("version".equals(wantedGoal)) {
+          showVersion();
+          System.exit( 0 );
+        }
+
         // everything is ok, let's go
         log.start();
         List projects = Collections.EMPTY_LIST;
@@ -114,7 +98,7 @@ public class Nut
                   log.info( "   " + currentProject.getId() );
               }
             }
-            buildProject(sortedProjects, wantedGoal, effectiveNut, noopMode);
+            buildProject(sortedProjects, wantedGoal, noopMode);
             if( sortedProjects.size() > 1 )
                logReactorSummary( sortedProjects );
           } catch(CycleDetectedException e) {
@@ -165,21 +149,20 @@ public class Nut
         log.out( "    nut help" );
         log.out( "\nOperations:" );
         log.out( "  help     Display this help" );
-        log.out( "  <goal>   Execute one of the project's goals" );
+        log.out( "  <goal>   Execute one of the project's build steps" );
         log.out( "  build    Build project, execute every goal" );
-        log.out( "  list     List project's goals" );
+        log.out( "  list     List of build steps" );
+        log.out( "  xml      Display effective NUT in xml format" );
+        log.out( "  json     Display effective NUT in json format" );
         log.out( "  version  Display version information" );
         log.out( "\nOptions:" );
         log.out( "  -h,--help        Display this help" );
         log.out( "  -D,--define      Define a system property" );
-        log.out( "  -d,--debug       Produce execution debug output" );
-        log.out( "  -e,--effective   Display effective NUT in xml format" );
-        log.out( "  -j,--json        Display effective NUT in json format" );
+        log.out( "  -d,--debug       Display debug messages" );
         log.out( "  -n,--noop        No operation mode (dry run)" );
         log.out( "  -r,--release     Release mode. Default is snapshot" );
         log.out( "  -s,--snapshot    Snapshot default mode" );
-        log.out( "  -v,--version     Display version information" );
-        log.out( "  -x,--xml         Display effective NUT in xml format" );
+//        log.out( "  -v,--verbose     Display info messages" );
     }
 
     // ----------------------------------------------------------------------
@@ -209,26 +192,24 @@ public class Nut
     }
 
     // --------------------------------------------------------------------------------
-    private static void buildProject( List sortedProjects, String wantedGoal, String effectiveNut, boolean noopMode )
-    {
+    private static void buildProject( List sortedProjects, String wantedGoal, boolean noopMode ) {
             // iterate over projects, and execute on each...
-            for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
-            {
+            for ( Iterator it = sortedProjects.iterator(); it.hasNext(); ) {
                 Project currentProject = (Project) it.next();
                 log.line();
-                if( effectiveNut == null ) {
+                if ( "list".equals(wantedGoal) ) {
+                    currentProject.listOfBuildSteps();
+                } else if ( "xml".equals(wantedGoal) ) {
+                    currentProject.effectiveXmlModel();
+                } else if ( "json".equals(wantedGoal) ) {
+                    currentProject.effectiveJsonModel();
+                } else {
                     currentProject.interpolateModel();
                     currentProject.checkDependencies();
                     currentProject.build( wantedGoal, noopMode );
                     if ( currentProject.isBuilt() && !currentProject.isSuccessful() ) {
                       retCode += 9;
                     }
-                } else if ( "list".equals(effectiveNut) ) {
-                    currentProject.listOfGoals();
-                } else if ( "xml".equals(effectiveNut) ) {
-                    currentProject.effectiveXmlModel();
-                } else if ( "json".equals(effectiveNut) ) {
-                    currentProject.effectiveJsonModel();
                 }
             }
     }

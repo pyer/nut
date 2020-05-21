@@ -25,16 +25,16 @@ public class Compile
     /** Instance logger */
     private static Log log;
 
-    public static void execute( Project project, Properties config )
+    public static void execute( Project project )
         throws GoalException
     {
         log = new Log();
-        Properties pp               = project.getModel().getProperties();
+        Properties pp               = project.getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String sourceDirectory      = project.getBuild().getSourceDirectory();
-        String testSourceDirectory  = project.getBuild().getTestSourceDirectory();
-        String outputDirectory      = project.getBuild().getOutputDirectory();
-        String testOutputDirectory  = project.getBuild().getTestOutputDirectory();
+        String sourceDirectory      = project.getLayout().getSourceDirectory();
+        String testSourceDirectory  = project.getLayout().getTestSourceDirectory();
+        String outputDirectory      = project.getLayout().getOutputDirectory();
+        String testOutputDirectory  = project.getLayout().getTestOutputDirectory();
 
         log.debug( "build.sourceDirectory     = " + sourceDirectory );
         log.debug( "build.testSourceDirectory = " + testSourceDirectory );

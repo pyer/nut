@@ -23,14 +23,15 @@ import java.util.Properties;
  */
 public class ExecShellScript
 {
-    public static void execute( Project project, Properties config )
+    public static void execute( Project project )
         throws GoalException
     {
         Log log = new Log();
-        Properties pp          = project.getModel().getProperties();
+        Properties pp          = project.getProperties();
         String basedir         = (String)pp.getProperty( "basedir" );
-        String outputDirectory = basedir + File.separator + project.getBuild().getOutputDirectory();
-        String scriptFile      = basedir + File.separator + config.getProperty("scriptFile", "");
+        String outputDirectory = basedir + File.separator + project.getLayout().getOutputDirectory();
+        //String scriptFile      = basedir + File.separator + config.getProperty("scriptFile", "");
+        String scriptFile      = basedir + File.separator + "script";
         log.debug( "basedir = " + basedir);
         log.debug( "script  = " + scriptFile);
 

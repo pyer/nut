@@ -1,8 +1,9 @@
 package nut.model;
 
+/*
 import java.util.ArrayList;
 import java.util.Arrays;
-import nut.model.Goal;
+*/
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -60,23 +61,6 @@ public class ModelTest
         assertEquals( model.getPackaging(), "zip" );
     }
 
-    @Test
-    public void testGetGoals()
-    {
-        Model model = new Model();
-        assertNotNull( model.getGoals() );
-        assertTrue( model.getGoals().isEmpty() );
-    }
-
-    @Test
-    public void testSetGoals()
-    {
-        Model model = new Model();
-        Goal goal = new Goal();
-        ArrayList<Goal> goals = new ArrayList<Goal>(Arrays.asList(goal));
-        model.setGoals( goals );
-        assertFalse( model.getGoals().isEmpty() );
-    }
 /*
     @Test
     public void testValidate() throws ValidationException

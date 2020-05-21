@@ -21,14 +21,12 @@ public class PackZip
     private static Log log;
 
     // ==========================================================================
-    public static void execute( Project project, Properties config )
-        throws GoalException
-    {
+    public static void execute( Project project ) throws GoalException {
         log = new Log();
-        Properties pp               = project.getModel().getProperties();
+        Properties pp               = project.getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String targetDirectory      = project.getBuild().getTargetDirectory();
-        String resourceDirectory    = project.getBuild().getResourceDirectory();
+        String targetDirectory      = project.getLayout().getTargetDirectory();
+        String resourceDirectory    = project.getLayout().getResourceDirectory();
 
         log.debug( "build.directory           = " + targetDirectory );
         log.debug( "build.resourceDirectory   = " + resourceDirectory );

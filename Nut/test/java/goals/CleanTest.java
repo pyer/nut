@@ -1,6 +1,6 @@
 package nut.goals;
 
-import nut.model.Build;
+import nut.model.Layout;
 import nut.model.Model;
 import nut.project.Project;
 
@@ -24,11 +24,11 @@ public class CleanTest
     @Test
     public void testExecute()
     {
-      Build build = new Build();
-      build.setTargetDirectory( "local-target" );
+      Layout layout = new Layout();
+      layout.setTargetDirectory( "local-target" );
       Model model = new Model();
       model.addProperty( "basedir", "target" );
-      model.setBuild( build );
+      model.setLayout( layout );
       Project project = new Project();
       project.setModel(model);
 
@@ -39,7 +39,7 @@ public class CleanTest
       {
         f.createNewFile();
         assertTrue( f.exists() );
-        Clean.execute(project, null);
+        Clean.execute(project);
       }
       catch( Exception e )
       {

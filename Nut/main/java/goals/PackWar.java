@@ -40,18 +40,16 @@ public class PackWar
 
 */
     // ==========================================================================
-    public static void execute( Project project, Properties config )
-        throws GoalException
-    {
+    public static void execute( Project project ) throws GoalException {
         String msg;
         log = new Log();
-        Properties pp               = project.getModel().getProperties();
+        Properties pp               = project.getProperties();
         String basedir              = (String)pp.getProperty( "basedir" ) + File.separator;
-        String targetDirectory      = project.getBuild().getTargetDirectory();
-        String sourceDirectory      = project.getBuild().getSourceDirectory();
-        String resourceDirectory    = project.getBuild().getResourceDirectory();
-        String webappDirectory      = project.getBuild().getWebappDirectory();
-        String outputDirectory      = project.getBuild().getOutputDirectory();
+        String targetDirectory      = project.getLayout().getTargetDirectory();
+        String sourceDirectory      = project.getLayout().getSourceDirectory();
+        String resourceDirectory    = project.getLayout().getResourceDirectory();
+        String webappDirectory      = project.getLayout().getWebappDirectory();
+        String outputDirectory      = project.getLayout().getOutputDirectory();
 
         log.debug( "build.directory           = " + targetDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );

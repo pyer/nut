@@ -6,7 +6,7 @@
      install targetDirectory/artifactId.zip in local repository.
   </description>
 
-  <build>
+  <layout>
     <targetDirectory>target</targetDirectory>
     <sourceDirectory>main/java</sourceDirectory>
     <resourceDirectory>main/resources</resourceDirectory>
@@ -15,22 +15,8 @@
     <testResourceDirectory>test/resources</testResourceDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
     <testReportDirectory>target/test-reports</testReportDirectory>
+  </layout>
 
-    <suite>clean pack install</suite>
-  </build>
-
-  <goals>
-    <goal>
-      <name>clean</name>
-    </goal>
-    <goal>
-      <name>pack</name>
-    </goal>
-    <goal>
-      <name>install</name>
-    </goal>
-  </goals>
-
-</project>
+  <build>clean pack install</build>
 
 </project>

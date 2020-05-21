@@ -14,9 +14,8 @@ import nut.artifact.Artifact;
 
 import nut.interpolation.Interpolator;
 
-import nut.model.Build;
 import nut.model.Dependency;
-import nut.model.Goal;
+import nut.model.Layout;
 import nut.model.Model;
 import nut.model.XmlWriter;
 import nut.model.JsonWriter;
@@ -178,14 +177,14 @@ public class Project
         return getModel().getDescription();
     }
 
-    public Build getBuild()
+    public Layout getLayout()
     {
-        Build build = getModel().getBuild();
-        if ( build == null ) {
-            build = new Build();
-            getModel().setBuild( build );
-        }
-        return build;
+        return getModel().getLayout();
+    }
+
+    public Properties getProperties()
+    {
+        return getModel().getProperties();
     }
 
     // ----------------------------------------------------------------------
@@ -208,23 +207,9 @@ public class Project
     }
 
     // ----------------------------------------------------------------------
-    public void listOfGoals()
+    public void listOfBuildSteps()
     {
-//      String list = "Goals list of " + model.getId() + " = ";
-      String list = "Goals list of : ";
-      for ( Iterator iter = getModel().getGoals().iterator(); iter.hasNext(); ) {
-          Goal goal = (Goal) iter.next();
-          list += goal.getName() + " ";
-      }
-      log.info(list);
-
-      String suite = getModel().getBuild().getSuite();
-      if ( suite != null ) {
-        log.info("Suite of goals:" + suite);
-      } else {
-        log.warn("This project has no suite of goals.");
-      }
-
+      log.info("Building " + model.getId() + " : " + model.getBuild());
     }
 
     public void effectiveXmlModel()
@@ -303,27 +288,21 @@ public class Project
         String[] suite = { target };
         if( "build".equals(target) ) {
           // if build is the wanted goal, every goal in the build suite is executed
-            suite = getBuild().getSuite().split(" ");
+            suite = getModel().getBuild().split(" ");
         }
-
-        List<Goal> goals = getModel().getGoals();
-        for (int i=0; i<suite.length; i++) {
-          // looking for the goal
-          for ( Iterator g = goals.iterator(); g.hasNext(); ) {
-            Goal goal = (Goal)g.next();
-            if( goal.getName().equals(suite[i]) ) {
-              // build is done if at least one goal is executed
-              buildDone=true;
-              if( noopMode ) {
-                log.info( "NOOP: " + goal.getName() + " " + getId() );
+        int len=suite.length;
+        for (int i=0; i<len; i++) {
+          String step=suite[i];
+          // build is done if at least one goal is executed
+          buildDone=true;
+          if( noopMode ) {
+              log.info( "NOOP: " + step + " " + getId() );
+          } else {
+              if ( step.equals("pack") ) { 
+                  executeGoal( camelCase(step)+camelCase(getPackaging()) );
               } else {
-                if ( goal.getName().equals("pack") ) { 
-                  executeGoal( camelCase(goal.getName())+camelCase(getPackaging()), goal.getConfiguration() );
-                } else {
-                  executeGoal( camelCase(goal.getName()), goal.getConfiguration() );
-                }
+                  executeGoal( camelCase(step) );
               }
-            }
           }
         }
         time = System.currentTimeMillis() - time;
@@ -347,17 +326,15 @@ public class Project
    
     // ----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
-    private void executeGoal( String goalName, Properties config )
-        throws ProjectException
+    private void executeGoal( String goalName ) throws ProjectException
     {
       try {
           log.debug("* execute goal: " + goalName);
           Class cls = Class.forName ("nut.goals." + goalName);
-          Class[] cArg = new Class[2];
+          Class[] cArg = new Class[1];
           cArg[0] = Project.class;
-          cArg[1] = Properties.class;
           Method method = cls.getMethod("execute", cArg);
-          method.invoke( cls, this, config );
+          method.invoke( cls, this );
       } catch (IllegalArgumentException e) {
           throw new ProjectException( e.getMessage() , e );
       } catch (IllegalAccessException e) {

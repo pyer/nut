@@ -3,9 +3,8 @@ package nut.model;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import nut.model.Build;
 import nut.model.Dependency;
-import nut.model.Goal;
+import nut.model.Layout;
 import nut.model.Model;
 
 import nut.xml.XmlSerializer;
@@ -29,53 +28,28 @@ public class XmlWriter {
     }
 
     /**
-     * Method writeBuild.
+     * Method writeLayout.
      *
-     * @param build
+     * @param layout
      * @param tagName
      * @param serializer
      * @throws java.io.IOException
      */
-    private void writeBuild( Build build, String tagName, XmlSerializer serializer )
+    private void writeLayout( Layout layout, String tagName, XmlSerializer serializer )
         throws java.io.IOException
     {
             serializer.startTag( tagName );
-            writeElement( "sourceDirectory", build.getSourceDirectory(), serializer );
-            writeElement( "resourceDirectory", build.getResourceDirectory(), serializer );
-            writeElement( "testSourceDirectory", build.getTestSourceDirectory(), serializer );
-            writeElement( "testResourceDirectory", build.getTestResourceDirectory(), serializer );
-            writeElement( "targetDirectory", build.getTargetDirectory(), serializer );
-            writeElement( "outputDirectory", build.getOutputDirectory(), serializer );
-            writeElement( "testOutputDirectory", build.getTestOutputDirectory(), serializer );
-            writeElement( "testReportDirectory", build.getTestReportDirectory(), serializer );
-            writeElement( "suite", build.getSuite(), serializer );
+            writeElement( "sourceDirectory", layout.getSourceDirectory(), serializer );
+            writeElement( "resourceDirectory", layout.getResourceDirectory(), serializer );
+            writeElement( "testSourceDirectory", layout.getTestSourceDirectory(), serializer );
+            writeElement( "testResourceDirectory", layout.getTestResourceDirectory(), serializer );
+            writeElement( "targetDirectory", layout.getTargetDirectory(), serializer );
+            writeElement( "outputDirectory", layout.getOutputDirectory(), serializer );
+            writeElement( "testOutputDirectory", layout.getTestOutputDirectory(), serializer );
+            writeElement( "testReportDirectory", layout.getTestReportDirectory(), serializer );
+            writeElement( "testSuite", layout.getTestSuite(), serializer );
             serializer.endTag( tagName );
-    } //-- void writeBuild( Build, String, XmlSerializer )
-
-    /**
-     * Method writeGoal.
-     *
-     * @param goal
-     * @param tagName
-     * @param serializer
-     * @throws java.io.IOException
-     */
-    private void writeGoal( Goal goal, String tagName, XmlSerializer serializer )
-        throws java.io.IOException
-    {
-            serializer.startTag( tagName );
-            writeElement( "name", goal.getName(), serializer );
-            if ( goal.hasConfiguration() ) {
-                serializer.startTag( "configuration" );
-                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {
-                    String key = (String) iter.next();
-                    String value = (String) goal.getConfiguration().getProperty( key );
-                    writeElement( "" + key + "", value, serializer );
-                }
-                serializer.endTag( "configuration" );
-            }
-            serializer.endTag( tagName );
-    } //-- void writeGoal( Goal, String, XmlSerializer )
+    } //-- void writeLayout( Layout, String, XmlSerializer )
 
     /**
      * Method writeDependency.
@@ -136,7 +110,8 @@ public class XmlWriter {
             writeElement( "version", model.getVersion(), serializer );
             writeElement( "packaging", model.getPackaging(), serializer );
             writeElement( "description", model.getDescription(), serializer );
-            writeBuild( (Build) model.getBuild(), "build", serializer );
+            writeLayout( (Layout) model.getLayout(), "layout", serializer );
+            writeElement( "build", model.getBuild(), serializer );
             if ( model.getModules().size() > 0 ) {
                 serializer.startTag( "modules" );
                 for ( Iterator iter = model.getModules().iterator(); iter.hasNext(); ) {
@@ -144,14 +119,6 @@ public class XmlWriter {
                     writeElement( "module", module, serializer );
                 }
                 serializer.endTag( "modules" );
-            }
-            if ( model.getGoals().size() > 0 ) {
-                serializer.startTag( "goals" );
-                for ( Iterator iter = model.getGoals().iterator(); iter.hasNext(); ) {
-                    Goal o = (Goal) iter.next();
-                    writeGoal( o, "goal", serializer );
-                }
-                serializer.endTag( "goals" );
             }
             if ( model.getDependencies().size() > 0 ) {
                 serializer.startTag( "dependencies" );

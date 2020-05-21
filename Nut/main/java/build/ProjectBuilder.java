@@ -2,7 +2,7 @@ package nut.build;
 
 import nut.artifact.Artifact;
 import nut.build.BuildException;
-import nut.model.Build;
+import nut.model.Layout;
 import nut.model.Model;
 import nut.model.XmlReader;
 import nut.model.ValidationException;
@@ -71,20 +71,21 @@ public class ProjectBuilder
 
         //log.info( "Building " + model.getId() );
         if( packagingModel != null ) {
-          model.setBuild( mergedBuild( model.getBuild(), packagingModel.getBuild() ) );
-          model.getGoals().addAll( packagingModel.getGoals() );
+          model.setLayout( mergedLayout( model.getLayout(), packagingModel.getLayout() ) );
           model.getDependencies().addAll( packagingModel.getDependencies() );
           model.getRepositories().addAll( packagingModel.getRepositories() );
+          model.setBuild( packagingModel.getBuild() );
         }
         if( parentModel != null ) {
-          model.setBuild( mergedBuild( model.getBuild(), parentModel.getBuild() ) );
-          model.getGoals().addAll( parentModel.getGoals() );
+          model.setLayout( mergedLayout( model.getLayout(), parentModel.getLayout() ) );
           model.getDependencies().addAll( parentModel.getDependencies() );
           model.getRepositories().addAll( parentModel.getRepositories() );
           if( model.getGroupId() == null )
             model.setGroupId( parentModel.getGroupId() );
           if( model.getVersion() == null )
             model.setVersion( parentModel.getVersion() );
+          if( model.getBuild() == null )
+            model.setBuild( parentModel.getBuild() );
         }
         try {
           // Must validate before artifact construction to make sure dependencies are good
@@ -99,13 +100,13 @@ public class ProjectBuilder
     }
 
     // ----------------------------------------------------------------------
-    private Build mergedBuild( Build childBuild, Build parentBuild )
+    private Layout mergedLayout( Layout child, Layout parent )
     {
-        if ( childBuild == null )
-            return( parentBuild );
-        if ( parentBuild != null )
-            childBuild.merge( parentBuild );
-        return( childBuild );
+        if ( child == null )
+            return( parent );
+        if ( parent != null )
+            child.merge( parent );
+        return( child );
     }
 
     // ----------------------------------------------------------------------

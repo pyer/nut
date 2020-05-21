@@ -17,17 +17,17 @@ public class PackJar
     private static Log log;
 
     // ==========================================================================
-    public static void execute( Project project, Properties config )
+    public static void execute( Project project )
         throws GoalException
     {
         String msg;
         log = new Log();
-        Properties pp               = project.getModel().getProperties();
+        Properties pp               = project.getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String targetDirectory      = project.getBuild().getTargetDirectory();
-        String sourceDirectory      = project.getBuild().getSourceDirectory();
-        String resourceDirectory    = project.getBuild().getResourceDirectory();
-        String outputDirectory      = project.getBuild().getOutputDirectory();
+        String targetDirectory      = project.getLayout().getTargetDirectory();
+        String sourceDirectory      = project.getLayout().getSourceDirectory();
+        String resourceDirectory    = project.getLayout().getResourceDirectory();
+        String outputDirectory      = project.getLayout().getOutputDirectory();
 
         log.debug( "build.directory           = " + targetDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );

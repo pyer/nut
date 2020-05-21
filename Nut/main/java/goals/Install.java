@@ -17,11 +17,11 @@ public class Install
     /** Instance logger */
     private static Log log;
 
-    public static void execute( Project project, Properties config )
+    public static void execute( Project project )
         throws GoalException
     {
         log = new Log();
-        Properties pp               = project.getModel().getProperties();
+        Properties pp               = project.getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
         String repository           = (String)pp.getProperty( "nut.home" );
         String mode                 = (String)pp.getProperty( "nut.mode", "SNAPSHOT" );
@@ -30,8 +30,8 @@ public class Install
         else
           mode = "-SNAPSHOT";
 
-        String targetDirectory      = project.getBuild().getTargetDirectory();
-        String resourceDirectory    = project.getBuild().getResourceDirectory();
+        String targetDirectory      = project.getLayout().getTargetDirectory();
+        String resourceDirectory    = project.getLayout().getResourceDirectory();
 
         String groupId              = project.getGroupId();
         String artifactId           = project.getArtifactId();

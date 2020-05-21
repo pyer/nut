@@ -32,13 +32,12 @@ public class Clean
      *
      * @throws Exception When a directory failed to get deleted.
      */
-    public static void execute( Project project, Properties config )
-        throws GoalException
+    public static void execute( Project project ) throws GoalException
     {
         log = new Log();
-        Properties pp  = project.getModel().getProperties();
+        Properties pp  = project.getProperties();
         String basedir = (String)pp.getProperty( "basedir" );
-        String targetDirectory = project.getBuild().getTargetDirectory();
+        String targetDirectory = project.getLayout().getTargetDirectory();
 
         File directoryPath = new File( basedir + File.separator + targetDirectory );
         log.info( "Cleaning " + directoryPath.getPath() );
@@ -52,35 +51,26 @@ public class Clean
      * @param dir The base directory of the included and excluded files.
      * @throws MojoExecutionException When a directory failed to get deleted.
      */
-    private static void removeDirectory( File dir )
-        throws GoalException
+    private static void removeDirectory( File dir ) throws GoalException
     {
-        if ( dir != null )
-        {
-            if ( !dir.exists() )
-            {
+        if ( dir != null ) {
+            if ( !dir.exists() ) {
                 //log.warn( dir + " doesn't exist" );
                 return;
             }
 
-            if ( !dir.isDirectory() )
-            {
+            if ( !dir.isDirectory() ) {
                 log.error( dir + " is not a directory." );
                 throw new GoalException( dir + " is not a directory." );
             }
 
-            try
-            {
+            try {
                 log.debug( "   delete " + dir.getAbsolutePath() );
                 deleteDirectory(dir);
-            }
-            catch ( IOException e )
-            {
+            } catch ( IOException e ) {
                 log.error( "Failed to delete directory: " + dir + ". Reason: " + e.getMessage(), e );
                 throw new GoalException(e.getMessage());
-            }
-            catch ( IllegalStateException e )
-            {
+            } catch ( IllegalStateException e ) {
                 log.error( "Failed to delete directory: " + dir + ". Reason: " + e.getMessage(), e );
                 throw new GoalException(e.getMessage());
             }
@@ -88,8 +78,7 @@ public class Clean
     }
 
 
-  private static void deleteDirectory(File path)
-        throws IOException
+  private static void deleteDirectory(File path) throws IOException
   {
     if( path.exists() ) {
       File[] files = path.listFiles();

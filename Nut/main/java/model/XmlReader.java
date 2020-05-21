@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import nut.model.Build;
 import nut.model.Dependency;
-import nut.model.Goal;
+import nut.model.Layout;
 import nut.model.Model;
 import nut.model.Repository;
 
@@ -33,73 +32,45 @@ public class XmlReader {
     }
 
     /**
-     * Method parseBuild.
+     * Method parseLayout
      *
      * @param parser
      * @throws IOException
      * @throws XmlParserException
-     * @return Build
+     * @return Layout
      */
-    private Build parseBuild( XmlParser parser )
+    private Layout parseLayout( XmlParser parser )
         throws IOException, XmlParserException
     {
-        Build build = new Build();
+        Layout layout = new Layout();
         Set<String> parsed = new HashSet<String>();
         while ( parser.nextTag() ) {
             if ( tagEquals( parser.getName(), "sourceDirectory", parsed ) ) {
-                build.setSourceDirectory( parser.getText() );
+                layout.setSourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "resourceDirectory", parsed ) ) {
-                build.setResourceDirectory( parser.getText() );
+                layout.setResourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "webappDirectory", parsed ) ) {
-                build.setWebappDirectory( parser.getText() );
+                layout.setWebappDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testSourceDirectory", parsed ) ) {
-                build.setTestSourceDirectory( parser.getText() );
+                layout.setTestSourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testResourceDirectory", parsed ) ) {
-                build.setTestResourceDirectory( parser.getText() );
+                layout.setTestResourceDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "targetDirectory", parsed ) ) {
-                build.setTargetDirectory( parser.getText() );
+                layout.setTargetDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "outputDirectory", parsed ) ) {
-                build.setOutputDirectory( parser.getText() );
+                layout.setOutputDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testOutputDirectory", parsed ) ) {
-                build.setTestOutputDirectory( parser.getText() );
+                layout.setTestOutputDirectory( parser.getText() );
             } else if ( tagEquals( parser.getName(), "testReportDirectory", parsed ) ) {
-                build.setTestReportDirectory( parser.getText() );
-            } else if ( tagEquals( parser.getName(), "suite", parsed ) ) {
-                build.setSuite( parser.getText() );
+                layout.setTestReportDirectory( parser.getText() );
+            } else if ( tagEquals( parser.getName(), "testSuite", parsed ) ) {
+                layout.setTestSuite( parser.getText() );
             } else {
-                throw new XmlParserException( "Unrecognized build tag: '" + parser.getName() + "'", parser, null );
+                throw new XmlParserException( "Unrecognized layout tag: '" + parser.getName() + "'", parser, null );
             }
             parser.nextTag(); // end of tag
         }
-        return build;
-    }
-
-    /**
-     * Method parseGoal.
-     *
-     * @param parser
-     * @throws IOException
-     * @throws XmlParserException
-     * @return Goal
-     */
-    private Goal parseGoal( XmlParser parser )
-        throws IOException, XmlParserException
-    {
-        Goal goal = new Goal();
-        Properties configuration = new Properties();
-        Set<String> parsed = new HashSet<String>();
-        while ( parser.nextTag() ) {
-            if ( tagEquals( parser.getName(), "name", parsed ) ) {
-                goal.setName( parser.getText() );
-            } else if ( tagEquals( parser.getName(), "testSuiteFile", parsed ) ) {
-                configuration.setProperty( parser.getName(), parser.getText() );
-            } else if ( tagEquals( parser.getName(), "scriptFile", parsed ) ) {
-                configuration.setProperty( parser.getName(), parser.getText() );
-            }
-            parser.nextTag(); // end of tag
-        }
-        goal.setConfiguration( configuration );
-        return goal;
+        return layout;
     }
 
     /**
@@ -201,7 +172,9 @@ public class XmlReader {
                 } else if ( tagEquals( tag, "description", parsed ) ) {
                     model.setDescription( parser.getText() );
                 } else if ( tagEquals( tag, "build", parsed ) ) {
-                    model.setBuild( parseBuild( parser ) );
+                    model.setBuild( parser.getText() );
+                } else if ( tagEquals( tag, "layout", parsed ) ) {
+                    model.setLayout( parseLayout( parser ) );
                 } else if ( tagEquals( tag, "modules", parsed ) ) {
                     List<String> modules = new ArrayList<String>();
                     model.setModules( modules );
@@ -209,16 +182,6 @@ public class XmlReader {
                         if ( parser.getName().equals( "module" ) ) {
                             modules.add( parser.getText() );
                             parser.nextTag(); // end of tag
-                        } else {
-                            throw new XmlParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
-                        }
-                    }
-                } else if ( tagEquals( tag, "goals", parsed ) ) {
-                    List<Goal> goals = new ArrayList<Goal>();
-                    model.setGoals( goals );
-                    while ( parser.nextTag() ) {
-                        if ( parser.getName().equals( "goal" ) ) {
-                            goals.add( parseGoal( parser ) );
                         } else {
                             throw new XmlParserException( "Unrecognized association: '" + parser.getName() + "'", parser, null );
                         }

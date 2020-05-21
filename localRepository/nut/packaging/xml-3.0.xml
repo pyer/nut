@@ -3,15 +3,9 @@
   <description>
      install targetDirectory/artifactId.type in local repository.
   </description>
-  <build>
+  <layout>
     <targetDirectory>target</targetDirectory>
     <resourceDirectory>main/resources</resourceDirectory>
-    <suite>clean</suite>
-  </build>
-
-  <goals>
-    <goal>
-      <name>install</name>
-    </goal>
-  </goals>
+  </layout>
+  <build>clean install</build>
 </project>

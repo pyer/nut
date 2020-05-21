@@ -15,18 +15,16 @@ import java.util.Properties;
  */
 public class Test
 {
-    public static void execute( Project project, Properties config )
-        throws GoalException
-    {
+    public static void execute( Project project ) throws GoalException {
         int returnCode = 0;
         Log log = new Log();
-        Properties pp               = project.getModel().getProperties();
+        Properties pp               = project.getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
-        String outputDirectory      = basedir + File.separator + project.getBuild().getOutputDirectory();
-        String testOutputDirectory  = basedir + File.separator + project.getBuild().getTestOutputDirectory();
-        String testReportDirectory  = basedir + File.separator + project.getBuild().getTestReportDirectory();
+        String outputDirectory      = basedir + File.separator + project.getLayout().getOutputDirectory();
+        String testOutputDirectory  = basedir + File.separator + project.getLayout().getTestOutputDirectory();
+        String testReportDirectory  = basedir + File.separator + project.getLayout().getTestReportDirectory();
         //String testSuiteFileName    = basedir + File.separator + "test/testng.xml";
-        String testSuiteFileName    = basedir + File.separator + config.getProperty("testSuiteFileName", "test/testng.xml");
+        String testSuiteFileName    = basedir + File.separator + project.getLayout().getTestSuite();
         log.debug( "basedir      = " + basedir);
         log.debug( "main classe  = " + outputDirectory);
         log.debug( "test suite   = " + testSuiteFileName);

@@ -3,9 +3,8 @@ package nut.model;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import nut.model.Build;
 import nut.model.Dependency;
-import nut.model.Goal;
+import nut.model.Layout;
 import nut.model.Model;
 
 import nut.json.JsonSerializer;
@@ -15,47 +14,24 @@ public class JsonWriter {
     private JsonSerializer serializer;
 
     /**
-     * Method writeBuild.
+     * Method writeLayout.
      *
-     * @param build
+     * @param layout
      * @throws java.io.IOException
      */
-    private void writeBuild( Build build )
+    private void writeLayout( Layout layout )
         throws java.io.IOException
     {
-            serializer.startObject( "build" );
-            serializer.element( "sourceDirectory", build.getSourceDirectory() );
-            serializer.element( "resourceDirectory", build.getResourceDirectory() );
-            serializer.element( "testSourceDirectory", build.getTestSourceDirectory() );
-            serializer.element( "testResourceDirectory", build.getTestResourceDirectory() );
-            serializer.element( "targetDirectory", build.getTargetDirectory() );
-            serializer.element( "outputDirectory", build.getOutputDirectory() );
-            serializer.element( "testOutputDirectory", build.getTestOutputDirectory() );
-            serializer.element( "testReportDirectory", build.getTestReportDirectory() );
-            serializer.element( "suite", build.getSuite() );
-            serializer.endObject();
-    }
-
-    /**
-     * Method writeGoal.
-     *
-     * @param goal
-     * @throws java.io.IOException
-     */
-    private void writeGoal( Goal goal )
-        throws java.io.IOException
-    {
-            serializer.startObject(null);
-            serializer.element( "name", goal.getName() );
-            if ( goal.hasConfiguration() ) {
-                serializer.startObject( "configuration" );
-                for ( Iterator iter = goal.getConfiguration().keySet().iterator(); iter.hasNext(); ) {
-                    String key = (String) iter.next();
-                    String value = (String) goal.getConfiguration().getProperty( key );
-                    serializer.element( key, value );
-                }
-                serializer.endObject();
-            }
+            serializer.startObject( "layout" );
+            serializer.element( "sourceDirectory", layout.getSourceDirectory() );
+            serializer.element( "resourceDirectory", layout.getResourceDirectory() );
+            serializer.element( "testSourceDirectory", layout.getTestSourceDirectory() );
+            serializer.element( "testResourceDirectory", layout.getTestResourceDirectory() );
+            serializer.element( "targetDirectory", layout.getTargetDirectory() );
+            serializer.element( "outputDirectory", layout.getOutputDirectory() );
+            serializer.element( "testOutputDirectory", layout.getTestOutputDirectory() );
+            serializer.element( "testReportDirectory", layout.getTestReportDirectory() );
+            serializer.element( "testSuite", layout.getTestSuite() );
             serializer.endObject();
     }
 
@@ -112,7 +88,8 @@ public class JsonWriter {
         serializer.element( "version", model.getVersion() );
         serializer.element( "packaging", model.getPackaging() );
         serializer.element( "description", model.getDescription() );
-        writeBuild( (Build) model.getBuild() );
+        writeLayout( (Layout) model.getLayout() );
+        serializer.element( "build", model.getBuild() );
         if ( model.getModules().size() > 0 ) {
             serializer.startObject( "modules" );
             serializer.startList( "module" );
@@ -124,16 +101,6 @@ public class JsonWriter {
             serializer.endObject();
         }
         
-        if ( model.getGoals().size() > 0 ) {
-            serializer.startObject( "goals" );
-            serializer.startList( "goal" );
-            for ( Iterator iter = model.getGoals().iterator(); iter.hasNext(); ) {
-                Goal o = (Goal) iter.next();
-                writeGoal( o );
-            }
-            serializer.endList();
-            serializer.endObject();
-        }
         if ( model.getDependencies().size() > 0 ) {
             serializer.startObject( "dependencies" );
             serializer.startList( "dependency" );

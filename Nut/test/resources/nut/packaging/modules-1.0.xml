@@ -4,13 +4,8 @@
      clean targetDirectory
   </description>
 
-  <build>
+  <layout>
     <targetDirectory>target</targetDirectory>
-    <suite>clean</suite>
-  </build>
-  <goals>
-    <goal>
-      <name>clean</name>
-    </goal>
-  </goals>
+  </layout>
+  <build>clean</build>
 </project>
