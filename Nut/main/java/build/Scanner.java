@@ -3,8 +3,8 @@ package nut.build;
 import nut.logging.Log;
 import nut.build.BuildException;
 import nut.build.ProjectBuilder;
-import nut.project.Project;
 import nut.build.ScannerException;
+import nut.model.Project;
 
 import java.io.File;
 

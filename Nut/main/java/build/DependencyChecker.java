@@ -1,6 +1,7 @@
-package nut.project;
+package nut.build;
 
 import nut.artifact.Artifact;
+import nut.build.DependencyNotFoundException;
 import nut.model.Repository;
 
 import nut.logging.Log;

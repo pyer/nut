@@ -2,8 +2,8 @@ package nut.goals;
 
 import nut.logging.Log;
 import nut.goals.GoalException;
-import nut.project.Project;
 import nut.model.Dependency;
+import nut.model.Project;
 import nut.artifact.Artifact;
 
 import java.io.File;
@@ -20,13 +20,12 @@ import javax.tools.ToolProvider;
  * Compiles application sources
  *
  */
-public class Compile
+public class Compile implements Goal
 {
     /** Instance logger */
-    private static Log log;
+    private Log log;
 
-    public static void execute( Project project )
-        throws GoalException
+    public void execute( Project project ) throws GoalException
     {
         log = new Log();
         Properties pp               = project.getProperties();
@@ -44,10 +43,10 @@ public class Compile
         // List of dependencies file names
         List<String> dependencies = new ArrayList<String>();
         List<String> testDependencies = new ArrayList<String>();
-        List modelDep = project.getModel().getDependencies();
-        for ( int i = 0; i < modelDep.size(); i++ )
+        List deps = project.getDependencies();
+        for ( int i = 0; i < deps.size(); i++ )
         {
-            Dependency dep = (Dependency)(modelDep.get(i));
+            Dependency dep = (Dependency)(deps.get(i));
             Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
             if( dep.getScope().equals("test") ) {
                 testDependencies.add(artifactDep.getPath());
@@ -101,7 +100,7 @@ public class Compile
 
     }
 
-    private static List<String> sourceFiles( File sourceDir )
+    private List<String> sourceFiles( File sourceDir )
     {
         List<String> sources = new LinkedList<String>();
         if( !sourceDir.exists() )
@@ -130,7 +129,7 @@ public class Compile
         return sources;
     }
 
-    private static void compile(List sources, List dependencies, String sourceDirectory, String outputDirectory)
+    private void compile(List sources, List dependencies, String sourceDirectory, String outputDirectory)
         throws GoalException
     {
         int n = 8 + sources.size();

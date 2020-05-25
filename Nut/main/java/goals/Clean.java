@@ -2,7 +2,7 @@ package nut.goals;
 
 import nut.logging.Log;
 import nut.goals.GoalException;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,10 +21,10 @@ import java.util.Properties;
  *
  * @goal clean
  */
-public class Clean
+public class Clean implements Goal
 {
     /** Instance logger */
-    private static Log log;
+    private Log log;
 
     /**
      * Deletes file-sets in the following project build directory order:
@@ -32,7 +32,7 @@ public class Clean
      *
      * @throws Exception When a directory failed to get deleted.
      */
-    public static void execute( Project project ) throws GoalException
+    public void execute( Project project ) throws GoalException
     {
         log = new Log();
         Properties pp  = project.getProperties();
@@ -51,7 +51,7 @@ public class Clean
      * @param dir The base directory of the included and excluded files.
      * @throws MojoExecutionException When a directory failed to get deleted.
      */
-    private static void removeDirectory( File dir ) throws GoalException
+    private void removeDirectory( File dir ) throws GoalException
     {
         if ( dir != null ) {
             if ( !dir.exists() ) {
@@ -77,21 +77,20 @@ public class Clean
         }
     }
 
-
-  private static void deleteDirectory(File path) throws IOException
-  {
-    if( path.exists() ) {
-      File[] files = path.listFiles();
-      for(int i=0; i<files.length; i++) {
-         if(files[i].isDirectory()) {
-           deleteDirectory(files[i]);
-         }
-         else {
-           files[i].delete();
-         }
+    private void deleteDirectory(File path) throws IOException
+    {
+      if( path.exists() ) {
+        File[] files = path.listFiles();
+        for(int i=0; i<files.length; i++) {
+           if(files[i].isDirectory()) {
+             deleteDirectory(files[i]);
+           }
+           else {
+             files[i].delete();
+           }
+        }
       }
+      path.delete();
     }
-    path.delete();
-  }
 
 }

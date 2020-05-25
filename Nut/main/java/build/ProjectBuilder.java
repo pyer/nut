@@ -3,10 +3,9 @@ package nut.build;
 import nut.artifact.Artifact;
 import nut.build.BuildException;
 import nut.model.Layout;
-import nut.model.Model;
+import nut.model.Project;
 import nut.model.XmlReader;
 import nut.model.ValidationException;
-import nut.project.Project;
 import nut.xml.XmlParserException;
 
 import java.io.File;
@@ -21,8 +20,8 @@ import java.io.StringWriter;
 
 /*
 Notes
- * when the model is read it may not have a groupId, as it must be inherited
- * the inheritance assembler must use models that are unadulterated!
+ * when the project is read it may not have a groupId, as it must be inherited
+ * the inheritance assembler must use projects that are unadulterated!
 */
 
 public class ProjectBuilder
@@ -32,7 +31,7 @@ public class ProjectBuilder
 
     public ProjectBuilder()
     {
-        // path of packaging models
+        // path of packaging projects
         this.packagingPath = System.getProperty( "nut.home", "." ) + File.separatorChar + "nut" + File.separatorChar + "packaging";
         this.nutVersion = System.getProperty( "nut.version", "1.0" );
     }
@@ -46,55 +45,53 @@ public class ProjectBuilder
     {
         String basedir     = projectFile.getAbsoluteFile().getParent();
         // First read the project's nut.xml
-        Model model = readModel( projectFile );
+        Project project = readProject( projectFile );
         // add basedir property
-        model.addProperty( "basedir", projectFile.getAbsoluteFile().getParent() );
+        project.addProperty( "basedir", projectFile.getAbsoluteFile().getParent() );
         // add properties as "nut..."
-        model.addProperties();
+        project.addProperties();
 
-        // then read the packaging model if any
-        Model packagingModel = null;
-        File packagingFile = new File( packagingPath, model.getPackaging() + "-" + nutVersion + ".xml" );
+        // then read the packaging project if any
+        Project packagingProject = null;
+        File packagingFile = new File( packagingPath, project.getPackaging() + "-" + nutVersion + ".xml" );
         if( packagingFile.exists() ) {
-            packagingModel = readModel( packagingFile );
+            packagingProject = readProject( packagingFile );
         } else {
             throw new BuildException( "Packaging file not found '" + packagingFile + "'" );
         }
         // and at last the parent file if any
-        Model parentModel = null;
-        if( model.getParent() != null ) {
-          File parentFile = new File( basedir, model.getParent() );
+        Project parentProject = null;
+        if( project.getParent() != null ) {
+          File parentFile = new File( basedir, project.getParent() );
           if( parentFile.exists() ) {
-            parentModel = readModel( parentFile );
+            parentProject = readProject( parentFile );
           }
         }
 
-        //log.info( "Building " + model.getId() );
-        if( packagingModel != null ) {
-          model.setLayout( mergedLayout( model.getLayout(), packagingModel.getLayout() ) );
-          model.getDependencies().addAll( packagingModel.getDependencies() );
-          model.getRepositories().addAll( packagingModel.getRepositories() );
-          model.setBuild( packagingModel.getBuild() );
+        //log.info( "Building " + project.getId() );
+        if( packagingProject != null ) {
+          project.setLayout( mergedLayout( project.getLayout(), packagingProject.getLayout() ) );
+          project.getDependencies().addAll( packagingProject.getDependencies() );
+          project.getRepositories().addAll( packagingProject.getRepositories() );
+          project.setBuild( packagingProject.getBuild() );
         }
-        if( parentModel != null ) {
-          model.setLayout( mergedLayout( model.getLayout(), parentModel.getLayout() ) );
-          model.getDependencies().addAll( parentModel.getDependencies() );
-          model.getRepositories().addAll( parentModel.getRepositories() );
-          if( model.getGroupId() == null )
-            model.setGroupId( parentModel.getGroupId() );
-          if( model.getVersion() == null )
-            model.setVersion( parentModel.getVersion() );
-          if( model.getBuild() == null )
-            model.setBuild( parentModel.getBuild() );
+        if( parentProject != null ) {
+          project.setLayout( mergedLayout( project.getLayout(), parentProject.getLayout() ) );
+          project.getDependencies().addAll( parentProject.getDependencies() );
+          project.getRepositories().addAll( parentProject.getRepositories() );
+          if( project.getGroupId() == null )
+            project.setGroupId( parentProject.getGroupId() );
+          if( project.getVersion() == null )
+            project.setVersion( parentProject.getVersion() );
+          if( project.getBuild() == null )
+            project.setBuild( parentProject.getBuild() );
         }
         try {
           // Must validate before artifact construction to make sure dependencies are good
-          model.validate( );
+          project.validate( );
         } catch ( ValidationException e ) {
-          throw new BuildException( model.getId() + ": " + e.getMessage(), e );
+          throw new BuildException( project.getId() + ": " + e.getMessage(), e );
         }
-        Project project = new Project();
-        project.setModel( model );
         project.setArtifact( new Artifact( project.getGroupId(), project.getArtifactId(), project.getVersion(), project.getPackaging() ) );
         return project;
     }
@@ -110,33 +107,31 @@ public class ProjectBuilder
     }
 
     // ----------------------------------------------------------------------
-    private Model readModel( File file )
-        throws BuildException
+    private Project readProject( File file ) throws BuildException
     {
-        Model model = null;
+        Project project = null;
         try
         {
             InputStream is        = new FileInputStream(file);
             Reader reader         = new InputStreamReader( is );
-            XmlReader modelReader = new XmlReader();
-            StringReader sReader  = modelStringReader( reader );
-            model = modelReader.parseModel( sReader );
+            XmlReader projectReader = new XmlReader();
+            StringReader sReader  = projectStringReader( reader );
+            project = projectReader.parseProject( sReader );
             reader.close();
         }
         catch ( XmlParserException e ) {
             throw new BuildException( "Parse error reading '" + file.getAbsolutePath() + "': "+ e.getMessage(), e );
         }
         catch ( FileNotFoundException e ) {
-            throw new BuildException( "Could not find the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new BuildException( "Could not find the project file '" + file.getAbsolutePath() + "'.", e );
         }
         catch ( IOException e ) {
-            throw new BuildException( "Could not read the model file '" + file.getAbsolutePath() + "'.", e );
+            throw new BuildException( "Could not read the project file '" + file.getAbsolutePath() + "'.", e );
         }
-        return model;
+        return project;
     }
 
-    private StringReader modelStringReader( Reader reader )
-        throws IOException
+    private StringReader projectStringReader( Reader reader ) throws IOException
     {
         StringWriter sw = new StringWriter();
         final char[] buffer = new char[1024 * 4];
@@ -146,8 +141,7 @@ public class ProjectBuilder
             sw.write( buffer, 0, n );
         }
         sw.flush();
-        String modelSource = sw.toString();
-        return new StringReader( modelSource );
+        return new StringReader( sw.toString() );
     }
 
 }

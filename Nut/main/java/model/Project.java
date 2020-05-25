@@ -1,9 +1,14 @@
 package nut.model;
 
+import nut.artifact.Artifact;
+
 import nut.model.Dependency;
 import nut.model.Layout;
 import nut.model.Repository;
 import nut.model.ValidationException;
+
+import java.io.IOException;
+import java.io.StringWriter;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -27,8 +32,10 @@ import java.util.Properties;
  *   - properties
  *
  */
-public class Model implements java.io.Serializable
+public class Project implements java.io.Serializable
 {
+    private Artifact artifact;
+
     /**
      * Declares a parent xml file which contains common values, for example version or groupId.
      */
@@ -68,7 +75,7 @@ public class Model implements java.io.Serializable
     /**
      * List of steps to build the project.
      */
-    private String build;
+    private String build = "clean";
 
     /**
      * Other variables
@@ -79,9 +86,73 @@ public class Model implements java.io.Serializable
     private List<Repository> repositories;
     private Properties properties;
 
+    // Building time
+    private long time;
+    // Status
+    private boolean buildDone;
+    private boolean buildSuccess;
+
+    // ----------------------------------------------------------------------
+    // Constructor
+    // ----------------------------------------------------------------------
+
+    public Project()
+    {
+        this.time = System.currentTimeMillis();
+        this.buildDone = false;
+        this.buildSuccess = false;
+    }
+
+    // ----------------------------------------------------------------------
+    public boolean isBuilt()
+    {
+        return this.buildDone;
+    }
+
+    public void start()
+    {
+        this.time = System.currentTimeMillis();
+        this.buildDone = true;
+    }
+
+    public boolean isSuccessful()
+    {
+        return buildSuccess;
+    }
+
+    public void success()
+    {
+        this.buildSuccess = true;
+        this.time = System.currentTimeMillis() - this.time;
+    }
+
+    public void failure()
+    {
+        this.buildSuccess = false;
+        this.time = System.currentTimeMillis() - this.time;
+    }
+
+    public long getTime()
+    {
+        return time;
+    }
+
+    // ----------------------------------------------------------------------
+
     /**
      * Public methods
      */
+
+    public Artifact getArtifact()
+    {
+        return artifact;
+    }
+
+    public void setArtifact( Artifact artifact )
+    {
+        this.artifact = artifact;
+    }
+
     public String getParent()
     {
         return this.parent;
@@ -288,6 +359,60 @@ public class Model implements java.io.Serializable
             throw new ValidationException( "'" + fieldName + "' is null." );
         if ( string.length() <1 )
             throw new ValidationException( "'" + fieldName + "' is empty." );
+    }
+
+
+    // ----------------------------------------------------------------------
+    public boolean equals( Object other )
+    {
+        if ( other == this ) {
+            return true;
+        } else if ( !( other instanceof Project ) ) {
+            return false;
+        } else {
+            Project otherProject = (Project) other;
+            return getId().equals( otherProject.getId() );
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    // returns classpath for TestNG child process
+    public String getDependenciesClassPath()
+    {
+      String classpath = "";
+      for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
+          Dependency dep = (Dependency) it.next();
+          if( "test".equals(dep.getScope()) || "compile".equals(dep.getScope()) ) {
+              Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
+              classpath = classpath + ":" + artifactDep.getPath();
+          }
+      }
+      return classpath;
+    }
+
+    // ----------------------------------------------------------------------
+    public String effectiveXmlNut()
+    {
+      try {
+        StringWriter sWriter  = new StringWriter();
+        XmlWriter xml = new XmlWriter();
+        xml.writeProject( sWriter, this );
+        return sWriter.toString();
+      } catch (IOException e) {
+        return "";
+      }
+    }
+
+    public String effectiveJsonNut()
+    {
+      try {
+        StringWriter sWriter  = new StringWriter();
+        JsonWriter json = new JsonWriter();
+        json.writeProject( sWriter, this );
+        return sWriter.toString();
+      } catch (IOException e) {
+        return "";
+      }
     }
 
 }

@@ -1,19 +1,19 @@
 package nut.interpolation;
 
-import nut.model.Model;
+import nut.model.Project;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 public class InterpolatorTest
 {
 
     @Test
-    public void testDefaultModel()
+    public void testDefaultProject()
     {
         Interpolator i = new Interpolator();
-        Model m = new Model();
-        assertEquals( m, i.interpolatedModel( m ) );
+        Project project = new Project();
+        assertEquals( project, i.interpolatedProject( project ) );
     }
 
 }

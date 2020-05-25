@@ -1,10 +1,9 @@
-package nut.project;
+package nut.build;
 
 /**
  * Exception thrown when a dependency artifact is not found in any repositories.
  */
-public class DependencyNotFoundException
-    extends Exception
+public class DependencyNotFoundException extends Exception
 {
     private final String message;
 

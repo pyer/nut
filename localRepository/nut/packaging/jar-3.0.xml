@@ -9,7 +9,17 @@
      pack files from outputDirectory to targetDirectory/artifactId.type
      install targetDirectory/artifactId.type in local repository.
   </description>
-
+  <layout>
+    <targetDirectory>target</targetDirectory>
+    <sourceDirectory>main/java</sourceDirectory>
+    <resourceDirectory>main/resources</resourceDirectory>
+    <outputDirectory>target/classes</outputDirectory>
+    <testSourceDirectory>test/java</testSourceDirectory>
+    <testResourceDirectory>test/resources</testResourceDirectory>
+    <testOutputDirectory>target/test-classes</testOutputDirectory>
+    <testReportDirectory>target/test-reports</testReportDirectory>
+  </layout>
+  <build>clean compile test pack install</build>
   <dependencies>
     <dependency>
       <groupId>nut</groupId>
@@ -27,29 +37,7 @@
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.48</version>
+      <scope>test</scope>
     </dependency>
-
   </dependencies>
-
-  <repositories>
-    <repository>
-      <name>Maven Central Repository</name>
-      <layout>maven</layout>
-      <url>https://repo1.maven.org/maven2</url>
-    </repository>
-  </repositories>
-
-  <layout>
-    <targetDirectory>target</targetDirectory>
-    <sourceDirectory>main/java</sourceDirectory>
-    <resourceDirectory>main/resources</resourceDirectory>
-    <outputDirectory>target/classes</outputDirectory>
-    <testSourceDirectory>test/java</testSourceDirectory>
-    <testResourceDirectory>test/resources</testResourceDirectory>
-    <testOutputDirectory>target/test-classes</testOutputDirectory>
-    <testReportDirectory>target/test-reports</testReportDirectory>
-  </layout>
-
-  <build>clean compile test pack install</build>
-
 </project>

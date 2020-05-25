@@ -19,7 +19,7 @@
       <class name="nut.model.BuildTest" />
       <class name="nut.model.DependencyTest" />
       <class name="nut.model.LayoutTest" />
-      <class name="nut.model.ModelTest" />
+      <class name="nut.model.ProjectTest" />
       <class name="nut.model.RepositoryTest" />
       <class name="nut.model.XmlReaderTest" />
     </classes>
@@ -29,16 +29,16 @@
       <class name="nut.interpolation.InterpolatorTest" />
     </classes>
   </test>
-  <test name="nut.logging">
-    <classes>
-      <class name="nut.logging.LogTest" />
-    </classes>
-  </test>
   <test name="nut.goals">
     <classes>
       <class name="nut.goals.CleanTest" />
       <class name="nut.goals.InstallTest" />
       <class name="nut.goals.PackZipTest" />
+    </classes>
+  </test>
+  <test name="nut.logging">
+    <classes>
+      <class name="nut.logging.LogTest" />
     </classes>
   </test>
 </suite>

@@ -1,8 +1,7 @@
 package nut.goals;
 
 import nut.model.Layout;
-import nut.model.Model;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 
@@ -11,18 +10,19 @@ import org.testng.annotations.Test;
 
 public class InstallTest
 {
-    private Model model = new Model();
+    private Project project;
 
     private void setupTest()
     {
-        model.addProperty( "basedir", "target" );
+        project = new Project();
+        project.addProperty( "basedir", "target" );
         Layout layout = new Layout();
         layout.setTargetDirectory( "layout" );
-        model.setLayout( layout );
-        model.setGroupId( "local.group" );
-        model.setArtifactId( "artifact" );
-        model.setVersion( "0.0" );
-        model.setPackaging( "file" );
+        project.setLayout( layout );
+        project.setGroupId( "local.group" );
+        project.setArtifactId( "artifact" );
+        project.setVersion( "0.0" );
+        project.setPackaging( "file" );
     }
 
     @Test
@@ -39,14 +39,12 @@ public class InstallTest
         throws Exception
     {
         setupTest();
-        model.addProperty( "nut.home", "target/repo2" );
+        project.addProperty( "nut.home", "target/repo2" );
         new File( "target/repo2" ).mkdir();
         new File( "target/layout" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
         new File( "target/layout/artifact.file" ).createNewFile();
-        Project project = new Project();
-        project.setModel(model);
-        Install.execute(project);
+        new Install().execute(project);
         File installedArtifact = new File( "target/repo2/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
     }
@@ -56,15 +54,12 @@ public class InstallTest
         throws Exception
     {
         setupTest();
-        model.addProperty( "nut.home", "target/repo3" );
+        project.addProperty( "nut.home", "target/repo3" );
         new File( "target/repo3" ).mkdir();
         new File( "target/layout" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
-        model.setPackaging( "modules" );
-
-        Project project = new Project();
-        project.setModel(model);
-        Install.execute(project);
+        project.setPackaging( "modules" );
+        new Install().execute(project);
         File installedArtifact = new File( "target/repo3/local/group/artifact-0.0-SNAPSHOT.modules" );
         assertFalse( installedArtifact.exists() );
     }
@@ -76,14 +71,12 @@ public class InstallTest
       try
       {
         setupTest();
-        model.addProperty( "nut.home", "target/repo4" );
+        project.addProperty( "nut.home", "target/repo4" );
         new File( "target/repo4" ).mkdir();
         new File( "target/layout" ).mkdir();
         new File( "target/nut.xml" ).createNewFile();
-        model.setPackaging( "file" );
-        Project project = new Project();
-        project.setModel(model);
-        Install.execute(project);
+        project.setPackaging( "file" );
+        new Install().execute(project);
         File installedArtifact = new File( "target/repo4/local/group/artifact-0.0-SNAPSHOT.file" );
         assertTrue( installedArtifact.exists() );
       }

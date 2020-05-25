@@ -2,7 +2,7 @@ package nut.goals;
 
 import nut.goals.GoalException;
 import nut.logging.Log;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,14 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class PackJar
+public class PackJar implements Goal
 {
     /** Instance logger */
-    private static Log log;
+    private Log log;
 
     // ==========================================================================
-    public static void execute( Project project )
-        throws GoalException
+    public void execute( Project project ) throws GoalException
     {
         String msg;
         log = new Log();
@@ -66,7 +65,7 @@ public class PackJar
     }
 
     // ==========================================================================
-    private static void archive(String finalName, String targetDirectory, String outputDirectory, String mode)
+    private void archive(String finalName, String targetDirectory, String outputDirectory, String mode)
         throws GoalException
     {
         // ----------------------------------------------------------------------

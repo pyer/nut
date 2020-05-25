@@ -11,7 +11,7 @@ import java.util.Set;
 
 import nut.model.Dependency;
 import nut.model.Layout;
-import nut.model.Model;
+import nut.model.Project;
 import nut.model.Repository;
 
 import nut.xml.XmlParser;
@@ -134,18 +134,18 @@ public class XmlReader {
     }
 
     /**
-     * Method parseModel.
+     * Method parseProject.
      *
      * @param sReader
      * @throws IOException
      * @throws XmlParserException
-     * @return Model
+     * @return Project
      */
-    public Model parseModel( StringReader sReader )
+    public Project parseProject( StringReader sReader )
         throws IOException, XmlParserException
     {
         String tag;
-        Model model = new Model();
+        Project project = new Project();
         Set<String> parsed = new HashSet<String>();
         XmlParser parser = new XmlParser( sReader );
         parser.skipBOM();
@@ -160,24 +160,24 @@ public class XmlReader {
                 continue;
             } else {
                 if ( tagEquals( tag, "artifactId", parsed ) ) {
-                    model.setArtifactId( parser.getText() );
+                    project.setArtifactId( parser.getText() );
                 } else if ( tagEquals( tag, "groupId", parsed ) ) {
-                    model.setGroupId( parser.getText() );
+                    project.setGroupId( parser.getText() );
                 } else if ( tagEquals( tag, "version", parsed ) ) {
-                    model.setVersion( parser.getText() );
+                    project.setVersion( parser.getText() );
                 } else if ( tagEquals( tag, "parent", parsed ) ) {
-                    model.setParent( parser.getText() );
+                    project.setParent( parser.getText() );
                 } else if ( tagEquals( tag, "packaging", parsed ) ) {
-                    model.setPackaging( parser.getText() );
+                    project.setPackaging( parser.getText() );
                 } else if ( tagEquals( tag, "description", parsed ) ) {
-                    model.setDescription( parser.getText() );
+                    project.setDescription( parser.getText() );
                 } else if ( tagEquals( tag, "build", parsed ) ) {
-                    model.setBuild( parser.getText() );
+                    project.setBuild( parser.getText() );
                 } else if ( tagEquals( tag, "layout", parsed ) ) {
-                    model.setLayout( parseLayout( parser ) );
+                    project.setLayout( parseLayout( parser ) );
                 } else if ( tagEquals( tag, "modules", parsed ) ) {
                     List<String> modules = new ArrayList<String>();
-                    model.setModules( modules );
+                    project.setModules( modules );
                     while ( parser.nextTag() ) {
                         if ( parser.getName().equals( "module" ) ) {
                             modules.add( parser.getText() );
@@ -188,7 +188,7 @@ public class XmlReader {
                     }
                 } else if ( tagEquals( tag, "dependencies", parsed ) ) {
                     List<Dependency> dependencies = new ArrayList<Dependency>();
-                    model.setDependencies( dependencies );
+                    project.setDependencies( dependencies );
                     while ( parser.nextTag() ) {
                         if ( parser.getName().equals( "dependency" ) ) {
                             dependencies.add( parseDependency( parser ) );
@@ -198,7 +198,7 @@ public class XmlReader {
                     }
                 } else if ( tagEquals( tag, "repositories", parsed ) ) {
                     List<Repository> repositories = new ArrayList<Repository>();
-                    model.setRepositories( repositories );
+                    project.setRepositories( repositories );
                     while ( parser.nextTag() ) {
                          if ( parser.getName().equals( "repository" ) ) {
                              repositories.add( parseRepository( parser ) );
@@ -210,7 +210,7 @@ public class XmlReader {
                   while ( parser.nextTag() ) {
                        String key = parser.getName();
                        String value = parser.getText().trim();
-                       model.addProperty( key, value );
+                       project.addProperty( key, value );
                        parser.nextTag(); // end of tag
                    }
                } else {
@@ -218,6 +218,6 @@ public class XmlReader {
                }
             }
         }
-        return model;
+        return project;
     }
 }

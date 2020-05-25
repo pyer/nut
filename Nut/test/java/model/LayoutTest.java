@@ -9,8 +9,8 @@ import java.util.Arrays;
 
 //import nut.layout.ProjectLayouter;
 //import nut.layout.LayoutException;
+import nut.model.Project;
 import nut.model.ValidationException;
-import nut.project.Project;
 
 public class LayoutTest
 {

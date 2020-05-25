@@ -2,7 +2,7 @@ package nut.goals;
 
 import nut.goals.GoalException;
 import nut.logging.Log;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,13 +12,12 @@ import java.io.IOException;
 
 import java.util.Properties;
 
-public class Install
+public class Install implements Goal
 {
     /** Instance logger */
-    private static Log log;
+    private Log log;
 
-    public static void execute( Project project )
-        throws GoalException
+    public void execute( Project project ) throws GoalException
     {
         log = new Log();
         Properties pp               = project.getProperties();
@@ -71,7 +70,7 @@ public class Install
      * @param destination A non-directory <code>File</code> to write bytes to (possibly
      *                    overwriting).
      */
-    public static void copyFile( final String source, final String destination, final String version )
+    public void copyFile( final String source, final String destination, final String version )
         throws GoalException
     {
         String msg;

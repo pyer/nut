@@ -2,7 +2,7 @@ package nut.build;
 
 import nut.build.ProjectBuilder;
 import nut.build.BuildException;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 
@@ -45,7 +45,7 @@ public class ProjectBuilderTest
       ProjectBuilder builder = new ProjectBuilder();
       String basedir = System.getProperty( "basedir" );
       Project project = builder.launch( new File(basedir + "/test/resources/project/nut.xml") );
-      String value = project.getModel().getProperties().getProperty( "nut.home" );
+      String value = project.getProperties().getProperty( "nut.home" );
       assertTrue( value.length() > 2 );
     }
 
@@ -54,7 +54,7 @@ public class ProjectBuilderTest
         ProjectBuilder builder = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
         Project project = builder.launch( new File(basedir + "/test/resources/project/nut.xml") );
-        assertEquals( "modules", project.getModel().getPackaging() );
+        assertEquals( "modules", project.getPackaging() );
     }
 
     @Test(expectedExceptions = BuildException.class)

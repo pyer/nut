@@ -8,65 +8,65 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class ModelTest
+public class ProjectTest
 {
 
     @Test
     public void testHashCodeNullSafe()
     {
-        new Model().hashCode();
+        new Project().hashCode();
     }
 
     @Test
     public void testEqualsNullSafe()
     {
-        assertNotNull( new Model() );
+        assertNotNull( new Project() );
     }
 
     @Test
     public void testEqualsIdentity()
     {
-        Model thing = new Model();
+        Project thing = new Project();
         assertTrue( thing.equals( thing ) );
     }
 
     @Test
     public void testToStringNullSafe()
     {
-        assertNotNull( new Model().toString() );
+        assertNotNull( new Project().toString() );
     }
 
     @Test
-    public void testModelId()
+    public void testProjectId()
     {
-        Model model = new Model();
-        model.setGroupId("group");
-        model.setArtifactId("artifact");
-        model.setVersion("1.0");
-        assertEquals( model.getId(), "group:artifact:1.0" );
+        Project project = new Project();
+        project.setGroupId("group");
+        project.setArtifactId("artifact");
+        project.setVersion("1.0");
+        assertEquals( project.getId(), "group:artifact:1.0" );
     }
 
     @Test
-    public void testModelDefaultPackaging()
+    public void testProjectDefaultPackaging()
     {
-        Model model = new Model();
-        assertEquals( model.getPackaging(), "modules" );
+        Project project = new Project();
+        assertEquals( project.getPackaging(), "modules" );
     }
 
     @Test
-    public void testModelPackaging()
+    public void testProjectPackaging()
     {
-        Model model = new Model();
-        model.setPackaging("zip");
-        assertEquals( model.getPackaging(), "zip" );
+        Project project = new Project();
+        project.setPackaging("zip");
+        assertEquals( project.getPackaging(), "zip" );
     }
 
 /*
     @Test
     public void testValidate() throws ValidationException
     {
-        Model model = new Model();
-        model.validate();
+        Project project = new Project();
+        project.validate();
     }
 */
 }
@@ -131,10 +131,10 @@ public class ModelTest
     @Test
     public void testValidateGoodGoal() throws ValidationException
     {
-        Model model = new Model();
+        Project project = new Project();
         Goal goal = new Goal();
         ArrayList<Goal> goals = new ArrayList<Goal>(Arrays.asList(goal));
-        model.setGoals( goals );
+        project.setGoals( goals );
         try {
           ProjectBuilder builder = new ProjectBuilder();
           Project project = builder.build( new File("test/resources/goodGoal.xml") );

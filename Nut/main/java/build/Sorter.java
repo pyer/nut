@@ -1,7 +1,7 @@
 package nut.build;
 
 import nut.model.Dependency;
-import nut.project.Project;
+import nut.model.Project;
 import nut.build.DuplicateProjectException;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;

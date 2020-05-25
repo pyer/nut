@@ -44,29 +44,25 @@ cd ../artifact
 javac $options InvalidArtifactRTException.java Artifact.java
 echo " - model"
 cd ../model
-javac $options Layout.java Dependency.java Model.java Repository.java XmlReader.java XmlWriter.java JsonWriter.java ValidationException.java
+javac $options Layout.java Dependency.java Repository.java Project.java XmlReader.java XmlWriter.java JsonWriter.java ValidationException.java
 echo " - interpolation"
 cd ../interpolation
 javac $options Interpolator.java
-echo " - project"
-cd ../project
-javac $options DependencyNotFoundException.java DependencyChecker.java ProjectException.java Project.java
 echo " - build"
 cd ../build
-javac $options BuildException.java ProjectBuilder.java DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java
+javac $options DependencyNotFoundException.java DependencyChecker.java BuildException.java ProjectBuilder.java DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java
 cd archive
 javac $options Archiver.java ArchiverException.java
 cd ..
 echo " - goals"
 cd ../goals
-javac $options GoalException.java
+javac $options Goal.java GoalException.java
 javac $options Clean.java
 javac $options Compile.java
 javac $options Install.java
 javac $options PackJar.java
 javac $options PackWar.java
 javac $options PackZip.java
-javac $options ExecShellScript.java
 javac $options Test.java
 echo " - Nut"
 cd ..
@@ -84,9 +80,9 @@ cd testNG/main/java
 options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
 javac $options TestRunner.java TestListener.java
 cd $root
-jar cf $NUT_HOME/nut/testNG-$NUT_VERSION.jar -C target/classes .
-cp $NUT_HOME/nut/testNG-$NUT_VERSION.jar $NUT_HOME/nut/testNG-2.1.jar
+jar cf $NUT_HOME/nut/testNG-2.1.jar -C target/classes .
 rm -r target
+
 echo "Install /usr/bin/nut'"
 sudo install nut /usr/bin/
 echo "Done."

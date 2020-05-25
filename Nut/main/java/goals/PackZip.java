@@ -2,7 +2,7 @@ package nut.goals;
 
 import nut.goals.GoalException;
 import nut.logging.Log;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 
@@ -15,13 +15,14 @@ import java.util.zip.*;
 
 import java.util.Properties;
 
-public class PackZip
+public class PackZip implements Goal
 {
     /** Instance logger */
-    private static Log log;
+    private Log log;
 
     // ==========================================================================
-    public static void execute( Project project ) throws GoalException {
+    public void execute( Project project ) throws GoalException
+    {
         log = new Log();
         Properties pp               = project.getProperties();
         String basedir              = (String)pp.getProperty( "basedir" );
@@ -57,7 +58,7 @@ public class PackZip
 
     // ==========================================================================
     // targetDirectory and resourceDirectory are full path names
-    private static void zip(String finalName, String targetDirectory, String resourceDirectory)
+    private void zip(String finalName, String targetDirectory, String resourceDirectory)
         throws GoalException
     {
         try {
@@ -74,7 +75,7 @@ public class PackZip
 
     // This method is called recursively
     // basedir is a full path name, ending with '/',  and path a relative path name, without trailing '/'
-    private static void zipFile( ZipOutputStream out, String basedir, String path )
+    private void zipFile( ZipOutputStream out, String basedir, String path )
         throws GoalException
     {
         int BUFFER = 2048;

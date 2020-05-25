@@ -9,6 +9,7 @@
   <description>
      Test NG launcher
   </description>
+  <build>clean compile pack install</build>
 
   <dependencies>
     <dependency>

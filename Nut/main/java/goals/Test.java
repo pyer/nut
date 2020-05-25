@@ -2,7 +2,7 @@ package nut.goals;
 
 import nut.goals.GoalException;
 import nut.logging.Log;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,10 @@ import java.util.Properties;
  *
  * @goal test
  */
-public class Test
+public class Test implements Goal
 {
-    public static void execute( Project project ) throws GoalException {
+    public void execute( Project project ) throws GoalException
+    {
         int returnCode = 0;
         Log log = new Log();
         Properties pp               = project.getProperties();
@@ -23,7 +24,6 @@ public class Test
         String outputDirectory      = basedir + File.separator + project.getLayout().getOutputDirectory();
         String testOutputDirectory  = basedir + File.separator + project.getLayout().getTestOutputDirectory();
         String testReportDirectory  = basedir + File.separator + project.getLayout().getTestReportDirectory();
-        //String testSuiteFileName    = basedir + File.separator + "test/testng.xml";
         String testSuiteFileName    = basedir + File.separator + project.getLayout().getTestSuite();
         log.debug( "basedir      = " + basedir);
         log.debug( "main classe  = " + outputDirectory);

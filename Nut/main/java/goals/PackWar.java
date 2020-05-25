@@ -6,7 +6,7 @@ import nut.build.archive.ArchiverException;
 import nut.goals.GoalException;
 import nut.logging.Log;
 import nut.model.Dependency;
-import nut.project.Project;
+import nut.model.Project;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class PackWar
+public class PackWar implements Goal
 {
     /** Instance logger */
-    private static Log log;
+    private Log log;
 
 /*
 <configuration>
@@ -40,7 +40,8 @@ public class PackWar
 
 */
     // ==========================================================================
-    public static void execute( Project project ) throws GoalException {
+    public void execute( Project project ) throws GoalException
+    {
         String msg;
         log = new Log();
         Properties pp               = project.getProperties();
@@ -99,7 +100,7 @@ public class PackWar
     }
 
     // ==========================================================================
-    private static void copyResources(String sourceDirectory, String targetDirectory)
+    private void copyResources(String sourceDirectory, String targetDirectory)
       throws IOException {
         log.debug("* copy " + sourceDirectory + " to " + targetDirectory);
         File source = new File(sourceDirectory);
@@ -113,7 +114,7 @@ public class PackWar
         }
     }
 
-    private static void copyFolder(File source, File dest, CopyOption... options) throws IOException {
+    private void copyFolder(File source, File dest, CopyOption... options) throws IOException {
         if (!dest.exists())
             dest.mkdirs();
         File[] contents = source.listFiles();
@@ -128,18 +129,18 @@ public class PackWar
         }
     }
 
-    private static void copyFile(File source, File dest, CopyOption... options) throws IOException {
+    private void copyFile(File source, File dest, CopyOption... options) throws IOException {
         Files.copy(source.toPath(), dest.toPath(), options);
     }
 
-    private static void ensureParentFolder(File file) {
+    private void ensureParentFolder(File file) {
         File parent = file.getParentFile();
         if (parent != null && !parent.exists())
             parent.mkdirs();
     }
 
     // ==========================================================================
-    private static void copyDependencies(Project project, String targetDirectory)
+    private void copyDependencies(Project project, String targetDirectory)
         throws GoalException
     {
       log.debug("* copy dependencies to " + targetDirectory);
