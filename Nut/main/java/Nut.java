@@ -1,5 +1,7 @@
 package nut;
 
+import nut.build.DependencyChecker;
+import nut.build.DependencyNotFoundException;
 import nut.build.DuplicateProjectException;
 import nut.build.Scanner;
 import nut.build.Sorter;
@@ -14,7 +16,9 @@ import nut.goals.PackJar;
 import nut.goals.PackWar;
 import nut.goals.PackZip;
 import nut.goals.Test;
+import nut.goals.Run;
 
+import nut.interpolation.Interpolator;
 import nut.logging.Log;
 import nut.model.Project;
 
@@ -152,6 +156,7 @@ public class Nut
         log.out( "\nUsage:" );
         log.out( "    nut <goal> [options]" );
         log.out( "    nut build [options]" );
+        log.out( "    nut run  [options]" );
         log.out( "    nut list [options]" );
         log.out( "    nut xml  [options]" );
         log.out( "    nut json [options]" );
@@ -161,6 +166,7 @@ public class Nut
         log.out( "  help     Display this help" );
         log.out( "  <goal>   Execute one of the project's build goals" );
         log.out( "  build    Build project, execute every goal" );
+        log.out( "  run      Run project" );
         log.out( "  list     List of build goals" );
         log.out( "  xml      Display effective NUT in xml format" );
         log.out( "  json     Display effective NUT in json format" );
@@ -220,8 +226,6 @@ public class Nut
                         // if build is the wanted goal, every goal in the build suite is executed
                        suite = project.getBuild().split(" ");
                     }
-//                    currentBuild.interpolateModel();
-//                    currentBuild.checkDependencies();
                     retCode += buildProject(project, suite, noopMode);
                 }
             }
@@ -231,13 +235,28 @@ public class Nut
     }
 
     // ----------------------------------------------------------------------
-    /* returns 0 if success
+    /*
+     * returns 0 if success
      * returns 9 if not
      */
     private static int buildProject(Project project, String[] suite, boolean noopMode)
     {
       boolean fail = false;
       project.start();
+      // Interpolate
+      Interpolator interpolator = new Interpolator();
+      project = interpolator.interpolatedProject( project );
+      // Check dependencies
+      try {
+        DependencyChecker depChecker = new DependencyChecker();
+        depChecker.checkProject( project );
+      } catch (DependencyNotFoundException e) {
+        log.error(e.getMessage());
+        project.failure();
+        log.failure( project.getId() );
+        return 9;
+      }
+      // Achieve goals
       try {
         int len = suite.length;
         for (int i=0; i<len; i++) {
@@ -262,13 +281,18 @@ public class Nut
                 }
               } else if( step.equals("install") ) {
                 new Install().execute(project);
+              } else if( step.equals("run") ) {
+                new Run().execute(project);
               } else {
                 fail = true;
               }
           }
         }
       } catch ( GoalException e ) {
-        log.debug(e.getMessage());
+        log.error(e.getMessage());
+        fail = true;
+      } catch ( Exception e ) {
+        log.error(e.getMessage());
         fail = true;
       }
 

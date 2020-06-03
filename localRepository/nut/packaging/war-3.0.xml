@@ -42,4 +42,11 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <name>Maven Central Repository</name>
+      <layout>maven</layout>
+      <url>https://repo1.maven.org/maven2</url>
+    </repository>
+  </repositories>
 </project>

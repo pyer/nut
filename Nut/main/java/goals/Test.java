@@ -26,7 +26,7 @@ public class Test implements Goal
         String testReportDirectory  = basedir + File.separator + project.getLayout().getTestReportDirectory();
         String testSuiteFileName    = basedir + File.separator + project.getLayout().getTestSuite();
         log.debug( "basedir      = " + basedir);
-        log.debug( "main classe  = " + outputDirectory);
+        log.debug( "main classes = " + outputDirectory);
         log.debug( "test suite   = " + testSuiteFileName);
         log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory);
@@ -35,7 +35,7 @@ public class Test implements Goal
         if ( testSuiteFile.exists() ) {
             log.debug( "Testing " + testSuiteFileName );
             String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
-            String classpath = testOutputDirectory + ":" + outputDirectory + project.getDependenciesClassPath();
+            String classpath = testOutputDirectory + ":" + outputDirectory + project.getTestDependenciesClassPath();
             log.debug("classpath = " + classpath);
             // Run a java app in a separate system process
             ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,
@@ -44,16 +44,22 @@ public class Test implements Goal
             try {
                 Process proc = pb.start();
                 returnCode = proc.waitFor();
-            }
-            catch(IOException e) {
+            } catch(IOException e) {
                 throw new GoalException(e.getMessage());
-            }
-            catch(Exception e) {
+            } catch(NullPointerException e) {
+                throw new GoalException(e.getMessage());
+            } catch(IndexOutOfBoundsException e) {
+                throw new GoalException(e.getMessage());
+            } catch(SecurityException e) {
+                throw new GoalException(e.getMessage());
+            } catch(Exception e) {
                 throw new GoalException(e.getMessage());
             }
             if (returnCode!=0) {
                 throw new GoalException("At least one test failed !");
             }
+        } else {
+            log.warn( "No test for " + project.getId() );
         }
     }
 }

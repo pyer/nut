@@ -2,6 +2,8 @@ package nut.build;
 
 import nut.artifact.Artifact;
 import nut.build.DependencyNotFoundException;
+import nut.model.Dependency;
+import nut.model.Project;
 import nut.model.Repository;
 
 import nut.logging.Log;
@@ -24,40 +26,61 @@ import java.util.Iterator;
 public class DependencyChecker
 {
     private Log log;
+
     // ----------------------------------------------------------------------
-    public DependencyChecker( Artifact artifact, List<Repository> repositories )
-        throws DependencyNotFoundException
+    public DependencyChecker()
     {
       log = new Log();
-      try {
-        if( !artifact.isPresent() ) {
-          for ( Iterator iter = repositories.iterator(); iter.hasNext(); ) {
-            Repository repo = (Repository) iter.next();
-            log.debug( "* search " + artifact.toString() + " in " + repo.getName() );
-            download( artifact, repo );
-            if( artifact.isPresent() ) {
-              return;
-            }
+    }
+
+    // ----------------------------------------------------------------------
+    public void checkProject(Project project) throws DependencyNotFoundException
+    {
+      String notFound = null;
+      for ( Iterator it = project.getDependencies().iterator(); it.hasNext(); ) {
+          Dependency dep = (Dependency) it.next();
+          Artifact artifact = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
+
+          if( artifact.isPresent() ) {
+            log.debug( "  OK");
+            return;
           }
-        }
-      } catch (SecurityException e) {
-        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' is unreadable." );
-      } catch (MalformedURLException mue) {
-        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Wrong URL :" + mue );
-      } catch(FileNotFoundException fnf) {
-        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Specified file not found :" + fnf );
-      } catch(IOException ioe) {
-        throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Error while writing file :" + ioe );
+          try {
+            log.debug( "* check " + artifact.toString() );
+            checkArtifact( artifact, project.getRepositories() );
+          } catch (SecurityException se) {
+            throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' is unreadable." );
+          } catch (MalformedURLException mue) {
+            throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Wrong URL :" + mue );
+          } catch(FileNotFoundException fnf) {
+            throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Specified file not found :" + fnf );
+          } catch(IOException ioe) {
+            throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Error while writing file :" + ioe );
+          } catch(DependencyNotFoundException e) {
+            notFound = "Artifact '" + artifact.toString() + "' is not found.";
+          }
       }
 
-      if( !artifact.isPresent() ) {
-              throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' is not found." );
+      if( notFound != null ) {
+          throw new DependencyNotFoundException(notFound);
       }
     }
 
     // ----------------------------------------------------------------------
-    private void download( Artifact artifact, Repository repository )
-      throws MalformedURLException, FileNotFoundException, IOException
+    private void checkArtifact( Artifact artifact, List<Repository> repositories ) throws SecurityException, MalformedURLException, FileNotFoundException, IOException, DependencyNotFoundException
+    {
+      for ( Iterator iter = repositories.iterator(); iter.hasNext(); ) {
+          Repository repo = (Repository) iter.next();
+          log.debug( "* search " + artifact.toString() + " in " + repo.getName() );
+          download( artifact, repo );
+          if( artifact.isPresent() ) {
+              return;
+          }
+      }
+    }
+
+    // ----------------------------------------------------------------------
+    private void download( Artifact artifact, Repository repository ) throws MalformedURLException, FileNotFoundException, IOException
     {
       URL url;
       InputStream    is;
@@ -89,7 +112,7 @@ public class DependencyChecker
           total += nRead;
           fos.write(buffer, 0, nRead);
       }
-                                                                                                                                                        // Always close files.
+      // Always close files.
       fos.flush();
       fos.close();
       is.close();

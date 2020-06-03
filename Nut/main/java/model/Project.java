@@ -376,13 +376,21 @@ public class Project implements java.io.Serializable
     }
 
     // ----------------------------------------------------------------------
-    // returns classpath for TestNG child process
+    // TODO: replace strings as ${xx} by their values
+    public void interpolateProject()
+    {
+      // Interpolator tor = new Interpolator();
+      // this.model = tor.interpolatedModel( this.model );
+    }
+
+    // ----------------------------------------------------------------------
+    // returns classpath for child process
     public String getDependenciesClassPath()
     {
       String classpath = "";
       for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
-          if( "test".equals(dep.getScope()) || "compile".equals(dep.getScope()) ) {
+          if( ! "test".equals(dep.getScope()) ) {
               Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
               classpath = classpath + ":" + artifactDep.getPath();
           }
@@ -390,6 +398,17 @@ public class Project implements java.io.Serializable
       return classpath;
     }
 
+    // returns classpath for TestNG child process (all dependencies)
+    public String getTestDependenciesClassPath()
+    {
+      String classpath = "";
+      for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
+          Dependency dep = (Dependency) it.next();
+          Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
+          classpath = classpath + ":" + artifactDep.getPath();
+      }
+      return classpath;
+    }
     // ----------------------------------------------------------------------
     public String effectiveXmlNut()
     {

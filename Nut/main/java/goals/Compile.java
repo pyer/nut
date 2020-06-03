@@ -44,8 +44,7 @@ public class Compile implements Goal
         List<String> dependencies = new ArrayList<String>();
         List<String> testDependencies = new ArrayList<String>();
         List deps = project.getDependencies();
-        for ( int i = 0; i < deps.size(); i++ )
-        {
+        for ( int i = 0; i < deps.size(); i++ ) {
             Dependency dep = (Dependency)(deps.get(i));
             Artifact artifactDep = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
             if( dep.getScope().equals("test") ) {
@@ -59,38 +58,28 @@ public class Compile implements Goal
 
         /* Compiling sources */
         File outputDir = new File( basedir + File.separator + outputDirectory );
-        if ( !outputDir.exists() )
-        {
+        if ( !outputDir.exists() ) {
             outputDir.mkdirs();
         }
 
         //List sources = sourceFiles( new File( basedir + File.separator + sourceDirectory ) );
         List sources = sourceFiles( new File( basedir + File.separator + sourceDirectory ) );
-        if ( sources.isEmpty() )
-        {
+        if ( sources.isEmpty() ) {
             log.warn( "No source code for " + project.getId() );
-        }
-        else
-        {
+        } else {
             log.info( "Compiling " + sourceDirectory );
             compile( sources, dependencies, basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory );
         }
 
         /* Compiling test sources */
         File testOutputDir = new File( basedir + File.separator + testOutputDirectory );
-        if ( !testOutputDir.exists() )
-        {
+        if ( !testOutputDir.exists() ) {
             testOutputDir.mkdirs();
         }
 
         List testSources = sourceFiles( new File( basedir + File.separator + testSourceDirectory ) );
         //testSources.addAll(sources);
-        if ( testSources.isEmpty() )
-        {
-            log.warn( "No test for " + project.getId() );
-        }
-        else
-        {
+        if ( !testSources.isEmpty() ) {
             if ( !testDependencies.isEmpty() )
                 dependencies.addAll(testDependencies);
             dependencies.add( basedir + File.separator + outputDirectory );
@@ -109,17 +98,12 @@ public class Compile implements Goal
         String[] sourcesList = sourceDir.list();
         log.debug( "Source directory is " + sourceDir.getAbsolutePath() );
 
-        for (int i=0; i<sourcesList.length; i++)
-        {
+        for (int i=0; i<sourcesList.length; i++) {
             File child = new File(sourceDir, sourcesList[i]);
-            if (child.isDirectory())
-            {
+            if (child.isDirectory()) {
                 sources.addAll( sourceFiles( child ) );
-            }
-            else
-            {
-                if ( child.getName().endsWith(".java") )
-                {
+            } else {
+                if ( child.getName().endsWith(".java") ) {
                      log.debug( "- " + child.getPath() );
                      sources.add( child.getAbsolutePath() );
                 }
@@ -142,30 +126,26 @@ public class Compile implements Goal
         args[3] = "-deprecation";
         args[4] = "-classpath";
         String classpathEntries = outputDirectory;
-        for ( int i = 0; i < dependencies.size(); i++ )
-        {
+        for ( int i = 0; i < dependencies.size(); i++ ) {
             classpathEntries = classpathEntries + File.pathSeparator + (String)(dependencies.get(i));
         }
         args[5] = classpathEntries;
         args[6] = "-sourcepath";
         args[7] = sourceDirectory;
         // and the sources, at last
-        for ( int i = 0; i < sources.size(); i++ )
-        {
+        for ( int i = 0; i < sources.size(); i++ ) {
             args[8+i] = (String)(sources.get(i));
         }
 
         // ----------------------------------------------------------------------
-        for ( int i=0; i<n; i++ )
-        {
+        for ( int i=0; i<n; i++ ) {
             log.debug( "  '"+args[i]+"'" );
         }
 
         JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
         //int run(InputStream in, OutputStream out, OutputStream err, String... arguments)
         int rc = javac.run(null, null, null, args);
-        if ( rc != 0 )
-        {
+        if ( rc != 0 ) {
              throw new GoalException("Compiler error " + String.valueOf(rc));
         }
     }

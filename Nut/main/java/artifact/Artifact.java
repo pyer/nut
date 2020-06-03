@@ -105,22 +105,19 @@ public class Artifact
     }
     // ----------------------------------------------------------------------
     // check if the artifact file is present in the local repository and readable
-    public boolean isPresent()
-        throws SecurityException
+    public boolean isPresent() throws SecurityException
     {
       File f = new File( getPath() );
       return f.isFile();
     }
 
-    public FileInputStream fileInputStream()
-        throws FileNotFoundException
+    public FileInputStream fileInputStream() throws FileNotFoundException
     {
         File f = new File( getPath() );
         return new FileInputStream( f );
     }
 
-    public FileOutputStream fileOutputStream()
-        throws IOException
+    public FileOutputStream fileOutputStream() throws IOException
     {
         File f = new File( getPath() );
         //does destination directory exist ?
