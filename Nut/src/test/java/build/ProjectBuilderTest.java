@@ -19,7 +19,7 @@ public class ProjectBuilderTest
     public void before() {
       home = System.getProperty( "nut.home", "." );
       String basedir = System.getProperty( "basedir" );
-      System.setProperty( "nut.home", basedir + "/test/resources" );
+      System.setProperty( "nut.home", basedir + "/src/test/resources" );
     }
 
     @AfterTest
@@ -37,14 +37,14 @@ public class ProjectBuilderTest
     public void testUnknownProjectFile() throws BuildException {
       ProjectBuilder builder = new ProjectBuilder();
       String basedir = System.getProperty( "basedir" );
-      builder.launch( new File(basedir + "/test/resources/no.xml") );
+      builder.launch( new File(basedir + "/src/test/resources/no.xml") );
     }
 
     @Test
     public void testNutHomeProperty() throws BuildException {
       ProjectBuilder builder = new ProjectBuilder();
       String basedir = System.getProperty( "basedir" );
-      Project project = builder.launch( new File(basedir + "/test/resources/project/nut.xml") );
+      Project project = builder.launch( new File(basedir + "/src/test/resources/project/nut.xml") );
       String value = project.getProperties().getProperty( "nut.home" );
       assertTrue( value.length() > 2 );
     }
@@ -53,7 +53,7 @@ public class ProjectBuilderTest
     public void testDefaultPackaging() throws BuildException {
         ProjectBuilder builder = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.launch( new File(basedir + "/test/resources/project/nut.xml") );
+        Project project = builder.launch( new File(basedir + "/src/test/resources/project/nut.xml") );
         assertEquals( "modules", project.getPackaging() );
     }
 
@@ -61,14 +61,14 @@ public class ProjectBuilderTest
     public void testUnkownPackaging() throws BuildException {
         ProjectBuilder builder = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
-        builder.launch( new File(basedir + "/test/resources/project/unknownpackaging.xml") );
+        builder.launch( new File(basedir + "/src/test/resources/project/unknownpackaging.xml") );
     }
 
     @Test
     public void testProjectArtifact() throws BuildException {
         ProjectBuilder builder = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.launch( new File(basedir + "/test/resources/project/nut.xml") );
+        Project project = builder.launch( new File(basedir + "/src/test/resources/project/nut.xml") );
         assertEquals( "1.1", project.getVersion() );
         assertEquals( "artifact", project.getArtifactId() );
         assertEquals( "test.groupId", project.getGroupId() );
@@ -78,7 +78,7 @@ public class ProjectBuilderTest
     public void testMergedParent() throws BuildException {
         ProjectBuilder builder = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.launch( new File(basedir + "/test/resources/project/child.xml") );
+        Project project = builder.launch( new File(basedir + "/src/test/resources/project/child.xml") );
         assertEquals( "1.1", project.getVersion() );
         assertEquals( "artifact", project.getArtifactId() );
         assertEquals( "test.groupId", project.getGroupId() );
@@ -88,7 +88,7 @@ public class ProjectBuilderTest
     public void testNullVersion() throws BuildException {
         ProjectBuilder builder = new ProjectBuilder();
         String basedir = System.getProperty( "basedir" );
-        Project project = builder.launch( new File(basedir + "/test/resources/nullVersion.xml") );
+        Project project = builder.launch( new File(basedir + "/src/test/resources/nullVersion.xml") );
         assertEquals( "1.1", project.getVersion() );
     }
 }

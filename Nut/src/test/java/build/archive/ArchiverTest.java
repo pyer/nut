@@ -34,7 +34,7 @@ public class ArchiverTest
         File target = new File(basedir+zipName);
         zip.setDestFile( target );
         zip.create();
-        zip.addDirectory( basedir+"test/resources/zip" );
+        zip.addDirectory( basedir+"/src/test/resources/zip" );
         zip.close();
         assertTrue( target.exists() );
         assertEquals( target.length(), 436 );
@@ -50,7 +50,7 @@ public class ArchiverTest
         File target = new File(basedir+zipName);
         zip.setDestFile( target );
         zip.create();
-        zip.addFile( basedir+"test", "resources/parent.xml" );
+        zip.addFile( basedir+"src/test", "resources/parent.xml" );
         zip.close();
         assertTrue( target.exists() );
         assertEquals( target.length(), 267 );
@@ -66,8 +66,8 @@ public class ArchiverTest
         File target = new File(basedir+zipName);
         zip.setDestFile( target );
         zip.create();
-        zip.addDirectory( basedir+"test/resources/zip" );
-        zip.addFile( basedir+"test", "resources/parent.xml" );
+        zip.addDirectory( basedir+"/src/test/resources/zip" );
+        zip.addFile( basedir+"src/test", "resources/parent.xml" );
         zip.close();
         assertTrue( target.exists() );
         assertEquals( target.length(), 681 );

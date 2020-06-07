@@ -5,7 +5,7 @@
   </description>
   <layout>
     <targetDirectory>target</targetDirectory>
-    <resourceDirectory>main/resources</resourceDirectory>
+    <resourceDirectory>src/main/resources</resourceDirectory>
   </layout>
   <build>clean install</build>
 </project>

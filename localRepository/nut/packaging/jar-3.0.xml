@@ -11,11 +11,11 @@
   </description>
   <layout>
     <targetDirectory>target</targetDirectory>
-    <sourceDirectory>main/java</sourceDirectory>
-    <resourceDirectory>main/resources</resourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resourceDirectory>src/main/resources</resourceDirectory>
     <outputDirectory>target/classes</outputDirectory>
-    <testSourceDirectory>test/java</testSourceDirectory>
-    <testResourceDirectory>test/resources</testResourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <testResourceDirectory>src/test/resources</testResourceDirectory>
     <testOutputDirectory>target/test-classes</testOutputDirectory>
     <testReportDirectory>target/test-reports</testReportDirectory>
   </layout>

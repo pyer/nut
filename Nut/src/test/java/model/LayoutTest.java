@@ -57,7 +57,7 @@ public class LayoutTest
         String dir = "java";
         Layout thing = new Layout();
         // check default value
-        assertEquals( thing.getSourceDirectory(), "main/java" );
+        assertEquals( thing.getSourceDirectory(), "src/main/java" );
         // check set value
         thing.setSourceDirectory( dir );
         assertEquals( thing.getSourceDirectory(), dir );
@@ -69,7 +69,7 @@ public class LayoutTest
         String dir = "resources";
         Layout thing = new Layout();
         // check default value
-        assertEquals( thing.getResourceDirectory(), "main/resources" );
+        assertEquals( thing.getResourceDirectory(), "src/main/resources" );
         // check set value
         thing.setResourceDirectory( dir );
         assertEquals( thing.getResourceDirectory(), dir );
@@ -81,7 +81,7 @@ public class LayoutTest
         String dir = "java";
         Layout thing = new Layout();
         // check default value
-        assertEquals( thing.getTestSourceDirectory(), "test/java" );
+        assertEquals( thing.getTestSourceDirectory(), "src/test/java" );
         // check set value
         thing.setTestSourceDirectory( dir );
         assertEquals( thing.getTestSourceDirectory(), dir );
@@ -93,7 +93,7 @@ public class LayoutTest
         String dir = "resources";
         Layout thing = new Layout();
         // check default value
-        assertEquals( thing.getTestResourceDirectory(), "test/resources" );
+        assertEquals( thing.getTestResourceDirectory(), "src/test/resources" );
         // check set value
         thing.setTestResourceDirectory( dir );
         assertEquals( thing.getTestResourceDirectory(), dir );
@@ -153,7 +153,7 @@ public class LayoutTest
         String s = "test-suite";
         Layout thing = new Layout();
         // check default value
-        assertEquals( thing.getTestSuite(), "test/testng.xml" );
+        assertEquals( thing.getTestSuite(), "src/test/testng.xml" );
         // check set value
         thing.setTestSuite( s );
         assertEquals( thing.getTestSuite(), s );
