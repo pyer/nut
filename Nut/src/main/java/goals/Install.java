@@ -17,11 +17,10 @@ public class Install implements Goal
     /** Instance logger */
     private Log log;
 
-    public void execute( Project project ) throws GoalException
+    public void execute(Project project, boolean noop) throws GoalException
     {
         log = new Log();
         Properties pp               = project.getProperties();
-        String basedir              = (String)pp.getProperty( "basedir" );
         String repository           = (String)pp.getProperty( "nut.home" );
         String mode                 = (String)pp.getProperty( "nut.mode", "SNAPSHOT" );
         if( "RELEASE".equals( mode ) )
@@ -29,11 +28,12 @@ public class Install implements Goal
         else
           mode = "-SNAPSHOT";
 
-        String targetDirectory      = project.getLayout().getTargetDirectory();
-        String resourceDirectory    = project.getLayout().getResourceDirectory();
+        String basedir              = project.getBaseDirectory();
+        String targetDirectory      = project.getTargetDirectory();
+        String resourceDirectory    = project.getResourceDirectory();
 
-        String groupId              = project.getGroupId();
-        String artifactId           = project.getArtifactId();
+        String groupId              = project.getGroup();
+        String artifactId           = project.getName();
         String version              = project.getVersion()  + mode;
         String packaging            = project.getPackaging();
 
@@ -42,19 +42,23 @@ public class Install implements Goal
         log.debug( "project.version           = " + version );
         log.debug( "project.packaging         = " + packaging );
 
-        log.info( "Installing \'" + artifactId + "\'" );
-        // + "-" + version + "." + packaging
-        if( "xml".equals(packaging) ) {
+        if (noop) {
+          log.info( "NOOP: Installing \'" + artifactId + "\'" );
+        } else {
+          log.info( "Installing \'" + artifactId + "\'" );
+          // + "-" + version + "." + packaging
+          if( "xml".equals(packaging) ) {
                 String group = groupId.replace( '.', File.separatorChar );
                 String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 String buildName = basedir + File.separator + resourceDirectory + File.separator + artifactId + "." + packaging;
                 copyFile( buildName, artifactName, version );
-        } else if( !"modules".equals(packaging) ) {
+          } else if( !"modules".equals(packaging) ) {
                 String group = groupId.replace( '.', File.separatorChar );
                 String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 //install: copy target file to local repository
                 String buildName = basedir + File.separator + targetDirectory + File.separator + artifactId + "." + packaging;
                 copyFile( buildName, artifactName, version );
+          }
         }
         //install: copy nut.xml file to local repository
         //String nutName = basedir + File.separator + "nut.xml";

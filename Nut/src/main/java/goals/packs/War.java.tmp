@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import java.nio.file.CopyOption;
 import java.nio.file.StandardCopyOption;
@@ -44,8 +43,7 @@ public class PackWar implements Goal
     {
         String msg;
         log = new Log();
-        Properties pp               = project.getProperties();
-        String basedir              = (String)pp.getProperty( "basedir" ) + File.separator;
+        String basedir              = project.getLayout().getBaseDirectory();
         String targetDirectory      = project.getLayout().getTargetDirectory();
         String sourceDirectory      = project.getLayout().getSourceDirectory();
         String resourceDirectory    = project.getLayout().getResourceDirectory();
@@ -120,7 +118,7 @@ public class PackWar implements Goal
         File[] contents = source.listFiles();
         if (contents != null) {
             for (File f : contents) {
-                File newFile = new File(dest.getAbsolutePath() + File.separator + f.getName());
+                File newFile = new File(dest.getCanonicalPath() + File.separator + f.getName());
                 if (f.isDirectory())
                     copyFolder(f, newFile, options);
                 else

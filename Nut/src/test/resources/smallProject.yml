@@ -1,0 +1,7 @@
+# Small project
+
+group:   nut.test
+name:    small
+version: 3.0
+pattern: jar 
+

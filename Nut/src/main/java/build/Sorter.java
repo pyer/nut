@@ -58,9 +58,9 @@ public class Sorter
             String id = project.getId();
             for ( Iterator j = project.getDependencies().iterator(); j.hasNext(); ) {
                 Dependency dependency = (Dependency) j.next();
-                String dependencyId = dependency.getId();
-                if ( dag.getVertex( dependencyId ) != null ) {
-                    dag.addEdge( id, dependencyId );
+                String dep = dependency.getPath();
+                if ( dag.getVertex( dep ) != null ) {
+                    dag.addEdge( id, dep );
                 }
             }
         }

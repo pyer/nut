@@ -1,0 +1,9 @@
+group:   nut
+name:    parent
+version: 3.0
+
+modules:
+  - Nut
+  - testNG
+
+

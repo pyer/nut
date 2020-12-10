@@ -1,0 +1,15 @@
+# Nut project
+#
+group:   nut
+name:    Nut
+version: 3.0
+pattern: jar 
+
+dependencies:
+  - /org/codehaus/plexus/plexus-utils-3.0.jar
+
+testDependencies:
+  - /com/beust/jcommander-1.48.jar
+  - /org/testng/testng-6.8.7.jar 
+  - /nut/testNG-3.0.jar
+

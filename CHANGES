@@ -1,5 +1,7 @@
 3.0
-Refactoring nut.xml content
+nut.xml is replaced by nut.yml.
+xml format is no longer supported.
+build description is in a pattern.
 
 2.0
 No plugins to improve speed.

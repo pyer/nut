@@ -1,6 +1,10 @@
 package nut.model;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 import org.testng.annotations.Test;
 
 
@@ -10,146 +14,81 @@ public class DependencyTest
     @Test
     public void testHashCodeNullSafe()
     {
-        new Dependency().hashCode();
+        new Dependency("").hashCode();
     }
 
     @Test
     public void testEqualsNullSafe()
     {
-        assertNotNull( new Dependency() );
+        assertNotNull( new Dependency("") );
     }
 
     @Test
     public void testEqualsIdentity()
     {
-        Dependency thing = new Dependency();
+        Dependency thing = new Dependency("");
         assertTrue( thing.equals( thing ) );
     }
 
     @Test
     public void testToStringNullSafe()
     {
-        assertNotNull( new Dependency().toString() );
+        assertNotNull( new Dependency("").toString() );
     }
 
     @Test
-    public void testGroupId()
+    public void testDependencyIdRelease()
     {
-      String s = "test_dependency";
-      Dependency dependency = new Dependency();
-      assertTrue( dependency.getGroupId() == null );
-      dependency.setGroupId( s );
-      assertTrue( dependency.getGroupId().equals( s ) );
+      String s = "/nut/group/dep-3.0.jar";
+      Dependency dependency = new Dependency(s);
+      assertEquals( dependency.getId(), "nut.group:dep:3.0:jar" );
     }
 
     @Test
-    public void testArtifactId()
+    public void testDependencyIdSnapshot()
     {
-      String s = "test_dependency";
-      Dependency dependency = new Dependency();
-      assertTrue( dependency.getArtifactId() == null );
-      dependency.setArtifactId( s );
-      assertTrue( dependency.getArtifactId().equals( s ) );
+      String s = "/nut/group/dep-3.0-SNAPSHOT.jar";
+      Dependency dependency = new Dependency(s);
+      assertEquals( dependency.getId(), "nut.group:dep:3.0-SNAPSHOT:jar" );
     }
 
     @Test
-    public void testVersion()
+    public void testEmptyDependencyId()
     {
-      String s = "1.0";
-      Dependency dependency = new Dependency();
-      // Default version is null
-      assertNull( dependency.getVersion() );
-      dependency.setVersion( s );
-      assertTrue( dependency.getVersion().equals( s ) );
+      Dependency dependency = new Dependency("");
+      assertEquals( dependency.getId(), ":::" );
     }
 
     @Test
-    public void testType()
+    public void testBadDependencyId()
     {
-      String s = "zip";
-      Dependency dependency = new Dependency();
-      // Default type is jar
-      assertTrue( dependency.getType().equals( "jar" ) );
-      dependency.setType( s );
-      assertTrue( dependency.getType().equals( s ) );
+      assertEquals( new Dependency("dep-3.0.jar").getId(),  ":dep:3.0:jar" );
+      assertEquals( new Dependency("/dep-3.0.jar").getId(), ":dep:3.0:jar" );
+      assertEquals( new Dependency("/nut/group.jar").getId(), "nut:group::jar" );
+      assertEquals( new Dependency("/nut/group/dep.jar").getId(), "nut.group:dep::jar" );
+      assertEquals( new Dependency("/nut/group/dep-3.0").getId(), "nut.group:dep:3:0" );
     }
 
     @Test
-    public void testScope()
+    public void testDependencyPath()
     {
-      String s = "scope";
-      Dependency dependency = new Dependency();
-      // Default scope is compile
-      assertTrue( dependency.getScope().equals( "compile" ) );
-      dependency.setScope( s );
-      assertTrue( dependency.getScope().equals( s ) );
+      String s = "/nut/group/dep-3.0.jar";
+      Dependency dependency = new Dependency(s);
+      assertEquals( dependency.getPath(), s );
     }
 
     @Test
-    public void testGetId()
+    public void testDependencyIsPresent()
     {
-      Dependency dependency = new Dependency();
-      dependency.setGroupId( "group" );
-      dependency.setArtifactId( "artifact" );
-      dependency.setVersion( "1.0" );
-      assertEquals( "group:artifact:1.0", dependency.getId() );
+      Dependency dependency = new Dependency("nut/model/DependencyTest.class");
+      assertTrue( dependency.isPresent("target/test-classes") );
     }
 
     @Test
-    public void testValidateWithVersion() throws ValidationException
+    public void testDependencyIsAbsent()
     {
-      Dependency dependency = new Dependency();
-      dependency.setGroupId( "group" );
-      dependency.setArtifactId( "artifact" );
-      dependency.setVersion( "1.0" );
-      dependency.validate( "" );
-    }
-
-    @Test
-    public void testValidateWithoutVersion() throws ValidationException
-    {
-      Dependency dependency = new Dependency();
-      dependency.setGroupId( "group" );
-      dependency.setArtifactId( "artifact" );
-      dependency.validate( "2.0" );
-    }
-
-    @Test(expectedExceptions = ValidationException.class)
-    public void testValidationExceptionNullId() throws ValidationException
-    {
-      // groupId and artifactId must not be null
-      Dependency dependency = new Dependency();
-      dependency.validate( "1.0" );
-    }
-
-    @Test(expectedExceptions = ValidationException.class)
-    public void testValidationExceptionEmptyId() throws ValidationException
-    {
-      // symbols are not allowed in groupId and artifactId
-      Dependency dependency = new Dependency();
-      dependency.setGroupId( "" );
-      dependency.setArtifactId( "" );
-      dependency.validate( "1.0" );
-    }
-
-    @Test(expectedExceptions = ValidationException.class)
-    public void testValidationExceptionWrongGroupId() throws ValidationException
-    {
-      // symbols are not allowed in groupId and artifactId
-      Dependency dependency = new Dependency();
-      dependency.setGroupId( "group!" );
-      dependency.setArtifactId( "artifact" );
-      dependency.validate( "1.0" );
-    }
-
-    @Test(expectedExceptions = ValidationException.class)
-    public void testValidationExceptionWrongArtifactId() throws ValidationException
-    {
-      // symbols are not allowed in groupId and artifactId
-      Dependency dependency = new Dependency();
-      dependency.setGroupId( "group" );
-      dependency.setArtifactId( "artifact*" );
-      dependency.validate( "1.0" );
+      Dependency dependency = new Dependency("nut/model/NoDependency");
+      assertFalse( dependency.isPresent("target/test-classes") );
     }
 
 }

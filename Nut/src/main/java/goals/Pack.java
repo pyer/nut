@@ -9,31 +9,29 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
-public class PackJar implements Goal
+public class Pack implements Goal
 {
     /** Instance logger */
     private Log log;
 
     // ==========================================================================
-    public void execute( Project project ) throws GoalException
+    public void execute(Project project, boolean noop) throws GoalException
     {
         String msg;
         log = new Log();
-        Properties pp               = project.getProperties();
-        String basedir              = (String)pp.getProperty( "basedir" );
-        String targetDirectory      = project.getLayout().getTargetDirectory();
-        String sourceDirectory      = project.getLayout().getSourceDirectory();
-        String resourceDirectory    = project.getLayout().getResourceDirectory();
-        String outputDirectory      = project.getLayout().getOutputDirectory();
+        String basedir              = project.getBaseDirectory();
+        String targetDirectory      = project.getTargetDirectory();
+        String sourceDirectory      = project.getSourceDirectory();
+        String resourceDirectory    = project.getResourceDirectory();
+        String outputDirectory      = project.getOutputDirectory();
 
         log.debug( "build.directory           = " + targetDirectory );
         log.debug( "build.sourceDirectory     = " + sourceDirectory );
         log.debug( "build.resourceDirectory   = " + resourceDirectory );
         log.debug( "build.outputDirectory     = " + outputDirectory );
 
-        String artifactId           = project.getArtifactId();
+        String artifactId           = project.getName();
         String version              = project.getVersion();
         String packaging            = project.getPackaging();
         String artifactFileName     = artifactId + "." + packaging;
@@ -43,6 +41,7 @@ public class PackJar implements Goal
         log.debug( "project.packaging         = " + packaging );
 
         log.info( "Packaging \'" + artifactFileName + "\'" );
+
 
         if ( artifactId==null || (artifactId.trim().isEmpty() ) ) {
             msg = "\'project.artifactId\' property is undefined";
@@ -63,6 +62,17 @@ public class PackJar implements Goal
         }
         archive( artifactFileName, basedir + File.separator + targetDirectory, basedir + File.separator + outputDirectory, "c" );
     }
+
+/*
+   // targetDirectory and resourceDirectory are full path names
+    private void zip(String finalName, String targetDirectory, String resourceDirectory)
+        throws GoalException
+    {
+        try {
+          FileOutputStream dest = new FileOutputStream( targetDirectory + File.separator + finalName );
+          ZipOutputStream  out  = new ZipOutputStream( new BufferedOutputStream(dest));
+*/
+
 
     // ==========================================================================
     private void archive(String finalName, String targetDirectory, String outputDirectory, String mode)

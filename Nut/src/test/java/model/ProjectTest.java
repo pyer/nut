@@ -1,16 +1,12 @@
 package nut.model;
 
-/*
-import java.util.ArrayList;
-import java.util.Arrays;
-*/
+import java.io.File;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
 public class ProjectTest
 {
-
     @Test
     public void testHashCodeNullSafe()
     {
@@ -40,121 +36,139 @@ public class ProjectTest
     public void testProjectId()
     {
         Project project = new Project();
-        project.setGroupId("group");
-        project.setArtifactId("artifact");
+        project.setGroup("nut.group");
+        project.setName("artifact");
         project.setVersion("1.0");
-        assertEquals( project.getId(), "group:artifact:1.0" );
+        assertEquals( project.getId(), "nut.group:artifact:1.0" );
+    }
+
+    @Test
+    public void testProjectPathName()
+    {
+        Project project = new Project();
+        project.setGroup("nut.group");
+        project.setName("artifact");
+        project.setVersion("1.0");
+        project.setPackaging("zip");
+        assertEquals( project.getPathName(), "/nut/group/artifact-1.0.zip" );
     }
 
     @Test
     public void testProjectDefaultPackaging()
     {
         Project project = new Project();
-        assertEquals( project.getPackaging(), "modules" );
+        assertEquals( project.getPackaging(), "jar" );
     }
 
     @Test
-    public void testProjectPackaging()
+    public void testProjectDefaultPattern()
     {
         Project project = new Project();
-        project.setPackaging("zip");
-        assertEquals( project.getPackaging(), "zip" );
+        assertEquals( project.getPattern(), "modules" );
     }
 
-/*
     @Test
-    public void testValidate() throws ValidationException
+    public void testProjectDefaultTestSuite()
+    {
+        Project project = new Project();
+        assertEquals( project.getTestSuite(), "src/test/testng.xml" );
+    }
+
+    @Test
+    public void testProjectDefaultDirectories()
+    {
+        Project project = new Project();
+        assertEquals( project.getSourceDirectory(), "src/main/java" );
+        assertEquals( project.getResourceDirectory(), "src/main/resources" );
+        assertEquals( project.getWebappDirectory(), "src/main/webapp" );
+        assertEquals( project.getTestSourceDirectory(), "src/test/java" );
+        assertEquals( project.getTestResourceDirectory(), "src/test/resources" );
+        assertEquals( project.getTargetDirectory(), "target" );
+        assertEquals( project.getOutputDirectory(), "target/classes" );
+        assertEquals( project.getTestOutputDirectory(), "target/test-classes" );
+        assertEquals( project.getTestReportDirectory(), "target/test-reports" );
+    }
+
+    @Test(expectedExceptions = ParserException.class)
+    public void testParseAbsentFile() throws ParserException
+    {
+        Project project = new Project();
+        File nut = new File( "src/test/resources/NOFILE" );
+        project.parseFile(nut);
+    }
+
+    @Test
+    public void testParseEmptyFile() throws ParserException
+    {
+        Project project = new Project();
+        File nut = new File( "src/test/resources/emptyProject.yml" );
+        project.parseFile(nut);
+        assertEquals( project.getId(), "null:null:null" );
+    }
+
+    @Test
+    public void testParseSmallProject() throws ParserException
+    {
+        Project project = new Project();
+        project.setRepository( project.getBaseDirectory() + "/src/test/resources" );
+        File nut = new File( "src/test/resources/smallProject.yml" );
+        project.parseFile(nut);
+
+        assertEquals( project.getId(), "nut.test:small:3.0" );
+    }
+
+    @Test
+    public void testParseFullProject() throws ParserException
+    {
+        Project project = new Project();
+        File nut = new File( "src/test/resources/fullProject.yml" );
+        project.parseFile(nut);
+        assertEquals( project.getId(), "nut.test:full:3.0" );
+        assertEquals( project.getSourceDirectory(), "main/java" );
+        assertEquals( project.getResourceDirectory(), "main/resources" );
+        assertEquals( project.getWebappDirectory(), "main/webapp" );
+        assertEquals( project.getTestSourceDirectory(), "test/java" );
+        assertEquals( project.getTestResourceDirectory(), "test/resources" );
+        assertEquals( project.getTargetDirectory(), "tget" );
+        assertEquals( project.getOutputDirectory(), "tget/classes" );
+        assertEquals( project.getTestOutputDirectory(), "tget/test-classes" );
+        assertEquals( project.getTestReportDirectory(), "tget/test-reports" );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateEmptyProject() throws ValidationException
     {
         Project project = new Project();
         project.validate();
     }
-*/
-}
-/*
-
-    public void validate() throws ValidationException
-    {
-        String ID_REGEX = "[A-Za-z0-9_\\-.]+";
-        validateStringNotEmpty( "groupId", groupId );
-        if ( !groupId.matches( ID_REGEX ) )
-            throw new ValidationException( "groupId '" + groupId + "' does not match a valid id pattern." );
-        validateStringNotEmpty( "artifactId", artifactId );
-        if ( !artifactId.matches( ID_REGEX ) )
-            throw new ValidationException( "artifactId '" + artifactId + "' does not match a valid id pattern." );
-
-        validateStringNotEmpty( "version", version );
-        validateStringNotEmpty( "packaging", packaging );
-
-        if ( !getModules().isEmpty() && !"modules".equals( packaging ) ) {
-            throw new ValidationException( "Packaging '" + packaging +
-                                                "' is invalid. Aggregator projects require 'modules' as packaging." );
-        }
-
-        for ( Iterator it = getGoals().iterator(); it.hasNext(); )
-        {
-            Goal g = (Goal) it.next();
-            g.validate();
-        }
-
-        for ( Iterator it = getDependencies().iterator(); it.hasNext(); )
-        {
-            Dependency dep = (Dependency) it.next();
-            dep.validate(version);
-        }
-
-        for ( Iterator it = getRepositories().iterator(); it.hasNext(); )
-        {
-            Repository repo = (Repository) it.next();
-            repo.validate();
-        }
-
-        if ( build != null ) {
-            build.validate();
-        }
-    }
-
-    private void validateStringNotEmpty( String fieldName, String string )
-        throws ValidationException
-    {
-        if ( string == null )
-            throw new ValidationException( "'" + fieldName + "' is null." );
-        if ( string.length() <1 )
-            throw new ValidationException( "'" + fieldName + "' is empty." );
-    }
-
-}
-
-
-
-
-
-    @Test
-    public void testValidateGoodGoal() throws ValidationException
-    {
-        Project project = new Project();
-        Goal goal = new Goal();
-        ArrayList<Goal> goals = new ArrayList<Goal>(Arrays.asList(goal));
-        project.setGoals( goals );
-        try {
-          ProjectBuilder builder = new ProjectBuilder();
-          Project project = builder.build( new File("test/resources/goodGoal.xml") );
-          project.getBuild().validate();
-        }
-        catch ( BuildException e ) {
-            throw new ValidationException( "Build failure" );
-        }
-    }
 
     @Test(expectedExceptions = ValidationException.class)
-    public void testValidateBadGoal() throws ValidationException
+    public void testValidateEmptyFile() throws ParserException, ValidationException
     {
-        try {
-          ProjectBuilder builder = new ProjectBuilder();
-          Project project = builder.build( new File("test/resources/badGoal.xml") );
-          project.getBuild().validate();
-        }
-        catch ( BuildException e ) {
-            throw new ValidationException( "Build failure" );
-        }
+        Project project = new Project();
+        File nut = new File( "src/test/resources/emptyProject.yml" );
+        project.parseFile(nut);
+        project.validate();
     }
-*/
+
+    @Test
+    public void testValidateSmallProject() throws ParserException, ValidationException
+    {
+        Project project = new Project();
+        project.setRepository( project.getBaseDirectory() + "/src/test/resources" );
+        File nut = new File( "src/test/resources/smallProject.yml" );
+        project.parseFile(nut);
+        project.validate();
+    }
+
+    @Test
+    public void testValidateFullProject() throws ParserException, ValidationException
+    {
+        Project project = new Project();
+        project.setRepository( project.getBaseDirectory() + "/src/test/resources" );
+        File nut = new File( "src/test/resources/fullProject.yml" );
+        project.parseFile(nut);
+        project.validate();
+    }
+
+}

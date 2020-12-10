@@ -15,20 +15,25 @@ import java.util.Properties;
  */
 public class Run implements Goal
 {
-    public void execute( Project project ) throws GoalException
+    public void execute( Project project, boolean noop ) throws GoalException
     {
         int returnCode = 0;
         Log log = new Log();
         Properties pp               = project.getProperties();
-        String basedir              = (String)pp.getProperty( "basedir" );
-        String mainClass            = (String)pp.getProperty( "mainClass" );
-        String targetDirectory      = basedir + File.separator + project.getLayout().getTargetDirectory();
+        String mainClass            = (String)pp.getProperty( "run.class" );
+        String targetDirectory      = project.getBaseDirectory() + File.separator + project.getTargetDirectory();
         if (mainClass == null) {
             throw new GoalException("mainClass property is not defined");
         }
 
         String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
-        String jar = targetDirectory + File.separator + project.getArtifactId() + "." + project.getPackaging();
+        String jar = targetDirectory + File.separator + project.getName() + "." + project.getPackaging();
+
+        if ( noop ) {
+            log.info( "NOOP: Running " + jar );
+            return;
+        }
+
         log.debug( "Running " + jar );
         String classpath = jar + project.getDependenciesClassPath();
         log.debug("classpath  = " + classpath);

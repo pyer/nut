@@ -1,30 +1,17 @@
 package nut;
 
+import nut.build.Builder;
 import nut.build.DependencyChecker;
-import nut.build.DependencyNotFoundException;
 import nut.build.DuplicateProjectException;
 import nut.build.Scanner;
 import nut.build.Sorter;
 
-import nut.goals.Goal;
-import nut.goals.GoalException;
-
-import nut.goals.Clean;
-import nut.goals.Compile;
-import nut.goals.Install;
-import nut.goals.PackJar;
-import nut.goals.PackWar;
-import nut.goals.PackZip;
-import nut.goals.Test;
-import nut.goals.Run;
-
-import nut.interpolation.Interpolator;
 import nut.logging.Log;
 import nut.model.Project;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -104,16 +91,30 @@ public class Nut
           try {
             Sorter sorter = new Sorter( projects );
             sortedProjects = sorter.getSortedProjects();
+            log.line();
             if ( sorter.hasMultipleProjects() ) {
-              log.line();
               log.info( "Ordering projects..." );
               for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
               {
                   Project currentProject = (Project) it.next();
                   log.info( "   " + currentProject.getId() );
               }
+
+              log.line();
+              log.info( "Building projects..." );
+            } else {
+              log.info( "Building project..." );
             }
-            buildProjects(sortedProjects, wantedGoal, noopMode);
+            // iterate over projects, and execute goal on each...
+            for ( Iterator it = sortedProjects.iterator(); it.hasNext(); ) {
+                Project project = (Project) it.next();
+                log.line();
+                Builder builder = new Builder(wantedGoal);
+                retCode += builder.build(project, noopMode);
+            }
+            if( sortedProjects.size() > 1 ) {
+               logReactorSummary( sortedProjects );
+            }
           } catch(CycleDetectedException e) {
             log.failure(e.getMessage());
             retCode = 5;
@@ -130,7 +131,7 @@ public class Nut
     }
 
     // ----------------------------------------------------------------------
-    // Show functions
+    // Help functions
     // ----------------------------------------------------------------------
     private static void showVersion()
     {
@@ -155,23 +156,19 @@ public class Nut
     {
         log.out( "\nUsage:" );
         log.out( "    nut <goal> [options]" );
-        log.out( "    nut build [options]" );
-        log.out( "    nut run  [options]" );
-        log.out( "    nut list [options]" );
-        log.out( "    nut xml  [options]" );
-        log.out( "    nut json [options]" );
+        log.out( "    nut build  [options]" );
+        log.out( "    nut model  [options]" );
+        log.out( "    nut run    [options]" );
         log.out( "    nut version" );
         log.out( "    nut help" );
         log.out( "\nOperations:" );
-        log.out( "  help     Display this help" );
         log.out( "  <goal>   Execute one of the project's build goals" );
         log.out( "  build    Build project, execute every goal" );
+        log.out( "  model    Display effective nut.yml" );
         log.out( "  run      Run project" );
-        log.out( "  list     List of build goals" );
-        log.out( "  xml      Display effective NUT in xml format" );
-        log.out( "  json     Display effective NUT in json format" );
         log.out( "  version  Display version information" );
         log.out( "  help     Display this help" );
+        log.out( "\nGoals: clean compile test pack install" );
         log.out( "\nOptions:" );
         log.out( "  -D,--define      Define a system property" );
         log.out( "  -d,--debug       Display debug messages" );
@@ -209,103 +206,6 @@ public class Nut
     }
 
     // --------------------------------------------------------------------------------
-    private static void buildProjects( List sortedProjects, String wantedGoal, boolean noopMode ) {
-            // iterate over projects, and execute on each...
-            for ( Iterator it = sortedProjects.iterator(); it.hasNext(); ) {
-                Project project = (Project) it.next();
-                log.line();
-                if ( "list".equals(wantedGoal) ) {
-                    log.info("Building " + project.getId() + " goals : " + project.getBuild());
-                } else if ( "xml".equals(wantedGoal) ) {
-                    log.info( "Effective XML model of " + project.getId() + "\n" + project.effectiveXmlNut());
-                } else if ( "json".equals(wantedGoal) ) {
-                    log.info( "Effective JSON model of " + project.getId() + "\n" + project.effectiveJsonNut());
-                } else {
-                    String[] suite = { wantedGoal };
-                    if( "build".equals(wantedGoal) ) {
-                        // if build is the wanted goal, every goal in the build suite is executed
-                       suite = project.getBuild().split(" ");
-                    }
-                    retCode += buildProject(project, suite, noopMode);
-                }
-            }
-            if( sortedProjects.size() > 1 ) {
-               logReactorSummary( sortedProjects );
-            }
-    }
-
-    // ----------------------------------------------------------------------
-    /*
-     * returns 0 if success
-     * returns 9 if not
-     */
-    private static int buildProject(Project project, String[] suite, boolean noopMode)
-    {
-      boolean fail = false;
-      project.start();
-      // Interpolate
-      Interpolator interpolator = new Interpolator();
-      project = interpolator.interpolatedProject( project );
-      // Check dependencies
-      try {
-        DependencyChecker depChecker = new DependencyChecker();
-        depChecker.checkProject( project );
-      } catch (DependencyNotFoundException e) {
-        log.error(e.getMessage());
-        project.failure();
-        log.failure( project.getId() );
-        return 9;
-      }
-      // Achieve goals
-      try {
-        int len = suite.length;
-        for (int i=0; i<len; i++) {
-          String step=suite[i];
-          if( noopMode ) {
-            log.info( "NOOP: " + step + " " + project.getId() );
-          } else {
-              if( step.equals("clean") ) {
-                new Clean().execute(project);
-              } else if( step.equals("compile") ) {
-                new Compile().execute(project);
-              } else if( step.equals("test") ) {
-                new Test().execute(project);
-              } else if( step.equals("pack") ) {
-                String type = project.getPackaging();
-                if( type.equals("jar") ) {
-                  new PackJar().execute(project);
-                } else if( type.equals("war") ) {
-                  new PackWar().execute(project);
-                } else {
-                  new PackZip().execute(project);
-                }
-              } else if( step.equals("install") ) {
-                new Install().execute(project);
-              } else if( step.equals("run") ) {
-                new Run().execute(project);
-              } else {
-                fail = true;
-              }
-          }
-        }
-      } catch ( GoalException e ) {
-        log.error(e.getMessage());
-        fail = true;
-      } catch ( Exception e ) {
-        log.error(e.getMessage());
-        fail = true;
-      }
-
-      if( fail ) {
-        project.failure();
-        log.failure( project.getId() );
-        return 9;
-      }
-      project.success();
-      return 0;
-    }
-
-    // ----------------------------------------------------------------------
     // Reporting
     // ----------------------------------------------------------------------
     private static void logReactorSummary( List projects )

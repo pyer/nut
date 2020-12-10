@@ -7,17 +7,11 @@ import nut.model.Project;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.Properties;
-
 /**
  * Goal which cleans the build.
  *
- * <P>This attempts to clean a project's working directory of the files that
- * were generated at build-time. By default, it discovers and deletes the
- * directories configured in <code>project.build.directory</code>,
- * <code>project.build.outputDirectory</code>,
- * <code>project.build.testOutputDirectory</code>, and
- * <code>project.reporting.outputDirectory</code>. </P>
+ * This attempts to clean a project's working directory of the files that were generated at build-time.
+ * It discovers and deletes the directories configured in clean.target property
  *
  * @goal clean
  */
@@ -32,16 +26,19 @@ public class Clean implements Goal
      *
      * @throws Exception When a directory failed to get deleted.
      */
-    public void execute( Project project ) throws GoalException
+    public void execute(Project project, boolean noop) throws GoalException
     {
         log = new Log();
-        Properties pp  = project.getProperties();
-        String basedir = (String)pp.getProperty( "basedir" );
-        String targetDirectory = project.getLayout().getTargetDirectory();
+        String basedir = project.getBaseDirectory();
+        String target  = project.getTargetDirectory();
+        String fullPath = basedir + File.separator + target;
 
-        File directoryPath = new File( basedir + File.separator + targetDirectory );
-        log.info( "Cleaning " + directoryPath.getPath() );
-        removeDirectory( directoryPath );
+        if (noop) {
+          log.info( "NOOP: Cleaning " + fullPath );
+        } else {
+          log.info( "Cleaning " + fullPath );
+          removeDirectory( new File(fullPath) );
+        }
     }
 
 
@@ -65,7 +62,7 @@ public class Clean implements Goal
             }
 
             try {
-                log.debug( "   delete " + dir.getAbsolutePath() );
+                log.debug( "   delete " + dir.getPath() );
                 deleteDirectory(dir);
             } catch ( IOException e ) {
                 log.error( "Failed to delete directory: " + dir + ". Reason: " + e.getMessage(), e );

@@ -1,0 +1,18 @@
+# Full project
+
+group:     nut.test
+name:      full
+version:   3.0
+packaging: jar 
+
+targetDirectory:       tget
+sourceDirectory:       main/java
+resourceDirectory:     main/resources
+webappDirectory:       main/webapp
+testSourceDirectory:   test/java
+testResourceDirectory: test/resources
+outputDirectory:       tget/classes
+testOutputDirectory:   tget/test-classes
+testReportDirectory:   tget/test-reports
+testSuite: src/test/testng.xml
+

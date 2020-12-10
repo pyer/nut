@@ -1,0 +1,14 @@
+
+packaging: jar
+
+targetDirectory: target
+sourceDirectory: src/main/java
+resourceDirectory: src/main/resources
+webappDirectory: src/main/webapp
+testSourceDirectory: src/test/java
+testResourceDirectory: src/test/resources
+outputDirectory: target/classes
+testOutputDirectory: target/test-classes
+testReportDirectory: target/test-reports
+testSuite: src/test/testng.xml
+

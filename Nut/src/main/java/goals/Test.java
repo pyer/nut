@@ -15,27 +15,32 @@ import java.util.Properties;
  */
 public class Test implements Goal
 {
-    public void execute( Project project ) throws GoalException
+    public void execute( Project project, boolean noop ) throws GoalException
     {
         int returnCode = 0;
         Log log = new Log();
-        Properties pp               = project.getProperties();
-        String basedir              = (String)pp.getProperty( "basedir" );
-        String outputDirectory      = basedir + File.separator + project.getLayout().getOutputDirectory();
-        String testOutputDirectory  = basedir + File.separator + project.getLayout().getTestOutputDirectory();
-        String testReportDirectory  = basedir + File.separator + project.getLayout().getTestReportDirectory();
-        String testSuiteFileName    = basedir + File.separator + project.getLayout().getTestSuite();
+        String basedir              = project.getBaseDirectory();
+        String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
+        String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
+        String testReportDirectory  = basedir + File.separator + project.getTestReportDirectory();
+        String testSuiteFileName    = basedir + File.separator + project.getTestSuite();
         log.debug( "basedir      = " + basedir);
         log.debug( "main classes = " + outputDirectory);
         log.debug( "test suite   = " + testSuiteFileName);
         log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory);
 
+        if (noop) {
+            log.info( "NOOP: Testing " + testSuiteFileName );
+            return;
+        }
+
         File testSuiteFile = new File( testSuiteFileName );
         if ( testSuiteFile.exists() ) {
-            log.debug( "Testing " + testSuiteFileName );
+            log.info( "Testing " + testSuiteFileName );
             String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
-            String classpath = testOutputDirectory + ":" + outputDirectory + project.getTestDependenciesClassPath();
+            // String classpath = testOutputDirectory + ":" + outputDirectory + project.getTestDependenciesClassPath();
+            String classpath = project.getTestDependenciesClassPath();
             log.debug("classpath = " + classpath);
             // Run a java app in a separate system process
             ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,

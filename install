@@ -3,8 +3,7 @@ set -e
 
 cd $(dirname $0)
 root=$(pwd)
-tmp=$(grep -P -m 1 "<version>(.*)</version>" nut.xml)
-NUT_VERSION=$(expr $tmp : '<version>\(.*\)</version>')
+NUT_VERSION="3.0"
 NUT_HOME="$HOME/nutRepository"
 
 echo "Build nut script"
@@ -14,7 +13,7 @@ cat <<EOF >nut
 # ----------------------------------------------------------------------------
 export NUT_VERSION=$NUT_VERSION
 export NUT_HOME=$NUT_HOME
-java -Xmx512M -classpath \$NUT_HOME/nut/Nut-\$NUT_VERSION.jar:\$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:\$NUT_HOME/com/beust/jcommander-1.48.jar nut.Nut "-Dversion=\$NUT_VERSION" "-Dhome=\$NUT_HOME" \$*
+java -Xmx512M -classpath \$NUT_HOME/nut/Nut-\$NUT_VERSION.jar:\$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:\$NUT_HOME/com/beust/jcommander-1.48.jar:\$NUT_HOME/org/testng/testng-6.8.7.jar nut.Nut "-Dversion=\$NUT_VERSION" "-Dhome=\$NUT_HOME" \$*
 EOF
 
 chmod +x nut
@@ -23,48 +22,29 @@ chmod +x nut
 echo "Build nut local repository"
 [ -d $NUT_HOME ] && rm -r $NUT_HOME
 mkdir -p $NUT_HOME/nut
+rm -rf localRepository/*~
 cp -a localRepository/* $NUT_HOME/
 
 cd $root
 mkdir -p target/classes
 echo "Compiling.."
-options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar -deprecation -Xlint:unchecked"
+options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
 cd $root/Nut
 echo " - logging"
 cd src/main/java/logging
 javac $options Log.java
-echo " - xml"
-cd ../xml
-javac $options XmlParserException.java XmlParser.java XmlSerializer.java
-echo " - json"
-cd ../json
-javac $options JsonSerializer.java
-echo " - artifact"
-cd ../artifact
-javac $options InvalidArtifactRTException.java Artifact.java
 echo " - model"
 cd ../model
-javac $options Layout.java Dependency.java Repository.java Project.java XmlReader.java XmlWriter.java JsonWriter.java ValidationException.java
+javac $options Dependency.java Repository.java Project.java ParserException.java ValidationException.java
+echo " - goals"
+cd ../goals
+javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Test.java Run.java packs/Jar.java packs/Jar.java
 echo " - interpolation"
 cd ../interpolation
 javac $options Interpolator.java
 echo " - build"
 cd ../build
-javac $options DependencyNotFoundException.java DependencyChecker.java BuildException.java ProjectBuilder.java DuplicateProjectException.java ScannerException.java Scanner.java Sorter.java
-cd archive
-javac $options Archiver.java ArchiverException.java
-cd ..
-echo " - goals"
-cd ../goals
-javac $options Goal.java GoalException.java
-javac $options Clean.java
-javac $options Compile.java
-javac $options Install.java
-javac $options PackJar.java
-javac $options PackWar.java
-javac $options PackZip.java
-javac $options Test.java
-javac $options Run.java
+javac $options DependencyNotFoundException.java DependencyChecker.java DuplicateProjectException.java Scanner.java Sorter.java Builder.java
 echo " - Nut"
 cd ..
 javac $options Nut.java
@@ -81,9 +61,10 @@ cd testNG/src/main/java
 options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
 javac $options TestRunner.java TestListener.java
 cd $root
-jar cf $NUT_HOME/nut/testNG-2.1.jar -C target/classes .
+jar cf $NUT_HOME/nut/testNG-${NUT_VERSION}.jar -C target/classes .
 rm -r target
 
 echo "Install /usr/bin/nut'"
 sudo install nut /usr/bin/
+rm nut
 echo "Done."

@@ -1,6 +1,5 @@
 package nut.build;
 
-import nut.artifact.Artifact;
 import nut.build.DependencyNotFoundException;
 import nut.model.Dependency;
 import nut.model.Project;
@@ -36,11 +35,10 @@ public class DependencyChecker
     // ----------------------------------------------------------------------
     public void checkProject(Project project) throws DependencyNotFoundException
     {
-      String notFound = null;
       for ( Iterator it = project.getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
-          Artifact artifact = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
-
+//          Artifact artifact = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
+/*
           if( artifact.isPresent() ) {
             log.debug( "  OK");
             return;
@@ -57,15 +55,13 @@ public class DependencyChecker
           } catch(IOException ioe) {
             throw new DependencyNotFoundException( "Artifact '" + artifact.toString() + "' Error while writing file :" + ioe );
           } catch(DependencyNotFoundException e) {
-            notFound = "Artifact '" + artifact.toString() + "' is not found.";
+            throw new DependencyNotFoundException("Artifact '" + artifact.toString() + "' is not found.");
           }
+*/
       }
 
-      if( notFound != null ) {
-          throw new DependencyNotFoundException(notFound);
-      }
     }
-
+/*
     // ----------------------------------------------------------------------
     private void checkArtifact( Artifact artifact, List<Repository> repositories ) throws SecurityException, MalformedURLException, FileNotFoundException, IOException, DependencyNotFoundException
     {
@@ -117,5 +113,5 @@ public class DependencyChecker
       fos.close();
       is.close();
     }
-
+*/
 }

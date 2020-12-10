@@ -5,5 +5,5 @@ import nut.model.Project;
 
 public interface Goal
 {
-    public void execute( Project project ) throws GoalException;
+   public void execute(Project project, boolean noop) throws GoalException;
 }

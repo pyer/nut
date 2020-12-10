@@ -1,44 +1,13 @@
 <suite name="Nut test Suite" verbose="0">
-  <test name="nut.artifact">
+  <test name="nut.logging">
     <classes>
-      <class name="nut.artifact.ArtifactTest" />
-    </classes>
-  </test>
-  <test name="nut.build">
-    <classes>
-      <class name="nut.build.ProjectBuilderTest" />
-    </classes>
-</test>
-  <test name="nut.build.archive">
-    <classes>
-      <class name="nut.build.archive.ArchiverTest" />
+      <class name="nut.logging.LogTest" />
     </classes>
   </test>
   <test name="nut.model">
     <classes>
-      <class name="nut.model.BuildTest" />
       <class name="nut.model.DependencyTest" />
-      <class name="nut.model.LayoutTest" />
       <class name="nut.model.ProjectTest" />
-      <class name="nut.model.RepositoryTest" />
-      <class name="nut.model.XmlReaderTest" />
-    </classes>
-  </test>
-  <test name="nut.interpolation">
-    <classes>
-      <class name="nut.interpolation.InterpolatorTest" />
-    </classes>
-  </test>
-  <test name="nut.goals">
-    <classes>
-      <class name="nut.goals.CleanTest" />
-      <class name="nut.goals.InstallTest" />
-      <class name="nut.goals.PackZipTest" />
-    </classes>
-  </test>
-  <test name="nut.logging">
-    <classes>
-      <class name="nut.logging.LogTest" />
     </classes>
   </test>
 </suite>
