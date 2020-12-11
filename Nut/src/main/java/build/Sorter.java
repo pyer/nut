@@ -37,9 +37,13 @@ public class Sorter
      * </ul>
      * @throws DuplicateProjectException if any projects are duplicated by id
      */
-    public Sorter( List projects )
-        throws CycleDetectedException, DuplicateProjectException
+    public Sorter( List projects ) throws CycleDetectedException, DuplicateProjectException
     {
+        List<Project> sortedProjects = new ArrayList<Project>();
+        if ( projects == null || projects.isEmpty() ) {
+          this.sortedProjects = sortedProjects;
+          return;
+        }
         DAG dag = new DAG();
 
         Map<String,Project> projectMap = new HashMap<String,Project>();
@@ -65,7 +69,6 @@ public class Sorter
             }
         }
 
-        List<Project> sortedProjects = new ArrayList<Project>();
         for ( Iterator i = TopologicalSorter.sort( dag ).iterator(); i.hasNext(); ) {
             String id = (String) i.next();
             sortedProjects.add( projectMap.get( id ) );

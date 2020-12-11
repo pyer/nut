@@ -59,8 +59,12 @@ public class Builder
           DependencyChecker depChecker = new DependencyChecker();
           depChecker.checkProject( project );
           // Achieve goal
-          if( "run".equals(goal) ) {
-            new Run().execute(project, noop);
+          if( "build".equals(goal) ) {
+            new Clean().execute(project, noop);
+            new Compile().execute(project, noop);
+            new Test().execute(project, noop);
+            new Pack().execute(project, noop);
+            new Install().execute(project, noop);
           } else if( "clean".equals(goal) ) {
             new Clean().execute(project, noop);
           } else if( "compile".equals(goal) ) {
@@ -71,6 +75,8 @@ public class Builder
             new Pack().execute(project, noop);
           } else if( "install".equals(goal) ) {
             new Install().execute(project, noop);
+          } else if( "run".equals(goal) ) {
+            new Run().execute(project, noop);
           } else {
             log.error("Unknown goal '" + goal + "'.");
             fail = true;

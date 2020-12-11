@@ -61,7 +61,7 @@ public class Test implements Goal
                 throw new GoalException(e.getMessage());
             }
             if (returnCode!=0) {
-                throw new GoalException("At least one test failed !");
+                throw new GoalException("At least one test failed, see file://" + testReportDirectory + "/index.html" );
             }
         } else {
             log.warn( "No test for " + project.getId() );

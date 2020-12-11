@@ -83,7 +83,7 @@ public class Nut
         // everything is ok, let's go
         log.start();
         List projects = Collections.EMPTY_LIST;
-        Scanner scan = new Scanner();
+        Scanner scan = new Scanner("nut.yml");
         projects = scan.getProjects();
 
         List sortedProjects = Collections.EMPTY_LIST;

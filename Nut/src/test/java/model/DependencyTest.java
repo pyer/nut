@@ -37,6 +37,20 @@ public class DependencyTest
     }
 
     @Test
+    public void testDependencyPath()
+    {
+      String s = "/nut/group/dep-3.0.jar";
+      Dependency dependency = new Dependency(s);
+      assertEquals( dependency.getPath(), s );
+    }
+
+    @Test
+    public void testDependencyMavenPath()
+    {
+      assertEquals( new Dependency("/nut/group/dep-3.0.jar").getMavenPath(), "filepath=nut/group/dep/3.0/dep-3.0.jar" );
+    }
+
+    @Test
     public void testDependencyIdRelease()
     {
       String s = "/nut/group/dep-3.0.jar";
@@ -70,25 +84,17 @@ public class DependencyTest
     }
 
     @Test
-    public void testDependencyPath()
-    {
-      String s = "/nut/group/dep-3.0.jar";
-      Dependency dependency = new Dependency(s);
-      assertEquals( dependency.getPath(), s );
-    }
-
-    @Test
     public void testDependencyIsPresent()
     {
       Dependency dependency = new Dependency("nut/model/DependencyTest.class");
-      assertTrue( dependency.isPresent("target/test-classes") );
+      assertFalse( dependency.isNotHere("target/test-classes") );
     }
 
     @Test
     public void testDependencyIsAbsent()
     {
       Dependency dependency = new Dependency("nut/model/NoDependency");
-      assertFalse( dependency.isPresent("target/test-classes") );
+      assertTrue( dependency.isNotHere("target/test-classes") );
     }
 
 }

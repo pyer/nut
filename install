@@ -35,7 +35,7 @@ cd src/main/java/logging
 javac $options Log.java
 echo " - model"
 cd ../model
-javac $options Dependency.java Repository.java Project.java ParserException.java ValidationException.java
+javac $options Dependency.java Project.java ParserException.java ValidationException.java
 echo " - goals"
 cd ../goals
 javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Test.java Run.java packs/Jar.java packs/Jar.java

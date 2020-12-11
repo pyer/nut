@@ -21,13 +21,13 @@ public class Install implements Goal
     {
         log = new Log();
         Properties pp               = project.getProperties();
-        String repository           = (String)pp.getProperty( "nut.home" );
         String mode                 = (String)pp.getProperty( "nut.mode", "SNAPSHOT" );
         if( "RELEASE".equals( mode ) )
           mode = "";
         else
           mode = "-SNAPSHOT";
 
+        String repository           = project.getRepository();
         String basedir              = project.getBaseDirectory();
         String targetDirectory      = project.getTargetDirectory();
         String resourceDirectory    = project.getResourceDirectory();
@@ -43,9 +43,9 @@ public class Install implements Goal
         log.debug( "project.packaging         = " + packaging );
 
         if (noop) {
-          log.info( "NOOP: Installing \'" + artifactId + "\'" );
+          log.info( "NOOP: Installing \'" + artifactId + "\' in " + repository );
         } else {
-          log.info( "Installing \'" + artifactId + "\'" );
+          log.info( "Installing \'" + artifactId + "\' in " + repository );
           // + "-" + version + "." + packaging
           if( "xml".equals(packaging) ) {
                 String group = groupId.replace( '.', File.separatorChar );

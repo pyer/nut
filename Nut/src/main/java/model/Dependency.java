@@ -32,15 +32,26 @@ public class Dependency implements java.io.Serializable {
         return this.path;
     }
 
-    /* getId is not used
+    public String getMavenPath()
+    {
+        parsePath();
+        return "filepath=" + group + "/" + name + "/" + version + "/"  + name + "-" + version + "." + suffix;
+    }
+
+    /* getId is not used yet
     */
     public String getId()
     {
-//        String str = this.path.startsWith( "/" ) ? this.path.substring( 1 ) : this.path;
+        parsePath();
+        return group.replace( '/', '.' ) + ":" + name + ":" + version + ":" + suffix;
+    }
+
+    private void parsePath()
+    {
         String str = getPath();
         int g = str.lastIndexOf( '/' );
         if ( g > 1 ) {
-          group = str.substring( 1, g ).replace( '/', '.' );
+          group = str.substring( 1, g );
         }
         int s = str.lastIndexOf( '.' );
         if ( s > 0 ) {
@@ -61,7 +72,6 @@ public class Dependency implements java.io.Serializable {
             name = middle;
           }
         }
-        return group + ":" + name + ":" + version + ":" + suffix;
     }
 
     // -------------------------------------------------------------
@@ -98,10 +108,10 @@ public class Dependency implements java.io.Serializable {
     /**
      * Check if the dependency is present in the local repository
      */
-    public boolean isPresent( String repositoryRoot )
+    public boolean isNotHere( String repositoryRoot )
     {
         File f = new File( repositoryRoot + File.separator + getPath() );
-        return (f.exists() && !f.isDirectory() );
+        return (!f.exists() || f.isDirectory() );
     }
 
     // ----------------------------------------------------------------------

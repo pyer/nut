@@ -16,24 +16,25 @@ import java.util.List;
 
 public class Scanner
 {
-  private final String NUT_FILE = "nut.yml";
   private Log log;
   private List<Project> projects;
+  private String nut;
 
   /**
    * Scan a project with or without modules.
    */
-  public Scanner( )
+  public Scanner( String nutFileName )
   {
     log = new Log();
     List files = Collections.EMPTY_LIST;
-    File projectFile = new File( NUT_FILE );
+    nut = nutFileName;
+    File projectFile = new File( nut );
     log.info( "Scanning projects..." );
     if ( projectFile.exists() ) {
       files = Collections.singletonList( projectFile );
       projects = collectProjects( files );
     } else {
-      log.error( "Project file '" + NUT_FILE + "' not found !" );
+      log.error( "Project file '" + nutFileName + "' not found !" );
     }
   }
 
@@ -75,7 +76,7 @@ public class Scanner
 
                     File moduleFile = new File( modulesRoot, name );
                     if ( moduleFile.exists() && moduleFile.isDirectory() ) {
-                        moduleFiles.add( new File( modulesRoot, name + File.separator + NUT_FILE ) );
+                        moduleFiles.add( new File( modulesRoot, name + File.separator + nut ) );
                     }
                 }
                 List<Project> collectedProjects = collectProjects( moduleFiles );

@@ -10,4 +10,12 @@
       <class name="nut.model.ProjectTest" />
     </classes>
   </test>
+  <test name="nut.build">
+    <classes>
+      <class name="nut.build.DependencyCheckerTest" />
+      <class name="nut.build.ScannerTest" />
+      <class name="nut.build.SorterTest" />
+    </classes>
+  </test>
+
 </suite>
