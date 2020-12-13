@@ -39,7 +39,8 @@ public class ProjectTest
         project.setGroup("nut.group");
         project.setName("artifact");
         project.setVersion("1.0");
-        assertEquals( project.getId(), "nut.group:artifact:1.0" );
+        project.setPackaging("zip");
+        assertEquals( project.getId(), "nut.group:artifact:1.0:zip" );
     }
 
     @Test
@@ -103,7 +104,7 @@ public class ProjectTest
         Project project = new Project();
         File nut = new File( "src/test/resources/emptyProject.yml" );
         project.parseFile(nut);
-        assertEquals( project.getId(), "null:null:null" );
+        assertEquals( project.getId(), "null:null:null:jar" );
     }
 
     @Test
@@ -114,7 +115,7 @@ public class ProjectTest
         File nut = new File( "src/test/resources/smallProject.yml" );
         project.parseFile(nut);
 
-        assertEquals( project.getId(), "nut.test:small:3.0" );
+        assertEquals( project.getId(), "nut.test:small:3.0:jar" );
     }
 
     @Test
@@ -123,7 +124,7 @@ public class ProjectTest
         Project project = new Project();
         File nut = new File( "src/test/resources/fullProject.yml" );
         project.parseFile(nut);
-        assertEquals( project.getId(), "nut.test:full:3.0" );
+        assertEquals( project.getId(), "nut.test:full:3.0:jar" );
         assertEquals( project.getSourceDirectory(), "main/java" );
         assertEquals( project.getResourceDirectory(), "main/resources" );
         assertEquals( project.getWebappDirectory(), "main/webapp" );

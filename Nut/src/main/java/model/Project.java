@@ -335,7 +335,7 @@ public class Project implements java.io.Serializable
      */
     public String getId()
     {
-        return getGroup() + ":" + getName() + ":" + getVersion();
+        return getGroup() + ":" + getName() + ":" + getVersion() + ":" + getPackaging();
     }
 
     public String getPathName()

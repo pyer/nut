@@ -1,15 +1,23 @@
 package nut;
 
 import nut.build.Builder;
+/*
 import nut.build.DependencyChecker;
+
+*/
+
 import nut.build.DuplicateProjectException;
 import nut.build.Scanner;
 import nut.build.Sorter;
-
 import nut.logging.Log;
 import nut.model.Project;
 
+import nut.model.ParserException;
+import nut.model.ValidationException;
+
 import org.codehaus.plexus.util.dag.CycleDetectedException;
+
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,15 +90,12 @@ public class Nut
 
         // everything is ok, let's go
         log.start();
-        List projects = Collections.EMPTY_LIST;
-        Scanner scan = new Scanner("nut.yml");
-        projects = scan.getProjects();
-
-        List sortedProjects = Collections.EMPTY_LIST;
-        if( projects != null ) {
-          try {
+        try {
+            log.info( "Scanning projects..." );
+            Scanner scanner = new Scanner("nut.yml");
+            List projects = scanner.getProjects();
             Sorter sorter = new Sorter( projects );
-            sortedProjects = sorter.getSortedProjects();
+            List sortedProjects = sorter.getSortedProjects();
             log.line();
             if ( sorter.hasMultipleProjects() ) {
               log.info( "Ordering projects..." );
@@ -115,16 +120,21 @@ public class Nut
             if( sortedProjects.size() > 1 ) {
                logReactorSummary( sortedProjects );
             }
-          } catch(CycleDetectedException e) {
+        } catch(CycleDetectedException e) {
             log.failure(e.getMessage());
             retCode = 5;
-          } catch(DuplicateProjectException e) {
+        } catch(DuplicateProjectException e) {
+            log.failure(e.getMessage());
+            retCode = 5;
+        } catch(ValidationException e) {
             log.failure(e.getMessage());
             retCode = 6;
-          } catch(Exception e) {
+        } catch(ParserException e) {
+            log.failure(e.getMessage());
+            retCode = 6;
+        } catch(Exception e) {
             log.failure(e.getMessage());
             retCode = 7;
-          }
         }
         log.finish();
         System.exit( retCode );

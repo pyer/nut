@@ -17,24 +17,23 @@ import java.util.List;
 public class Scanner
 {
   private Log log;
-  private List<Project> projects;
+  private List<Project> projectsList;
   private String nut;
 
   /**
    * Scan a project with or without modules.
    */
-  public Scanner( String nutFileName )
+  public Scanner( String nutFileName ) throws IOException, ParserException, ValidationException
   {
     log = new Log();
     List files = Collections.EMPTY_LIST;
     nut = nutFileName;
     File projectFile = new File( nut );
-    log.info( "Scanning projects..." );
     if ( projectFile.exists() ) {
       files = Collections.singletonList( projectFile );
-      projects = collectProjects( files );
+      projectsList = collectProjects( files );
     } else {
-      log.error( "Project file '" + nutFileName + "' not found !" );
+      throw new ParserException( "Project file '" + nutFileName + "' not found !" );
     }
   }
 
@@ -43,23 +42,22 @@ public class Scanner
    */
   public List getProjects()
   {
-    return projects;
+    return projectsList;
   }
   // --------------------------------------------------------------------------------
-  private List<Project> collectProjects( List files )
+  private List<Project> collectProjects( List files ) throws IOException, ParserException, ValidationException
   {
         List<Project> projects = new ArrayList<Project>( files.size() );
 
         for ( Iterator iterator = files.iterator(); iterator.hasNext(); )
         {
-            try {
-              File file = ((File) iterator.next()).getCanonicalFile();
-              log.debug("   Project " + file.getPath());
-              Project project = new Project();
-              project.setBaseDirectory(file.getParent());
-              project.parseFile( file );
-              project.validate();
-              if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
+            File file = ((File) iterator.next()).getCanonicalFile();
+            log.debug("   Project " + file.getPath());
+            Project project = new Project();
+            project.setBaseDirectory(file.getParent());
+            project.parseFile( file );
+            project.validate();
+            if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
               //log.info("   Modules:");
                 File modulesRoot = file.getParentFile();
 
@@ -81,17 +79,8 @@ public class Scanner
                 }
                 List<Project> collectedProjects = collectProjects( moduleFiles );
                 projects.addAll( collectedProjects );
-              }
-              projects.add( project );
-            } catch ( ValidationException e ) {
-              log.error( e.getMessage() );
-              break;
-            } catch ( ParserException e ) {
-              log.error( e.getMessage() );
-              break;
-            } catch ( IOException e ) {
-              log.error( e.getMessage() );
-              break;
+            } else {
+                projects.add( project );
             }
         }
         return projects;
