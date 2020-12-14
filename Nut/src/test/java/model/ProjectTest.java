@@ -125,15 +125,15 @@ public class ProjectTest
         File nut = new File( "src/test/resources/fullProject.yml" );
         project.parseFile(nut);
         assertEquals( project.getId(), "nut.test:full:3.0:jar" );
-        assertEquals( project.getSourceDirectory(), "main/java" );
-        assertEquals( project.getResourceDirectory(), "main/resources" );
-        assertEquals( project.getWebappDirectory(), "main/webapp" );
-        assertEquals( project.getTestSourceDirectory(), "test/java" );
-        assertEquals( project.getTestResourceDirectory(), "test/resources" );
-        assertEquals( project.getTargetDirectory(), "tget" );
-        assertEquals( project.getOutputDirectory(), "tget/classes" );
-        assertEquals( project.getTestOutputDirectory(), "tget/test-classes" );
-        assertEquals( project.getTestReportDirectory(), "tget/test-reports" );
+        assertEquals( project.getSourceDirectory(), "target/main/java" );
+        assertEquals( project.getResourceDirectory(), "target/main/resources" );
+        assertEquals( project.getWebappDirectory(), "target/main/webapp" );
+        assertEquals( project.getTestSourceDirectory(), "target/test/java" );
+        assertEquals( project.getTestResourceDirectory(), "target/test/resources" );
+        assertEquals( project.getTargetDirectory(), "target/tget" );
+        assertEquals( project.getOutputDirectory(), "target/tget/classes" );
+        assertEquals( project.getTestOutputDirectory(), "target/tget/test-classes" );
+        assertEquals( project.getTestReportDirectory(), "target/tget/test-reports" );
     }
 
     @Test(expectedExceptions = ValidationException.class)

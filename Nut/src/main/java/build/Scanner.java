@@ -40,7 +40,7 @@ public class Scanner
   /**
    * return the project list of modules
    */
-  public List getProjects()
+  public List<Project> getProjects()
   {
     return projectsList;
   }

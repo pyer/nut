@@ -17,5 +17,10 @@
       <class name="nut.build.SorterTest" />
     </classes>
   </test>
+  <test name="nut.goals">
+    <classes>
+      <class name="nut.goals.CleanTest" />
+    </classes>
+  </test>
 
 </suite>
