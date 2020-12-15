@@ -1,0 +1,8 @@
+group:     nut.test
+name:      modules
+version:   3.0
+
+modules:
+  - module1
+  - module2
+  - module3

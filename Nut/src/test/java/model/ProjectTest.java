@@ -130,10 +130,10 @@ public class ProjectTest
         assertEquals( project.getWebappDirectory(), "target/main/webapp" );
         assertEquals( project.getTestSourceDirectory(), "target/test/java" );
         assertEquals( project.getTestResourceDirectory(), "target/test/resources" );
-        assertEquals( project.getTargetDirectory(), "target/tget" );
-        assertEquals( project.getOutputDirectory(), "target/tget/classes" );
-        assertEquals( project.getTestOutputDirectory(), "target/tget/test-classes" );
-        assertEquals( project.getTestReportDirectory(), "target/tget/test-reports" );
+        assertEquals( project.getTargetDirectory(), "target/test-target" );
+        assertEquals( project.getOutputDirectory(), "target/test-target/classes" );
+        assertEquals( project.getTestOutputDirectory(), "target/test-target/test-classes" );
+        assertEquals( project.getTestReportDirectory(), "target/test-target/test-reports" );
     }
 
     @Test(expectedExceptions = ValidationException.class)

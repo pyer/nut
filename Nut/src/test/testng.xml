@@ -20,6 +20,7 @@
   <test name="nut.goals">
     <classes>
       <class name="nut.goals.CleanTest" />
+      <class name="nut.goals.InstallTest" />
     </classes>
   </test>
 

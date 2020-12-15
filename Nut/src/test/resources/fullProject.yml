@@ -5,14 +5,14 @@ name:      full
 version:   3.0
 packaging: jar 
 
-targetDirectory:       target/tget
+targetDirectory:       target/test-target
 sourceDirectory:       target/main/java
 resourceDirectory:     target/main/resources
 webappDirectory:       target/main/webapp
 testSourceDirectory:   target/test/java
 testResourceDirectory: target/test/resources
-outputDirectory:       target/tget/classes
-testOutputDirectory:   target/tget/test-classes
-testReportDirectory:   target/tget/test-reports
-testSuite: target/test/testng.xml
+outputDirectory:       target/test-target/classes
+testOutputDirectory:   target/test-target/test-classes
+testReportDirectory:   target/test-target/test-reports
+testSuite:             target/test/testng.xml
 
