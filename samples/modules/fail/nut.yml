@@ -1,0 +1,4 @@
+group:   nut.samples.modules.fail
+name:    Hello
+version: 1.0
+pattern: jar-sample

@@ -1,0 +1,7 @@
+group:   nut.samples
+name:    parent
+version: 1.0
+
+modules:
+  - hello
+  - modules

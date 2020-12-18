@@ -1,0 +1,10 @@
+group:   nut.samples
+name:    hello
+version: 1.0
+packaging: jar
+
+targetDirectory: target
+sourceDirectory: main/java
+outputDirectory: target/classes
+testOutputDirectory: target/test-classes
+
