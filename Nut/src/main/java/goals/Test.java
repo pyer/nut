@@ -20,14 +20,10 @@ public class Test implements Goal
         int returnCode = 0;
         Log log = new Log();
         String basedir              = project.getBaseDirectory();
-        String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
-        String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
         String testReportDirectory  = basedir + File.separator + project.getTestReportDirectory();
         String testSuiteFileName    = basedir + File.separator + project.getTestSuite();
         log.debug( "basedir      = " + basedir);
-        log.debug( "main classes = " + outputDirectory);
         log.debug( "test suite   = " + testSuiteFileName);
-        log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory);
 
         if (noop) {
@@ -39,7 +35,6 @@ public class Test implements Goal
         if ( testSuiteFile.exists() ) {
             log.info( "Testing " + testSuiteFileName );
             String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
-            // String classpath = testOutputDirectory + ":" + outputDirectory + project.getTestDependenciesClassPath();
             String classpath = project.getTestDependenciesClassPath();
             log.debug("classpath = " + classpath);
             // Run a java app in a separate system process

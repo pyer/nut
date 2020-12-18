@@ -78,7 +78,9 @@ public class ProjectTest
     @Test
     public void testProjectDefaultDirectories()
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
+        project.setBaseDirectory(basedir);
         assertEquals( project.getSourceDirectory(), "src/main/java" );
         assertEquals( project.getResourceDirectory(), "src/main/resources" );
         assertEquals( project.getWebappDirectory(), "src/main/webapp" );
@@ -93,16 +95,20 @@ public class ProjectTest
     @Test(expectedExceptions = ParserException.class)
     public void testParseAbsentFile() throws ParserException
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
-        File nut = new File( "src/test/resources/NOFILE" );
+        project.setBaseDirectory(basedir);
+        File nut = new File( basedir + "/src/test/resources/NOFILE" );
         project.parseFile(nut);
     }
 
     @Test
     public void testParseEmptyFile() throws ParserException
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
-        File nut = new File( "src/test/resources/emptyProject.yml" );
+        project.setBaseDirectory(basedir);
+        File nut = new File( basedir + "/src/test/resources/emptyProject.yml" );
         project.parseFile(nut);
         assertEquals( project.getId(), "null:null:null:jar" );
     }
@@ -110,9 +116,11 @@ public class ProjectTest
     @Test
     public void testParseSmallProject() throws ParserException
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
-        project.setRepository( project.getBaseDirectory() + "/src/test/resources" );
-        File nut = new File( "src/test/resources/smallProject.yml" );
+        project.setBaseDirectory(basedir);
+        project.setRepository( basedir + "/src/test/resources" );
+        File nut = new File( basedir + "/src/test/resources/smallProject.yml" );
         project.parseFile(nut);
 
         assertEquals( project.getId(), "nut.test:small:3.0:jar" );
@@ -121,19 +129,21 @@ public class ProjectTest
     @Test
     public void testParseFullProject() throws ParserException
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
-        File nut = new File( "src/test/resources/fullProject.yml" );
+        project.setBaseDirectory(basedir);
+        File nut = new File( basedir + "/src/test/resources/fullProject.yml" );
         project.parseFile(nut);
         assertEquals( project.getId(), "nut.test:full:3.0:jar" );
-        assertEquals( project.getSourceDirectory(), "target/main/java" );
-        assertEquals( project.getResourceDirectory(), "target/main/resources" );
-        assertEquals( project.getWebappDirectory(), "target/main/webapp" );
-        assertEquals( project.getTestSourceDirectory(), "target/test/java" );
+        assertEquals( project.getSourceDirectory(),       "target/main/java" );
+        assertEquals( project.getResourceDirectory(),     "target/main/resources" );
+        assertEquals( project.getWebappDirectory(),       "target/main/webapp" );
+        assertEquals( project.getTestSourceDirectory(),   "target/test/java" );
         assertEquals( project.getTestResourceDirectory(), "target/test/resources" );
-        assertEquals( project.getTargetDirectory(), "target/test-target" );
-        assertEquals( project.getOutputDirectory(), "target/test-target/classes" );
-        assertEquals( project.getTestOutputDirectory(), "target/test-target/test-classes" );
-        assertEquals( project.getTestReportDirectory(), "target/test-target/test-reports" );
+        assertEquals( project.getTargetDirectory(),       "target/test-target" );
+        assertEquals( project.getOutputDirectory(),       "target/test-target/classes" );
+        assertEquals( project.getTestOutputDirectory(),   "target/test-target/test-classes" );
+        assertEquals( project.getTestReportDirectory(),   "target/test-target/test-reports" );
     }
 
     @Test(expectedExceptions = ValidationException.class)
@@ -146,8 +156,10 @@ public class ProjectTest
     @Test(expectedExceptions = ValidationException.class)
     public void testValidateEmptyFile() throws ParserException, ValidationException
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
-        File nut = new File( "src/test/resources/emptyProject.yml" );
+        project.setBaseDirectory(basedir);
+        File nut = new File( basedir + "/src/test/resources/emptyProject.yml" );
         project.parseFile(nut);
         project.validate();
     }
@@ -155,9 +167,11 @@ public class ProjectTest
     @Test
     public void testValidateSmallProject() throws ParserException, ValidationException
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
-        project.setRepository( project.getBaseDirectory() + "/src/test/resources" );
-        File nut = new File( "src/test/resources/smallProject.yml" );
+        project.setBaseDirectory(basedir);
+        project.setRepository( basedir + "/src/test/resources" );
+        File nut = new File( basedir + "/src/test/resources/smallProject.yml" );
         project.parseFile(nut);
         project.validate();
     }
@@ -165,9 +179,11 @@ public class ProjectTest
     @Test
     public void testValidateFullProject() throws ParserException, ValidationException
     {
+        String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
-        project.setRepository( project.getBaseDirectory() + "/src/test/resources" );
-        File nut = new File( "src/test/resources/fullProject.yml" );
+        project.setBaseDirectory(basedir);
+        project.setRepository( basedir + "/src/test/resources" );
+        File nut = new File( basedir + "/src/test/resources/fullProject.yml" );
         project.parseFile(nut);
         project.validate();
     }

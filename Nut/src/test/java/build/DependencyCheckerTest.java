@@ -36,31 +36,3 @@ public class DependencyCheckerTest
     }
 
 }
-/*
-
-
-public class DependencyChecker
-{
-    private Log log;
-
-    // ----------------------------------------------------------------------
-    public DependencyChecker()
-    {
-      log = new Log();
-    }
-
-    // ----------------------------------------------------------------------
-    public void checkProject(Project project) throws DependencyNotFoundException
-    {
-      for ( Iterator it = project.getDependencies().iterator(); it.hasNext(); ) {
-          Dependency dep = (Dependency) it.next();
-//          Artifact artifact = new Artifact( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() );
-
-          if( artifact.isPresent() ) {
-            log.debug( "  OK");
-            return;
-          }
-          try {
-
-*/
-

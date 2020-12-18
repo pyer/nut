@@ -18,31 +18,34 @@ import static org.testng.Assert.assertFalse;
 
 public class ScannerTest
 {
-    String nut = "src/test/resources/fullProject.yml";
+    private String nutFileName() {
+        String basedir = System.getProperty( "basedir", "." );
+        return basedir + "/src/test/resources/fullProject.yml";
+    }
 
     @Test
     public void testHashCodeNullSafe() throws IOException, ParserException, ValidationException
     {
-        new Scanner(nut).hashCode();
+        new Scanner(nutFileName()).hashCode();
     }
 
     @Test
     public void testEqualsNullSafe() throws IOException, ParserException, ValidationException
     {
-        assertNotNull( new Scanner(nut) );
+        assertNotNull( new Scanner(nutFileName()) );
     }
 
     @Test
     public void testEqualsIdentity() throws IOException, ParserException, ValidationException
     {
-        Scanner thing = new Scanner(nut);
+        Scanner thing = new Scanner(nutFileName());
         assertTrue( thing.equals( thing ) );
     }
 
     @Test
     public void testToStringNullSafe() throws IOException, ParserException, ValidationException
     {
-        assertNotNull( new Scanner(nut).toString() );
+        assertNotNull( new Scanner(nutFileName()).toString() );
     }
 
     @Test(expectedExceptions = ParserException.class)
@@ -61,7 +64,7 @@ public class ScannerTest
         project.setName("full");
         project.setVersion("3.0");
         projects.add(project);
-        Scanner scanner = new Scanner(nut);
+        Scanner scanner = new Scanner(nutFileName());
         assertEquals( projects, scanner.getProjects() );
     }
 
