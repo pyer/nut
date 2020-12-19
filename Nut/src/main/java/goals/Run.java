@@ -19,11 +19,10 @@ public class Run implements Goal
     {
         int returnCode = 0;
         Log log = new Log();
-        Properties pp               = project.getProperties();
-        String mainClass            = (String)pp.getProperty( "run.class" );
+        String mainClass            = project.getMainClass();
         String targetDirectory      = project.getBaseDirectory() + File.separator + project.getTargetDirectory();
         if (mainClass == null) {
-            throw new GoalException("mainClass property is not defined");
+            throw new GoalException("mainClass is not defined");
         }
 
         String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
@@ -35,8 +34,8 @@ public class Run implements Goal
         }
 
         log.debug( "Running " + jar );
-        String classpath = jar + project.getDependenciesClassPath();
-        log.debug("classpath  = " + classpath);
+        String classpath = jar + ":" + project.getDependenciesClassPath();
+        log.debug("class path = " + classpath);
         log.debug("main class = " + mainClass);
         // Run a java app in a separate system process
         ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, mainClass);

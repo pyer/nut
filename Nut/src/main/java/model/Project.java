@@ -142,6 +142,10 @@ public class Project implements java.io.Serializable
      */
     private String testSuite = "src/test/testng.xml";
 
+    /**
+     * The main class for run
+     */
+    private String mainClass;
 
     // Building time
     private long time;
@@ -328,6 +332,11 @@ public class Project implements java.io.Serializable
     public String getTestSuite()
     {
         return this.testSuite;
+    }
+
+    public String getMainClass()
+    {
+        return this.mainClass;
     }
 
     /**
@@ -525,6 +534,7 @@ public class Project implements java.io.Serializable
         buf.append("testOutputDirectory:   " + testOutputDirectory + "\n");
         buf.append("testReportDirectory:   " + testReportDirectory + "\n");
         buf.append("testSuite: " + testSuite + "\n");
+        buf.append("mainClass: " + mainClass + "\n");
         buf.append("properties:\n");
         buf.append("dependencies:\n");
         buf.append("testDependencies:\n");
@@ -602,6 +612,8 @@ public class Project implements java.io.Serializable
         testReportDirectory = value;
       } else if ( "testSuite".equals(key) ) {
         testSuite = value;
+      } else if ( "mainClass".equals(key) ) {
+        mainClass = value;
       } else if ( "properties".equals(key) ) {
         checkList(key, value);
       } else if ( "dependencies".equals(key) ) {
