@@ -8,3 +8,4 @@ sourceDirectory: main/java
 outputDirectory: target/classes
 testOutputDirectory: target/test-classes
 
+mainClass: Hello
