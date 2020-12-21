@@ -18,6 +18,10 @@ public class Test implements Goal
     public void execute( Project project, boolean noop ) throws GoalException
     {
         int returnCode = 0;
+        if ( ! "jar".equals(project.getPackaging() )) {
+          return;
+        }
+
         Log log = new Log();
         String basedir              = project.getBaseDirectory();
         String testReportDirectory  = basedir + File.separator + project.getTestReportDirectory();

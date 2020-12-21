@@ -16,12 +16,12 @@ public class Jar
 
     private String name;
     // ==========================================================================
-    public void Jar( String name )
+    public Jar( String name )
     {
         this.name = name;
         log = new Log();
     }
-    
+
     // ==========================================================================
     public void archive(String directory) throws GoalException
     {
@@ -34,7 +34,7 @@ public class Jar
         args.add( "-C" );
         args.add( directory );
         args.add( "." );
-        log.debug( "jar: -C " + directory );
+        log.debug( "jar cf " + name + " -C " + directory + ".");
         // ----------------------------------------------------------------------
         // build the command line
         String[] command = (String[]) args.toArray( new String[ args.size() ] );

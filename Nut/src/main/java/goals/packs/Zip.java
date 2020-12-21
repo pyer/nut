@@ -17,7 +17,7 @@ public class Zip
 
     private String name;
     // ==========================================================================
-    public void Zip( String name )
+    public Zip( String name )
     {
         this.name = name;
         log = new Log();
@@ -30,7 +30,6 @@ public class Zip
         try {
           FileOutputStream dest = new FileOutputStream( this.name );
           ZipOutputStream  out  = new ZipOutputStream( new BufferedOutputStream(dest));
-          log.info( "Creating \'" + name + "\'" );
           zipFile( out, resourceDirectory + File.separator, "" );
           out.close();
         }
@@ -50,6 +49,7 @@ public class Zip
           byte data[] = new byte[BUFFER];
           // get a list of files from current directory
           File root = new File( basedir + path );
+          log.info("  scanning " + root);
           File[] list = root.listFiles();
           if (list == null) return;
 
@@ -64,7 +64,7 @@ public class Zip
             if ( f.isDirectory() ) {
               zipFile( out, basedir, fileName );
             } else {
-              log.info("   zipping " + fileName );
+              log.info("   zipping " + fileName);
               FileInputStream fi = new FileInputStream( basedir + fileName );
               origin = new BufferedInputStream(fi, BUFFER);
               ZipEntry entry = new ZipEntry( fileName );

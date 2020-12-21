@@ -25,6 +25,10 @@ public class Compile implements Goal
 
     public void execute(Project project, boolean noop) throws GoalException
     {
+        if ( ! "jar".equals(project.getPackaging() )) {
+          return;
+        }
+
         log = new Log();
         String basedir              = project.getBaseDirectory();
         String sourceDirectory      = project.getSourceDirectory();
