@@ -19,22 +19,17 @@ public class Run implements Goal
     {
         int returnCode = 0;
         Log log = new Log();
-        String mainClass            = project.getMainClass();
-        String targetDirectory      = project.getBaseDirectory() + File.separator + project.getTargetDirectory();
+        String mainClass = project.getMainClass();
         if (mainClass == null) {
             throw new GoalException("mainClass is not defined");
         }
-
-        String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
-        String jar = targetDirectory + File.separator + project.getName() + "." + project.getPackaging();
-
         if ( noop ) {
-            log.info( "NOOP: Running " + jar );
+            log.info( "NOOP: Running" );
             return;
         }
 
-        log.debug( "Running " + jar );
-        String classpath = jar + ":" + project.getDependenciesClassPath();
+        String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
+        String classpath = project.getDependenciesClassPath();
         log.debug("class path = " + classpath);
         log.debug("main class = " + mainClass);
         // Run a java app in a separate system process

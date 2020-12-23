@@ -47,7 +47,13 @@ public class DependencyTest
     @Test
     public void testDependencyMavenPath()
     {
-      assertEquals( new Dependency("/nut/group/dep-3.0.jar").getMavenPath(), "filepath=nut/group/dep/3.0/dep-3.0.jar" );
+      assertEquals( new Dependency("/nut/group/dep-3.0.jar").getMavenPath(), "nut/group/dep/3.0/dep-3.0.jar" );
+    }
+
+    @Test
+    public void testDependencyGroupPath()
+    {
+      assertEquals( new Dependency("/nut/group/dep-3.0.jar").getGroupPath(), "nut/group" );
     }
 
     @Test

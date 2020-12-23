@@ -35,7 +35,13 @@ public class Dependency implements java.io.Serializable {
     public String getMavenPath()
     {
         parsePath();
-        return "filepath=" + group + "/" + name + "/" + version + "/"  + name + "-" + version + "." + suffix;
+        return group + "/" + name + "/" + version + "/"  + name + "-" + version + "." + suffix;
+    }
+
+    public String getGroupPath()
+    {
+        parsePath();
+        return group;
     }
 
     /* getId is not used yet
@@ -45,6 +51,7 @@ public class Dependency implements java.io.Serializable {
         parsePath();
         return group.replace( '/', '.' ) + ":" + name + ":" + version + ":" + suffix;
     }
+
 
     private void parsePath()
     {
