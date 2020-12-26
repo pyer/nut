@@ -9,7 +9,7 @@ dependencies:
 targetDirectory: target
 sourceDirectory: main/java
 resourceDirectory: main/resources
-webappDirectory: main/webapp
+webappDirectory: target/webapp
 outputDirectory: target/classes
 testOutputDirectory: target/test-classes
 testReportDirectory: target/test-reports

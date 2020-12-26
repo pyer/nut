@@ -1,49 +1,42 @@
-package nut.goals.packs;
+package nut.goals.packs.util;
 
-import nut.goals.GoalException;
 import nut.logging.Log;
-import nut.model.Project;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.*;
 
-public class Zip
+public class ZipFiles
 {
     /** Instance logger */
     private Log log;
-    private String name;
+
+    private String source;
+    private String dest;
 
     // ==========================================================================
-    public Zip( String name )
+    public ZipFiles(String source, String dest)
     {
-        this.name = name;
+        this.source = source + File.separator;
+        this.dest   = dest;
         log = new Log();
     }
 
-    // ==========================================================================
-    public void archive(Project project) throws GoalException
+    public void process() throws IOException
     {
-        String resourceDirectory = project.getBaseDirectory() + File.separator + project.getResourceDirectory();
-        log.debug( "resourceDirectory   = " + resourceDirectory );
-        try {
-          FileOutputStream dest = new FileOutputStream( this.name );
-          ZipOutputStream  out  = new ZipOutputStream( new BufferedOutputStream(dest));
-          zipFile( out, resourceDirectory + File.separator, "" );
-          out.close();
-        }
-        catch(Exception e) {
-            throw new GoalException(e.getMessage());
-        }
+        ZipOutputStream out  = new ZipOutputStream( new BufferedOutputStream( new FileOutputStream(dest)));
+        zipFile( out, source, "" );
+        out.close();
     }
 
     // ==========================================================================
     // This method is called recursively
     // basedir is a full path name, ending with '/',  and path a relative path name, without trailing '/'
-    private void zipFile( ZipOutputStream out, String basedir, String path ) throws GoalException
+    private void zipFile( ZipOutputStream out, String basedir, String path ) throws IOException
     {
         int BUFFER = 2048;
         try {
@@ -80,7 +73,7 @@ public class Zip
           }
         }
         catch(Exception e) {
-            throw new GoalException("Failed to zip. Reason: " + e.getMessage());
+            throw new IOException("Failed to zip. Reason: " + e.getMessage());
         }
     }
     // ==========================================================================

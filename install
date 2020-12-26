@@ -38,6 +38,7 @@ cd ../model
 javac $options Dependency.java Project.java ParserException.java ValidationException.java
 echo " - goals"
 cd ../goals
+javac $options packs/util/CopyFiles.java packs/util/ZipFiles.java
 javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Test.java Run.java packs/Jar.java packs/War.java packs/Zip.java
 echo " - interpolation"
 cd ../interpolation
