@@ -25,7 +25,6 @@ public class Jar
     // ==========================================================================
     public void archive(String directory) throws GoalException
     {
-        log.info( "Creating \'" + this.name + "\'" );
         // ----------------------------------------------------------------------
         List<String> args = new ArrayList<String>();
         args.add( "jar" );

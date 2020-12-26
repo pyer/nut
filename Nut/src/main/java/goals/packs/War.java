@@ -39,20 +39,20 @@ public class War
     // ==========================================================================
     public void archive( String directory ) throws GoalException
     {
-        log.info( "Creating \'" + this.name + "\'" );
         // ----------------------------------------------------------------------
-        String libPath = directory + "/classes/lib";
-        File libDir = new File( libPath );
-        if(!libDir.exists()){
+        String libDirectory = directory + "/WEB-INF/lib";
+        File libDir = new File( libDirectory );
+        if ( !libDir.exists() ) {
             libDir.mkdirs();
         }
+
         try {
-            log.debug("* copy dependencies to " + libPath);
-            Path dest = Paths.get(libPath);
+            log.debug("* copy dependencies to " + libDirectory);
             for ( Iterator it = dependencies.iterator(); it.hasNext(); ) {
               Dependency dep = (Dependency) it.next();
-              String depPath = repository + File.separator + dep.getPath();
+              String depPath = repository + dep.getPath();
               log.debug("** " + depPath);
+              Path dest = Paths.get(libDirectory + "/" + dep.getName());
               Files.copy(Paths.get(depPath), dest);
             }
         } catch( Exception e ) {

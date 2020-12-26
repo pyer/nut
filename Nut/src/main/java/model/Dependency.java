@@ -24,6 +24,7 @@ public class Dependency implements java.io.Serializable {
     public Dependency(String path)
     {
         this.path = path;
+        parsePath();
     }
 
     // -------------------------------------------------------------
@@ -32,15 +33,23 @@ public class Dependency implements java.io.Serializable {
         return this.path;
     }
 
+    public String getName()
+    {
+        return this.name + "." + this.suffix;
+    }
+
+    public String getGroup()
+    {
+        return this.group;
+    }
+
     public String getMavenPath()
     {
-        parsePath();
         return group + "/" + name + "/" + version + "/"  + name + "-" + version + "." + suffix;
     }
 
     public String getGroupPath()
     {
-        parsePath();
         return group;
     }
 
@@ -48,7 +57,6 @@ public class Dependency implements java.io.Serializable {
     */
     public String getId()
     {
-        parsePath();
         return group.replace( '/', '.' ) + ":" + name + ":" + version + ":" + suffix;
     }
 

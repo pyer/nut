@@ -2,8 +2,10 @@ package nut.goals;
 
 import nut.goals.GoalException;
 import nut.goals.packs.Jar;
+import nut.goals.packs.War;
 import nut.goals.packs.Zip;
 import nut.logging.Log;
+import nut.model.Dependency;
 import nut.model.Project;
 
 import java.io.File;
@@ -28,61 +30,78 @@ public class Pack implements Goal
     {
         log = new Log();
         String basedir              = project.getBaseDirectory();
-        String targetDirectory      = project.getTargetDirectory();
-        String resourceDirectory    = project.getResourceDirectory();
-        String outputDirectory      = project.getOutputDirectory();
-
-        log.debug( "build.directory           = " + targetDirectory );
-        log.debug( "build.resourceDirectory   = " + resourceDirectory );
-        log.debug( "build.outputDirectory     = " + outputDirectory );
+        String targetDirectory      = basedir + File.separator + project.getTargetDirectory();
+        String resourceDirectory    = basedir + File.separator + project.getResourceDirectory();
+        String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
+        String webappDirectory      = basedir + File.separator + project.getWebappDirectory();
 
         String packaging            = project.getPackaging();
-        String fullName             = basedir + File.separator + targetDirectory + File.separator + project.getName() + "." + packaging;
+        String fullName             = targetDirectory + File.separator + project.getName() + "." + packaging;
+
+        log.debug( "targetDirectory     = " + targetDirectory );
+        log.debug( "resourceDirectory   = " + resourceDirectory );
+        log.debug( "outputDirectory     = " + outputDirectory );
+        log.debug( "webappDirectory     = " + webappDirectory );
 
         if (noop) {
-            log.info( "NOOP:  Packaging " + fullName );
+            log.info( "NOOP: Packaging " + fullName );
             return;
         }
         log.info( "Packaging " + fullName );
 
-        File targetDir = new File( basedir + File.separator + targetDirectory );
+        File targetDir = new File( targetDirectory );
         if ( !targetDir.exists() ) {
             targetDir.mkdirs();
         }
 
         if ( "jar".equals(packaging) ) {
-          File outputDir = new File( basedir + File.separator + outputDirectory );
+          File outputDir = new File( outputDirectory );
           if ( !outputDir.exists() ) {
             throw new GoalException("\'" + outputDirectory + "\' is empty");
           }
 
-          File resourceDir = new File( basedir + File.separator + resourceDirectory );
-          if ( resourceDir.exists() ) {
-            try {
-            // Copy resource to output
-            copyResource(resourceDir, outputDir);
-            } catch ( IOException e) {
-              throw new GoalException(e.getMessage());
-            }
-          }
-
+          // Copy resource to output
+          File resourceDir = new File( resourceDirectory );
+          copyResource(resourceDir, outputDir);
+          // Create jar
           Jar jar = new Jar(fullName);
-          jar.archive(basedir + File.separator + outputDirectory);
+          jar.archive(outputDirectory);
+        } else if ( "war".equals(packaging) ) {
+          // copy resourceDirectory files
+          copyResource( new File( resourceDirectory ), new File( webappDirectory ) );
+          // copy compiled files
+          File outputDir = new File( basedir + File.separator + outputDirectory );
+          copyResource( new File( outputDirectory ),   new File( webappDirectory + "/WEB-INF/classes" ) );
+          // Create war
+          War war = new War(fullName, project.getRepository(), project.getDependencies());
+          war.archive(webappDirectory);
         } else if ( "zip".equals(packaging) ) {
           Zip zip = new Zip(fullName);
-          zip.archive(basedir + File.separator + resourceDirectory);
+          zip.archive(resourceDirectory);
         }
     }
 
     // ==========================================================================
-    private void copyResource(File source, File dest) throws IOException {
-        log.debug("* copy " + source.getPath() + " to " + dest.getPath());
-        CopyOption options = StandardCopyOption.COPY_ATTRIBUTES;
-        if (source.isDirectory())
-            copyFolder(source, dest, options);
-        else {
-            ensureParentFolder(dest);
-            copyFile(source, dest, options);
+    private void copyResource(File source, File dest) throws GoalException {
+        if ( !dest.exists() ) {
+            dest.mkdirs();
+        }
+        if ( source.exists() ) {
+          try {
+            // Copy resource to output
+            log.debug("* copy " + source.getPath() + " to " + dest.getPath());
+            CopyOption options = StandardCopyOption.COPY_ATTRIBUTES;
+            if (source.isDirectory())
+                copyFolder(source, dest, options);
+            else {
+                ensureParentFolder(dest);
+                copyFile(source, dest, options);
+            }
+          } catch ( IOException e) {
+            throw new GoalException(e.getMessage());
+          }
+        } else {
+          log.warn(source.getPath() + " not found");
         }
     }
 

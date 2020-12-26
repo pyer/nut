@@ -25,7 +25,7 @@ public class Compile implements Goal
 
     public void execute(Project project, boolean noop) throws GoalException
     {
-        if ( ! "jar".equals(project.getPackaging() )) {
+        if ( "zip".equals(project.getPackaging() )) {
           return;
         }
 
@@ -36,10 +36,10 @@ public class Compile implements Goal
         String outputDirectory      = project.getOutputDirectory();
         String testOutputDirectory  = project.getTestOutputDirectory();
 
-        log.debug( "build.sourceDirectory     = " + sourceDirectory );
-        log.debug( "build.testSourceDirectory = " + testSourceDirectory );
-        log.debug( "build.outputDirectory     = " + outputDirectory );
-        log.debug( "build.testOutputDirectory = " + testOutputDirectory );
+        log.debug( "sourceDirectory     = " + sourceDirectory );
+        log.debug( "testSourceDirectory = " + testSourceDirectory );
+        log.debug( "outputDirectory     = " + outputDirectory );
+        log.debug( "testOutputDirectory = " + testOutputDirectory );
 
         if (noop) {
             log.info( "NOOP: Compiling " + sourceDirectory );
