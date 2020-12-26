@@ -1,0 +1,16 @@
+group:     nut.samples
+name:      RequestParam
+version:   1.0
+packaging: war
+
+dependencies:
+  - /javax/servlet/servlet-api-2.5.jar
+
+targetDirectory: target
+sourceDirectory: main/java
+resourceDirectory: main/resources
+webappDirectory: main/webapp
+outputDirectory: target/classes
+testOutputDirectory: target/test-classes
+testReportDirectory: target/test-reports
+
