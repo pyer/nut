@@ -53,6 +53,7 @@ public class Compile implements Goal
             outputDir.mkdirs();
         }
 
+        log.debug( "Scanning sources in " + testSourceDirectory );
         List sources = sourceFiles( new File( basedir + File.separator + sourceDirectory ) );
         if ( sources.isEmpty() ) {
             log.warn( "No source code for " + project.getId() );
@@ -68,8 +69,8 @@ public class Compile implements Goal
             testOutputDir.mkdirs();
         }
 
+        log.debug( "Scanning tests in " + testSourceDirectory );
         List testSources = sourceFiles( new File( basedir + File.separator + testSourceDirectory ) );
-        //testSources.addAll(sources);
         if ( !testSources.isEmpty() ) {
             log.info( "Compiling " + testSourceDirectory );
             compile( testSources, basedir + File.separator + testSourceDirectory, basedir + File.separator + testOutputDirectory,
