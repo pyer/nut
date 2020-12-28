@@ -17,34 +17,36 @@ public class Test implements Goal
 {
     public void execute( Project project, boolean noop ) throws GoalException
     {
-        int returnCode = 0;
-        if ( ! "jar".equals(project.getPackaging() )) {
+        if ( "zip".equals(project.getPackaging() )) {
           return;
         }
 
         Log log = new Log();
         String basedir              = project.getBaseDirectory();
+        String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
         String testReportDirectory  = basedir + File.separator + project.getTestReportDirectory();
-        String testSuiteFileName    = basedir + File.separator + project.getTestSuite();
-        log.debug( "basedir      = " + basedir);
-        log.debug( "test suite   = " + testSuiteFileName);
+        log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory);
 
         if (noop) {
-            log.info( "NOOP: Testing " + testSuiteFileName );
+            log.info( "NOOP: Testing " + testOutputDirectory );
             return;
         }
 
-        File testSuiteFile = new File( testSuiteFileName );
-        if ( testSuiteFile.exists() ) {
-            log.info( "Testing " + testSuiteFileName );
+        File testClassesDir = new File(testOutputDirectory);
+        if ( testClassesDir.exists() ) {
+            log.info( "Testing " + testOutputDirectory );
             String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
             String classpath = project.getTestDependenciesClassPath();
             log.debug("classpath = " + classpath);
-            // Run a java app in a separate system process
+
+            String testClasses = listOfTests(testClassesDir, testOutputDirectory.length() + 1).substring(1); 
+            log.debug("testclass = " + testClasses);
+
             ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,
-                                                  "nut.TestRunner", testSuiteFileName, testReportDirectory);
+                                                  "org.testng.TestNG", "-d", testReportDirectory, "-testclass", testClasses);
             pb.inheritIO();
+            int returnCode = 0;
             try {
                 Process proc = pb.start();
                 returnCode = proc.waitFor();
@@ -66,4 +68,24 @@ public class Test implements Goal
             log.warn( "No test for " + project.getId() );
         }
     }
+
+    private static String listOfTests( File rootDir, int begin )
+    {
+        String tests = "";
+        if( rootDir.exists() ) {
+          for (String test : rootDir.list()) {
+            File child = new File(rootDir, test);
+            if (child.isDirectory()) {
+                tests = tests + listOfTests( child, begin );
+            } else {
+                String childPath = child.getAbsolutePath();
+                if ( childPath.endsWith(".class") ) {
+                    tests = tests + "," + childPath;
+                }
+            }
+          }
+        }
+        return tests;
+    }
+
 }

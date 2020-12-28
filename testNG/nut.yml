@@ -1,8 +1,0 @@
-group:   nut
-name:    testNG
-version: 3.0
-pattern: jar 
-
-dependencies:
-  - /org/testng/testng-6.8.7.jar
-
