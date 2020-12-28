@@ -96,8 +96,8 @@ public class Nut
             List projects = scanner.getProjects();
             Sorter sorter = new Sorter( projects );
             List sortedProjects = sorter.getSortedProjects();
-            log.line();
             if ( sorter.hasMultipleProjects() ) {
+              log.line();
               log.info( "Ordering projects..." );
               for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
               {
@@ -107,8 +107,6 @@ public class Nut
 
               log.line();
               log.info( "Building projects..." );
-            } else {
-              log.info( "Building project..." );
             }
             // iterate over projects, and execute goal on each...
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); ) {
@@ -241,6 +239,5 @@ public class Nut
                     log.warning( project.getId(), -1 );
                 }
             }
-            log.line();
     }
 }

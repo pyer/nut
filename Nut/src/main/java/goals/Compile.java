@@ -31,10 +31,10 @@ public class Compile implements Goal
 
         log = new Log();
         String basedir              = project.getBaseDirectory();
-        String sourceDirectory      = project.getSourceDirectory();
-        String testSourceDirectory  = project.getTestSourceDirectory();
-        String outputDirectory      = project.getOutputDirectory();
-        String testOutputDirectory  = project.getTestOutputDirectory();
+        String sourceDirectory      = basedir + File.separator + project.getSourceDirectory();
+        String testSourceDirectory  = basedir + File.separator + project.getTestSourceDirectory();
+        String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
+        String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
 
         log.debug( "sourceDirectory     = " + sourceDirectory );
         log.debug( "testSourceDirectory = " + testSourceDirectory );
@@ -48,33 +48,29 @@ public class Compile implements Goal
         }
 
         /* Compiling sources */
-        File outputDir = new File( basedir + File.separator + outputDirectory );
-        if ( !outputDir.exists() ) {
-            outputDir.mkdirs();
-        }
-
-        log.debug( "Scanning sources in " + testSourceDirectory );
-        List sources = sourceFiles( new File( basedir + File.separator + sourceDirectory ) );
+        log.debug( "Scanning sources in " + sourceDirectory );
+        List sources = sourceFiles( new File( sourceDirectory ) );
         if ( sources.isEmpty() ) {
             log.warn( "No source code for " + project.getId() );
         } else {
+            File outputDir = new File( outputDirectory );
+            if ( !outputDir.exists() ) {
+                outputDir.mkdirs();
+            }
             log.info( "Compiling " + sourceDirectory );
-            compile( sources, basedir + File.separator + sourceDirectory, basedir + File.separator + outputDirectory,
-                     project.getDependenciesClassPath() );
+            compile( sources, sourceDirectory, outputDirectory, project.getDependenciesClassPath() );
         }
 
         /* Compiling test sources */
-        File testOutputDir = new File( basedir + File.separator + testOutputDirectory );
-        if ( !testOutputDir.exists() ) {
-            testOutputDir.mkdirs();
-        }
-
         log.debug( "Scanning tests in " + testSourceDirectory );
-        List testSources = sourceFiles( new File( basedir + File.separator + testSourceDirectory ) );
+        List testSources = sourceFiles( new File( testSourceDirectory ) );
         if ( !testSources.isEmpty() ) {
+            File testOutputDir = new File( basedir + File.separator + testOutputDirectory );
+            if ( !testOutputDir.exists() ) {
+                testOutputDir.mkdirs();
+            }
             log.info( "Compiling " + testSourceDirectory );
-            compile( testSources, basedir + File.separator + testSourceDirectory, basedir + File.separator + testOutputDirectory,
-                     project.getTestDependenciesClassPath() );
+            compile( testSources, testSourceDirectory, testOutputDirectory, project.getTestDependenciesClassPath() );
         }
 
     }

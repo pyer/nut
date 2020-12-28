@@ -40,8 +40,12 @@ public class Test implements Goal
             String classpath = project.getTestDependenciesClassPath();
             log.debug("classpath = " + classpath);
 
-            String testClasses = listOfTests(testClassesDir, testOutputDirectory.length() + 1).substring(1); 
+            String testClasses = listOfTests(testClassesDir, testOutputDirectory.length() + 1);
             log.debug("testclass = " + testClasses);
+            if (testClasses.isEmpty()) {
+                log.warn( testOutputDirectory + " is empty" );
+                return;
+            }
 
             ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,
                                                   "org.testng.TestNG", "-d", testReportDirectory, "-testclass", testClasses);

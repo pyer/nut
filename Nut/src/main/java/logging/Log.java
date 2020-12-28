@@ -148,6 +148,7 @@ public class Log
     {
         Date finishDate = new Date();
         long time = finishDate.getTime() - startDate.getTime();
+        line();
         info( "Total time: " + formatTime( time ) );
         info( "Finished at " + finishDate );
         line();
