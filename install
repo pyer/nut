@@ -56,15 +56,6 @@ mkdir -p $NUT_HOME/nut
 jar cf $NUT_HOME/nut/Nut-$NUT_VERSION.jar -C target/classes .
 rm -r target
 
-echo "Build TestNG.jar"
-mkdir -p target/classes
-cd testNG/src/main/java
-options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
-javac $options TestRunner.java TestListener.java
-cd $root
-jar cf $NUT_HOME/nut/testNG-${NUT_VERSION}.jar -C target/classes .
-rm -r target
-
 echo "Install /usr/bin/nut'"
 sudo install nut /usr/bin/
 rm nut
