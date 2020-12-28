@@ -45,12 +45,12 @@ javac $options Interpolator.java
 echo " - build"
 cd ../build
 javac $options DependencyNotFoundException.java DependencyChecker.java DuplicateProjectException.java Scanner.java Sorter.java Builder.java
-echo " - Nut"
+echo " - nut"
 cd ..
 javac $options Nut.java
 
 cd $root
-echo "Build Nut.jar"
+echo "Build nut.jar"
 mkdir -p $NUT_HOME/nut
 jar cf $NUT_HOME/nut/nut-$NUT_VERSION.jar -C target/classes .
 rm -r target

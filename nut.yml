@@ -1,7 +1,7 @@
 # Nut project
 #
 group:   nut
-name:    Nut
+name:    nut
 version: 3.0
 pattern: jar 
 
