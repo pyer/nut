@@ -69,13 +69,6 @@ public class ProjectTest
     }
 
     @Test
-    public void testProjectDefaultTestSuite()
-    {
-        Project project = new Project();
-        assertEquals( project.getTestSuite(), "src/test/testng.xml" );
-    }
-
-    @Test
     public void testProjectDefaultDirectories()
     {
         String basedir = System.getProperty( "basedir", "." );

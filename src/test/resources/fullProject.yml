@@ -14,5 +14,4 @@ testResourceDirectory: target/test/resources
 outputDirectory:       target/test-target/classes
 testOutputDirectory:   target/test-target/test-classes
 testReportDirectory:   target/test-target/test-reports
-testSuite:             target/test/testng.xml
 

@@ -138,11 +138,6 @@ public class Project implements java.io.Serializable
     private String testReportDirectory = "target/test-reports";
 
     /**
-     * The test suite for testNG.
-     */
-    private String testSuite = "src/test/testng.xml";
-
-    /**
      * The main class for run
      */
     private String mainClass;
@@ -327,11 +322,6 @@ public class Project implements java.io.Serializable
     public String getTestReportDirectory()
     {
         return this.testReportDirectory;
-    }
-
-    public String getTestSuite()
-    {
-        return this.testSuite;
     }
 
     public String getMainClass()
@@ -533,7 +523,6 @@ public class Project implements java.io.Serializable
         buf.append("outputDirectory:       " + outputDirectory + "\n");
         buf.append("testOutputDirectory:   " + testOutputDirectory + "\n");
         buf.append("testReportDirectory:   " + testReportDirectory + "\n");
-        buf.append("testSuite: " + testSuite + "\n");
         buf.append("mainClass: " + mainClass + "\n");
         buf.append("properties:\n");
         buf.append("dependencies:\n");
@@ -610,8 +599,6 @@ public class Project implements java.io.Serializable
         testOutputDirectory = value;
       } else if ( "testReportDirectory".equals(key) ) {
         testReportDirectory = value;
-      } else if ( "testSuite".equals(key) ) {
-        testSuite = value;
       } else if ( "mainClass".equals(key) ) {
         mainClass = value;
       } else if ( "properties".equals(key) ) {

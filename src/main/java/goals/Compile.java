@@ -65,7 +65,7 @@ public class Compile implements Goal
         log.debug( "Scanning tests in " + testSourceDirectory );
         List testSources = sourceFiles( new File( testSourceDirectory ) );
         if ( !testSources.isEmpty() ) {
-            File testOutputDir = new File( basedir + File.separator + testOutputDirectory );
+            File testOutputDir = new File( testOutputDirectory );
             if ( !testOutputDir.exists() ) {
                 testOutputDir.mkdirs();
             }

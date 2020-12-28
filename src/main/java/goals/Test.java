@@ -48,7 +48,9 @@ public class Test implements Goal
             }
 
             ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,
-                                                  "org.testng.TestNG", "-d", testReportDirectory, "-testclass", testClasses);
+                                                  "org.testng.TestNG", "-d", testReportDirectory,
+                                                  "-suitename", project.getName(),
+                                                  "-testclass", testClasses.substring(1));
             pb.inheritIO();
             int returnCode = 0;
             try {
