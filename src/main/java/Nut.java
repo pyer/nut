@@ -28,67 +28,73 @@ import java.util.Locale;
 public class Nut
 {
     private static int retCode = 0;
-    /** Instance logger */
     private static Log log;
+    private static String[] buildSteps = {"clean", "compile", "test", "pack", "install"};
 
     public static void main( String[] args )
     {
-        String  wantedGoal = null;
+        String  goal = null;
         boolean noopMode   = false;
 
         // Default mode is SNAPSHOT
         System.setProperty( "nut.mode", "SNAPSHOT" );
 
         log = new Log();
-        if( args.length>0 ) {
-           for(int i=0; i < args.length ; i++) {
-              if(args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?") ) {
-                 showHelp();
-                 System.exit( 0 );
-              } else if(args[i].startsWith("-D") ) {
-                 // -Dproperty=value (-Dproperty means -Dproperty=true)
-                 setDefine(args[i]);
-              } else if( args[i].equals("-d") || args[i].equals("--debug") ) {
-                 log.debugOn();
-              } else if( args[i].equals("-n") || args[i].equals("--noop") ) {
-                 noopMode = true;
-              } else if( args[i].equals("-r") || args[i].equals("--release") ) {
-                 System.setProperty( "nut.mode", "RELEASE" );
-              } else if( args[i].equals("-s") || args[i].equals("--snapshot") ) {
-                 System.setProperty( "nut.mode", "SNAPSHOT" );
-              } else {
-                 if( args[i].startsWith("-") ) {
-                    log.error( "Invalid option '" + args[i] + "'." );
+        for (int i=0; i < args.length ; i++) {
+            if (args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?")) {
+                showHelp();
+                System.exit( 0 );
+            } else if (args[i].equals("version")) {
+                showVersion();
+                System.exit( 0 );
+            } else if (args[i].equals("model") || args[i].equals("build") || args[i].equals("run")) {
+                goal = args[i];
+            } else if (args[i].startsWith("-D")) {
+                // -Dproperty=value (-Dproperty means -Dproperty=true)
+                setDefine(args[i]);
+            } else if (args[i].equals("-d") || args[i].equals("--debug")) {
+                log.debugOn();
+            } else if (args[i].equals("-n") || args[i].equals("--noop")) {
+                noopMode = true;
+            } else if (args[i].equals("-r") || args[i].equals("--release")) {
+                System.setProperty( "nut.mode", "RELEASE" );
+            } else if (args[i].equals("-s") || args[i].equals("--snapshot")) {
+                System.setProperty( "nut.mode", "SNAPSHOT" );
+                 
+            } else {
+                if (args[i].startsWith("-")) {
+                    log.error( "Invalid option '" + args[i] + "'" );
                     showHelp();
                     System.exit( 1 );
-                 }
-                 // nearly every arg without '-' is a goal
-                 if( wantedGoal == null ) {
-                    wantedGoal = args[i];
-                 } else {
-                    log.error( "Too many goals" );
+                }
+                // First arg without '-': this is an operation
+                if (goal == null) {
+                    // Check if arg is in life cycle list of operation
+                    for (final String step : buildSteps) {
+                        if (args[i].equals(step)) {
+                            goal = step;
+                        }
+                    }
+                    if (goal==null) {
+                        log.error( "Invalid operation '" + args[i] + "'" );
+                        showHelp();
+                        System.exit( 2 );
+                    }
+                } else {
+                    log.error( "Too many operations" );
                     showHelp();
-                    System.exit( 2 );
-                 }
-              }
-           }
-        } else {
-                 showHelp();
-                 System.exit( 3 );
+                    System.exit( 3 );
+                }
+            }
         }
 
-        // every goal is 3 characters long or more
-        if (wantedGoal==null || wantedGoal.length()<3 ) {
-          log.error( "Unknown goal" );
-          showHelp();
-          System.exit( 4 );
-        }
-        if ("version".equals(wantedGoal)) {
-          showVersion();
-          System.exit( 0 );
+        // No operation is defined
+        if (goal==null) {
+            showHelp();
+            System.exit( 0 );
         }
 
-        // everything is ok, let's go
+        // Everything is ok, let's go
         log.start();
         try {
             log.info( "Scanning projects..." );
@@ -112,7 +118,7 @@ public class Nut
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); ) {
                 Project project = (Project) it.next();
                 log.line();
-                Builder builder = new Builder(wantedGoal);
+                Builder builder = new Builder(goal);
                 retCode += builder.build(project, noopMode);
             }
             if( sortedProjects.size() > 1 ) {
@@ -151,7 +157,7 @@ public class Nut
         log.out( "Java classpath    : " + System.getProperty( "java.class.path", "<unknown>" ) );
         log.out( "Java vendor       : " + System.getProperty( "java.vendor", "<unknown>" ) );
         log.out( "Operating System  : " + System.getProperty( "os.name", "<unknown>" )
-                                                   + System.getProperty( "os.version", "<unknown>" ) );
+                                        + System.getProperty( "os.version", "<unknown>" ) );
         log.out( "Architecture      : " + System.getProperty( "os.arch", "<unknown>" ) );
         log.out( "Default locale    : " + Locale.getDefault() );
         log.out( "Platform encoding : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
@@ -163,20 +169,18 @@ public class Nut
     private static void showHelp()
     {
         log.out( "\nUsage:" );
-        log.out( "    nut <goal> [options]" );
-        log.out( "    nut build  [options]" );
-        log.out( "    nut model  [options]" );
-        log.out( "    nut run    [options]" );
-        log.out( "    nut version" );
-        log.out( "    nut help" );
+        log.out( "    nut <operation> [options]" );
         log.out( "\nOperations:" );
-        log.out( "  <goal>   Execute one of the project's build goals" );
-        log.out( "  build    Build project, execute every goal" );
+        log.out( "  clean    Clean up built files in target directory" );
+        log.out( "  compile  Compile source files" );
+        log.out( "  test     Test compiled sources" );
+        log.out( "  pack     Pack binaries and resources " );
+        log.out( "  install  Install package in local repository");
+        log.out( "  build    Build project, execute 'clean', 'compile', 'test', 'pack' and 'install' operations" );
         log.out( "  model    Display effective nut.yml" );
         log.out( "  run      Run project" );
         log.out( "  version  Display version information" );
         log.out( "  help     Display this help" );
-        log.out( "\nGoals: clean compile test pack install" );
         log.out( "\nOptions:" );
         log.out( "  -D,--define      Define a system property" );
         log.out( "  -d,--debug       Display debug messages" );
