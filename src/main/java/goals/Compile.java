@@ -20,11 +20,20 @@ import javax.tools.ToolProvider;
  */
 public class Compile implements Goal
 {
-    /** Instance logger */
     private Log log;
+    private boolean test;
 
-    public void execute(Project project, boolean noop) throws GoalException
-    {
+    public Compile() {
+      test = false;
+    }
+
+    public Compile(String mode) {
+      if ("test".equals(mode)) {
+        test = true;
+      }
+    }
+
+    public void execute(Project project, boolean noop) throws GoalException {
         if ( "zip".equals(project.getPackaging() )) {
           return;
         }
@@ -41,42 +50,44 @@ public class Compile implements Goal
         log.debug( "outputDirectory     = " + outputDirectory );
         log.debug( "testOutputDirectory = " + testOutputDirectory );
 
-        if (noop) {
-            log.info( "NOOP: Compiling " + sourceDirectory );
+        if (test) {
+          if (noop) {
             log.info( "NOOP: Compiling " + testSourceDirectory );
             return;
-        }
-
-        /* Compiling sources */
-        log.debug( "Scanning sources in " + sourceDirectory );
-        List sources = sourceFiles( new File( sourceDirectory ) );
-        if ( sources.isEmpty() ) {
-            log.warn( "No source code for " + project.getId() );
-        } else {
-            File outputDir = new File( outputDirectory );
-            if ( !outputDir.exists() ) {
-                outputDir.mkdirs();
-            }
-            log.info( "Compiling " + sourceDirectory );
-            compile( sources, sourceDirectory, outputDirectory, project.getDependenciesClassPath() );
-        }
-
-        /* Compiling test sources */
-        log.debug( "Scanning tests in " + testSourceDirectory );
-        List testSources = sourceFiles( new File( testSourceDirectory ) );
-        if ( !testSources.isEmpty() ) {
+          }
+          // Compiling test sources
+          log.debug( "Scanning tests in " + testSourceDirectory );
+          List testSources = sourceFiles( new File( testSourceDirectory ) );
+          if ( !testSources.isEmpty() ) {
             File testOutputDir = new File( testOutputDirectory );
             if ( !testOutputDir.exists() ) {
                 testOutputDir.mkdirs();
             }
             log.info( "Compiling " + testSourceDirectory );
             compile( testSources, testSourceDirectory, testOutputDirectory, project.getTestDependenciesClassPath() );
+          }
+        } else {
+          if (noop) {
+            log.info( "NOOP: Compiling " + sourceDirectory );
+            return;
+          }
+          // Compiling sources
+          log.debug( "Scanning sources in " + sourceDirectory );
+          List sources = sourceFiles( new File( sourceDirectory ) );
+          if ( sources.isEmpty() ) {
+            log.warn( "No source code for " + project.getId() );
+          } else {
+            File outputDir = new File( outputDirectory );
+            if ( !outputDir.exists() ) {
+                outputDir.mkdirs();
+            }
+            log.info( "Compiling " + sourceDirectory );
+            compile( sources, sourceDirectory, outputDirectory, project.getDependenciesClassPath() );
+          }
         }
-
     }
 
-    private List<String> sourceFiles( File sourceDir )
-    {
+    private List<String> sourceFiles( File sourceDir ) {
         List<String> sources = new LinkedList<String>();
         if( !sourceDir.exists() )
             return sources;
@@ -99,9 +110,7 @@ public class Compile implements Goal
         return sources;
     }
 
-    private void compile(List sources, String sourceDirectory, String outputDirectory, String classPath)
-        throws GoalException
-    {
+    private void compile(List sources, String sourceDirectory, String outputDirectory, String classPath) throws GoalException {
         int n = 8 + sources.size();
         log.debug("      from \'" + sourceDirectory + "\' to \'" + outputDirectory + "\'" );
         log.debug("      -classpath " + classPath);

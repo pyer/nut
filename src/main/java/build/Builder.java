@@ -62,6 +62,7 @@ public class Builder
           if( "build".equals(goal) ) {
             new Clean().execute(project, noop);
             new Compile().execute(project, noop);
+            new Compile("test").execute(project, noop);
             new Test().execute(project, noop);
             new Pack().execute(project, noop);
             new Install().execute(project, noop);
@@ -70,6 +71,7 @@ public class Builder
           } else if( "compile".equals(goal) ) {
             new Compile().execute(project, noop);
           } else if( "test".equals(goal) ) {
+            new Compile("test").execute(project, noop);
             new Test().execute(project, noop);
           } else if( "pack".equals(goal) ) {
             new Pack().execute(project, noop);
