@@ -4,6 +4,7 @@ version:   1.0
 packaging: jar
 mainClass: Hello
 
-sourceDirectory: main/java
-targetDirectory: target
-outputDirectory: target/classes
+properties:
+  sourceDirectory: main/java
+  targetDirectory: target
+  outputDirectory: target/classes

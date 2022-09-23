@@ -3,4 +3,5 @@ name:      text
 version:   1.0
 packaging: zip
 
-resourceDirectory: main/resources
+properties:
+  resourceDirectory: main/resources
