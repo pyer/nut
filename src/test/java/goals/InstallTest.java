@@ -40,7 +40,7 @@ public class InstallTest
     public void testInstallJarFile() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yml");
+        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml");
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);
@@ -69,7 +69,7 @@ public class InstallTest
     public void testInstallModules() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/modulesProject.yml");
+        Scanner scanner = new Scanner(basedir + "/src/test/resources/modulesProject.yaml");
         List<Project> projects = scanner.getProjects();
         assertTrue( projects.isEmpty() );
     }

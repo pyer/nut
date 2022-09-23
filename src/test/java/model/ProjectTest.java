@@ -101,7 +101,7 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        File nut = new File( basedir + "/src/test/resources/emptyProject.yml" );
+        File nut = new File( basedir + "/src/test/resources/emptyProject.yaml" );
         project.parseFile(nut);
         assertEquals( project.getId(), "null:null:null:jar" );
     }
@@ -113,7 +113,7 @@ public class ProjectTest
         Project project = new Project();
         project.setBaseDirectory(basedir);
         project.setRepository( basedir + "/src/test/resources" );
-        File nut = new File( basedir + "/src/test/resources/smallProject.yml" );
+        File nut = new File( basedir + "/src/test/resources/smallProject.yaml" );
         project.parseFile(nut);
 
         assertEquals( project.getId(), "nut.test:small:3.0:jar" );
@@ -125,7 +125,7 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        File nut = new File( basedir + "/src/test/resources/fullProject.yml" );
+        File nut = new File( basedir + "/src/test/resources/fullProject.yaml" );
         project.parseFile(nut);
         assertEquals( project.getId(), "nut.test:full:3.0:jar" );
         assertEquals( project.getSourceDirectory(),       "target/main/java" );
@@ -152,7 +152,7 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        File nut = new File( basedir + "/src/test/resources/emptyProject.yml" );
+        File nut = new File( basedir + "/src/test/resources/emptyProject.yaml" );
         project.parseFile(nut);
         project.validate();
     }
@@ -164,7 +164,7 @@ public class ProjectTest
         Project project = new Project();
         project.setBaseDirectory(basedir);
         project.setRepository( basedir + "/src/test/resources" );
-        File nut = new File( basedir + "/src/test/resources/smallProject.yml" );
+        File nut = new File( basedir + "/src/test/resources/smallProject.yaml" );
         project.parseFile(nut);
         project.validate();
     }
@@ -176,7 +176,7 @@ public class ProjectTest
         Project project = new Project();
         project.setBaseDirectory(basedir);
         project.setRepository( basedir + "/src/test/resources" );
-        File nut = new File( basedir + "/src/test/resources/fullProject.yml" );
+        File nut = new File( basedir + "/src/test/resources/fullProject.yaml" );
         project.parseFile(nut);
         project.validate();
     }

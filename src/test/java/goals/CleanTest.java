@@ -9,7 +9,6 @@ import nut.model.ValidationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import org.testng.annotations.Test;
 
@@ -25,7 +24,7 @@ public class CleanTest
 
         String basedir = System.getProperty( "basedir", "." );
 
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yml");
+        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml");
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);

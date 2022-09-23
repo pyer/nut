@@ -21,7 +21,7 @@ public class Install implements Goal
     {
         log = new Log();
         Properties pp               = project.getProperties();
-        String mode                 = (String)pp.getProperty( "nut.mode", "SNAPSHOT" );
+        String mode                 = (String)System.getProperty( "nut.mode", "SNAPSHOT" );
         if( "RELEASE".equals( mode ) )
           mode = "";
         else
@@ -42,19 +42,17 @@ public class Install implements Goal
         log.debug( "project.version           = " + version );
         log.debug( "project.packaging         = " + packaging );
 
+        String group = groupId.replace( '.', File.separatorChar );
+        String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
+
         if (noop) {
-          log.info( "NOOP: Installing \'" + artifactId + "\' in " + repository );
+          log.info( "NOOP: Installing \'" + artifactName + "\'" );
         } else {
-          log.info( "Installing \'" + artifactId + "\' in " + repository );
-          // + "-" + version + "." + packaging
+          log.info( "Installing \'" + artifactName + "\'" );
           if( "xml".equals(packaging) ) {
-                String group = groupId.replace( '.', File.separatorChar );
-                String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 String buildName = basedir + File.separator + resourceDirectory + File.separator + artifactId + "." + packaging;
                 copyFile( buildName, artifactName, version );
           } else if( !"modules".equals(packaging) ) {
-                String group = groupId.replace( '.', File.separatorChar );
-                String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
                 //install: copy target file to local repository
                 String buildName = basedir + File.separator + targetDirectory + File.separator + artifactId + "." + packaging;
                 copyFile( buildName, artifactName, version );
@@ -77,20 +75,15 @@ public class Install implements Goal
     public void copyFile( final String source, final String destination, final String version )
         throws GoalException
     {
-        String msg;
         File destinationFile = new File( destination );
         File sourceFile = new File( source );
         //check source exists
         if ( !sourceFile.exists() ) {
-            msg = "File " + source + " does not exist";
-            log.error(msg);
-            throw new GoalException(msg);
+            throw new GoalException("File " + source + " does not exist");
         }
         //check destination exists
         if ( destinationFile.exists() && !version.endsWith("-SNAPSHOT") ) {
-            msg = "File " + destination + " already exists";
-            log.error(msg);
-            throw new GoalException(msg);
+            throw new GoalException("File " + destination + " already exists");
         }
 
         try {
@@ -116,19 +109,13 @@ public class Install implements Goal
 
         }
         catch(FileNotFoundException fnf) {
-            msg = "Specified file not found :" + fnf;
-            log.error(msg);
-            throw new GoalException(msg);
+            throw new GoalException("Specified file not found :" + fnf);
         }
         catch(IOException ioe) {
-            msg = "Error while copying file :" + ioe;
-            log.error(msg);
-            throw new GoalException(msg);
+            throw new GoalException("Error while copying file :" + ioe);
         }
         if ( sourceFile.length() != destinationFile.length() ) {
-            msg = "Failed to copy full contents from " + source + " to " + destination;
-            log.error(msg);
-            throw new GoalException(msg);
+            throw new GoalException("Failed to copy full contents from " + source + " to " + destination);
         }
     }
 

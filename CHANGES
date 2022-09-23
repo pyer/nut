@@ -1,7 +1,7 @@
 3.0
-nut.xml is replaced by nut.yml.
+nut.xml is replaced by nut.yaml.
 xml format is no longer supported.
-build description is in a pattern.
+no parent.
 
 2.0
 No plugins to improve speed.

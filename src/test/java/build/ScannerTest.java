@@ -20,7 +20,7 @@ public class ScannerTest
 {
     private String nutFileName() {
         String basedir = System.getProperty( "basedir", "." );
-        return basedir + "/src/test/resources/fullProject.yml";
+        return basedir + "/src/test/resources/fullProject.yaml";
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ScannerTest
     @Test(expectedExceptions = ParserException.class)
     public void testNullProject() throws IOException, ParserException, ValidationException
     {
-        Scanner scanner = new Scanner("noProject.yml");
+        Scanner scanner = new Scanner("noProject.yaml");
         assertNull( scanner.getProjects() );
     }
 

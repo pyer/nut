@@ -44,10 +44,7 @@ public class Nut
             if (args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?")) {
                 showHelp();
                 System.exit( 0 );
-            } else if (args[i].equals("version")) {
-                showVersion();
-                System.exit( 0 );
-            } else if (args[i].equals("model") || args[i].equals("build") || args[i].equals("run")) {
+            } else if (args[i].equals("model") || args[i].equals("build") || args[i].equals("run") || args[i].equals("version")) {
                 goal = args[i];
             } else if (args[i].startsWith("-D")) {
                 // -Dproperty=value (-Dproperty means -Dproperty=true)
@@ -94,11 +91,16 @@ public class Nut
             System.exit( 0 );
         }
 
+        if (goal.equals("version")) {
+            showVersion();
+            System.exit( 0 );
+        }
+
         // Everything is ok, let's go
         log.start();
         try {
             log.info( "Scanning projects..." );
-            Scanner scanner = new Scanner("nut.yml");
+            Scanner scanner = new Scanner("nut.yaml");
             List projects = scanner.getProjects();
             Sorter sorter = new Sorter( projects );
             List sortedProjects = sorter.getSortedProjects();
@@ -151,7 +153,7 @@ public class Nut
     {
         log.out( "Nut version       : " + System.getProperty( "nut.version", "<unknown>" ) );
         log.out( "Nut home          : " + System.getProperty( "nut.home", "<unknown>" ) );
-        log.out( "Nut mode          : " + System.getProperty( "nut.mode", "SNAPSHOT" ) );
+        log.out( "Nut mode          : " + System.getProperty( "nut.mode", "<unknown>" ) );
         log.out( "Java version      : " + System.getProperty( "java.version", "<unknown>" ) );
         log.out( "Java home         : " + System.getProperty( "java.home", "<unknown>" ) );
         log.out( "Java classpath    : " + System.getProperty( "java.class.path", "<unknown>" ) );
@@ -177,7 +179,7 @@ public class Nut
         log.out( "  pack     Pack binaries and resources " );
         log.out( "  install  Install package in local repository");
         log.out( "  build    Build project, execute 'clean', 'compile', 'test', 'pack' and 'install' operations" );
-        log.out( "  model    Display effective nut.yml" );
+        log.out( "  model    Display effective nut.yaml" );
         log.out( "  run      Run project" );
         log.out( "  version  Display version information" );
         log.out( "  help     Display this help" );
