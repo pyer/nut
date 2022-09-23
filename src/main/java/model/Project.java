@@ -60,9 +60,14 @@ public class Project implements java.io.Serializable
     private String description;
 
     /**
-     * The local repository where are all the artifact binaries
+     * The local repository where are all the artifact binaries.
      */
-    private String repository;
+    private String localRepository;
+
+    /**
+     * The remote repository where the dependencies are downloaded from.
+     */
+    private String remoteRepository;
 
     // Other variables
     private List<String> modules = new ArrayList<String>();
@@ -97,7 +102,8 @@ public class Project implements java.io.Serializable
         this.time = System.currentTimeMillis();
         this.buildDone = false;
         this.buildSuccess = false;
-        this.repository = System.getProperty( "nut.home" );
+        this.localRepository = System.getProperty( "nut.local" );
+        this.remoteRepository = System.getProperty( "nut.remote" );
     }
 
     // ----------------------------------------------------------------------
@@ -195,12 +201,17 @@ public class Project implements java.io.Serializable
      */
     public String getRepository()
     {
-        return this.repository;
+        return this.localRepository;
     }
 
     public void setRepository(String s)
     {
-        this.repository = s;
+        this.localRepository = s;
+    }
+
+    public String getRemoteRepository()
+    {
+        return this.remoteRepository;
     }
 
     public String getBaseDirectory()
@@ -386,7 +397,7 @@ public class Project implements java.io.Serializable
      */
     private void readProperties( String pattern ) throws ParserException
     {
-        String fileName = this.repository + File.separator + pattern + ".properties";
+        String fileName = this.localRepository + File.separator + pattern + ".properties";
         try {
           FileInputStream in = new FileInputStream(fileName);
           getProperties().load(in);
@@ -403,7 +414,7 @@ public class Project implements java.io.Serializable
       String classpath = getBaseDirectory() + File.separator + getOutputDirectory();
       for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
-          classpath = classpath + ":" + this.repository + dep.getPath();
+          classpath = classpath + ":" + this.localRepository + dep.getPath();
       }
       return classpath;
     }
@@ -415,7 +426,7 @@ public class Project implements java.io.Serializable
       classpath = classpath + ":" + getBaseDirectory() + File.separator + getTestOutputDirectory();
       for ( Iterator it = getTestDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
-          classpath = classpath + ":" + this.repository + dep.getPath();
+          classpath = classpath + ":" + this.localRepository + dep.getPath();
       }
       return classpath;
     }

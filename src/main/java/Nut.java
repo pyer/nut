@@ -151,21 +151,20 @@ public class Nut
     // ----------------------------------------------------------------------
     private static void showVersion()
     {
-        log.out( "Nut version       : " + System.getProperty( "nut.version", "<unknown>" ) );
-        log.out( "Nut home          : " + System.getProperty( "nut.home", "<unknown>" ) );
-        log.out( "Nut mode          : " + System.getProperty( "nut.mode", "<unknown>" ) );
-        log.out( "Java version      : " + System.getProperty( "java.version", "<unknown>" ) );
-        log.out( "Java home         : " + System.getProperty( "java.home", "<unknown>" ) );
-        log.out( "Java classpath    : " + System.getProperty( "java.class.path", "<unknown>" ) );
-        log.out( "Java vendor       : " + System.getProperty( "java.vendor", "<unknown>" ) );
-        log.out( "Operating System  : " + System.getProperty( "os.name", "<unknown>" )
-                                        + System.getProperty( "os.version", "<unknown>" ) );
-        log.out( "Architecture      : " + System.getProperty( "os.arch", "<unknown>" ) );
-        log.out( "Default locale    : " + Locale.getDefault() );
-        log.out( "Platform encoding : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
-        log.out( "User name         : " + System.getProperty( "user.name", "<unknown encoding>" ) );
-        log.out( "User home         : " + System.getProperty( "user.home", "<unknown encoding>" ) );
-        log.out( "Working directory : " + System.getProperty( "user.dir", "<unknown encoding>" ) );
+        log.out( "Nut version           : " + System.getProperty( "nut.version", "<undefined>" ) );
+        log.out( "Nut mode              : " + System.getProperty( "nut.mode", "<undefined>" ) );
+        log.out( "Nut local repository  : " + System.getProperty( "nut.local", "<undefined>" ) );
+        log.out( "Nut remote repository : " + System.getProperty( "nut.remote", "<undefined>" ) );
+        log.out( "Java version          : " + System.getProperty( "java.version", "<unknown>" ) );
+        log.out( "Java home             : " + System.getProperty( "java.home", "<unknown>" ) );
+        log.out( "Java vendor           : " + System.getProperty( "java.vendor", "<unknown>" ) );
+        log.out( "Java classpath        : " + System.getProperty( "java.class.path", "" ) );
+        log.out( "Java ext dirs         : " + System.getProperty( "java.ext.dirs", "" ) );
+        log.out( "Operating System      : " + System.getProperty( "os.name", "<unknown>" )
+                                            + System.getProperty( "os.version", "<unknown>" ) );
+        log.out( "Architecture          : " + System.getProperty( "os.arch", "<unknown>" ) );
+        log.out( "Default locale        : " + Locale.getDefault() );
+        log.out( "Platform encoding     : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
     }
 
     private static void showHelp()

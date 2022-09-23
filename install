@@ -4,17 +4,18 @@ set -e
 cd $(dirname $0)
 root=$(pwd)
 NUT_VERSION="3.0"
-NUT_HOME="$HOME/nutRepository"
+NUT_LOCAL="$HOME/nutRepository"
+NUT_REMOTE="http://search.maven.org/remotecontent?filepath="
 
 echo "Build nut local repository"
-rm -rf $NUT_HOME
-mkdir -p $NUT_HOME
-cp -a localRepository/* $NUT_HOME/
+rm -rf $NUT_LOCAL
+mkdir -p $NUT_LOCAL
+cp -a localRepository/* $NUT_LOCAL/
 
 cd $root
 mkdir -p target/classes
 echo "Compiling.."
-options="-d $root/target/classes -cp $root/target/classes:$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_HOME/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
+options="-d $root/target/classes -cp $root/target/classes:$NUT_LOCAL/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_LOCAL/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
 echo " - logging"
 cd src/main/java/logging
 javac $options Log.java
@@ -37,8 +38,8 @@ javac $options Nut.java
 
 cd $root
 echo "Build nut.jar"
-mkdir -p $NUT_HOME/nut
-jar cf $NUT_HOME/nut/nut-$NUT_VERSION.jar -C target/classes .
+mkdir -p $NUT_LOCAL/nut
+jar cf $NUT_LOCAL/nut/nut-$NUT_VERSION.jar -C target/classes .
 rm -r target
 
 echo "Build nut script"
@@ -47,8 +48,9 @@ cat <<EOF >nut
 # Nut start up script
 # ----------------------------------------------------------------------------
 export NUT_VERSION=$NUT_VERSION
-export NUT_HOME=$NUT_HOME
-java -Xmx512M -classpath \$NUT_HOME/nut/nut-\$NUT_VERSION.jar:\$NUT_HOME/org/codehaus/plexus/plexus-utils-3.0.jar:\$NUT_HOME/com/beust/jcommander-1.48.jar:\$NUT_HOME/org/testng/testng-6.8.7.jar nut.Nut "-Dversion=\$NUT_VERSION" "-Dhome=\$NUT_HOME" \$*
+export NUT_LOCAL=$NUT_LOCAL
+export NUT_REMOTE=$NUT_REMOTE
+java -Xmx512M -classpath \$NUT_LOCAL/nut/nut-\$NUT_VERSION.jar:\$NUT_LOCAL/org/codehaus/plexus/plexus-utils-3.0.jar:\$NUT_LOCAL/com/beust/jcommander-1.48.jar:\$NUT_LOCAL/org/testng/testng-6.8.7.jar nut.Nut "-Dversion=\$NUT_VERSION" "-Dlocal=\$NUT_LOCAL" "-Dremote=\$NUT_REMOTE" \$*
 EOF
 
 echo "Install /usr/bin/nut'"

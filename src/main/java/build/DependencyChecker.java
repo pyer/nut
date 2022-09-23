@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 /**
  * Check if a dependency artifact file is present in the local repository.
- * if not, seeks artifact in central repositories
+ * if not, seeks artifact in central repository
  */
 public class DependencyChecker
 {
@@ -36,6 +36,7 @@ public class DependencyChecker
     public void checkProject(Project project) throws DependencyNotFoundException
     {
       String repo = project.getRepository();
+      String remote = project.getRemoteRepository();
       for ( Iterator it = project.getDependencies().iterator(); it.hasNext(); ) {
           Dependency dep = (Dependency) it.next();
           log.debug("Check dependency " + dep.getPath() );
@@ -45,7 +46,7 @@ public class DependencyChecker
                 if ( !outputDir.exists() ) {
                   outputDir.mkdirs();
                 }
-                download(dep, repo);
+                download(dep, repo, remote);
               } catch (SecurityException se) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' is unreadable." );
               } catch (MalformedURLException mue) {
@@ -63,13 +64,13 @@ public class DependencyChecker
     }
 
     // ----------------------------------------------------------------------
-    private void download(Dependency dep, String repo) throws MalformedURLException, FileNotFoundException, IOException
+    private void download(Dependency dep, String repo, String remote) throws MalformedURLException, FileNotFoundException, IOException
     {
-      String outputFileName = repo + File.separator + dep.getPath();
+      String outputFileName = repo + dep.getPath();
       // Example: "http://search.maven.org/remotecontent?filepath=org/testng/testng/6.8.7/testng-6.8.7.jar"
-      String request = "http://search.maven.org/remotecontent?filepath=" + dep.getMavenPath();
+      String request = remote + dep.getPath().substring(1);
       URL url = new URL(request);
-      log.debug( "Download [" + request + "] to " + outputFileName );
+      log.info( "Download [" + request + "] to " + outputFileName );
 
       HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
       httpConn.setInstanceFollowRedirects( false );

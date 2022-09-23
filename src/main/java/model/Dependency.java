@@ -43,11 +43,6 @@ public class Dependency implements java.io.Serializable {
         return this.group;
     }
 
-    public String getMavenPath()
-    {
-        return group + "/" + name + "/" + version + "/"  + name + "-" + version + "." + suffix;
-    }
-
     public String getGroupPath()
     {
         return group;
