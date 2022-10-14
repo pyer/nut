@@ -1,5 +1,32 @@
 package nut.goals;
 
+/* *****************************
+ * Execute tests for nut project
+ * *****************************
+
+The command built in this class
+-------------------------------
+java
+-cp classpath
+-Dbasedir=basedir
+org.testng.TestNG
+-d testReportDirectory
+-suitename project.getName()
+-testclass testClasses.substring(1)
+
+
+The real command executed on my PC
+----------------------------------
+/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+-cp /home/pba/GitHub/nut/target/classes:/home/pba/nutRepository/org/codehaus/plexus/plexus-utils-3.0.jar:/home/pba/GitHub/nut/target/test-classes:/home/pba/nutRepository/com/beust/jcommander-1.48.jar:/home/pba/nutRepository/org/testng/testng-6.8.7.jar
+-Dbasedir=/home/pba/GitHub/nut
+org.testng.TestNG
+-d /home/pba/GitHub/nut/target/test-reports
+-suitename nut
+-testclass /home/pba/GitHub/nut/target/test-classes/nut/model/ProjectTest.class,/home/pba/GitHub/nut/target/test-classes/nut/model/DependencyTest.class,/home/pba/GitHub/nut/target/test-classes/nut/logging/LogTest.class,/home/pba/GitHub/nut/target/test-classes/nut/build/SorterTest.class,/home/pba/GitHub/nut/target/test-classes/nut/build/ScannerTest.class,/home/pba/GitHub/nut/target/test-classes/nut/build/DependencyCheckerTest.class,/home/pba/GitHub/nut/target/test-classes/nut/goals/CleanTest.class,/home/pba/GitHub/nut/target/test-classes/nut/goals/InstallTest.class
+
+ ******************************* */
+
 import nut.goals.GoalException;
 import nut.logging.Log;
 import nut.model.Project;
