@@ -30,6 +30,7 @@ public class Nut
     private static int retCode = 0;
     private static Log log;
     private static String[] buildSteps = {"clean", "compile", "test", "pack", "install"};
+    private static List<String> runArguments = new ArrayList<String>();
 
     public static void main( String[] args )
     {
@@ -40,8 +41,14 @@ public class Nut
         System.setProperty( "nut.mode", "SNAPSHOT" );
 
         log = new Log();
-        for (int i=0; i < args.length ; i++) {
-            if (args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?")) {
+        for (int i=0; i < args.length; i++) {
+            if (args[i].equals("--")) {
+                // Next arguments are passed to the goal call
+                i++;
+                while (i < args.length) {
+                  runArguments.add(args[i++]);
+                }
+            } else if (args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?")) {
                 showHelp();
                 System.exit( 0 );
             } else if (args[i].equals("model") || args[i].equals("build") || args[i].equals("run") || args[i].equals("version")) {
@@ -119,6 +126,7 @@ public class Nut
             // iterate over projects, and execute goal on each...
             for ( Iterator it = sortedProjects.iterator(); it.hasNext(); ) {
                 Project project = (Project) it.next();
+                project.setArguments(runArguments);
                 log.line();
                 Builder builder = new Builder(goal);
                 retCode += builder.build(project, noopMode);
@@ -189,6 +197,7 @@ public class Nut
         log.out( "  -n,--noop        No operation mode (dry run)" );
         log.out( "  -r,--release     Release mode. Default is snapshot" );
         log.out( "  -s,--snapshot    Snapshot default mode" );
+        log.out( "  --               Next arguments are passed to the operation call (mainly run)" );
 //        log.out( "  -v,--verbose     Display info messages" );
     }
 

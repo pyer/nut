@@ -6,6 +6,8 @@ import nut.model.Project;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 //import java.util.Properties;
 
 /**
@@ -18,22 +20,33 @@ public class Run implements Goal
     public void execute( Project project, boolean noop ) throws GoalException
     {
         int returnCode = 0;
+        List<String> command = new ArrayList<String>();
+
         Log log = new Log();
-        String mainClass = project.getMainClass();
-        if (mainClass == null) {
+        if (project.getMainClass() == null) {
             throw new GoalException("mainClass is not defined");
         }
+
+        command.add(System.getProperty( "java.home", "/usr" ) + "/bin/java");
+        command.add("-cp");
+        command.add(project.getDependenciesClassPath());
+        command.add(project.getMainClass());
+
+        List<String> arguments = project.getArguments();
+        if ( arguments != null && arguments.size() > 0 ) {
+            for (String arg : arguments) {
+                command.add(arg);
+            }
+        }
+
         if ( noop ) {
             log.info( "NOOP: Running" );
+            log.info(String.join(" ", command));
             return;
         }
 
-        String command   = System.getProperty( "java.home", "/usr" ) + "/bin/java";
-        String classpath = project.getDependenciesClassPath();
-        log.debug("class path = " + classpath);
-        log.debug("main class = " + mainClass);
         // Run a java app in a separate system process
-        ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, mainClass);
+        ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
         try {
             Process proc = pb.start();

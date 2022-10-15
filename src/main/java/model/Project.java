@@ -85,6 +85,7 @@ public class Project implements java.io.Serializable
      * The main class for run
      */
     private String mainClass;
+    private List<String> arguments = new ArrayList<String>();
 
     // Building time
     private long time;
@@ -311,6 +312,16 @@ public class Project implements java.io.Serializable
     public String getMainClass()
     {
         return this.mainClass;
+    }
+
+    public List<String> getArguments()
+    {
+        return this.arguments;
+    }
+
+    public void setArguments(List<String> arguments)
+    {
+        this.arguments = arguments;
     }
 
     /**
