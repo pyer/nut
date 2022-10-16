@@ -40,7 +40,34 @@ public class InstallTest
     public void testInstallJarFile() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml");
+        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml", false);
+        List<Project> projects = scanner.getProjects();
+        assertFalse( projects.isEmpty() );
+        Project project = projects.get(0);
+        project.setBaseDirectory(basedir);
+        project.setRepository(basedir + "/target/test-repo");
+        // Create test repository
+        File repo = new File(basedir + "/target/test-repo");
+        repo.mkdir();
+        // Create test target
+        File target = new File(basedir + "/target/test-target");
+        target.mkdir();
+        File targetFile = new File(basedir + "/target/test-target/full.jar");
+        targetFile.createNewFile();
+        assertTrue( targetFile.exists() );
+        File installedFile = new File(basedir + "/target/test-repo/nut/test/full-3.0-SNAPSHOT.jar");
+        installedFile.delete();
+        // Real install
+        assertFalse( installedFile.exists() );
+        new Install().execute(project);
+        assertTrue( installedFile.exists() );
+    }
+
+    @Test
+    public void testInstallJarFileNoop() throws IOException, ParserException, ValidationException, GoalException
+    {
+        String basedir = System.getProperty( "basedir", "." );
+        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml", true);
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);
@@ -58,19 +85,18 @@ public class InstallTest
         File installedFile = new File(basedir + "/target/test-repo/nut/test/full-3.0-SNAPSHOT.jar");
         installedFile.delete();
         // Test noop
-        new Install().execute(project, true);
         assertFalse( installedFile.exists() );
-        // Real install
-        new Install().execute(project, false);
-        assertTrue( installedFile.exists() );
+        new Install().execute(project);
+        assertFalse( installedFile.exists() );
     }
 
     @Test
     public void testInstallModules() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/modulesProject.yaml");
+        Scanner scanner = new Scanner(basedir + "/src/test/resources/modulesProject.yaml", false);
         List<Project> projects = scanner.getProjects();
+        // As projects is empty, Install goal is not executed
         assertTrue( projects.isEmpty() );
     }
 

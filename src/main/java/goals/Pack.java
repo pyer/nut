@@ -26,7 +26,7 @@ public class Pack implements Goal
     /** Instance logger */
     private Log log;
 
-    public void execute(Project project, boolean noop) throws GoalException
+    public void execute(Project project) throws GoalException
     {
         log = new Log();
         String packaging = project.getPackaging();
@@ -34,7 +34,7 @@ public class Pack implements Goal
                          + project.getTargetDirectory() + File.separator
                          + project.getName() + "." + packaging;
 
-        if (noop) {
+        if (project.noop()) {
             log.info( "NOOP: Packaging " + fullName );
             return;
         }

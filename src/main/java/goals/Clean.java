@@ -26,14 +26,14 @@ public class Clean implements Goal
      *
      * @throws Exception When a directory failed to get deleted.
      */
-    public void execute(Project project, boolean noop) throws GoalException
+    public void execute(Project project) throws GoalException
     {
         log = new Log();
         String basedir = project.getBaseDirectory();
         String target  = project.getTargetDirectory();
         String fullPath = basedir + File.separator + target;
 
-        if (noop) {
+        if (project.noop()) {
           log.info( "NOOP: Cleaning " + fullPath );
         } else {
           log.info( "Cleaning " + fullPath );

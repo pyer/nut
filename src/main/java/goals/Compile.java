@@ -33,7 +33,7 @@ public class Compile implements Goal
       }
     }
 
-    public void execute(Project project, boolean noop) throws GoalException {
+    public void execute(Project project) throws GoalException {
         if ( "zip".equals(project.getPackaging() )) {
           return;
         }
@@ -51,7 +51,7 @@ public class Compile implements Goal
         log.debug( "testOutputDirectory = " + testOutputDirectory );
 
         if (test) {
-          if (noop) {
+          if (project.noop()) {
             log.info( "NOOP: Compiling " + testSourceDirectory );
             return;
           }
@@ -67,7 +67,7 @@ public class Compile implements Goal
             compile( testSources, testSourceDirectory, testOutputDirectory, project.getTestDependenciesClassPath() );
           }
         } else {
-          if (noop) {
+          if (project.noop()) {
             log.info( "NOOP: Compiling " + sourceDirectory );
             return;
           }

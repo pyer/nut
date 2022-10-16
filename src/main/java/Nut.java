@@ -35,7 +35,7 @@ public class Nut
     public static void main( String[] args )
     {
         String  goal = null;
-        boolean noopMode   = false;
+        boolean noop = false;
 
         // Default mode is SNAPSHOT
         System.setProperty( "nut.mode", "SNAPSHOT" );
@@ -59,7 +59,7 @@ public class Nut
             } else if (args[i].equals("-d") || args[i].equals("--debug")) {
                 log.debugOn();
             } else if (args[i].equals("-n") || args[i].equals("--noop")) {
-                noopMode = true;
+                noop = true;
             } else if (args[i].equals("-r") || args[i].equals("--release")) {
                 System.setProperty( "nut.mode", "RELEASE" );
             } else if (args[i].equals("-s") || args[i].equals("--snapshot")) {
@@ -107,7 +107,7 @@ public class Nut
         log.start();
         try {
             log.info( "Scanning projects..." );
-            Scanner scanner = new Scanner("nut.yaml");
+            Scanner scanner = new Scanner("nut.yaml", noop);
             List projects = scanner.getProjects();
             Sorter sorter = new Sorter( projects );
             List sortedProjects = sorter.getSortedProjects();
@@ -129,7 +129,7 @@ public class Nut
                 project.setArguments(runArguments);
                 log.line();
                 Builder builder = new Builder(goal);
-                retCode += builder.build(project, noopMode);
+                retCode += builder.build(project);
             }
             if( sortedProjects.size() > 1 ) {
                logReactorSummary( sortedProjects );

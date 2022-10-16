@@ -42,7 +42,7 @@ import java.util.Properties;
  */
 public class Test implements Goal
 {
-    public void execute( Project project, boolean noop ) throws GoalException
+    public void execute( Project project ) throws GoalException
     {
         if ( "zip".equals(project.getPackaging() )) {
           return;
@@ -55,7 +55,7 @@ public class Test implements Goal
         log.debug( "test classes = " + testOutputDirectory);
         log.debug( "test reports = " + testReportDirectory);
 
-        if (noop) {
+        if (project.noop()) {
             log.info( "NOOP: Testing " + testOutputDirectory );
             return;
         }

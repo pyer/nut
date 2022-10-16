@@ -25,13 +25,19 @@ public class Scanner
    */
   public Scanner( String nutFileName ) throws IOException, ParserException, ValidationException
   {
+    // Default is noop mode is false
+    this( nutFileName, false );
+  }
+
+  public Scanner( String nutFileName, boolean noop ) throws IOException, ParserException, ValidationException
+  {
     log = new Log();
     List files = Collections.EMPTY_LIST;
     nut = nutFileName;
     File projectFile = new File( nut );
     if ( projectFile.exists() ) {
       files = Collections.singletonList( projectFile );
-      projectsList = collectProjects( files );
+      projectsList = collectProjects( files, noop );
     } else {
       throw new ParserException( "Project file '" + nutFileName + "' not found !" );
     }
@@ -45,7 +51,7 @@ public class Scanner
     return projectsList;
   }
   // --------------------------------------------------------------------------------
-  private List<Project> collectProjects( List files ) throws IOException, ParserException, ValidationException
+  private List<Project> collectProjects( List files, boolean noop ) throws IOException, ParserException, ValidationException
   {
         List<Project> projects = new ArrayList<Project>( files.size() );
 
@@ -53,7 +59,7 @@ public class Scanner
         {
             File file = ((File) iterator.next()).getCanonicalFile();
             log.debug("   Project " + file.getPath());
-            Project project = new Project();
+            Project project = new Project(noop);
             project.setBaseDirectory(file.getParent());
             project.parseFile( file );
             project.validate();
@@ -77,7 +83,7 @@ public class Scanner
                         moduleFiles.add( new File( modulesRoot, name + File.separator + nut ) );
                     }
                 }
-                List<Project> collectedProjects = collectProjects( moduleFiles );
+                List<Project> collectedProjects = collectProjects( moduleFiles, noop );
                 projects.addAll( collectedProjects );
             } else {
                 projects.add( project );

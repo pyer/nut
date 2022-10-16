@@ -41,7 +41,7 @@ public class Builder
      * returns 0 if success
      * returns 9 if not
      */
-    public int build( Project project, boolean noop ) {
+    public int build( Project project ) {
       boolean fail = false;
       log.debug("Build project " + project.getId() + " goal='" + goal +"'");
       if ( "model".equals(goal) ) {
@@ -60,25 +60,25 @@ public class Builder
           depChecker.checkProject( project );
           // Achieve goal
           if( "build".equals(goal) ) {
-            new Clean().execute(project, noop);
-            new Compile().execute(project, noop);
-            new Compile("test").execute(project, noop);
-            new Test().execute(project, noop);
-            new Pack().execute(project, noop);
-            new Install().execute(project, noop);
+            new Clean().execute(project);
+            new Compile().execute(project);
+            new Compile("test").execute(project);
+            new Test().execute(project);
+            new Pack().execute(project);
+            new Install().execute(project);
           } else if( "clean".equals(goal) ) {
-            new Clean().execute(project, noop);
+            new Clean().execute(project);
           } else if( "compile".equals(goal) ) {
-            new Compile().execute(project, noop);
+            new Compile().execute(project);
           } else if( "test".equals(goal) ) {
-            new Compile("test").execute(project, noop);
-            new Test().execute(project, noop);
+            new Compile("test").execute(project);
+            new Test().execute(project);
           } else if( "pack".equals(goal) ) {
-            new Pack().execute(project, noop);
+            new Pack().execute(project);
           } else if( "install".equals(goal) ) {
-            new Install().execute(project, noop);
+            new Install().execute(project);
           } else if( "run".equals(goal) ) {
-            new Run().execute(project, noop);
+            new Run().execute(project);
           } else {
             log.error("Unknown goal '" + goal + "'.");
             fail = true;

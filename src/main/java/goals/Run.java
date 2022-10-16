@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Run implements Goal
 {
-    public void execute( Project project, boolean noop ) throws GoalException
+    public void execute(Project project) throws GoalException
     {
         int returnCode = 0;
         List<String> command = new ArrayList<String>();
@@ -39,7 +39,7 @@ public class Run implements Goal
             }
         }
 
-        if ( noop ) {
+        if (project.noop()) {
             log.info( "NOOP: Running" );
             log.info(String.join(" ", command));
             return;

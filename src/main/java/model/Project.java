@@ -90,8 +90,10 @@ public class Project implements java.io.Serializable
     // Building time
     private long time;
     // Status
-    private boolean buildDone;
-    private boolean buildSuccess;
+    private boolean buildDone    = false;
+    private boolean buildSuccess = false;
+
+    private boolean noopMode = false;
 
     // ----------------------------------------------------------------------
     // Constructor
@@ -99,15 +101,24 @@ public class Project implements java.io.Serializable
 
     public Project()
     {
+        this(false);
+    }
+
+    public Project(boolean noopMode)
+    {
+        this.noopMode = noopMode;
         this.log = new Log();
         this.time = System.currentTimeMillis();
-        this.buildDone = false;
-        this.buildSuccess = false;
         this.localRepository = System.getProperty( "nut.local" );
         this.remoteRepository = System.getProperty( "nut.remote" );
     }
 
     // ----------------------------------------------------------------------
+    public boolean noop()
+    {
+        return this.noopMode;
+    }
+
     public boolean isBuilt()
     {
         return this.buildDone;

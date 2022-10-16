@@ -17,12 +17,12 @@ public class Install implements Goal
     /** Instance logger */
     private Log log;
 
-    public void execute(Project project, boolean noop) throws GoalException
+    public void execute(Project project) throws GoalException
     {
         log = new Log();
         Properties pp               = project.getProperties();
         String mode                 = (String)System.getProperty( "nut.mode", "SNAPSHOT" );
-        if( "RELEASE".equals( mode ) )
+        if( "RELEASE".equals(mode) )
           mode = "";
         else
           mode = "-SNAPSHOT";
@@ -45,7 +45,7 @@ public class Install implements Goal
         String group = groupId.replace( '.', File.separatorChar );
         String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
 
-        if (noop) {
+        if (project.noop()) {
           log.info( "NOOP: Installing \'" + artifactName + "\'" );
         } else {
           log.info( "Installing \'" + artifactName + "\'" );
