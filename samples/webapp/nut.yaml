@@ -4,7 +4,7 @@ version:   1.0
 packaging: war
 
 dependencies:
-  - /javax/servlet/servlet-api-2.5.jar
+  - /javax/servlet/servlet-api/2.5/servlet-api-2.5.jar
 
 properties:
   targetDirectory: target

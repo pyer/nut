@@ -3,7 +3,7 @@
 group:   nut
 name:    nut
 version: 3.0
-pattern: jar 
+pattern: jar2
 
 dependencies:
   - /org/codehaus/plexus/plexus-utils-3.0.jar
