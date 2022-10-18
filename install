@@ -31,7 +31,7 @@ cd ../interpolation
 javac $options Interpolator.java
 echo " - build"
 cd ../build
-javac $options DependencyNotFoundException.java DependencyChecker.java DuplicateProjectException.java Scanner.java Sorter.java Builder.java
+javac $options CyclicProjectException.java DependencyNotFoundException.java DependencyChecker.java DuplicateProjectException.java Scanner.java Sorter.java Builder.java
 echo " - nut"
 cd ..
 javac $options Nut.java

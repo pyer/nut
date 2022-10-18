@@ -11,10 +11,6 @@ import nut.model.Project;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import java.nio.file.CopyOption;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.Files;
@@ -73,8 +69,7 @@ public class War
         String repository = project.getRepository();
         try {
             log.debug("* copy dependencies to " + libDirectory);
-            for ( Iterator it = project.getDependencies().iterator(); it.hasNext(); ) {
-              Dependency dep = (Dependency) it.next();
+            for ( Dependency dep : project.getDependencies() ) {
               String depPath = repository + dep.getPath();
               log.debug("** " + depPath);
               Path dest = Paths.get(libDirectory + "/" + dep.getName());

@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -434,9 +433,8 @@ public class Project implements java.io.Serializable
     public String getDependenciesClassPath()
     {
       String classpath = getBaseDirectory() + File.separator + getOutputDirectory();
-      for ( Iterator it = getDependencies().iterator(); it.hasNext(); ) {
-          Dependency dep = (Dependency) it.next();
-          classpath = classpath + ":" + this.localRepository + dep.getPath();
+      for ( Dependency dependency : getDependencies() ) {
+          classpath = classpath + ":" + this.localRepository + dependency.getPath();
       }
       return classpath;
     }
@@ -446,9 +444,8 @@ public class Project implements java.io.Serializable
     {
       String classpath = getDependenciesClassPath();
       classpath = classpath + ":" + getBaseDirectory() + File.separator + getTestOutputDirectory();
-      for ( Iterator it = getTestDependencies().iterator(); it.hasNext(); ) {
-          Dependency dep = (Dependency) it.next();
-          classpath = classpath + ":" + this.localRepository + dep.getPath();
+      for ( Dependency dependency : getTestDependencies() ) {
+          classpath = classpath + ":" + this.localRepository + dependency.getPath();
       }
       return classpath;
     }

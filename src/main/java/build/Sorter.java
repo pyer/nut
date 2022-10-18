@@ -2,6 +2,7 @@ package nut.build;
 
 import nut.model.Dependency;
 import nut.model.Project;
+import nut.build.CyclicProjectException;
 import nut.build.DuplicateProjectException;
 
 import org.codehaus.plexus.util.dag.CycleDetectedException;
@@ -23,7 +24,7 @@ import java.util.Map;
  */
 public class Sorter
 {
-    private final List sortedProjects;
+    private final List<Project> sortedProjects;
 
     /**
      * Sort a list of projects.
@@ -37,7 +38,7 @@ public class Sorter
      * </ul>
      * @throws DuplicateProjectException if any projects are duplicated by id
      */
-    public Sorter( List projects ) throws CycleDetectedException, DuplicateProjectException
+    public Sorter( List<Project> projects ) throws CyclicProjectException, DuplicateProjectException
     {
         List<Project> sortedProjects = new ArrayList<Project>();
         if ( projects == null || projects.isEmpty() ) {
@@ -45,10 +46,8 @@ public class Sorter
           return;
         }
         DAG dag = new DAG();
-
         Map<String,Project> projectMap = new HashMap<String,Project>();
-        for ( Iterator i = projects.iterator(); i.hasNext(); ) {
-            Project project = (Project) i.next();
+        for ( Project project : projects ) {
             String id = project.getId();
             if ( dag.getVertex( id ) != null ) {
                 throw new DuplicateProjectException( "Project '" + id + "' is duplicated" );
@@ -57,18 +56,24 @@ public class Sorter
             projectMap.put( id, project );
         }
 
-        for ( Iterator i = projects.iterator(); i.hasNext(); ) {
-            Project project = (Project) i.next();
-            String id = project.getId();
-            for ( Iterator j = project.getDependencies().iterator(); j.hasNext(); ) {
-                Dependency dependency = (Dependency) j.next();
+        for ( Project project : projects ) {
+          String id = project.getId();
+          try {
+            for ( Dependency dependency : project.getDependencies() ) {
                 String dep = dependency.getId();
                 if ( dag.getVertex( dep ) != null ) {
                     dag.addEdge( id, dep );
                 }
             }
+          } catch(CycleDetectedException e) {
+            throw new CyclicProjectException( "Project '" + id + "' has cyclic dependencies" );
+          }
         }
 
+/*
+        //@SuppressWarnings("unchecked")
+        for ( String id : TopologicalSorter.sort( dag ) ) {
+*/
         for ( Iterator i = TopologicalSorter.sort( dag ).iterator(); i.hasNext(); ) {
             String id = (String) i.next();
             sortedProjects.add( projectMap.get( id ) );
@@ -76,7 +81,7 @@ public class Sorter
         this.sortedProjects = Collections.unmodifiableList( sortedProjects );
     }
 
-    public List getSortedProjects()
+    public List<Project> getSortedProjects()
     {
         return sortedProjects;
     }

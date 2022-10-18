@@ -16,8 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.MalformedURLException;
 
-import java.util.Iterator;
-
 /**
  * Check if a dependency artifact file is present in the local repository.
  * if not, seeks artifact in central repository
@@ -37,8 +35,7 @@ public class DependencyChecker
     {
       String repo = project.getRepository();
       String remote = project.getRemoteRepository();
-      for ( Iterator it = project.getDependencies().iterator(); it.hasNext(); ) {
-          Dependency dep = (Dependency) it.next();
+      for ( Dependency dep : project.getDependencies() ) {
           log.debug("Check dependency " + dep.getPath() );
           if ( dep.isNotHere(repo) ) {
               try {

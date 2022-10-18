@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -32,11 +30,11 @@ public class Scanner
   public Scanner( String nutFileName, boolean noop ) throws IOException, ParserException, ValidationException
   {
     log = new Log();
-    List files = Collections.EMPTY_LIST;
     nut = nutFileName;
     File projectFile = new File( nut );
     if ( projectFile.exists() ) {
-      files = Collections.singletonList( projectFile );
+      List<File> files = new ArrayList<File>();
+      files.add( projectFile );
       projectsList = collectProjects( files, noop );
     } else {
       throw new ParserException( "Project file '" + nutFileName + "' not found !" );
@@ -51,27 +49,24 @@ public class Scanner
     return projectsList;
   }
   // --------------------------------------------------------------------------------
-  private List<Project> collectProjects( List files, boolean noop ) throws IOException, ParserException, ValidationException
+  private List<Project> collectProjects( List<File> files, boolean noop ) throws IOException, ParserException, ValidationException
   {
         List<Project> projects = new ArrayList<Project>( files.size() );
 
-        for ( Iterator iterator = files.iterator(); iterator.hasNext(); )
-        {
-            File file = ((File) iterator.next()).getCanonicalFile();
-            log.debug("   Project " + file.getPath());
+        for ( File file : files ) {
+            File cfile = file.getCanonicalFile();
+            log.debug("   Project " + cfile.getPath());
             Project project = new Project(noop);
-            project.setBaseDirectory(file.getParent());
-            project.parseFile( file );
+            project.setBaseDirectory(cfile.getParent());
+            project.parseFile( cfile );
             project.validate();
             if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
               //log.info("   Modules:");
-                File modulesRoot = file.getParentFile();
+                File modulesRoot = cfile.getParentFile();
 
                 // Initial ordering is as declared in the modules section
                 List<File> moduleFiles = new ArrayList<File>( project.getModules().size() );
-                for ( Iterator i = project.getModules().iterator(); i.hasNext(); )
-                {
-                    String name = (String) i.next();
+                for ( String name : project.getModules() ) {
                     log.info("   - Module " + name);
                     if ( name.trim().isEmpty() ) {
                         log.warn( "Empty module detected. Please check you don't have any empty module definitions." );

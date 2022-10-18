@@ -1,11 +1,8 @@
 package nut;
 
 import nut.build.Builder;
-/*
-import nut.build.DependencyChecker;
 
-*/
-
+import nut.build.CyclicProjectException;
 import nut.build.DuplicateProjectException;
 import nut.build.Scanner;
 import nut.build.Sorter;
@@ -15,15 +12,10 @@ import nut.model.Project;
 import nut.model.ParserException;
 import nut.model.ValidationException;
 
-import org.codehaus.plexus.util.dag.CycleDetectedException;
-
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 public class Nut
 {
@@ -108,24 +100,21 @@ public class Nut
         try {
             log.info( "Scanning projects..." );
             Scanner scanner = new Scanner("nut.yaml", noop);
-            List projects = scanner.getProjects();
+            List<Project> projects = scanner.getProjects();
             Sorter sorter = new Sorter( projects );
-            List sortedProjects = sorter.getSortedProjects();
+            List<Project> sortedProjects = sorter.getSortedProjects();
             if ( sorter.hasMultipleProjects() ) {
               log.line();
               log.info( "Ordering projects..." );
-              for ( Iterator it = sortedProjects.iterator(); it.hasNext(); )
-              {
-                  Project currentProject = (Project) it.next();
-                  log.info( "   " + currentProject.getId() );
+              for ( Project project : sortedProjects ) {
+                  log.info( "   " + project.getId() );
               }
 
               log.line();
               log.info( "Building projects..." );
             }
             // iterate over projects, and execute goal on each...
-            for ( Iterator it = sortedProjects.iterator(); it.hasNext(); ) {
-                Project project = (Project) it.next();
+            for ( Project project : sortedProjects ) {
                 project.setArguments(runArguments);
                 log.line();
                 Builder builder = new Builder(goal);
@@ -134,7 +123,7 @@ public class Nut
             if( sortedProjects.size() > 1 ) {
                logReactorSummary( sortedProjects );
             }
-        } catch(CycleDetectedException e) {
+        } catch(CyclicProjectException e) {
             log.failure(e.getMessage());
             retCode = 5;
         } catch(DuplicateProjectException e) {
@@ -171,7 +160,6 @@ public class Nut
         log.out( "Operating System      : " + System.getProperty( "os.name", "<unknown>" )
                                             + System.getProperty( "os.version", "<unknown>" ) );
         log.out( "Architecture          : " + System.getProperty( "os.arch", "<unknown>" ) );
-        log.out( "Default locale        : " + Locale.getDefault() );
         log.out( "Platform encoding     : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
     }
 
@@ -230,7 +218,7 @@ public class Nut
     // --------------------------------------------------------------------------------
     // Reporting
     // ----------------------------------------------------------------------
-    private static void logReactorSummary( List projects )
+    private static void logReactorSummary( List<Project> projects )
     {
             // -------------------------
             // Reactor Summary:
@@ -240,9 +228,7 @@ public class Nut
             log.line();
             log.info( "SUMMARY" );
 
-            for ( Iterator it = projects.iterator(); it.hasNext(); )
-            {
-                Project project = (Project) it.next();
+            for ( Project project : projects ) {
                 if ( project.isBuilt() ) {
                     if ( project.isSuccessful() ) {
                         log.success( project.getId(), project.getTime() );
