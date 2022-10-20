@@ -103,7 +103,7 @@ public class ProjectTest
         project.setBaseDirectory(basedir);
         File nut = new File( basedir + "/src/test/resources/emptyProject.yaml" );
         project.parseFile(nut);
-        assertEquals( project.getId(), "null:null:null:jar" );
+        assertEquals( project.getId(), ":::jar" );
     }
 
     @Test

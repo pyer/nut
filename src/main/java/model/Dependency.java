@@ -48,8 +48,6 @@ public class Dependency implements java.io.Serializable {
         return group;
     }
 
-    /* getId is not used yet
-    */
     public String getId()
     {
         return group.replace( '/', '.' ) + ":" + name + ":" + version + ":" + suffix;

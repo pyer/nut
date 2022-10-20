@@ -15,7 +15,7 @@ cp -a localRepository/* $NUT_LOCAL/
 cd $root
 mkdir -p target/classes
 echo "Compiling.."
-options="-d $root/target/classes -cp $root/target/classes:$NUT_LOCAL/org/codehaus/plexus/plexus-utils-3.0.jar:$NUT_LOCAL/org/testng/testng-6.8.7.jar -deprecation -Xlint:unchecked"
+options="-d $root/target/classes -cp $root/target/classes -deprecation -Xlint:unchecked"
 echo " - logging"
 cd src/main/java/logging
 javac $options Log.java
@@ -31,7 +31,7 @@ cd ../interpolation
 javac $options Interpolator.java
 echo " - build"
 cd ../build
-javac $options CyclicProjectException.java DependencyNotFoundException.java DependencyChecker.java DuplicateProjectException.java Scanner.java Sorter.java Builder.java
+javac $options Vertex.java CycleDetectedException.java CycleDetector.java DependencyNotFoundException.java DependencyChecker.java DuplicateProjectException.java Scanner.java Sorter.java Builder.java
 echo " - nut"
 cd ..
 javac $options Nut.java

@@ -1,6 +1,6 @@
 package nut.build;
 
-import nut.build.CyclicProjectException;
+import nut.build.CycleDetectedException;
 import nut.build.DuplicateProjectException;
 import nut.model.Project;
 
@@ -17,21 +17,21 @@ public class SorterTest
 {
 
     @Test
-    public void testHashCodeNullSafe() throws CyclicProjectException, DuplicateProjectException
+    public void testHashCodeNullSafe() throws CycleDetectedException, DuplicateProjectException
     {
         List<Project> projects = new ArrayList<Project>();
         new Sorter(projects).hashCode();
     }
 
     @Test
-    public void testEqualsNullSafe() throws CyclicProjectException, DuplicateProjectException
+    public void testEqualsNullSafe() throws CycleDetectedException, DuplicateProjectException
     {
         List<Project> projects = new ArrayList<Project>();
         assertNotNull( new Sorter(projects) );
     }
 
     @Test
-    public void testEqualsIdentity() throws CyclicProjectException, DuplicateProjectException
+    public void testEqualsIdentity() throws CycleDetectedException, DuplicateProjectException
     {
         List<Project> projects = new ArrayList<Project>();
         Sorter thing = new Sorter(projects);
@@ -39,14 +39,14 @@ public class SorterTest
     }
 
     @Test
-    public void testToStringNullSafe() throws CyclicProjectException, DuplicateProjectException
+    public void testToStringNullSafe() throws CycleDetectedException, DuplicateProjectException
     {
         List<Project> projects = new ArrayList<Project>();
         assertNotNull( new Sorter(projects).toString() );
     }
 
     @Test
-    public void testEmptyProject() throws CyclicProjectException, DuplicateProjectException
+    public void testEmptyProject() throws CycleDetectedException, DuplicateProjectException
     {
         List<Project> projects = new ArrayList<Project>();
         Sorter sorter = new Sorter(projects);
@@ -55,7 +55,7 @@ public class SorterTest
     }
 
     @Test
-    public void testMultipleProject() throws CyclicProjectException, DuplicateProjectException
+    public void testMultipleProject() throws CycleDetectedException, DuplicateProjectException
     {
         Project project1 = new Project();
         project1.setGroup("nut.group");
@@ -74,7 +74,7 @@ public class SorterTest
     }
 
     @Test(expectedExceptions = DuplicateProjectException.class)
-    public void testDuplicateProject() throws CyclicProjectException, DuplicateProjectException
+    public void testDuplicateProject() throws CycleDetectedException, DuplicateProjectException
     {
         Project project = new Project();
         project.setGroup("nut.group");

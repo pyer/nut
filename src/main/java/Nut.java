@@ -2,7 +2,7 @@ package nut;
 
 import nut.build.Builder;
 
-import nut.build.CyclicProjectException;
+import nut.build.CycleDetectedException;
 import nut.build.DuplicateProjectException;
 import nut.build.Scanner;
 import nut.build.Sorter;
@@ -105,7 +105,7 @@ public class Nut
             List<Project> sortedProjects = sorter.getSortedProjects();
             if ( sorter.hasMultipleProjects() ) {
               log.line();
-              log.info( "Ordering projects..." );
+              log.info( "Sorting projects..." );
               for ( Project project : sortedProjects ) {
                   log.info( "   " + project.getId() );
               }
@@ -123,7 +123,7 @@ public class Nut
             if( sortedProjects.size() > 1 ) {
                logReactorSummary( sortedProjects );
             }
-        } catch(CyclicProjectException e) {
+        } catch(CycleDetectedException e) {
             log.failure(e.getMessage());
             retCode = 5;
         } catch(DuplicateProjectException e) {

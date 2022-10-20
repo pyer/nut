@@ -18,7 +18,7 @@ org.testng.TestNG
 The real command executed on my PC
 ----------------------------------
 /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
--cp /home/pba/GitHub/nut/target/classes:/home/pba/nutRepository/org/codehaus/plexus/plexus-utils-3.0.jar:/home/pba/GitHub/nut/target/test-classes:/home/pba/nutRepository/com/beust/jcommander-1.48.jar:/home/pba/nutRepository/org/testng/testng-6.8.7.jar
+-cp /home/pba/GitHub/nut/target/classes:/home/pba/GitHub/nut/target/test-classes:/home/pba/nutRepository/com/beust/jcommander-1.48.jar:/home/pba/nutRepository/org/testng/testng-6.8.7.jar
 -Dbasedir=/home/pba/GitHub/nut
 org.testng.TestNG
 -d /home/pba/GitHub/nut/target/test-reports

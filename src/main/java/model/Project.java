@@ -26,19 +26,19 @@ public class Project implements java.io.Serializable
      * It is normal to use a fully-qualified name to
      * distinguish it from other projects with a similar name.
      */
-    private String group;
+    private String group = "";
 
     /**
      * The identifier for this artifact that is unique within the
      * group given by the group ID.
      * An artifact is something that is either produced or used by a project.
      */
-    private String name;
+    private String name = "";
 
     /**
      * The current version of the artifact produced by this project.
      */
-    private String version;
+    private String version = "";
 
     /**
      * The suffix of the built artifact, for example: jar, zip
@@ -47,7 +47,7 @@ public class Project implements java.io.Serializable
     private String packaging = "jar";
 
     /**
-     * The pattern used to build this this project produces, for example: jar, zip
+     * The pattern used to build this project produces, for example: jar, zip
      * modules is a special pattern type.
      */
     private String pattern = "modules";
@@ -57,6 +57,11 @@ public class Project implements java.io.Serializable
      * whenever it needs to describe the project, such as on the web site.
      */
     private String description;
+
+    /**
+     * The list used to sort the projects during build 
+     */
+    List<Project> children = new ArrayList<Project>();
 
     /**
      * The local repository where are all the artifact binaries.
