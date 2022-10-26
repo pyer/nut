@@ -144,6 +144,7 @@ public class SorterTest
         List<Project> projects = new ArrayList<Project>();
         projects.add(project_a);
         projects.add(project_b);
+        projects.add(project_c);
         Sorter sorter = new Sorter(projects);
         try {
             sorter.checkCyclicDependency();
@@ -274,6 +275,81 @@ public class SorterTest
         projects.add(project_h);
         Sorter sorter = new Sorter(projects);
         sorter.checkCyclicDependency();
+    }
+
+
+    /*
+     * Test method sortProjects
+     */
+    @Test
+    public void testSort1()
+    {
+        Project project_a = new Project("a");
+
+        List<Project> projects = new ArrayList<Project>();
+        projects.add(project_a);
+        Sorter sorter = new Sorter(projects);
+        sorter.sortProjects();
+        assertFalse( sorter.hasMultipleProjects() );
+        assertEquals( sorter.getSortedProjects(), projects );
+    }
+
+    @Test
+    public void testSort2()
+    {
+        // a --> b --->c
+        Project project_a = new Project("a");
+        Project project_b = new Project("b");
+        Project project_c = new Project("c");
+
+        assertEquals( project_b.getPath(), "//b-.jar" );
+        project_a.getDependencies().add(new Dependency("//b-.jar"));
+
+        assertEquals( project_c.getPath(), "//c-.jar" );
+        project_b.getDependencies().add(new Dependency("//c-.jar"));
+
+        List<Project> expected = new ArrayList<Project>();
+        expected.add(project_c);
+        expected.add(project_b);
+        expected.add(project_a);
+
+        List<Project> projects = new ArrayList<Project>();
+        projects.add(project_a);
+        projects.add(project_b);
+        projects.add(project_c);
+
+        Sorter sorter = new Sorter(projects);
+        sorter.sortProjects();
+        assertTrue( sorter.hasMultipleProjects() );
+        assertEquals( sorter.getSortedProjects(), expected );
+    }
+
+    @Test
+    public void testSort3()
+    {
+        // a --> b --->c
+        Project project_a = new Project("a");
+        Project project_b = new Project("b");
+        Project project_c = new Project("c");
+
+        assertEquals( project_c.getPath(), "//c-.jar" );
+        project_a.getDependencies().add(new Dependency("//c-.jar"));
+        project_b.getDependencies().add(new Dependency("//c-.jar"));
+
+        List<Project> expected = new ArrayList<Project>();
+        expected.add(project_c);
+        expected.add(project_a);
+        expected.add(project_b);
+
+        List<Project> projects = new ArrayList<Project>();
+        projects.add(project_a);
+        projects.add(project_b);
+        projects.add(project_c);
+
+        Sorter sorter = new Sorter(projects);
+        sorter.sortProjects();
+        assertTrue( sorter.hasMultipleProjects() );
+        assertEquals( sorter.getSortedProjects(), expected );
     }
 
 }

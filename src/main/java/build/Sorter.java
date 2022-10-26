@@ -5,10 +5,7 @@ import nut.logging.Log;
 import nut.model.Dependency;
 import nut.model.Project;
 
-import java.io.Serializable;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,25 +21,23 @@ public class Sorter
     // ------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------
-
     public Sorter( List<Project> projects )
     {
         log = new Log();
-//        log.debugOn();
         listOfProjects = projects;
     }
 
     public void checkDuplicate() throws SorterException
     {
-        List<Project> linkedProjects = new LinkedList<Project>();
+        List<Project> projects = new ArrayList<Project>();
         log.debug("Check duplicate");
         for ( Project project : listOfProjects ) {
             log.debug("  " + project.getId() );
             // Check if a project is duplicate
-            if ( linkedProjects.contains( project ) ) {
+            if ( projects.contains( project ) ) {
                 throw new SorterException( "Project '" + project.getId() + "' is duplicated" );
             }
-            linkedProjects.add( project );
+            projects.add( project );
         }
     }
 
@@ -55,22 +50,22 @@ public class Sorter
      */
     public void checkCyclicDependency() throws SorterException
     {
-        List<String> visited = new LinkedList<String>();
+        List<String> visited = new ArrayList<String>();
         log.debug("Check cyclic dependency");
         for ( Project project : listOfProjects ) {
             visit( project, visited);
         }
     }
 
-    // TO DO
+    /**
+     * Sort the projects regarding the dependencies.
+     */
     public void sortProjects()
     {
         log.debug("Sort projects");
-        // Create sorted list of projects
         for ( Project project : listOfProjects ) {
-                sortedProjects.add( project );
+            sortBuildOrder( project, sortedProjects );
         }
-
     }
 
     public List<Project> getSortedProjects()
@@ -96,18 +91,39 @@ public class Sorter
             if ( cycle.contains( dependency.getPath() ) ) {
                      throw new SorterException( "Project '" + project.getPath() + "' creates a cycle with '" + dependency.getPath() + "'" );
             }
-            log.debug("  dependency " + dependency.getPath() );
-            Project dep = findProject( dependency.getPath() );
+            Project dep = retrieveProject( dependency.getPath() );
             if ( dep != null && dep.isNotVisited() ) {
                 visit( dep, cycle );
             }
             cycle.add( project.getPath() );
-        }            
+        }
         project.visited();
     }
 
+    /**
+     * This method will be called for each project to sort them for build them regarding the dependencies.
+     */
+    private void sortBuildOrder( Project project, List<Project> sorted )
+    {
+        log.debug("Sorting " + project.getPath() );
+        for ( Dependency dependency : project.getDependencies() ) {
+            Project dep = retrieveProject( dependency.getPath() );
+            if ( dep != null ) {
+                sortBuildOrder( dep, sorted );
+            }
+            if ( listOfProjects.contains( dep ) && ! sorted.contains( dep ) ) {
+                sorted.add( dep );
+            }
+        }
+        if ( ! sorted.contains( project ) ) {
+                sorted.add( project );
+        }
+    }
 
-    private Project findProject( String path ) {
+    /**
+     * Retrieve the project from the list of projects given its path
+     */
+    private Project retrieveProject( String path ) {
         for ( Project project : listOfProjects ) {
             if ( path.equals( project.getPath() ) ) {
               return project;
