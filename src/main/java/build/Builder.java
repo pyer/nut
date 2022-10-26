@@ -42,7 +42,7 @@ public class Builder
       boolean fail = false;
       log.debug("Build project " + project.getId() + " goal='" + goal +"'");
       if ( "model".equals(goal) ) {
-          log.info( "Effective model of " + project.getId() + "\n" + project.effectiveNut());
+          log.info( "Effective model of " + project.getPath() + "\n" + project.effectiveNut());
       } else {
         if ( "modules".equals(project.getPattern()) ) {
           return 0;

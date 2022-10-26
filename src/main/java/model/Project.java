@@ -550,6 +550,9 @@ public class Project implements java.io.Serializable
     public String effectiveNut()
     {
       StringBuffer buf = new StringBuffer();
+      buf.append("\n");
+      buf.append("MODEL\n");
+      buf.append("-----\n");
       buf.append("group:     " + group + "\n");
       buf.append("name:      " + name + "\n");
       buf.append("version:   " + version + "\n");
@@ -561,9 +564,24 @@ public class Project implements java.io.Serializable
         buf.append("pattern:   " + pattern + "\n");
         buf.append("mainClass: " + mainClass + "\n");
         buf.append("dependencies:\n");
+        for ( Dependency dep: dependencies ) {
+            buf.append("  - " + dep.getPath() + "\n");
+        }
         buf.append("testDependencies:\n");
+        for ( Dependency dep: testDependencies ) {
+            buf.append("  - " + dep.getPath() + "\n");
+        }
         buf.append("properties:\n");
         getProperties().forEach((k, v) -> buf.append("  - " + k + "=" + v + "\n"));
+      }
+      buf.append("\n");
+      buf.append("ENVIRONMENT\n");
+      buf.append("-----------\n");
+      for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
+        String key = (String) en.nextElement();
+        if( key.startsWith( "nut." ) ) {
+            buf.append("  - " + key + "=" + System.getProperty(key) + "\n");
+        }
       }
       return buf.toString();
     }
