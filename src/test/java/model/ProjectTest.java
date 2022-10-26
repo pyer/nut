@@ -44,14 +44,14 @@ public class ProjectTest
     }
 
     @Test
-    public void testProjectPathName()
+    public void testProjectPath()
     {
         Project project = new Project();
         project.setGroup("nut.group");
         project.setName("artifact");
         project.setVersion("1.0");
         project.setPackaging("zip");
-        assertEquals( project.getPathName(), "/nut/group/artifact-1.0.zip" );
+        assertEquals( project.getPath(), "/nut/group/artifact-1.0.zip" );
     }
 
     @Test
@@ -179,6 +179,17 @@ public class ProjectTest
         File nut = new File( basedir + "/src/test/resources/fullProject.yaml" );
         project.parseFile(nut);
         project.validate();
+    }
+
+    @Test
+    public void testState()
+    {
+        Project project = new Project();
+        assertTrue( project.isNotVisited() );
+        project.visiting();
+        assertTrue( project.isVisiting() );
+        project.visited();
+        assertTrue( project.isVisited() );
     }
 
 }

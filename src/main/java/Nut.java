@@ -2,10 +2,9 @@ package nut;
 
 import nut.build.Builder;
 
-import nut.build.CycleDetectedException;
-import nut.build.DuplicateProjectException;
 import nut.build.Scanner;
 import nut.build.Sorter;
+import nut.build.SorterException;
 import nut.logging.Log;
 import nut.model.Project;
 
@@ -102,6 +101,9 @@ public class Nut
             Scanner scanner = new Scanner("nut.yaml", noop);
             List<Project> projects = scanner.getProjects();
             Sorter sorter = new Sorter( projects );
+            sorter.checkDuplicate();
+            sorter.checkCyclicDependency();
+            sorter.sortProjects();
             List<Project> sortedProjects = sorter.getSortedProjects();
             if ( sorter.hasMultipleProjects() ) {
               log.line();
@@ -123,10 +125,7 @@ public class Nut
             if( sortedProjects.size() > 1 ) {
                logReactorSummary( sortedProjects );
             }
-        } catch(CycleDetectedException e) {
-            log.failure(e.getMessage());
-            retCode = 5;
-        } catch(DuplicateProjectException e) {
+        } catch(SorterException e) {
             log.failure(e.getMessage());
             retCode = 5;
         } catch(ValidationException e) {

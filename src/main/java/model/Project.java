@@ -19,6 +19,10 @@ import java.util.Properties;
 
 public class Project implements java.io.Serializable
 {
+    private final static int NOT_VISITED = 0;
+    private final static int VISITING = 1;
+    private final static int VISITED = 2;
+
     private Log log;
 
     /**
@@ -59,9 +63,9 @@ public class Project implements java.io.Serializable
     private String description;
 
     /**
-     * The list used to sort the projects during build 
+     * The state of the project managed by Sorter
      */
-    List<Project> children = new ArrayList<Project>();
+    private int state = NOT_VISITED;
 
     /**
      * The local repository where are all the artifact binaries.
@@ -115,6 +119,13 @@ public class Project implements java.io.Serializable
         this.time = System.currentTimeMillis();
         this.localRepository = System.getProperty( "nut.local" );
         this.remoteRepository = System.getProperty( "nut.remote" );
+    }
+
+    // For tests
+    public Project(String name)
+    {
+        this(false);
+        setName(name);
     }
 
     // ----------------------------------------------------------------------
@@ -212,6 +223,31 @@ public class Project implements java.io.Serializable
         return this.description;
     }
 
+    public void visiting()
+    {
+        state = VISITING;
+    }
+
+    public void visited()
+    {
+        state = VISITED;
+    }
+
+    public boolean isNotVisited()
+    {
+        return ( state == NOT_VISITED );
+    }
+
+    public boolean isVisiting()
+    {
+        return ( state == VISITING );
+    }
+
+    public boolean isVisited()
+    {
+        return ( state == VISITED );
+    }
+
     /**
      * Layout public methods
      */
@@ -220,7 +256,7 @@ public class Project implements java.io.Serializable
         return this.localRepository;
     }
 
-    public void setRepository(String s)
+    public void setRepository( String s )
     {
         this.localRepository = s;
     }
@@ -347,7 +383,7 @@ public class Project implements java.io.Serializable
         return getGroup() + ":" + getName() + ":" + getVersion() + ":" + getPackaging();
     }
 
-    public String getPathName()
+    public String getPath()
     {
         String path = "/" + getGroup().replace('.', '/');
         return path + File.separator + getName() + "-" + getVersion() + "." + getPackaging();
