@@ -73,11 +73,6 @@ public class Sorter
         return sortedProjects;
     }
 
-    public boolean hasMultipleProjects()
-    {
-        return sortedProjects.size() > 1;
-    }
-
     // ------------------------------------------------------------
     /**
      * This method will be called for each project and we want to check if introduction of

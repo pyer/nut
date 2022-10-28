@@ -56,7 +56,6 @@ public class SorterTest
         sorter.sortProjects();
 
         assertTrue( sorter.getSortedProjects().isEmpty() );
-        assertFalse( sorter.hasMultipleProjects() );
     }
 
     @Test
@@ -78,7 +77,7 @@ public class SorterTest
         sorter.sortProjects();
 
         assertFalse( sorter.getSortedProjects().isEmpty() );
-        assertTrue( sorter.hasMultipleProjects() );
+        assertEquals( sorter.getSortedProjects().size(), 2 );
 
         List<Project> sortedList = sorter.getSortedProjects();
         assertEquals( sortedList.get(0), project1 );
@@ -290,7 +289,7 @@ public class SorterTest
         projects.add(project_a);
         Sorter sorter = new Sorter(projects);
         sorter.sortProjects();
-        assertFalse( sorter.hasMultipleProjects() );
+        assertEquals( sorter.getSortedProjects().size(), 1 );
         assertEquals( sorter.getSortedProjects(), projects );
     }
 
@@ -320,7 +319,7 @@ public class SorterTest
 
         Sorter sorter = new Sorter(projects);
         sorter.sortProjects();
-        assertTrue( sorter.hasMultipleProjects() );
+        assertEquals( sorter.getSortedProjects().size(), 3 );
         assertEquals( sorter.getSortedProjects(), expected );
     }
 
@@ -348,7 +347,7 @@ public class SorterTest
 
         Sorter sorter = new Sorter(projects);
         sorter.sortProjects();
-        assertTrue( sorter.hasMultipleProjects() );
+        assertEquals( sorter.getSortedProjects().size(), 3 );
         assertEquals( sorter.getSortedProjects(), expected );
     }
 

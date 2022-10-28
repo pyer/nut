@@ -104,7 +104,6 @@ public class Nut
         // Everything is ok, let's go
         log.start();
         try {
-            log.info( "Scanning projects..." );
             Scanner scanner = new Scanner("nut.yaml", noop);
             List<Project> projects = scanner.getProjects();
             Sorter sorter = new Sorter( projects );
@@ -112,16 +111,6 @@ public class Nut
             sorter.checkCyclicDependency();
             sorter.sortProjects();
             List<Project> sortedProjects = sorter.getSortedProjects();
-            if ( sorter.hasMultipleProjects() ) {
-              log.line();
-              log.info( "Sorting projects..." );
-              for ( Project project : sortedProjects ) {
-                  log.info( "   " + project.getPath() );
-              }
-
-              log.line();
-              log.info( "Building projects..." );
-            }
             // iterate over projects, and execute goal on each...
             for ( Project project : sortedProjects ) {
                 project.setArguments(runArguments);
