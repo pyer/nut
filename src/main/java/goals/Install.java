@@ -10,8 +10,6 @@ import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.util.Properties;
-
 public class Install implements Goal
 {
     /** Instance logger */
@@ -20,12 +18,6 @@ public class Install implements Goal
     public void execute(Project project) throws GoalException
     {
         log = new Log();
-        Properties pp               = project.getProperties();
-        String mode                 = (String)System.getProperty( "nut.mode", "SNAPSHOT" );
-        if( "RELEASE".equals(mode) )
-          mode = "";
-        else
-          mode = "-SNAPSHOT";
 
         String repository           = project.getRepository();
         String basedir              = project.getBaseDirectory();
@@ -34,7 +26,7 @@ public class Install implements Goal
 
         String groupId              = project.getGroup();
         String artifactId           = project.getName();
-        String version              = project.getVersion()  + mode;
+        String version              = project.getVersion();
         String packaging            = project.getPackaging();
 
         log.debug( "project.groupId           = " + groupId );
@@ -58,9 +50,6 @@ public class Install implements Goal
                 copyFile( buildName, artifactName, version );
           }
         }
-        //install: copy nut.xml file to local repository
-        //String nutName = basedir + File.separator + "nut.xml";
-        //copyFile( nutName, artifactName + ".nut", version );
     }
 
     /**

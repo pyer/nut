@@ -203,6 +203,11 @@ public class Project implements java.io.Serializable
         this.version = s;
     }
 
+    public void setVersionMode(String mode)
+    {
+        this.version = this.version + mode;
+    }
+
     public String getPackaging()
     {
         return this.packaging;
@@ -440,19 +445,6 @@ public class Project implements java.io.Serializable
     }
 
     /**
-     * Add all system properties "nut.*" to model
-     */
-    public void addProperties()
-    {
-      for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
-        String key = (String) en.nextElement();
-        if( key.startsWith( "nut." ) ) {
-            getProperties().put( key, System.getProperty(key) );
-        }
-      }
-    }
-
-    /**
      * Initialize properties from the pattern file
      * pattern must be declared before other properties in nut.yaml
      * 
@@ -547,22 +539,21 @@ public class Project implements java.io.Serializable
     }
 
     // ----------------------------------------------------------------------
-    public String effectiveNut()
+    public String model()
     {
       StringBuffer buf = new StringBuffer();
-      buf.append("\n");
-      buf.append("MODEL\n");
-      buf.append("-----\n");
       buf.append("group:     " + group + "\n");
       buf.append("name:      " + name + "\n");
       buf.append("version:   " + version + "\n");
-      buf.append("packaging: " + packaging + "\n");
       if (pattern.equals("modules")) {
         buf.append("modules:\n");
         modules.forEach (module -> buf.append("  - " + module + "\n"));
       } else {
-        buf.append("pattern:   " + pattern + "\n");
-        buf.append("mainClass: " + mainClass + "\n");
+        buf.append("packaging: " + packaging + "\n");
+        //buf.append("pattern:   " + pattern + "\n");
+        if ( mainClass != null ) {
+          buf.append("mainClass: " + mainClass + "\n");
+        }
         buf.append("dependencies:\n");
         for ( Dependency dep: dependencies ) {
             buf.append("  - " + dep.getPath() + "\n");
@@ -572,17 +563,9 @@ public class Project implements java.io.Serializable
             buf.append("  - " + dep.getPath() + "\n");
         }
         buf.append("properties:\n");
-        getProperties().forEach((k, v) -> buf.append("  - " + k + "=" + v + "\n"));
+        getProperties().forEach((k, v) -> buf.append("  " + k + ": " + v + "\n"));
       }
       buf.append("\n");
-      buf.append("ENVIRONMENT\n");
-      buf.append("-----------\n");
-      for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
-        String key = (String) en.nextElement();
-        if( key.startsWith( "nut." ) ) {
-            buf.append("  - " + key + "=" + System.getProperty(key) + "\n");
-        }
-      }
       return buf.toString();
     }
 

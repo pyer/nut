@@ -33,7 +33,6 @@ import nut.model.Project;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Goal which runs tests

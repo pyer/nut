@@ -1,18 +1,15 @@
 package nut;
 
 import nut.build.Builder;
-
 import nut.build.Scanner;
 import nut.build.Sorter;
 import nut.build.SorterException;
 import nut.logging.Log;
-import nut.model.Project;
-
 import nut.model.ParserException;
+import nut.model.Project;
 import nut.model.ValidationException;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +24,8 @@ public class Nut
     {
         String  goal = null;
         boolean noop = false;
-
-        // Default mode is SNAPSHOT
-        System.setProperty( "nut.mode", "SNAPSHOT" );
+        // Default version mode is SNAPSHOT
+        String  mode = "-SNAPSHOT";
 
         log = new Log();
         for (int i=0; i < args.length; i++) {
@@ -42,7 +38,7 @@ public class Nut
             } else if (args[i].equals("-h") || args[i].equals("--help") || args[i].equals("help") || args[i].equals("?")) {
                 showHelp();
                 System.exit( 0 );
-            } else if (args[i].equals("model") || args[i].equals("build") || args[i].equals("run") || args[i].equals("version")) {
+            } else if (args[i].equals("env") || args[i].equals("model") || args[i].equals("build") || args[i].equals("run")) {
                 goal = args[i];
             } else if (args[i].startsWith("-D")) {
                 // -Dproperty=value (-Dproperty means -Dproperty=true)
@@ -52,10 +48,10 @@ public class Nut
             } else if (args[i].equals("-n") || args[i].equals("--noop")) {
                 noop = true;
             } else if (args[i].equals("-r") || args[i].equals("--release")) {
-                System.setProperty( "nut.mode", "RELEASE" );
+                mode = "";
             } else if (args[i].equals("-s") || args[i].equals("--snapshot")) {
-                System.setProperty( "nut.mode", "SNAPSHOT" );
-                 
+                // nothing to do, default mode is already snapshot
+                ;
             } else {
                 if (args[i].startsWith("-")) {
                     log.error( "Invalid option '" + args[i] + "'" );
@@ -89,8 +85,19 @@ public class Nut
             System.exit( 0 );
         }
 
-        if (goal.equals("version")) {
-            showVersion();
+        if (goal.equals("env")) {
+            showEnvironment();
+            System.exit( 0 );
+        }
+
+        if (goal.equals("model")) {
+            Scanner scanner = new Scanner("nut.yaml");
+            try {
+              Project project = scanner.getProject();
+              log.out( project.model() );
+            } catch(Exception e) {
+              log.out( e.getMessage() );
+            }
             System.exit( 0 );
         }
 
@@ -118,6 +125,7 @@ public class Nut
             // iterate over projects, and execute goal on each...
             for ( Project project : sortedProjects ) {
                 project.setArguments(runArguments);
+                project.setVersionMode(mode);
                 log.line();
                 Builder builder = new Builder(goal);
                 retCode += builder.build(project);
@@ -145,10 +153,35 @@ public class Nut
     // ----------------------------------------------------------------------
     // Help functions
     // ----------------------------------------------------------------------
-    private static void showVersion()
+    private static void showHelp()
+    {
+        log.out( "Version " + System.getProperty( "nut.version" ) );
+        log.out( "\nUsage:" );
+        log.out( "    nut <operation> [options]" );
+        log.out( "\nOperations:" );
+        log.out( "  env      Display project's environment" );
+        log.out( "  model    Display project's model from nut.yaml file" );
+        log.out( "  build    Build project, execute 'clean', 'compile', 'test', 'pack' and 'install' operations" );
+        log.out( "  clean    Clean up built files in target directory" );
+        log.out( "  compile  Compile source files" );
+        log.out( "  test     Test compiled sources" );
+        log.out( "  pack     Pack binaries and resources " );
+        log.out( "  install  Install package in local repository");
+        log.out( "  run      Run project" );
+        log.out( "\nOptions:" );
+        log.out( "  -D,--define      Define a system property (-Dkey=value)" );
+        log.out( "  -d,--debug       Display debug messages" );
+        log.out( "  -n,--noop        No operation mode (dry run)" );
+        log.out( "  -r,--release     Install a release version (default is snapshot)" );
+        log.out( "  -s,--snapshot    Install a snapshot version of the project" );
+        log.out( "  --               Next arguments are passed to the operation call (mainly run)" );
+//        log.out( "  -v,--verbose     Display info messages" );
+        log.out( "\n" );
+    }
+
+    private static void showEnvironment()
     {
         log.out( "Nut version           : " + System.getProperty( "nut.version", "<undefined>" ) );
-        log.out( "Nut mode              : " + System.getProperty( "nut.mode", "<undefined>" ) );
         log.out( "Nut local repository  : " + System.getProperty( "nut.local", "<undefined>" ) );
         log.out( "Nut remote repository : " + System.getProperty( "nut.remote", "<undefined>" ) );
         log.out( "Java version          : " + System.getProperty( "java.version", "<unknown>" ) );
@@ -160,32 +193,13 @@ public class Nut
                                             + System.getProperty( "os.version", "<unknown>" ) );
         log.out( "Architecture          : " + System.getProperty( "os.arch", "<unknown>" ) );
         log.out( "Platform encoding     : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
-    }
-
-    private static void showHelp()
-    {
-        log.out( "\nUsage:" );
-        log.out( "    nut <operation> [options]" );
-        log.out( "\nOperations:" );
-        log.out( "  clean    Clean up built files in target directory" );
-        log.out( "  compile  Compile source files" );
-        log.out( "  test     Test compiled sources" );
-        log.out( "  pack     Pack binaries and resources " );
-        log.out( "  install  Install package in local repository");
-        log.out( "  build    Build project, execute 'clean', 'compile', 'test', 'pack' and 'install' operations" );
-        log.out( "  model    Display effective nut.yaml" );
-        log.out( "  run      Run project" );
-        log.out( "  version  Display version information" );
-        log.out( "  help     Display this help" );
-        log.out( "\nOptions:" );
-        log.out( "  -D,--define      Define a system property" );
-        log.out( "  -d,--debug       Display debug messages" );
-        log.out( "  -h,--help        Display this help" );
-        log.out( "  -n,--noop        No operation mode (dry run)" );
-        log.out( "  -r,--release     Release mode. Default is snapshot" );
-        log.out( "  -s,--snapshot    Snapshot default mode" );
-        log.out( "  --               Next arguments are passed to the operation call (mainly run)" );
-//        log.out( "  -v,--verbose     Display info messages" );
+        /*
+        log.out( "\n" );
+        for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
+          String key = (String) en.nextElement();
+          log.out( "  - " + key + "=" + System.getProperty(key) );
+        }
+        */
     }
 
     // ----------------------------------------------------------------------

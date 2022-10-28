@@ -14,56 +14,70 @@ import java.util.List;
 
 public class Scanner
 {
-  private Log log;
-  private List<Project> projectsList;
-  private String nut;
+    private Log log;
+    private List<Project> projectsList;
+    private String nut;
+    private boolean noop;
 
-  /**
-   * Scan a project with or without modules.
-   */
-  public Scanner( String nutFileName ) throws IOException, ParserException, ValidationException
-  {
-    // Default is noop mode is false
-    this( nutFileName, false );
-  }
-
-  public Scanner( String nutFileName, boolean noop ) throws IOException, ParserException, ValidationException
-  {
-    log = new Log();
-    nut = nutFileName;
-    File projectFile = new File( nut );
-    if ( projectFile.exists() ) {
-      List<File> files = new ArrayList<File>();
-      files.add( projectFile );
-      projectsList = collectProjects( files, noop );
-    } else {
-      throw new ParserException( "Project file '" + nutFileName + "' not found !" );
+    /**
+     * Scan a project with or without modules.
+     */
+    public Scanner( String nutFileName )
+    {
+      // Default is noop mode is false
+      this( nutFileName, false );
     }
-  }
 
-  /**
-   * return the project list of modules
-   */
-  public List<Project> getProjects()
-  {
-    return projectsList;
-  }
-  // --------------------------------------------------------------------------------
-  private List<Project> collectProjects( List<File> files, boolean noop ) throws IOException, ParserException, ValidationException
-  {
+    /**
+     * Scan a project with or without modules.
+     */
+    public Scanner( String nutFileName, boolean noOperation )
+    {
+      log = new Log();
+      nut  = nutFileName;
+      noop = noOperation;
+    }
+
+    // --------------------------------------------------------------------------------
+    /**
+     * return the current project
+     */
+    public Project getProject() throws IOException, ParserException, ValidationException
+    {
+      Project project = new Project();
+      File projectFile = new File( nut );
+      if ( projectFile.exists() ) {
+        project = createProject( projectFile );
+      } else {
+        throw new ParserException( "Project file '" + nut + "' not found !" );
+      }
+      return project;
+    }
+
+    /**
+     * return the project list of modules
+     */
+    public List<Project> getProjects() throws IOException, ParserException, ValidationException
+    {
+      File projectFile = new File( nut );
+      if ( projectFile.exists() ) {
+        List<File> files = new ArrayList<File>();
+        files.add( projectFile );
+        projectsList = collectProjects( files );
+      } else {
+        throw new ParserException( "Project file '" + nut + "' not found !" );
+      }
+      return projectsList;
+    }
+
+    // --------------------------------------------------------------------------------
+    private List<Project> collectProjects( List<File> files ) throws IOException, ParserException, ValidationException
+    {
         List<Project> projects = new ArrayList<Project>( files.size() );
 
         for ( File file : files ) {
-            File cfile = file.getCanonicalFile();
-            log.debug("   Project " + cfile.getPath());
-            Project project = new Project(noop);
-            project.setBaseDirectory(cfile.getParent());
-            project.parseFile( cfile );
-            project.validate();
+            Project project = createProject(file);
             if ( ( project.getModules() != null ) && !project.getModules().isEmpty() ) {
-              //log.info("   Modules:");
-                File modulesRoot = cfile.getParentFile();
-
                 // Initial ordering is as declared in the modules section
                 List<File> moduleFiles = new ArrayList<File>( project.getModules().size() );
                 for ( String name : project.getModules() ) {
@@ -73,17 +87,29 @@ public class Scanner
                         continue;
                     }
 
+                    String modulesRoot = project.getBaseDirectory();
                     File moduleFile = new File( modulesRoot, name );
                     if ( moduleFile.exists() && moduleFile.isDirectory() ) {
                         moduleFiles.add( new File( modulesRoot, name + File.separator + nut ) );
                     }
                 }
-                List<Project> collectedProjects = collectProjects( moduleFiles, noop );
+                List<Project> collectedProjects = collectProjects( moduleFiles );
                 projects.addAll( collectedProjects );
             } else {
                 projects.add( project );
             }
         }
         return projects;
-  }
+    }
+
+    private Project createProject( File file ) throws IOException, ParserException, ValidationException
+    {
+        File cfile = file.getCanonicalFile();
+        log.debug("   Project " + cfile.getPath());
+        Project project = new Project(noop);
+        project.setBaseDirectory(cfile.getParent());
+        project.parseFile( cfile );
+        project.validate();
+        return project;
+    }
 }

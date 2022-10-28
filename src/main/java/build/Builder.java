@@ -39,11 +39,8 @@ public class Builder
      * returns 9 if not
      */
     public int build( Project project ) {
-      boolean fail = false;
-      log.debug("Build project " + project.getId() + " goal='" + goal +"'");
-      if ( "model".equals(goal) ) {
-          log.info( "Effective model of " + project.getPath() + "\n" + project.effectiveNut());
-      } else {
+        boolean fail = false;
+        log.debug("Build project " + project.getId() + " goal='" + goal +"'");
         if ( "modules".equals(project.getPattern()) ) {
           return 0;
         }
@@ -97,8 +94,7 @@ public class Builder
           return 9;
         }
         project.success();
-      }
-      return 0;
+        return 0;
     }
 }
 

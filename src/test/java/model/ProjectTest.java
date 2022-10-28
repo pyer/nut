@@ -55,6 +55,16 @@ public class ProjectTest
     }
 
     @Test
+    public void testProjectVersion()
+    {
+        Project project = new Project();
+        project.setVersion("1.0");
+        assertEquals( project.getVersion(), "1.0" );
+        project.setVersionMode("-SNAPSHOT");
+        assertEquals( project.getVersion(), "1.0-SNAPSHOT" );
+    }
+
+    @Test
     public void testProjectDefaultPackaging()
     {
         Project project = new Project();
