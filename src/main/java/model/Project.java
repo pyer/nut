@@ -289,7 +289,7 @@ public class Project implements java.io.Serializable
      */
     public String getSourceDirectory()
     {
-        return getProperties().getProperty("sourceDirectory", "src/main/java");
+        return properties.getProperty("sourceDirectory", "src/main/java");
     }
 
     /**
@@ -298,7 +298,7 @@ public class Project implements java.io.Serializable
      */
     public String getResourceDirectory()
     {
-        return getProperties().getProperty("resourceDirectory", "src/main/resources");
+        return properties.getProperty("resourceDirectory", "src/main/resources");
     }
 
     /**
@@ -307,7 +307,7 @@ public class Project implements java.io.Serializable
      */
     public String getWebappDirectory()
     {
-        return getProperties().getProperty("webappDirectory", "src/main/webapp");
+        return properties.getProperty("webappDirectory", "src/main/webapp");
     }
 
     /**
@@ -319,7 +319,7 @@ public class Project implements java.io.Serializable
      */
     public String getTestSourceDirectory()
     {
-        return getProperties().getProperty("testSourceDirectory", "src/test/java");
+        return properties.getProperty("testSourceDirectory", "src/test/java");
     }
 
     /**
@@ -329,7 +329,7 @@ public class Project implements java.io.Serializable
      */
     public String getTestResourceDirectory()
     {
-        return getProperties().getProperty("testResourceDirectory", "src/test/resources");
+        return properties.getProperty("testResourceDirectory", "src/test/resources");
     }
 
     /**
@@ -337,7 +337,7 @@ public class Project implements java.io.Serializable
      */
     public String getTargetDirectory()
     {
-        return getProperties().getProperty("targetDirectory", "target");
+        return properties.getProperty("targetDirectory", "target");
     }
 
     /**
@@ -345,7 +345,7 @@ public class Project implements java.io.Serializable
      */
     public String getOutputDirectory()
     {
-        return getProperties().getProperty("outputDirectory","target/classes");
+        return properties.getProperty("outputDirectory","target/classes");
     }
 
     /**
@@ -353,7 +353,7 @@ public class Project implements java.io.Serializable
      */
     public String getTestOutputDirectory()
     {
-        return getProperties().getProperty("testOutputDirectory","target/test-classes");
+        return properties.getProperty("testOutputDirectory","target/test-classes");
     }
 
     /**
@@ -361,7 +361,7 @@ public class Project implements java.io.Serializable
      */
     public String getTestReportDirectory()
     {
-        return getProperties().getProperty("testReportDirectory","target/test-reports");
+        return properties.getProperty("testReportDirectory","target/test-reports");
     }
 
 
@@ -426,22 +426,12 @@ public class Project implements java.io.Serializable
         getTestDependencies().add(new Dependency(path));
     }
 
-    public Properties getProperties()
-    {
-        return this.properties;
-    }
-
-    public void setProperties( Properties properties )
-    {
-        this.properties = properties;
-    }
-
     private void addProperty( String prop )
     {
         String[] parts = prop.split(": ",2);
         String key = parts[0].trim();
         String value = parts[1].trim();
-        getProperties().put( key, value );
+        properties.put( key, value );
     }
 
     /**
@@ -454,7 +444,7 @@ public class Project implements java.io.Serializable
         String fileName = this.localRepository + File.separator + pattern + ".properties";
         try {
           FileInputStream in = new FileInputStream(fileName);
-          getProperties().load(in);
+          properties.load(in);
           in.close();
         } catch ( Exception e ) {
           throw new ParserException( "Could not read the pattern '" + fileName + "'. Reason: " + e.getMessage(), e );
@@ -563,7 +553,7 @@ public class Project implements java.io.Serializable
             buf.append("  - " + dep.getPath() + "\n");
         }
         buf.append("properties:\n");
-        getProperties().forEach((k, v) -> buf.append("  " + k + ": " + v + "\n"));
+        properties.forEach((k, v) -> buf.append("  " + k + ": " + v + "\n"));
       }
       buf.append("\n");
       return buf.toString();
