@@ -193,13 +193,6 @@ public class Nut
                                             + System.getProperty( "os.version", "<unknown>" ) );
         log.out( "Architecture          : " + System.getProperty( "os.arch", "<unknown>" ) );
         log.out( "Platform encoding     : " + System.getProperty( "file.encoding", "<unknown encoding>" ) );
-        /*
-        log.out( "\n" );
-        for ( Enumeration en = System.getProperties().propertyNames(); en.hasMoreElements(); ) {
-          String key = (String) en.nextElement();
-          log.out( "  - " + key + "=" + System.getProperty(key) );
-        }
-        */
     }
 
     // ----------------------------------------------------------------------
