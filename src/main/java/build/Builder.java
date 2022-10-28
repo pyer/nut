@@ -12,8 +12,6 @@ import nut.goals.Pack;
 import nut.goals.Run;
 import nut.goals.Test;
 
-import nut.interpolation.Interpolator;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -46,9 +44,6 @@ public class Builder
         }
         try {
           project.start();
-          // Interpolate
-          Interpolator interpolator = new Interpolator();
-          project = interpolator.interpolatedProject( project );
           // Check dependencies
           DependencyChecker depChecker = new DependencyChecker();
           depChecker.checkProject( project );
