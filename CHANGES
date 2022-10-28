@@ -1,4 +1,5 @@
 3.0
+remove plexus-utils-3.0.jar
 nut.xml is replaced by nut.yaml.
 xml format is no longer supported.
 no parent.
