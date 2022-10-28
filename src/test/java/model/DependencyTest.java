@@ -39,55 +39,44 @@ public class DependencyTest
     @Test
     public void testDependencyPath()
     {
-      String s = "/nut/group/dep-3.0.jar";
+      String s = "/g1/g2/g3/dep-x-1.2.3.jar";
       Dependency dependency = new Dependency(s);
       assertEquals( dependency.getPath(), s );
     }
 
     @Test
-    public void testDependencyGroupPath()
+    public void testDependencyGroup()
     {
-      assertEquals( new Dependency("/nut/group/dep-3.0.jar").getGroupPath(), "nut/group" );
-    }
-
-    @Test
-    public void testDependencyIdRelease()
-    {
-      String s = "/nut/group/dep-3.0.jar";
+      String s = "/g1/g2/g3/dep-x-1.2.3.jar";
       Dependency dependency = new Dependency(s);
-      assertEquals( dependency.getId(), "nut.group:dep:3.0:jar" );
+      assertEquals( dependency.getGroup(), "/g1/g2/g3" );
     }
 
     @Test
-    public void testDependencyIdSnapshot()
+    public void testDependencyEmptyGroup()
     {
-      String s = "/nut/group/dep-3.0-SNAPSHOT.jar";
+      String s = "/dep-x-1.2.3.jar";
       Dependency dependency = new Dependency(s);
-      assertEquals( dependency.getId(), "nut.group:dep:3.0-SNAPSHOT:jar" );
+      assertEquals( dependency.getGroup(), "" );
     }
 
+/*
     @Test
-    public void testEmptyDependencyId()
+    public void testBadDependencyPath()
     {
-      Dependency dependency = new Dependency("");
-      assertEquals( dependency.getId(), ":::" );
+      assertEquals( new Dependency("dep-3.0.jar").getPath(),        "/dep-3.0.jar" );
+      assertEquals( new Dependency("/dep-3.0.jar").getPath(),       "/dep:3.0.jar" );
+      assertEquals( new Dependency("/nut/group.jar").getPath(),     "/nut/group-.jar" );
+      assertEquals( new Dependency("/nut/group/dep.jar").getPath(), "/nut/group/dep-.jar" );
+      assertEquals( new Dependency("/nut/group/dep-3.0").getPath(), "/nut/group/dep-3.0" );
     }
-
-    @Test
-    public void testBadDependencyId()
-    {
-      assertEquals( new Dependency("dep-3.0.jar").getId(),  ":dep:3.0:jar" );
-      assertEquals( new Dependency("/dep-3.0.jar").getId(), ":dep:3.0:jar" );
-      assertEquals( new Dependency("/nut/group.jar").getId(), "nut:group::jar" );
-      assertEquals( new Dependency("/nut/group/dep.jar").getId(), "nut.group:dep::jar" );
-      assertEquals( new Dependency("/nut/group/dep-3.0").getId(), "nut.group:dep:3:0" );
-    }
+*/
 
     @Test
     public void testDependencyIsPresent()
     {
       String basedir = System.getProperty( "basedir", "." );
-      Dependency dependency = new Dependency("nut/model/DependencyTest.class");
+      Dependency dependency = new Dependency("/nut/model/DependencyTest.class");
       assertFalse( dependency.isNotHere(basedir + "/target/test-classes") );
     }
 
@@ -95,7 +84,7 @@ public class DependencyTest
     public void testDependencyIsAbsent()
     {
       String basedir = System.getProperty( "basedir", "." );
-      Dependency dependency = new Dependency("nut/model/NoDependency");
+      Dependency dependency = new Dependency("/nut/model/NoDependency");
       assertTrue( dependency.isNotHere(basedir = "/target/test-classes") );
     }
 

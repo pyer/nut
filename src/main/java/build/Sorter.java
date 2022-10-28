@@ -32,10 +32,10 @@ public class Sorter
         List<Project> projects = new ArrayList<Project>();
         log.debug("Check duplicate");
         for ( Project project : listOfProjects ) {
-            log.debug("  " + project.getId() );
+            log.debug("  " + project.getPath() );
             // Check if a project is duplicate
             if ( projects.contains( project ) ) {
-                throw new SorterException( "Project '" + project.getId() + "' is duplicated" );
+                throw new SorterException( "Project '" + project.getPath() + "' is duplicated" );
             }
             projects.add( project );
         }

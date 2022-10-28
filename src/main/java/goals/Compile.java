@@ -2,7 +2,6 @@ package nut.goals;
 
 import nut.goals.GoalException;
 import nut.logging.Log;
-import nut.model.Dependency;
 import nut.model.Project;
 
 import java.io.File;
@@ -74,7 +73,7 @@ public class Compile implements Goal
           log.debug( "Scanning sources in " + sourceDirectory );
           List sources = sourceFiles( new File( sourceDirectory ) );
           if ( sources.isEmpty() ) {
-            log.warn( "No source code for " + project.getId() );
+            log.warn( "No source code for " + project.getPath() );
           } else {
             File outputDir = new File( outputDirectory );
             if ( !outputDir.exists() ) {

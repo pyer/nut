@@ -38,7 +38,7 @@ public class Builder
      */
     public int build( Project project ) {
         boolean fail = false;
-        log.debug("Build project " + project.getId() + " goal='" + goal +"'");
+        log.debug("Build project " + project.getPath() + " goal='" + goal +"'");
         if ( "modules".equals(project.getPattern()) ) {
           return 0;
         }
@@ -85,7 +85,7 @@ public class Builder
 
         if( fail ) {
           project.failure();
-          log.failure( project.getId() );
+          log.failure( project.getPath() );
           return 9;
         }
         project.success();

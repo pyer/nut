@@ -39,7 +39,7 @@ public class DependencyChecker
           log.debug("Check dependency " + dep.getPath() );
           if ( dep.isNotHere(repo) ) {
               try {
-                File outputDir = new File( repo + File.separator + dep.getGroupPath() );
+                File outputDir = new File( repo + dep.getGroup() );
                 if ( !outputDir.exists() ) {
                   outputDir.mkdirs();
                 }

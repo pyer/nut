@@ -116,7 +116,7 @@ public class Nut
               log.line();
               log.info( "Sorting projects..." );
               for ( Project project : sortedProjects ) {
-                  log.info( "   " + project.getId() );
+                  log.info( "   " + project.getPath() );
               }
 
               log.line();
@@ -237,12 +237,12 @@ public class Nut
             for ( Project project : projects ) {
                 if ( project.isBuilt() ) {
                     if ( project.isSuccessful() ) {
-                        log.success( project.getId(), project.getTime() );
+                        log.success( project.getPath(), project.getTime() );
                     } else {
-                        log.failure( project.getId(), project.getTime() );
+                        log.failure( project.getPath(), project.getTime() );
                     }
                 } else {
-                    log.warning( project.getId(), -1 );
+                    log.warning( project.getPath(), -1 );
                 }
             }
     }

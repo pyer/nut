@@ -72,7 +72,7 @@ public class War
             for ( Dependency dep : project.getDependencies() ) {
               String depPath = repository + dep.getPath();
               log.debug("** " + depPath);
-              Path dest = Paths.get(libDirectory + "/" + dep.getName());
+              Path dest = Paths.get(libDirectory + dep.getPath());
               if ( !dest.toFile().exists() )
                   Files.copy(Paths.get(depPath), dest);
             }

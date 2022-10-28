@@ -33,17 +33,6 @@ public class ProjectTest
     }
 
     @Test
-    public void testProjectId()
-    {
-        Project project = new Project();
-        project.setGroup("nut.group");
-        project.setName("artifact");
-        project.setVersion("1.0");
-        project.setPackaging("zip");
-        assertEquals( project.getId(), "nut.group:artifact:1.0:zip" );
-    }
-
-    @Test
     public void testProjectPath()
     {
         Project project = new Project();
@@ -113,7 +102,7 @@ public class ProjectTest
         project.setBaseDirectory(basedir);
         File nut = new File( basedir + "/src/test/resources/emptyProject.yaml" );
         project.parseFile(nut);
-        assertEquals( project.getId(), ":::jar" );
+        assertEquals( project.getPath(), "//-.jar" );
     }
 
     @Test
@@ -126,7 +115,7 @@ public class ProjectTest
         File nut = new File( basedir + "/src/test/resources/smallProject.yaml" );
         project.parseFile(nut);
 
-        assertEquals( project.getId(), "nut.test:small:3.0:jar" );
+        assertEquals( project.getPath(), "/nut/test/small-3.0.jar" );
     }
 
     @Test
@@ -137,7 +126,7 @@ public class ProjectTest
         project.setBaseDirectory(basedir);
         File nut = new File( basedir + "/src/test/resources/fullProject.yaml" );
         project.parseFile(nut);
-        assertEquals( project.getId(), "nut.test:full:3.0:jar" );
+        assertEquals( project.getPath(), "/nut/test/full-3.0.jar" );
         assertEquals( project.getSourceDirectory(),       "target/main/java" );
         assertEquals( project.getResourceDirectory(),     "target/main/resources" );
         assertEquals( project.getWebappDirectory(),       "target/main/webapp" );

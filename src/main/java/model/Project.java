@@ -383,11 +383,6 @@ public class Project implements java.io.Serializable
     /**
      * Other public methods
      */
-    public String getId()
-    {
-        return getGroup() + ":" + getName() + ":" + getVersion() + ":" + getPackaging();
-    }
-
     public String getPath()
     {
         String path = "/" + getGroup().replace('.', '/');
@@ -524,7 +519,7 @@ public class Project implements java.io.Serializable
             return false;
         } else {
             Project otherProject = (Project) other;
-            return getId().equals( otherProject.getId() );
+            return getPath().equals( otherProject.getPath() );
         }
     }
 
