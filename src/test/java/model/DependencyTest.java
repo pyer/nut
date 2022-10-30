@@ -4,6 +4,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import org.testng.annotations.Test;
 
@@ -60,17 +61,69 @@ public class DependencyTest
       assertEquals( dependency.getGroup(), "" );
     }
 
-/*
-    @Test
-    public void testBadDependencyPath()
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateNullDependency() throws ValidationException
     {
-      assertEquals( new Dependency("dep-3.0.jar").getPath(),        "/dep-3.0.jar" );
-      assertEquals( new Dependency("/dep-3.0.jar").getPath(),       "/dep:3.0.jar" );
-      assertEquals( new Dependency("/nut/group.jar").getPath(),     "/nut/group-.jar" );
-      assertEquals( new Dependency("/nut/group/dep.jar").getPath(), "/nut/group/dep-.jar" );
-      assertEquals( new Dependency("/nut/group/dep-3.0").getPath(), "/nut/group/dep-3.0" );
+      Dependency dependency = new Dependency(null);
+      dependency.validate();
+      fail( "Exception should be detected" );
     }
-*/
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateEmptyDependency() throws ValidationException
+    {
+      Dependency dependency = new Dependency("");
+      dependency.validate();
+      fail( "Exception should be detected" );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateWrongDependency1() throws ValidationException
+    {
+      Dependency dependency = new Dependency("abc");
+      dependency.validate();
+      fail( "Exception should be detected" );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateWrongDependency2() throws ValidationException
+    {
+      Dependency dependency = new Dependency("/abc");
+      dependency.validate();
+      fail( "Exception should be detected" );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateWrongDependency3() throws ValidationException
+    {
+      Dependency dependency = new Dependency("/abc/");
+      dependency.validate();
+      fail( "Exception should be detected" );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateWrongDependency4() throws ValidationException
+    {
+      Dependency dependency = new Dependency("/a/b/c/");
+      dependency.validate();
+      fail( "Exception should be detected" );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateWrongDependency5() throws ValidationException
+    {
+      Dependency dependency = new Dependency("/a ");
+      dependency.validate();
+      fail( "Exception should be detected" );
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testValidateWrongDependency6() throws ValidationException
+    {
+      Dependency dependency = new Dependency("\t/a");
+      dependency.validate();
+      fail( "Exception should be detected" );
+    }
 
     @Test
     public void testDependencyIsPresent()

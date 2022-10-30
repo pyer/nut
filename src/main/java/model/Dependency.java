@@ -1,5 +1,6 @@
 package nut.model;
 
+import nut.model.ValidationException;
 import java.io.File;
 
 public class Dependency implements java.io.Serializable {
@@ -52,6 +53,30 @@ public class Dependency implements java.io.Serializable {
     }
 
     // -------------------------------------------------------------
+    /**
+     * Dependency validation
+     */
+    public void validate() throws ValidationException
+    {
+        if ( path == null ) {
+            throw new ValidationException( "dependency is null" );
+        }
+        if ( path.isEmpty() ) {
+            throw new ValidationException( "dependency is empty" );
+        }
+        if ( path.contains(" \t") ) {
+            throw new ValidationException( "dependency contains space" );
+        }
+        if ( ! path.startsWith("/") ) {
+            throw new ValidationException( "dependency '" + path + "' must start with '/'" );
+        }
+        if ( path.lastIndexOf("/") == 0 ) {
+            throw new ValidationException( "dependency '" + path + "' is not a file name" );
+        }
+        if ( path.lastIndexOf("/") == (path.length()-1) ) {
+            throw new ValidationException( "dependency '" + path + "' is not a file name" );
+        }
+    }
 
     /**
      * Check if the dependency is present in the local repository

@@ -13,7 +13,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -404,10 +403,12 @@ public class Project implements java.io.Serializable
         return this.dependencies;
     }
 
-    private void addDependency( String path )
+    private void addDependency( String path ) throws ValidationException
     {
         log.debug("addDependency("+path+")");
-        getDependencies().add(new Dependency(path));
+        Dependency dependency = new Dependency(path);
+        dependency.validate();
+        getDependencies().add(dependency);
     }
 
     public List<Dependency> getTestDependencies()
@@ -415,10 +416,12 @@ public class Project implements java.io.Serializable
         return this.testDependencies;
     }
 
-    private void addTestDependency( String path )
+    private void addTestDependency( String path ) throws ValidationException
     {
         log.debug("addTestDependency("+path+")");
-        getTestDependencies().add(new Dependency(path));
+        Dependency dependency = new Dependency(path);
+        dependency.validate();
+        getTestDependencies().add(dependency);
     }
 
     private void addProperty( String prop )
@@ -582,6 +585,8 @@ public class Project implements java.io.Serializable
           throw new ParserException( "Could not find the file '" + file.getPath() + "'.", e );
         } catch ( IOException e ) {
           throw new ParserException( "Could not read the file '" + file.getPath() + "'.", e );
+        } catch ( ValidationException e ) {
+          throw new ParserException( e.getMessage(), e );
         }
     }
 
@@ -620,7 +625,7 @@ public class Project implements java.io.Serializable
       return key;
     }
 
-    private void parseList(String tag, String line) throws ParserException
+    private void parseList(String tag, String line) throws ParserException, ValidationException
     {
       String value = line.substring(2);
       if ( value.isEmpty() ) {
