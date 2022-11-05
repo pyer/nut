@@ -43,14 +43,17 @@ public class DependencyTest
       String s = "/g1/g2/g3/dep-x-1.2.3.jar";
       Dependency dependency = new Dependency(s);
       assertEquals( dependency.getPath(), s );
+      assertEquals( dependency.getGroup(), "/g1/g2/g3" );
+      assertEquals( dependency.getLibName(), "/dep-x-1.2.3.jar" );
     }
 
     @Test
-    public void testDependencyGroup()
+    public void testDependencyEmptyName()
     {
-      String s = "/g1/g2/g3/dep-x-1.2.3.jar";
+      String s = "/g1/g2/g3/";
       Dependency dependency = new Dependency(s);
       assertEquals( dependency.getGroup(), "/g1/g2/g3" );
+      assertEquals( dependency.getLibName(), "/" );
     }
 
     @Test
@@ -59,6 +62,7 @@ public class DependencyTest
       String s = "/dep-x-1.2.3.jar";
       Dependency dependency = new Dependency(s);
       assertEquals( dependency.getGroup(), "" );
+      assertEquals( dependency.getLibName(),  "/dep-x-1.2.3.jar" );
     }
 
     @Test(expectedExceptions = ValidationException.class)

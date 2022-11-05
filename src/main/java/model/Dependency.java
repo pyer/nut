@@ -35,6 +35,18 @@ public class Dependency implements java.io.Serializable {
         return group;
     }
 
+    // Returns "/lib" when path is "/a/b/c/lib"
+    // Return "/" when path is "/a/b/" or "abc"
+    public String getLibName()
+    {
+        String name = "/";
+        int i = path.lastIndexOf( '/' );
+        if ( i>=0 ) {
+          name = path.substring( i );
+        }
+        return name;
+    }
+
     // -------------------------------------------------------------
     /**
      * @see java.lang.Object#equals(java.lang.Object)
