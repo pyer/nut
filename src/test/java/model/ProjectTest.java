@@ -81,7 +81,6 @@ public class ProjectTest
         assertEquals( project.getTargetDirectory(), "target" );
         assertEquals( project.getOutputDirectory(), "target/classes" );
         assertEquals( project.getTestOutputDirectory(), "target/test-classes" );
-        assertEquals( project.getTestReportDirectory(), "target/test-reports" );
     }
 
     @Test(expectedExceptions = ParserException.class)
@@ -135,7 +134,6 @@ public class ProjectTest
         assertEquals( project.getTargetDirectory(),       "target/test-target" );
         assertEquals( project.getOutputDirectory(),       "target/test-target/classes" );
         assertEquals( project.getTestOutputDirectory(),   "target/test-target/test-classes" );
-        assertEquals( project.getTestReportDirectory(),   "target/test-target/test-reports" );
     }
 
     @Test(expectedExceptions = ValidationException.class)

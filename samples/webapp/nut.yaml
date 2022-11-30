@@ -13,5 +13,4 @@ properties:
   webappDirectory: target/webapp
   outputDirectory: target/classes
   testOutputDirectory: target/test-classes
-  testReportDirectory: target/test-reports
 

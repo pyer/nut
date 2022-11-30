@@ -8,18 +8,15 @@ The command built in this class
 -------------------------------
 java
 -cp classpath
--Dbasedir=basedir
 org.testng.TestNG
--d testReportDirectory
 -suitename project.getName()
--testclass testClasses.substring(1)
+-testclass testClasses
 
 
 The real command executed on my PC
 ----------------------------------
 /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
 -cp /home/pba/GitHub/nut/target/classes:/home/pba/GitHub/nut/target/test-classes:/home/pba/nutRepository/com/beust/jcommander-1.48.jar:/home/pba/nutRepository/org/testng/testng-6.8.7.jar
--Dbasedir=/home/pba/GitHub/nut
 org.testng.TestNG
 -d /home/pba/GitHub/nut/target/test-reports
 -suitename nut
@@ -50,9 +47,7 @@ public class Test implements Goal
         Log log = new Log();
         String basedir              = project.getBaseDirectory();
         String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
-        String testReportDirectory  = basedir + File.separator + project.getTestReportDirectory();
         log.debug( "test classes = " + testOutputDirectory);
-        log.debug( "test reports = " + testReportDirectory);
 
         if (project.noop()) {
             log.info( "NOOP: Testing " + testOutputDirectory );
@@ -66,18 +61,16 @@ public class Test implements Goal
             String classpath = project.getTestDependenciesClassPath();
             log.debug("classpath = " + classpath);
 
-            String testClasses = listOfTests(testClassesDir, testOutputDirectory.length() + 1);
+            String testClasses = listOfTests(testClassesDir, testOutputDirectory.length() + 1).substring(1);
             log.debug("testclass = " + testClasses);
             if (testClasses.isEmpty()) {
                 log.warn( testOutputDirectory + " is empty" );
                 return;
             }
 
-            ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "-Dbasedir=" + basedir,
-                                                  "org.testng.TestNG", "-d", testReportDirectory,
+            ProcessBuilder pb = new ProcessBuilder(command, "-cp", classpath, "org.testng.TestNG",
                                                   "-suitename", project.getName(),
-//                                                  "-verbose", "0",
-                                                  "-testclass", testClasses.substring(1));
+                                                  "-testclass", testClasses);
             pb.inheritIO();
             int returnCode = 0;
             try {
@@ -95,7 +88,7 @@ public class Test implements Goal
                 throw new GoalException(e.getMessage());
             }
             if (returnCode!=0) {
-                throw new GoalException("At least one test failed, see file://" + testReportDirectory + "/index.html" );
+                throw new GoalException("At least one test failed." );
             }
         } else {
             log.warn( "No test for " + project.getPath() );

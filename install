@@ -9,8 +9,8 @@ NUT_LOCAL="$HOME/nutRepository"
 NUT_REMOTE="http://search.maven.org/remotecontent?filepath="
 
 echo "Build nut local repository"
-rm -rf $NUT_LOCAL
-mkdir -p $NUT_LOCAL
+#rm -rf $NUT_LOCAL
+#mkdir -p $NUT_LOCAL
 cp -a localRepository/* $NUT_LOCAL/
 
 cd $root

@@ -355,15 +355,6 @@ public class Project implements java.io.Serializable
         return properties.getProperty("testOutputDirectory","target/test-classes");
     }
 
-    /**
-     * The directory where test reports are placed.
-     */
-    public String getTestReportDirectory()
-    {
-        return properties.getProperty("testReportDirectory","target/test-reports");
-    }
-
-
     public String getMainClass()
     {
         return this.mainClass;
