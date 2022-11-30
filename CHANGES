@@ -3,6 +3,7 @@ remove plexus-utils-3.0.jar
 nut.xml is replaced by nut.yaml.
 xml format is no longer supported.
 no parent.
+builder, logger and tester are separate projects.
 
 2.0
 No plugins to improve speed.

@@ -3,8 +3,8 @@
 group:   nut
 name:    nut
 version: 3.0
-pattern: jar2
 
-testDependencies:
-  - /com/beust/jcommander-1.48.jar
-  - /org/testng/testng-6.8.7.jar
+modules:
+  - builder
+  - logger
+  - tester

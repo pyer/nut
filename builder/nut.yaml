@@ -1,0 +1,14 @@
+# Nut builder project
+#
+group:   nut
+name:    builder
+version: 3.0
+pattern: jar1
+
+dependencies:
+  - /nut/logger-3.0.jar
+
+testDependencies:
+  - /com/beust/jcommander-1.48.jar
+  - /org/testng/testng-6.8.7.jar
+#  - /nut/tester-3.0.jar

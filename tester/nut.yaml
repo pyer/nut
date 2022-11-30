@@ -1,0 +1,10 @@
+# Nut tester project
+#
+group:   nut
+name:    tester
+version: 3.0
+pattern: jar1
+
+testDependencies:
+  - /com/beust/jcommander-1.48.jar
+  - /org/testng/testng-6.8.7.jar
