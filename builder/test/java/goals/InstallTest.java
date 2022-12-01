@@ -40,7 +40,7 @@ public class InstallTest
     public void testInstallJarRelease() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml", false);
+        Scanner scanner = new Scanner(basedir + "/test/resources/fullProject.yaml", false);
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);
@@ -67,7 +67,7 @@ public class InstallTest
     public void testInstallJarSnapshot() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml", false);
+        Scanner scanner = new Scanner(basedir + "/test/resources/fullProject.yaml", false);
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);
@@ -95,7 +95,7 @@ public class InstallTest
     public void testInstallJarFileNoop() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml", true);
+        Scanner scanner = new Scanner(basedir + "/test/resources/fullProject.yaml", true);
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);
@@ -122,7 +122,7 @@ public class InstallTest
     public void testInstallModules() throws IOException, ParserException, ValidationException, GoalException
     {
         String basedir = System.getProperty( "basedir", "." );
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/modulesProject.yaml", false);
+        Scanner scanner = new Scanner(basedir + "/test/resources/modulesProject.yaml", false);
         List<Project> projects = scanner.getProjects();
         // As projects is empty, Install goal is not executed
         assertTrue( projects.isEmpty() );

@@ -89,7 +89,7 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        File nut = new File( basedir + "/src/test/resources/NOFILE" );
+        File nut = new File( basedir + "/test/resources/NOFILE" );
         project.parseFile(nut);
     }
 
@@ -99,7 +99,7 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        File nut = new File( basedir + "/src/test/resources/emptyProject.yaml" );
+        File nut = new File( basedir + "/test/resources/emptyProject.yaml" );
         project.parseFile(nut);
         assertEquals( project.getPath(), "//-.jar" );
     }
@@ -110,8 +110,8 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        project.setRepository( basedir + "/src/test/resources" );
-        File nut = new File( basedir + "/src/test/resources/smallProject.yaml" );
+        project.setRepository( basedir + "/test/resources" );
+        File nut = new File( basedir + "/test/resources/smallProject.yaml" );
         project.parseFile(nut);
 
         assertEquals( project.getPath(), "/nut/test/small-3.0.jar" );
@@ -123,7 +123,7 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        File nut = new File( basedir + "/src/test/resources/fullProject.yaml" );
+        File nut = new File( basedir + "/test/resources/fullProject.yaml" );
         project.parseFile(nut);
         assertEquals( project.getPath(), "/nut/test/full-3.0.jar" );
         assertEquals( project.getSourceDirectory(),       "target/main/java" );
@@ -149,7 +149,7 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        File nut = new File( basedir + "/src/test/resources/emptyProject.yaml" );
+        File nut = new File( basedir + "/test/resources/emptyProject.yaml" );
         project.parseFile(nut);
         project.validate();
     }
@@ -160,8 +160,8 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        project.setRepository( basedir + "/src/test/resources" );
-        File nut = new File( basedir + "/src/test/resources/smallProject.yaml" );
+        project.setRepository( basedir + "/test/resources" );
+        File nut = new File( basedir + "/test/resources/smallProject.yaml" );
         project.parseFile(nut);
         project.validate();
     }
@@ -172,8 +172,8 @@ public class ProjectTest
         String basedir = System.getProperty( "basedir", "." );
         Project project = new Project();
         project.setBaseDirectory(basedir);
-        project.setRepository( basedir + "/src/test/resources" );
-        File nut = new File( basedir + "/src/test/resources/fullProject.yaml" );
+        project.setRepository( basedir + "/test/resources" );
+        File nut = new File( basedir + "/test/resources/fullProject.yaml" );
         project.parseFile(nut);
         project.validate();
     }

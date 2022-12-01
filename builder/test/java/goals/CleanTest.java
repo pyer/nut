@@ -24,7 +24,7 @@ public class CleanTest
 
         String basedir = System.getProperty( "basedir", "." );
 
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml", false);
+        Scanner scanner = new Scanner(basedir + "/test/resources/fullProject.yaml", false);
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);
@@ -57,7 +57,7 @@ public class CleanTest
 
         String basedir = System.getProperty( "basedir", "." );
 
-        Scanner scanner = new Scanner(basedir + "/src/test/resources/fullProject.yaml", true);
+        Scanner scanner = new Scanner(basedir + "/test/resources/fullProject.yaml", true);
         List<Project> projects = scanner.getProjects();
         assertFalse( projects.isEmpty() );
         Project project = projects.get(0);

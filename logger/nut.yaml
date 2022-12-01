@@ -2,7 +2,7 @@
 #
 group:   nut
 name:    logger
-version: 3.0
+version: 3.1
 pattern: jar1
 
 testDependencies:

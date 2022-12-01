@@ -2,7 +2,7 @@
 #
 group:   nut
 name:    nut
-version: 3.0
+version: 3.1
 
 modules:
   - builder

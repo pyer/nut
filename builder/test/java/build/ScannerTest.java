@@ -20,7 +20,7 @@ public class ScannerTest
 {
     private String nutFileName() {
         String basedir = System.getProperty( "basedir", "." );
-        return basedir + "/src/test/resources/fullProject.yaml";
+        return basedir + "/test/resources/fullProject.yaml";
     }
 
     @Test

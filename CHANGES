@@ -1,3 +1,6 @@
+3.1
+fix tester
+
 3.0
 remove plexus-utils-3.0.jar
 nut.xml is replaced by nut.yaml.
