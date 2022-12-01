@@ -45,8 +45,10 @@ public class Builder
         try {
           project.start();
           // Check dependencies
-          DependencyChecker depChecker = new DependencyChecker();
-          depChecker.checkProject( project );
+          if ( ! "clean".equals(goal) ) {
+            DependencyChecker depChecker = new DependencyChecker();
+            depChecker.checkProject( project );
+          }
           // Achieve goal
           if( "build".equals(goal) ) {
             new Clean().execute(project);
