@@ -2,9 +2,9 @@ package nut;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import nut.annotations.Test;
 
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
+import static nut.Assert.*;
 
 /*
 Logger.java public methods:

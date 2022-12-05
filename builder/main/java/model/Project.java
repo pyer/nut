@@ -451,7 +451,7 @@ public class Project implements java.io.Serializable
       return classpath;
     }
 
-    // returns classpath for TestNG child process (all dependencies)
+    // returns classpath for tests child process (all dependencies)
     public String getTestDependenciesClassPath()
     {
       String classpath = getDependenciesClassPath();

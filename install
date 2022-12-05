@@ -13,6 +13,7 @@ echo "Create nut local repository"
 mkdir -p $NUT_LOCAL
 rm -rf $NUT_LOCAL/nut
 cp -a localRepository/* $NUT_LOCAL/
+mkdir -p $NUT_LOCAL/nut
 
 echo "Install logger"
 cd $root
@@ -21,22 +22,33 @@ options="-d $root/target -deprecation -Xlint:unchecked"
 cd logger/main/java
 javac $options Logger.java
 cd $root
-mkdir -p $NUT_LOCAL/nut
 jar cf $NUT_LOCAL/nut/logger-$NUT_VERSION.jar -C target .
+rm -r target
+
+echo "Install tester"
+cd $root
+mkdir -p target
+options="-d $root/target -cp $NUT_LOCAL/nut/logger-$NUT_VERSION.jar -deprecation -Xlint:unchecked"
+cd tester/main/java
+javac $options Assert.java
+cd annotations
+javac $options Ignore.java Test.java
+cd $root
+jar cf $NUT_LOCAL/nut/tester-$NUT_VERSION.jar -C target .
 rm -r target
 
 echo "Install builder"
 cd $root
 mkdir -p target
 echo "Compiling.."
-options="-d $root/target -cp $root/target:$NUT_LOCAL/nut/logger-$NUT_VERSION.jar -deprecation -Xlint:unchecked"
+options="-d $root/target -cp $root/target:$NUT_LOCAL/nut/logger-$NUT_VERSION.jar:$NUT_LOCAL/nut/tester-$NUT_VERSION.jar -deprecation -Xlint:unchecked"
 echo " - model"
 cd builder/main/java/model
 javac $options Dependency.java Project.java ParserException.java ValidationException.java
 echo " - goals"
 cd ../goals
 javac $options packs/util/CopyFiles.java packs/util/ZipFiles.java
-javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Test.java Run.java packs/Jar.java packs/War.java packs/Zip.java
+javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Tests.java Run.java packs/Jar.java packs/War.java packs/Zip.java tests/ClassHelper.java
 echo " - build"
 cd ../build
 javac $options DependencyNotFoundException.java DependencyChecker.java Scanner.java SorterException.java Sorter.java Builder.java

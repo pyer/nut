@@ -1,11 +1,11 @@
 package nut.build;
 
-import org.testng.annotations.Test;
+import nut.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static nut.Assert.assertEquals;
+import static nut.Assert.assertNotNull;
+import static nut.Assert.assertFalse;
+import static nut.Assert.assertTrue;
 
 public class DependencyCheckerTest
 {

@@ -10,7 +10,7 @@ import nut.goals.Compile;
 import nut.goals.Install;
 import nut.goals.Pack;
 import nut.goals.Run;
-import nut.goals.Test;
+import nut.goals.Tests;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class Builder
             new Clean().execute(project);
             new Compile().execute(project);
             new Compile("test").execute(project);
-            new Test().execute(project);
+            new Tests().execute(project);
             new Pack().execute(project);
             new Install().execute(project);
           } else if( "clean".equals(goal) ) {
@@ -63,7 +63,7 @@ public class Builder
             new Compile().execute(project);
           } else if( "test".equals(goal) ) {
             new Compile("test").execute(project);
-            new Test().execute(project);
+            new Tests().execute(project);
           } else if( "pack".equals(goal) ) {
             new Pack().execute(project);
           } else if( "install".equals(goal) ) {

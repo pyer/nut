@@ -1,9 +1,9 @@
 package nut.model;
 
+import nut.annotations.Test;
 import java.io.File;
-import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static nut.Assert.*;
 
 public class ProjectTest
 {

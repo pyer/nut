@@ -6,5 +6,5 @@ version: 3.1
 pattern: jar1
 
 dependencies:
-  - /nut/logger-3.1.jar
+  - /nut/logger-3.0.jar
 

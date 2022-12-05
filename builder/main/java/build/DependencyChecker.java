@@ -1,7 +1,6 @@
 package nut.build;
 
 import nut.Logger;
-
 import nut.build.DependencyNotFoundException;
 import nut.model.Dependency;
 import nut.model.Project;

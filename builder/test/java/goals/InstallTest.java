@@ -1,5 +1,6 @@
 package nut.goals;
 
+import nut.annotations.Test;
 import nut.build.Scanner;
 import nut.goals.GoalException;
 import nut.model.ParserException;
@@ -10,10 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static nut.Assert.assertFalse;
+import static nut.Assert.assertTrue;
 
 public class InstallTest
 {

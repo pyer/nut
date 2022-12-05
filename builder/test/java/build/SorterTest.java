@@ -1,5 +1,6 @@
 package nut.build;
 
+import nut.annotations.Test;
 import nut.build.Sorter;
 import nut.build.SorterException;
 import nut.model.Dependency;
@@ -8,13 +9,11 @@ import nut.model.Project;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static nut.Assert.assertEquals;
+import static nut.Assert.assertNotNull;
+import static nut.Assert.assertFalse;
+import static nut.Assert.assertTrue;
+import static nut.Assert.fail;
 
 public class SorterTest
 {
