@@ -76,6 +76,11 @@ public class Project implements java.io.Serializable
      */
     private String remoteRepository;
 
+    /**
+     * The tester jar file name.
+     */
+    private String tester;
+
     // Other variables
     private List<String> modules = new ArrayList<String>();
     private List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -118,6 +123,10 @@ public class Project implements java.io.Serializable
         this.time = System.currentTimeMillis();
         this.localRepository = System.getProperty( "nut.local" );
         this.remoteRepository = System.getProperty( "nut.remote" );
+        // nut.tester is the name of the tester jar file.
+        // It must be present in the tests dependencies list.
+        Dependency dependency = new Dependency(System.getProperty( "nut.tester" ));
+        this.testDependencies.add(dependency);
     }
 
     // For tests

@@ -5,5 +5,3 @@ name:    logger
 version: 3.1
 pattern: jar1
 
-testDependencies:
-  - /nut/tester-3.0.jar

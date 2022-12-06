@@ -40,7 +40,6 @@ rm -r target
 echo "Install builder"
 cd $root
 mkdir -p target
-echo "Compiling.."
 options="-d $root/target -cp $root/target:$NUT_LOCAL/nut/logger-$NUT_VERSION.jar:$NUT_LOCAL/nut/tester-$NUT_VERSION.jar -deprecation -Xlint:unchecked"
 echo " - model"
 cd builder/main/java/model
@@ -48,7 +47,7 @@ javac $options Dependency.java Project.java ParserException.java ValidationExcep
 echo " - goals"
 cd ../goals
 javac $options packs/util/CopyFiles.java packs/util/ZipFiles.java
-javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Tests.java Run.java packs/Jar.java packs/War.java packs/Zip.java tests/ClassHelper.java
+javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Tests.java Run.java packs/Jar.java packs/War.java packs/Zip.java
 echo " - build"
 cd ../build
 javac $options DependencyNotFoundException.java DependencyChecker.java Scanner.java SorterException.java Sorter.java Builder.java
@@ -66,7 +65,7 @@ echo "Build nut script"
 cat <<EOF >nut
 #!/bin/bash
 # Nut start up script
-java -Xmx512M -classpath ${NUT_LOCAL}/nut/builder-${NUT_VERSION}.jar:$NUT_LOCAL/nut/logger-$NUT_VERSION.jar nut.Nut "-Dversion=${NUT_VERSION}" "-Dlocal=${NUT_LOCAL}" "-Dremote=${NUT_REMOTE}" \$*
+java -Xmx512M -classpath ${NUT_LOCAL}/nut/builder-${NUT_VERSION}.jar:$NUT_LOCAL/nut/logger-$NUT_VERSION.jar nut.Nut "-Dversion=${NUT_VERSION}" "-Dlocal=${NUT_LOCAL}" "-Dremote=${NUT_REMOTE}" "-Dtester=/nut/tester-${NUT_VERSION}.jar" \$*
 EOF
 
 echo "Install /usr/bin/nut'"
