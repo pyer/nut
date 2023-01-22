@@ -8,12 +8,12 @@ NUT_VERSION=${version#version: }
 NUT_LOCAL="$HOME/nutRepository"
 NUT_REMOTE="http://search.maven.org/remotecontent?filepath="
 
-echo "Create nut local repository"
+echo "Create local repository"
 #rm -rf $NUT_LOCAL
 mkdir -p $NUT_LOCAL
-rm -rf $NUT_LOCAL/nut
-cp -a localRepository/* $NUT_LOCAL/
+rm -rf   $NUT_LOCAL/nut
 mkdir -p $NUT_LOCAL/nut
+cp -a properties/* $NUT_LOCAL/
 
 echo "Install logger"
 cd $root
