@@ -4,7 +4,12 @@ version:   1.0
 packaging: jar
 mainClass: Hello
 
+testDependencies:
+  - /nut/tester-3.0.jar
+
 properties:
   sourceDirectory: main/java
+  testSourceDirectory: test/java
   targetDirectory: target
   outputDirectory: target/classes
+  testOutputDirectory: target/test-classes

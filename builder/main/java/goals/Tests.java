@@ -34,74 +34,66 @@ public class Tests implements Goal
           return;
         }
 
-//        Logger log = new Logger();
         String basedir              = project.getBaseDirectory();
+        String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
         String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
 
         if (project.noop()) {
             log.info( "NOOP: Testing " + testOutputDirectory );
         } else {
-            log.info( "Testing " + testOutputDirectory );
-            testingClasses(testOutputDirectory);
+            testingClasses(outputDirectory,testOutputDirectory);
         }
     }
 
-    private void testingClasses(String testOutputDirectory) throws GoalException
+    private void testingClasses(String outputDirectory, String testOutputDirectory) throws GoalException
     {
+        File classesDir     = new File(outputDirectory);
         File testClassesDir = new File(testOutputDirectory);
         if ( testClassesDir.exists() ) {
+          URL[] urls = null;
+          try {
+            // convert the directories to URL format
+            urls = new URL[]{testClassesDir.toURI().toURL(), classesDir.toURI().toURL()};
+          } catch(MalformedURLException e) {
+            log.debug("fileToClass MalformedURLException: " + e.getMessage());
+	          e.printStackTrace();
+          }
+          // load the directories into class loader
+          ClassLoader cl = new URLClassLoader(urls);
+
           List<String> testClasses = listOfTests(testClassesDir);
           if (testClasses.isEmpty()) {
-            log.warn( testOutputDirectory + " is empty" );
+            log.warn( "Testing: " + testOutputDirectory + " is empty" );
           } else {
             Collections.shuffle(testClasses);
-            int index = testOutputDirectory.length();
             for (String test : testClasses) {
-                String display = "  - " + test.substring(index);
-                log.info(display);
-                Class<?> klass = fileToClass(test);
+                Class<?> klass = fileToClass(cl,test);
                 if ( klass == null) {
                     throw new GoalException("Cannot load class from file " + test);
                 } else {
-                    log.info("Testing class " + klass.getCanonicalName());
+                    log.info("Testing " + klass.getCanonicalName() + " (" + test + ")");
                     invokeTestMethods(klass);
                 }
             }
           }
         } else {
-            log.warn( "No test in " + testOutputDirectory );
+            log.warn( "Testing: " + testOutputDirectory + " not found");
         }
     }
 
-
-  /**
-   * Returns the Class object corresponding to the given file name.
-   * When given a file name to form a class name, the file name is parsed and divided into segments.
-   * For example, "c:/java/classes/com/foo/A.class" would be divided into 6 segments {"C:" "java",
-   * "classes", "com", "foo", "A"}.
-   *
-   * @param file the class name.
-   * @return the class corresponding to the name specified.
-   */
-  private Class fileToClass(String file) {
+    /**
+     * Returns the Class object corresponding to the given file name.
+     * When given a file name to form a class name, the file name is parsed and divided into segments.
+     * For example, "c:/java/classes/com/foo/A.class" would be divided into 6 segments {"C:" "java",
+     * "classes", "com", "foo", "A"}.
+     *
+     * @param cl   the class loader.
+     * @param file the class name.
+     * @return the class corresponding to the name specified.
+     */
+    private Class fileToClass(ClassLoader cl, String file) {
       Class result = null;
-
-      ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
       try {
-        URL url = new URL("file://"+ file);
-        log.debug( "fileToClass: url=" + url.toString());
-        URL[] urls = { url };
-//        URLClassLoader ucl = new URLClassLoader(classUrls);
-
-
-        // Create class loader using given codebase
-        // Use prevCl as parent to maintain current visibility
-        //ClassLoader ucl = URLClassLoader.newInstance(urls, this.getClass().getClassLoader());
-        ClassLoader ucl = URLClassLoader.newInstance(urls, prevCl);
-
-        // Save class loader so that we can restore later
-        Thread.currentThread().setContextClassLoader(ucl);
-
         // Transforms the file name into a class name.
         // Remove the ".class" extension.
         int classIndex = file.lastIndexOf(".class");
@@ -114,15 +106,17 @@ public class Tests implements Goal
         do {
           // Try to load the class. For example "A", then "foo.A", "com.foo.A", ...
           try {
-            log.debug("fileToClass: class=" + className);
-            result = ucl.loadClass(className);
+            result = cl.loadClass(className);
           } catch(NoClassDefFoundError e) {
+            log.debug("fileToClass NoClassDefFoundError: " + e.getMessage());
 	          //e.printStackTrace();
             result = null;
           } catch(ClassNotFoundException e) {
+            log.debug("fileToClass ClassNotFoundException: " + e.getMessage());
 	          //e.printStackTrace();
             result = null;
           } catch(Exception e) {
+            log.debug("fileToClass Exception: " + e.getMessage());
 	          e.printStackTrace();
             result = null;
           }
@@ -130,48 +124,15 @@ public class Tests implements Goal
           className = segments[i] + "." + className;
         } while (i > 0 && result == null);
 
-      } catch(MalformedURLException e) {
-	      e.printStackTrace();
       } catch(Exception e) {
+        log.debug("fileToClass Exception: " + e.getMessage());
 	      e.printStackTrace();
         result = null;
 //      } catch (NamingException e) {
 //        e.printStackTrace();
-      } finally {
-        // Restore
-        Thread.currentThread().setContextClassLoader(prevCl);
       }
       return result;
-  }
-
-/*
-    String url = args[0];
-    ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
-
-    // Create class loader using given codebase
-    // Use prevCl as parent to maintain current visibility
-    ClassLoader urlCl = URLClassLoader.newInstance(new URL[]{new URL(url)}, prevCl);
-
-        try {
-        // Save class loader so that we can restore later
-            Thread.currentThread().setContextClassLoader(urlCl);
-
-        // Expect that environment properties are in
-        // application resource file found at "url"
-        Context ctx = new InitialContext();
-
-        System.out.println(ctx.lookup("tutorial/report.txt"));
-
-        // Close context when no longer needed
-        ctx.close();
-    } catch (NamingException e) {
-        e.printStackTrace();
-        } finally {
-            // Restore
-            Thread.currentThread().setContextClassLoader(prevCl);
-        }
     }
-*/
 
     private void invokeTestMethods(Class<?> klass)
     {
@@ -180,14 +141,14 @@ public class Tests implements Goal
         try {
             Object t = klass.newInstance();
             for (Method method : methods) {
-                log.debug("  - " + method.getName());
                 if (method.isAnnotationPresent(Test.class) && ! method.isAnnotationPresent(Ignore.class)) {
-                    log.warn("@Test");
+                    log.info("  - " + method.getName());
                     Object o = method.invoke(t);
                 }
             }
         } catch(InvocationTargetException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            log.debug("InvocationTargetException: " + e.getMessage());
         } catch(InstantiationException e) {
             e.printStackTrace();
         } catch(IllegalAccessException e) {

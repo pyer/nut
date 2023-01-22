@@ -65,7 +65,7 @@ echo "Build nut script"
 cat <<EOF >nut
 #!/bin/bash
 # Nut start up script
-java -Xmx512M -classpath ${NUT_LOCAL}/nut/builder-${NUT_VERSION}.jar:$NUT_LOCAL/nut/logger-$NUT_VERSION.jar nut.Nut "-Dversion=${NUT_VERSION}" "-Dlocal=${NUT_LOCAL}" "-Dremote=${NUT_REMOTE}" "-Dtester=/nut/tester-${NUT_VERSION}.jar" \$*
+java -Xmx512M -classpath ${NUT_LOCAL}/nut/builder-${NUT_VERSION}.jar:$NUT_LOCAL/nut/logger-$NUT_VERSION.jar:$NUT_LOCAL/nut/tester-$NUT_VERSION.jar nut.Nut "-Dversion=${NUT_VERSION}" "-Dlocal=${NUT_LOCAL}" "-Dremote=${NUT_REMOTE}" \$*
 EOF
 
 echo "Install /usr/bin/nut'"
