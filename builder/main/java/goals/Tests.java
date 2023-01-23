@@ -28,6 +28,10 @@ public class Tests implements Goal
 
     private Logger log = new Logger();
 
+    private int failures = 0;
+    private int ignored  = 0;
+    private int success  = 0;
+
     public void execute( Project project ) throws GoalException
     {
         if ( "zip".equals(project.getPackaging() )) {
@@ -71,8 +75,9 @@ public class Tests implements Goal
                 if ( klass == null) {
                     throw new GoalException("Cannot load class from file " + test);
                 } else {
-                    log.info("Testing " + klass.getCanonicalName() + " (" + test + ")");
+                    log.info("Testing " + klass.getCanonicalName());
                     invokeTestMethods(klass);
+                    logResults();
                 }
             }
           }
@@ -80,6 +85,20 @@ public class Tests implements Goal
             log.warn( "Testing: " + testOutputDirectory + " not found");
         }
     }
+
+    private void logResults() {
+        log.info("Results");
+        if (success>0) {
+          log.info("  - " + Integer.toString(success) + " success");
+        }
+        if (ignored>0) {
+          log.warn("  - " + Integer.toString(ignored) + " ignored");
+        }
+        if (failures>0) {
+          log.error("  - " + Integer.toString(failures) + " failures");
+        }
+    }
+
 
     /**
      * Returns the Class object corresponding to the given file name.
@@ -141,18 +160,29 @@ public class Tests implements Goal
         try {
             Object t = klass.newInstance();
             for (Method method : methods) {
-                if (method.isAnnotationPresent(Test.class) && ! method.isAnnotationPresent(Ignore.class)) {
-                    log.info("  - " + method.getName());
-                    Object o = method.invoke(t);
+                log.debug("  - " + method.getName());
+                if (method.isAnnotationPresent(Ignore.class)) {
+                    log.warn("  - " + method.getName() + ": ignored");
+                    ignored++;
+                } else {
+                    if (method.isAnnotationPresent(Test.class)) {
+                        try { 
+                            Object o = method.invoke(t);
+                            log.info( "  - " + method.getName());
+                            success++;
+                        } catch(InvocationTargetException e) {
+                            log.error("  - " + method.getName() + ": " + e.getCause().getMessage());
+                            failures++;
+                        }
+                    }
                 }
             }
-        } catch(InvocationTargetException e) {
-            // e.printStackTrace();
-            log.debug("InvocationTargetException: " + e.getMessage());
         } catch(InstantiationException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            log.debug("InstantiationException: " + e.getMessage());
         } catch(IllegalAccessException e) {
-           e.printStackTrace();
+            // e.printStackTrace();
+            log.debug("IllegalAccessException: " + e.getMessage());
         }
     }
 
