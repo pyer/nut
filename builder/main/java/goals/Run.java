@@ -38,9 +38,8 @@ public class Run implements Goal
             }
         }
 
+        log.info(String.join(" ", command));
         if (project.noop()) {
-            log.info( "NOOP: Running" );
-            log.info(String.join(" ", command));
             return;
         }
 

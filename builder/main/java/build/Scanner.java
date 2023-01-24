@@ -81,7 +81,7 @@ public class Scanner
                 // Initial ordering is as declared in the modules section
                 List<File> moduleFiles = new ArrayList<File>( project.getModules().size() );
                 for ( String name : project.getModules() ) {
-                    log.info("   - Module " + name);
+                    log.info("  - Module " + name);
                     if ( name.trim().isEmpty() ) {
                         log.warn( "Empty module detected. Please check you don't have any empty module definitions." );
                         continue;

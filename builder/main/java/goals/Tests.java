@@ -28,6 +28,7 @@ public class Tests implements Goal
 
     private Logger log = new Logger();
 
+    private boolean noop = false;
     private int failures = 0;
     private int ignored  = 0;
     private int success  = 0;
@@ -42,11 +43,13 @@ public class Tests implements Goal
         String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
         String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
 
-        if (project.noop()) {
-            log.info( "NOOP: Testing " + testOutputDirectory );
-        } else {
-            testingClasses(outputDirectory,testOutputDirectory);
+        noop = project.noop();
+        log.info("Testing");
+        testingClasses(outputDirectory,testOutputDirectory);
+        if (failures>0) {
+          project.failure();
         }
+        logResults();
     }
 
     private void testingClasses(String outputDirectory, String testOutputDirectory) throws GoalException
@@ -67,7 +70,7 @@ public class Tests implements Goal
 
           List<String> testClasses = listOfTests(testClassesDir);
           if (testClasses.isEmpty()) {
-            log.warn( "Testing: " + testOutputDirectory + " is empty" );
+            log.debug( "Testing: " + testOutputDirectory + " is empty" );
           } else {
             Collections.shuffle(testClasses);
             for (String test : testClasses) {
@@ -75,14 +78,15 @@ public class Tests implements Goal
                 if ( klass == null) {
                     throw new GoalException("Cannot load class from file " + test);
                 } else {
-                    log.info("Testing " + klass.getCanonicalName());
-                    invokeTestMethods(klass);
-                    logResults();
+                    log.info("  - " + klass.getCanonicalName());
+                    if (!noop) {
+                        invokeTestMethods(klass);
+                    }
                 }
             }
           }
         } else {
-            log.warn( "Testing: " + testOutputDirectory + " not found");
+            log.debug( "Testing: " + testOutputDirectory + " not found");
         }
     }
 
@@ -98,7 +102,6 @@ public class Tests implements Goal
           log.error("  - " + Integer.toString(failures) + " failures");
         }
     }
-
 
     /**
      * Returns the Class object corresponding to the given file name.
@@ -147,8 +150,6 @@ public class Tests implements Goal
         log.debug("fileToClass Exception: " + e.getMessage());
 	      e.printStackTrace();
         result = null;
-//      } catch (NamingException e) {
-//        e.printStackTrace();
       }
       return result;
     }
@@ -160,19 +161,32 @@ public class Tests implements Goal
         try {
             Object t = klass.newInstance();
             for (Method method : methods) {
-                log.debug("  - " + method.getName());
+                //log.debug("      " + method.getName());
                 if (method.isAnnotationPresent(Ignore.class)) {
-                    log.warn("  - " + method.getName() + ": ignored");
+                    log.warn("      " + method.getName() + ": ignored");
                     ignored++;
                 } else {
                     if (method.isAnnotationPresent(Test.class)) {
-                        try { 
+                        try {
+                            log.debug( "      " + method.getName());
                             Object o = method.invoke(t);
-                            log.info( "  - " + method.getName());
                             success++;
                         } catch(InvocationTargetException e) {
-                            log.error("  - " + method.getName() + ": " + e.getCause().getMessage());
-                            failures++;
+                            boolean expected = false;
+                            Class catched = e.getCause().getClass();
+                            Test test = (Test) method.getAnnotation(Test.class);
+                            for( Class ee : test.expectedExceptions() ) {
+                              if(ee.equals(catched)) {
+                                //log.debug(ee.getName() + "/" + catched.getName());
+                                expected = true;
+                              }
+                            }
+                            if(expected) {
+                              success++;
+                            } else {
+                              log.error("      " + method.getName() + ": " + e.getCause().getMessage());
+                              failures++;
+                            }
                         }
                     }
                 }

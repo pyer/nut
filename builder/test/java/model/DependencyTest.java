@@ -131,7 +131,7 @@ public class DependencyTest
     @Test
     public void testDependencyIsPresent()
     {
-      String basedir = System.getProperty( "basedir", "." );
+      String basedir = System.getProperty("nut.basedir", ".");
       Dependency dependency = new Dependency("/nut/model/DependencyTest.class");
       assertFalse( dependency.isNotHere(basedir + "/target/test-classes") );
     }
@@ -139,7 +139,7 @@ public class DependencyTest
     @Test
     public void testDependencyIsAbsent()
     {
-      String basedir = System.getProperty( "basedir", "." );
+      String basedir = System.getProperty("nut.basedir", ".");
       Dependency dependency = new Dependency("/nut/model/NoDependency");
       assertTrue( dependency.isNotHere(basedir = "/target/test-classes") );
     }

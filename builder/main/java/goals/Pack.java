@@ -20,11 +20,11 @@ public class Pack implements Goal
                          + project.getTargetDirectory() + File.separator
                          + project.getName() + "." + packaging;
 
+        log.info( "Packaging" );
+        log.debug( fullName );
         if (project.noop()) {
-            log.info( "NOOP: Packaging " + fullName );
             return;
         }
-        log.info( "Packaging " + fullName );
 
         // Create target directory if it is needed
         File targetDir = new File( project.getBaseDirectory() + File.separator + project.getTargetDirectory() );

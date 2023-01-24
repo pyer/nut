@@ -1,7 +1,6 @@
 package nut.goals;
 
 import nut.annotations.Test;
-import nut.build.Scanner;
 import nut.goals.GoalException;
 import nut.model.ParserException;
 import nut.model.Project;
@@ -14,20 +13,16 @@ import java.util.List;
 import static nut.Assert.assertEquals;
 import static nut.Assert.assertFalse;
 import static nut.Assert.assertTrue;
+import static nut.Assert.fail;
 
 public class CleanTest
 {
+
     @Test
     public void testCleanTarget() throws IOException, ParserException, ValidationException, GoalException
     {
-
-        String basedir = System.getProperty( "basedir", "." );
-
-        Scanner scanner = new Scanner(basedir + "/test/resources/fullProject.yaml", false);
-        List<Project> projects = scanner.getProjects();
-        assertFalse( projects.isEmpty() );
-        Project project = projects.get(0);
-        project.setBaseDirectory(basedir);
+        Project project = createProject("/test/resources/fullProject.yaml", false);
+        String basedir = project.getBaseDirectory();
         // Create test target
         File d1 = new File( basedir + "/target/test-target" );
         d1.mkdirs();
@@ -53,14 +48,8 @@ public class CleanTest
     @Test
     public void testCleanTargetNoop() throws IOException, ParserException, ValidationException, GoalException
     {
-
-        String basedir = System.getProperty( "basedir", "." );
-
-        Scanner scanner = new Scanner(basedir + "/test/resources/fullProject.yaml", true);
-        List<Project> projects = scanner.getProjects();
-        assertFalse( projects.isEmpty() );
-        Project project = projects.get(0);
-        project.setBaseDirectory(basedir);
+        Project project = createProject("/test/resources/fullProject.yaml", true);
+        String basedir = project.getBaseDirectory();
         // Create test target
         File d1 = new File( basedir + "/target/test-target" );
         d1.mkdirs();
@@ -81,6 +70,22 @@ public class CleanTest
         assertTrue( f2.exists() );
         assertTrue( d1.exists() );
         assertTrue( d2.exists() );
+    }
+
+    private Project createProject( String nutFile, boolean noop) {
+        String basedir = System.getProperty("nut.basedir", ".");
+        try {
+          Project project = new Project(noop);
+          project.setBaseDirectory(basedir);
+          File file = new File(basedir + nutFile);
+          project.parseFile( file );
+          project.validate();
+          return project;
+        } catch( Exception e) {
+          // IOException, ParserException, ValidationException
+          fail(e.getMessage());
+        }
+        return null;
     }
 
 }

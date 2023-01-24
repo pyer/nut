@@ -70,7 +70,7 @@ public class ProjectTest
     @Test
     public void testProjectDefaultDirectories()
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         assertEquals( project.getSourceDirectory(), "src/main/java" );
@@ -86,7 +86,7 @@ public class ProjectTest
     @Test(expectedExceptions = ParserException.class)
     public void testParseAbsentFile() throws ParserException
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         File nut = new File( basedir + "/test/resources/NOFILE" );
@@ -96,7 +96,7 @@ public class ProjectTest
     @Test
     public void testParseEmptyFile() throws ParserException
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         File nut = new File( basedir + "/test/resources/emptyProject.yaml" );
@@ -107,7 +107,7 @@ public class ProjectTest
     @Test
     public void testParseSmallProject() throws ParserException
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         project.setRepository( basedir + "/test/resources" );
@@ -120,7 +120,7 @@ public class ProjectTest
     @Test
     public void testParseFullProject() throws ParserException
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         File nut = new File( basedir + "/test/resources/fullProject.yaml" );
@@ -146,7 +146,7 @@ public class ProjectTest
     @Test(expectedExceptions = ValidationException.class)
     public void testValidateEmptyFile() throws ParserException, ValidationException
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         File nut = new File( basedir + "/test/resources/emptyProject.yaml" );
@@ -157,7 +157,7 @@ public class ProjectTest
     @Test
     public void testValidateSmallProject() throws ParserException, ValidationException
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         project.setRepository( basedir + "/test/resources" );
@@ -169,7 +169,7 @@ public class ProjectTest
     @Test
     public void testValidateFullProject() throws ParserException, ValidationException
     {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         Project project = new Project();
         project.setBaseDirectory(basedir);
         project.setRepository( basedir + "/test/resources" );

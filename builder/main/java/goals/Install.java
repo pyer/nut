@@ -29,26 +29,22 @@ public class Install implements Goal
         String version              = project.getVersion();
         String packaging            = project.getPackaging();
 
-        log.debug( "project.groupId           = " + groupId );
-        log.debug( "project.artifactId        = " + artifactId );
-        log.debug( "project.version           = " + version );
-        log.debug( "project.packaging         = " + packaging );
-
         String group = groupId.replace( '.', File.separatorChar );
         String artifactName = repository + File.separator + group + File.separator + artifactId + "-" + version + "." + packaging;
 
+        log.info( "Installing" );
+        log.debug( "Artifact \'" + artifactName + "\'" );
         if (project.noop()) {
-          log.info( "NOOP: Installing \'" + artifactName + "\'" );
-        } else {
-          log.info( "Installing \'" + artifactName + "\'" );
-          if( "xml".equals(packaging) ) {
-                String buildName = basedir + File.separator + resourceDirectory + File.separator + artifactId + "." + packaging;
-                copyFile( buildName, artifactName, version );
-          } else if( !"modules".equals(packaging) ) {
-                //install: copy target file to local repository
-                String buildName = basedir + File.separator + targetDirectory + File.separator + artifactId + "." + packaging;
-                copyFile( buildName, artifactName, version );
-          }
+          return;
+        }
+
+        if( "xml".equals(packaging) ) {
+            String buildName = basedir + File.separator + resourceDirectory + File.separator + artifactId + "." + packaging;
+            copyFile( buildName, artifactName, version );
+        } else if( !"modules".equals(packaging) ) {
+            //install: copy target file to local repository
+            String buildName = basedir + File.separator + targetDirectory + File.separator + artifactId + "." + packaging;
+            copyFile( buildName, artifactName, version );
         }
     }
 

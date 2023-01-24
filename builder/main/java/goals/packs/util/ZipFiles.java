@@ -44,7 +44,7 @@ public class ZipFiles
           byte data[] = new byte[BUFFER];
           // get a list of files from current directory
           File root = new File( basedir + path );
-          log.info("  scanning " + root);
+          log.debug("  scanning " + root);
           File[] list = root.listFiles();
           if (list == null) return;
 
@@ -59,7 +59,7 @@ public class ZipFiles
             if ( f.isDirectory() ) {
               zipFile( out, basedir, fileName );
             } else {
-              log.info("   zipping " + fileName);
+              log.info("  - " + fileName);
               FileInputStream fi = new FileInputStream( basedir + fileName );
               origin = new BufferedInputStream(fi, BUFFER);
               ZipEntry entry = new ZipEntry( fileName );

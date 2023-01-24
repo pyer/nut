@@ -226,10 +226,10 @@ public class Nut
 
             for ( Project project : projects ) {
                 if ( project.isBuilt() ) {
-                    if ( project.isSuccessful() ) {
-                        log.success( project.getPath(), project.getTime() );
-                    } else {
+                    if ( project.failed() ) {
                         log.failure( project.getPath(), project.getTime() );
+                    } else {
+                        log.success( project.getPath(), project.getTime() );
                     }
                 } else {
                     log.warning( project.getPath(), -1 );

@@ -44,6 +44,8 @@ public class Builder
         }
         try {
           project.start();
+          log.info("Project " + project.getPath());
+          System.setProperty("nut.basedir", project.getBaseDirectory());
           // Check dependencies
           if ( ! "clean".equals(goal) ) {
             DependencyChecker depChecker = new DependencyChecker();
@@ -90,7 +92,7 @@ public class Builder
           log.failure( project.getPath() );
           return 9;
         }
-        project.success();
+        project.finish();
         return 0;
     }
 }

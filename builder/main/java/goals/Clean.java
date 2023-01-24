@@ -33,10 +33,9 @@ public class Clean implements Goal
         String target  = project.getTargetDirectory();
         String fullPath = basedir + File.separator + target;
 
-        if (project.noop()) {
-          log.info( "NOOP: Cleaning " + fullPath );
-        } else {
-          log.info( "Cleaning " + fullPath );
+        log.info( "Cleaning " + target );
+        log.debug( fullPath );
+        if (!project.noop()) {
           removeDirectory( new File(fullPath) );
         }
     }

@@ -43,34 +43,28 @@ public class Compile implements Goal
         String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
         String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
 
-        log.debug( "sourceDirectory     = " + sourceDirectory );
-        log.debug( "testSourceDirectory = " + testSourceDirectory );
-        log.debug( "outputDirectory     = " + outputDirectory );
-        log.debug( "testOutputDirectory = " + testOutputDirectory );
-
         if (test) {
+          log.info( "Compiling tests" );
           if (project.noop()) {
-            log.info( "NOOP: Compiling " + testSourceDirectory );
             return;
           }
           // Compiling test sources
-          log.debug( "Scanning tests in " + testSourceDirectory );
+          log.debug( testSourceDirectory );
           List testSources = sourceFiles( new File( testSourceDirectory ) );
           if ( !testSources.isEmpty() ) {
             File testOutputDir = new File( testOutputDirectory );
             if ( !testOutputDir.exists() ) {
                 testOutputDir.mkdirs();
             }
-            log.info( "Compiling " + testSourceDirectory );
             compile( testSources, testSourceDirectory, testOutputDirectory, project.getTestDependenciesClassPath() );
           }
         } else {
+          log.info( "Compiling sources" );
           if (project.noop()) {
-            log.info( "NOOP: Compiling " + sourceDirectory );
             return;
           }
           // Compiling sources
-          log.debug( "Scanning sources in " + sourceDirectory );
+          log.debug( sourceDirectory );
           List sources = sourceFiles( new File( sourceDirectory ) );
           if ( sources.isEmpty() ) {
             log.warn( "No source code for " + project.getPath() );
@@ -79,7 +73,6 @@ public class Compile implements Goal
             if ( !outputDir.exists() ) {
                 outputDir.mkdirs();
             }
-            log.info( "Compiling " + sourceDirectory );
             compile( sources, sourceDirectory, outputDirectory, project.getDependenciesClassPath() );
           }
         }

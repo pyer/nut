@@ -18,7 +18,7 @@ import static nut.Assert.assertFalse;
 public class ScannerTest
 {
     private String nutFileName() {
-        String basedir = System.getProperty( "basedir", "." );
+        String basedir = System.getProperty("nut.basedir", ".");
         return basedir + "/test/resources/fullProject.yaml";
     }
 

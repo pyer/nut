@@ -102,8 +102,8 @@ public class Project implements java.io.Serializable
     // Building time
     private long time;
     // Status
-    private boolean buildDone    = false;
-    private boolean buildSuccess = false;
+    private boolean buildDone = false;
+    private int failures = 0;
 
     private boolean noopMode = false;
 
@@ -149,21 +149,19 @@ public class Project implements java.io.Serializable
         this.buildDone = true;
     }
 
-    public boolean isSuccessful()
+    public void finish()
     {
-        return buildSuccess;
+        this.time = System.currentTimeMillis() - this.time;
     }
 
-    public void success()
+    public boolean failed()
     {
-        this.buildSuccess = true;
-        this.time = System.currentTimeMillis() - this.time;
+        return this.failures>0;
     }
 
     public void failure()
     {
-        this.buildSuccess = false;
-        this.time = System.currentTimeMillis() - this.time;
+        this.failures++;
     }
 
     public long getTime()
