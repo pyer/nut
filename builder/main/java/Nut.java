@@ -124,16 +124,16 @@ public class Nut
                logReactorSummary( sortedProjects );
             }
         } catch(SorterException e) {
-            log.failure(e.getMessage());
+            log.failure(e);
             retCode = 5;
         } catch(ValidationException e) {
-            log.failure(e.getMessage());
+            log.failure(e);
             retCode = 6;
         } catch(ParserException e) {
-            log.failure(e.getMessage());
+            log.failure(e);
             retCode = 6;
         } catch(Exception e) {
-            log.failure(e.getMessage());
+            log.failure(e);
             retCode = 7;
         }
         log.finish();

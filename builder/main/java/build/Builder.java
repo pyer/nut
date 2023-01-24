@@ -89,7 +89,6 @@ public class Builder
 
         if( fail ) {
           project.failure();
-          log.failure( project.getPath() );
           return 9;
         }
         project.finish();
