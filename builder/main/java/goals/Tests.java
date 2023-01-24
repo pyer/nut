@@ -7,7 +7,9 @@ import nut.annotations.Ignore;
 import nut.annotations.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -167,11 +169,24 @@ public class Tests implements Goal
                     ignored++;
                 } else {
                     if (method.isAnnotationPresent(Test.class)) {
+                        // Save current stdout
+                        PrintStream out = System.out;
                         try {
                             log.debug( "      " + method.getName());
+                            // Redirect stdout to null
+                            try {
+                              System.setOut(new PrintStream("/dev/null"));
+                            } catch(FileNotFoundException e) {
+                              e.printStackTrace();
+                            }
+                            // Invoke the test method
                             Object o = method.invoke(t);
+                            // Restore stdout
+                            System.setOut(out);
                             success++;
                         } catch(InvocationTargetException e) {
+                            // Restore stdout
+                            System.setOut(out);
                             boolean expected = false;
                             Class catched = e.getCause().getClass();
                             Test test = (Test) method.getAnnotation(Test.class);
