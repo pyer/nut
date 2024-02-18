@@ -161,7 +161,7 @@ public class Tests implements Goal
         List<Method> methods = Arrays.asList(klass.getMethods());
         Collections.shuffle(methods);
         try {
-            Object t = klass.newInstance();
+            Object t = klass.getDeclaredConstructor().newInstance();
             for (Method method : methods) {
                 //log.debug("      " + method.getName());
                 if (method.isAnnotationPresent(Ignore.class)) {
@@ -206,6 +206,10 @@ public class Tests implements Goal
                     }
                 }
             }
+        } catch(NoSuchMethodException e) {
+            log.debug("NoSuchMethodException: " + e.getMessage());
+        } catch(InvocationTargetException e) {
+            log.debug("InvocationTargetException: " + e.getMessage());
         } catch(InstantiationException e) {
             // e.printStackTrace();
             log.debug("InstantiationException: " + e.getMessage());
