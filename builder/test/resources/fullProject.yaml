@@ -5,6 +5,8 @@ name:      full
 version:   3.0
 packaging: jar 
 
+mainClass: ab.squirrel.Main
+
 properties:
   targetDirectory:       target/test-target
   sourceDirectory:       target/main/java
@@ -14,4 +16,11 @@ properties:
   testResourceDirectory: target/test/resources
   outputDirectory:       target/test-target/classes
   testOutputDirectory:   target/test-target/test-classes
+
+dependencies:
+  - /ab/dep1.jar
+  - /ab/dep2.jar
+
+testDependencies:
+  - /ab/test.jar
 

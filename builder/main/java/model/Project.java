@@ -418,12 +418,16 @@ public class Project implements java.io.Serializable
         getTestDependencies().add(dependency);
     }
 
-    private void addProperty( String prop )
+    private void addProperty( String prop ) throws ValidationException
     {
         String[] parts = prop.split(": ",2);
-        String key = parts[0].trim();
-        String value = parts[1].trim();
-        properties.put( key, value );
+        if ( parts.length == 2 ) {
+          String key = parts[0].trim();
+          String value = parts[1].trim();
+          properties.put( key, value );
+        } else {
+          throw new ValidationException( "property '" + prop + "' is invalid" );
+        }
     }
 
     /**
@@ -562,15 +566,20 @@ public class Project implements java.io.Serializable
           while ((line = reader.readLine()) != null) {
             String trimed = line.trim();
             log.debug(trimed);
-            if ( !(trimed.startsWith("#") || trimed.isEmpty()) ) {
-              if ( trimed.startsWith("- ") ) {
-                parseList(tag, trimed);
+            if ( trimed.startsWith("#") ) {
+              continue;
+            }
+            if ( trimed.isEmpty() ) {
+              tag = null;
+              continue;
+            }
+            if ( trimed.startsWith("- ") ) {
+              parseList(tag, trimed);
+            } else {
+              if ( "properties".equals(tag) && line.startsWith("  ") ) {
+                addProperty(line);
               } else {
-                if ( "properties".equals(tag) ) {
-                  addProperty(trimed);
-                } else {
-                  tag = parseLine(trimed);
-                }
+                tag = parseLine(trimed);
               }
             }
           }
