@@ -12,8 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * Check if a dependency artifact file is present in the local repository.
@@ -45,12 +47,14 @@ public class DependencyChecker
                 download(dep, repo, remote);
               } catch (SecurityException se) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' is unreadable." );
+              } catch (URISyntaxException use) {
+                throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' has an URI syntax error :" + use );
               } catch (MalformedURLException mue) {
-                throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' has wrong URL :" + mue );
+                throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' has a wrong URL :" + mue );
               } catch(FileNotFoundException fnf) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' is not available :" + fnf );
               } catch(IOException ioe) {
-                throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' Error while writing file :" + ioe );
+                throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' fails to writing file :" + ioe );
               }
               if ( dep.isNotHere(repo) ) {
                 throw new DependencyNotFoundException("Dependency '" + dep.getPath() + "' is not found." );
@@ -60,12 +64,12 @@ public class DependencyChecker
     }
 
     // ----------------------------------------------------------------------
-    private void download(Dependency dep, String repo, String remote) throws MalformedURLException, FileNotFoundException, IOException
+    private void download(Dependency dep, String repo, String remote) throws URISyntaxException, MalformedURLException, FileNotFoundException, IOException
     {
       String outputFileName = repo + dep.getPath();
       // Example: "http://search.maven.org/remotecontent?filepath=org/testng/testng/6.8.7/testng-6.8.7.jar"
       String request = remote + dep.getPath().substring(1);
-      URL url = new URL(request);
+      URL url = new URI(request).toURL();
       log.info( "Download [" + request + "] to " + outputFileName );
 
       HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
@@ -76,7 +80,7 @@ public class DependencyChecker
           // get redirect url from "location" header field
           String newUrl = httpConn.getHeaderField("Location");
           // open the new connnection again
-          httpConn = (HttpURLConnection) new URL(newUrl).openConnection();
+          httpConn = (HttpURLConnection) new URI(newUrl).toURL().openConnection();
           httpConn.setInstanceFollowRedirects( false );
           responseCode = httpConn.getResponseCode();
           log.debug("Redirect to " + newUrl);
