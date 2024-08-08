@@ -1,0 +1,7 @@
+group:     nut.samples
+name:      text
+version:   1.0
+packaging: dir
+
+properties:
+  resourceDirectory: ../zip/main/resources

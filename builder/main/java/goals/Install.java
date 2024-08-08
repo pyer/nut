@@ -34,18 +34,30 @@ public class Install implements Goal
 
         log.info( "Installing" );
         log.debug( "Artifact \'" + artifactName + "\'" );
+
         if (project.noop()) {
           return;
         }
 
-        if( "xml".equals(packaging) ) {
-            String buildName = basedir + File.separator + resourceDirectory + File.separator + artifactId + "." + packaging;
-            copyFile( buildName, artifactName, version );
-        } else if( !"modules".equals(packaging) ) {
-            //install: copy target file to local repository
-            String buildName = basedir + File.separator + targetDirectory + File.separator + artifactId + "." + packaging;
-            copyFile( buildName, artifactName, version );
+        if( "modules".equals(packaging) ) {
+          log.debug( "No install for modules" );
+          return;
         }
+
+        if( "dir".equals(packaging) ) {
+          log.debug( "No install for packaging 'dir'" );
+          return;
+        }
+
+        //install: copy target file to local repository
+        String buildName = basedir + File.separator + targetDirectory + File.separator + artifactId + "." + packaging;
+        if ( new File(buildName).isDirectory() ) {
+          log.debug( "'" + buildName + "' is a directory and is not installed" );
+          return;
+        }
+
+        //install: copy target file to local repository
+        copyFile( buildName, artifactName, version );
     }
 
     /**

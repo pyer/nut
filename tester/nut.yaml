@@ -2,9 +2,9 @@
 #
 group:   nut
 name:    tester
-version: 3.1
+version: 3.2
 pattern: jar1
 
 dependencies:
-  - /nut/logger-3.0.jar
+  - /nut/logger-3.2.jar
 

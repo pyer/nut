@@ -2,6 +2,7 @@ package nut.goals;
 
 import nut.Logger;
 import nut.goals.GoalException;
+import nut.goals.packs.Dir;
 import nut.goals.packs.Jar;
 import nut.goals.packs.War;
 import nut.goals.packs.Zip;
@@ -33,7 +34,10 @@ public class Pack implements Goal
         }
 
         // Select archiver from packaging
-        if ( "jar".equals(packaging) ) {
+        if ( "dir".equals(packaging) ) {
+          Dir dir = new Dir(fullName);
+          dir.archive(project);
+        } else if ( "jar".equals(packaging) ) {
           Jar jar = new Jar(fullName);
           jar.archive(project);
         } else if ( "war".equals(packaging) ) {

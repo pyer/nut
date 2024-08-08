@@ -47,7 +47,7 @@ javac $options Dependency.java Project.java ParserException.java ValidationExcep
 echo " - goals"
 cd ../goals
 javac $options packs/util/CopyFiles.java packs/util/ZipFiles.java
-javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Tests.java Run.java packs/Jar.java packs/War.java packs/Zip.java
+javac $options Goal.java GoalException.java Clean.java Compile.java Install.java Pack.java Tests.java Run.java packs/Dir.java packs/Jar.java packs/War.java packs/Zip.java
 echo " - build"
 cd ../build
 javac $options DependencyNotFoundException.java DependencyChecker.java Scanner.java SorterException.java Sorter.java Builder.java
