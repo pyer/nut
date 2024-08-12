@@ -289,7 +289,7 @@ public class Logger
         StringBuffer messageBuffer = new StringBuffer();
         messageBuffer.append( name );
 
-        int dotCount = 48;
+        int dotCount = 64;
         dotCount -= name.length();
 
         messageBuffer.append( " " );
