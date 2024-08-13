@@ -172,12 +172,15 @@ public class Tests implements Goal
                         // Save current stdout
                         PrintStream out = System.out;
                         try {
-                            log.debug( "      " + method.getName());
-                            // Redirect stdout to null
-                            try {
-                              System.setOut(new PrintStream("/dev/null"));
-                            } catch(FileNotFoundException e) {
-                              e.printStackTrace();
+                            if (log.isDebug()) {
+                              log.debug( "      " + method.getName());
+                            } else {
+                              // Redirect stdout to null
+                              try {
+                                System.setOut(new PrintStream("/dev/null"));
+                              } catch(FileNotFoundException e) {
+                                e.printStackTrace();
+                              }
                             }
                             // Invoke the test method
                             Object o = method.invoke(t);
