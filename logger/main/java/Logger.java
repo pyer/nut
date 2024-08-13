@@ -43,6 +43,11 @@ public class Logger
         debug = false;
     }
 
+    public boolean isDebug()
+    {
+        return debug;
+    }
+
     public void debug( CharSequence content )
     {
       if(debug)
