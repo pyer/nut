@@ -74,8 +74,12 @@ public class DependencyChecker
 
       HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
       httpConn.setInstanceFollowRedirects( false );
-      int responseCode = httpConn.getResponseCode();
-      while (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+      log.debug("Connect to " + remote);
+      int responseCode = 0;
+      try {
+        int retries = 12;
+        responseCode = httpConn.getResponseCode();
+        while (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
           log.debug("Response code  = " + responseCode);
           // get redirect url from "location" header field
           String newUrl = httpConn.getHeaderField("Location");
@@ -84,6 +88,13 @@ public class DependencyChecker
           httpConn.setInstanceFollowRedirects( false );
           responseCode = httpConn.getResponseCode();
           log.debug("Redirect to " + newUrl);
+          retries--;
+          if (retries<0) {
+              throw new FileNotFoundException("Server " + newUrl + " is not responding.");
+          }
+        }
+      } catch(Exception e) {
+          throw new FileNotFoundException("Server " + remote + " is not responding.");
       }
 
       if (responseCode == HttpURLConnection.HTTP_OK) {
