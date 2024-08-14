@@ -39,6 +39,7 @@ public class DependencyChecker
       for ( Dependency dep : project.getDependencies() ) {
           log.debug("Check dependency " + dep.getPath() );
           if ( dep.isNotHere(repo) ) {
+            if ( dep.snapshotIsNotHere(repo) ) {
               try {
                 File outputDir = new File( repo + dep.getGroup() );
                 if ( !outputDir.exists() ) {
@@ -59,6 +60,7 @@ public class DependencyChecker
               if ( dep.isNotHere(repo) ) {
                 throw new DependencyNotFoundException("Dependency '" + dep.getPath() + "' is not found." );
               }
+            }
           }
       }
     }

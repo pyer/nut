@@ -25,6 +25,18 @@ public class Dependency implements java.io.Serializable {
         return this.path;
     }
 
+    public String getSnapshotPath()
+    {
+        String snapshotPath = path;
+        int i = path.lastIndexOf( '.' );
+        if ( i>1 ) {
+          snapshotPath = path.substring( 0, i ) + "-SNAPSHOT." + getPackaging();
+        } else {
+          snapshotPath = path + "-SNAPSHOT";
+        }
+        return snapshotPath;
+    }
+
     public String getGroup()
     {
         String group = "";
@@ -33,6 +45,17 @@ public class Dependency implements java.io.Serializable {
           group = path.substring( 0, i );
         }
         return group;
+    }
+
+    public String getPackaging()
+    {
+        String packaging = "";
+        int i = path.lastIndexOf( '.' );
+        int l = path.length();
+        if ( i>1 && i<l ) {
+          packaging = path.substring( i+1, l );
+        }
+        return packaging;
     }
 
     // Returns "/lib" when path is "/a/b/c/lib"
@@ -96,6 +119,12 @@ public class Dependency implements java.io.Serializable {
     public boolean isNotHere( String repositoryRoot )
     {
         File f = new File( repositoryRoot + getPath() );
+        return (!f.exists() || f.isDirectory() );
+    }
+
+    public boolean snapshotIsNotHere( String repositoryRoot )
+    {
+        File f = new File( repositoryRoot + getSnapshotPath() );
         return (!f.exists() || f.isDirectory() );
     }
 
