@@ -65,6 +65,18 @@ public class DependencyTest
     }
 
     @Test
+    public void testDependencyRealPath()
+    {
+      String s = "/dep-x.jar";
+      String r = "/dep-x-snapshot.jar";
+      Dependency dependency = new Dependency(s);
+      assertEquals( dependency.getPath(), s );
+      assertEquals( dependency.getRealPath(), s );
+      dependency.setRealPath(r);
+      assertEquals( dependency.getRealPath(), r );
+    }
+
+    @Test
     public void testDependencySnapshotPath()
     {
       String s = "/dep-x-1.2.3.jar";
@@ -165,9 +177,9 @@ public class DependencyTest
     {
       String basedir = System.getProperty("nut.basedir", ".");
       Dependency dependency1 = new Dependency("/dependency-1.2.3.jar");
-      assertFalse( dependency1.isNotHere(basedir + "/test/resources") );
+      assertTrue( dependency1.releaseIsHere(basedir + "/test/resources") );
       Dependency dependency2 = new Dependency("/dependency-4.5.6-SNAPSHOT.jar");
-      assertFalse( dependency2.isNotHere(basedir + "/test/resources") );
+      assertTrue( dependency2.releaseIsHere(basedir + "/test/resources") );
     }
 
     @Test
@@ -175,7 +187,7 @@ public class DependencyTest
     {
       String basedir = System.getProperty("nut.basedir", ".");
       Dependency dependency = new Dependency("/absent.jar");
-      assertTrue( dependency.isNotHere(basedir + "/test/resources") );
+      assertFalse( dependency.releaseIsHere(basedir + "/test/resources") );
     }
 
     @Test
@@ -183,8 +195,8 @@ public class DependencyTest
     {
       String basedir = System.getProperty("nut.basedir", ".");
       Dependency dependency = new Dependency("/dependency-4.5.6.jar");
-      assertTrue( dependency.isNotHere(basedir + "/test/resources") );
-      assertFalse( dependency.snapshotIsNotHere(basedir + "/test/resources") );
+      assertFalse( dependency.releaseIsHere(basedir + "/test/resources") );
+      assertTrue( dependency.snapshotIsHere(basedir + "/test/resources") );
     }
 
     @Test
@@ -192,8 +204,8 @@ public class DependencyTest
     {
       String basedir = System.getProperty("nut.basedir", ".");
       Dependency dependency = new Dependency("/dependency-1.2.3.jar");
-      assertFalse( dependency.isNotHere(basedir + "/test/resources") );
-      assertTrue( dependency.snapshotIsNotHere(basedir + "/test/resources") );
+      assertTrue( dependency.releaseIsHere(basedir + "/test/resources") );
+      assertFalse( dependency.snapshotIsHere(basedir + "/test/resources") );
     }
 
 }

@@ -11,6 +11,7 @@ public class Dependency implements java.io.Serializable {
      * The path of the dependency in the repository
      */
     private String path;
+    private String realPath;
     
     // Constructor
     // ----------------------------------------------------------------------
@@ -35,6 +36,19 @@ public class Dependency implements java.io.Serializable {
           snapshotPath = path + "-SNAPSHOT";
         }
         return snapshotPath;
+    }
+
+    public void setRealPath( String path )
+    {
+        this.realPath = path;
+    }
+
+    public String getRealPath()
+    {
+        if ( this.realPath == null ) {
+          this.realPath = this.path;
+        }
+        return this.realPath;
     }
 
     public String getGroup()
@@ -116,16 +130,16 @@ public class Dependency implements java.io.Serializable {
     /**
      * Check if the dependency is present in the local repository
      */
-    public boolean isNotHere( String repositoryRoot )
+    public boolean releaseIsHere( String repositoryRoot )
     {
         File f = new File( repositoryRoot + getPath() );
-        return (!f.exists() || f.isDirectory() );
+        return (f.exists() && !f.isDirectory() );
     }
 
-    public boolean snapshotIsNotHere( String repositoryRoot )
+    public boolean snapshotIsHere( String repositoryRoot )
     {
         File f = new File( repositoryRoot + getSnapshotPath() );
-        return (!f.exists() || f.isDirectory() );
+        return (f.exists() && !f.isDirectory() );
     }
 
     // ----------------------------------------------------------------------

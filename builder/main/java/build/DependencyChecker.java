@@ -38,29 +38,33 @@ public class DependencyChecker
       String remote = project.getRemoteRepository();
       for ( Dependency dep : project.getDependencies() ) {
           log.debug("Check dependency " + dep.getPath() );
-          if ( dep.isNotHere(repo) ) {
-            if ( dep.snapshotIsNotHere(repo) ) {
-              try {
-                File outputDir = new File( repo + dep.getGroup() );
-                if ( !outputDir.exists() ) {
+          if ( dep.releaseIsHere(repo) ) {
+            continue;
+          }
+          if ( dep.snapshotIsHere(repo) ) {
+            dep.setRealPath( dep.getSnapshotPath() );
+            continue;
+          }
+
+          try {
+              File outputDir = new File( repo + dep.getGroup() );
+              if ( !outputDir.exists() ) {
                   outputDir.mkdirs();
-                }
-                download(dep, repo, remote);
-              } catch (SecurityException se) {
+              }
+              download(dep, repo, remote);
+          } catch (SecurityException se) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' is unreadable." );
-              } catch (URISyntaxException use) {
+          } catch (URISyntaxException use) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' has an URI syntax error :" + use );
-              } catch (MalformedURLException mue) {
+          } catch (MalformedURLException mue) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' has a wrong URL :" + mue );
-              } catch(FileNotFoundException fnf) {
+          } catch(FileNotFoundException fnf) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' is not available :" + fnf );
-              } catch(IOException ioe) {
+          } catch(IOException ioe) {
                 throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' fails to writing file :" + ioe );
-              }
-              if ( dep.isNotHere(repo) ) {
-                throw new DependencyNotFoundException("Dependency '" + dep.getPath() + "' is not found." );
-              }
-            }
+          }
+          if ( !dep.releaseIsHere(repo) ) {
+                throw new DependencyNotFoundException( "Dependency '" + dep.getPath() + "' is not found." );
           }
       }
     }

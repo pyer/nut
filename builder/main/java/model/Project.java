@@ -453,7 +453,7 @@ public class Project implements java.io.Serializable
     {
       String classpath = getBaseDirectory() + File.separator + getOutputDirectory();
       for ( Dependency dependency : getDependencies() ) {
-          classpath = classpath + ":" + this.localRepository + dependency.getPath();
+          classpath = classpath + ":" + this.localRepository + dependency.getRealPath();
       }
       return classpath;
     }
@@ -464,7 +464,7 @@ public class Project implements java.io.Serializable
       String classpath = getDependenciesClassPath();
       classpath = classpath + ":" + getBaseDirectory() + File.separator + getTestOutputDirectory();
       for ( Dependency dependency : getTestDependencies() ) {
-          classpath = classpath + ":" + this.localRepository + dependency.getPath();
+          classpath = classpath + ":" + this.localRepository + dependency.getRealPath();
       }
       return classpath;
     }
