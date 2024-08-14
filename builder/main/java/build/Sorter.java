@@ -50,10 +50,18 @@ public class Sorter
      */
     public void checkCyclicDependency() throws SorterException
     {
-        List<String> visited = new ArrayList<String>();
         log.debug("Check cyclic dependency");
         for ( Project project : listOfProjects ) {
-            visit( project, visited);
+            List<String> visitedProjects = new ArrayList<String>();
+            log.debug("  Visiting " + project.getPath() );
+            visit( project, visitedProjects);
+            log.debug("  Visited");
+            for ( String depPath : visitedProjects ) {
+                log.debug("  - " + depPath);
+                if ( visitedProjects.contains( project.getPath() ) ) {
+                    throw new SorterException( "Project '" + project.getPath() + "' creates a cycle" );
+                }
+            }
         }
     }
 
@@ -80,17 +88,16 @@ public class Sorter
      */
     private void visit( Project project, List<String> cycle ) throws SorterException
     {
-        log.debug("Visiting " + project.getPath() );
         project.visiting();
         for ( Dependency dependency : project.getDependencies() ) {
-            if ( cycle.contains( dependency.getPath() ) ) {
-                     throw new SorterException( "Project '" + project.getPath() + "' creates a cycle with '" + dependency.getPath() + "'" );
+            log.debug("    - " + dependency.getPath() );
+            if ( !cycle.contains( dependency.getPath() ) ) {
+                cycle.add( dependency.getPath() );
+                Project dep = retrieveProject( dependency.getPath() );
+                if ( dep != null && dep.isNotVisited() ) {
+                    visit( dep, cycle );
+                }
             }
-            Project dep = retrieveProject( dependency.getPath() );
-            if ( dep != null && dep.isNotVisited() ) {
-                visit( dep, cycle );
-            }
-            cycle.add( project.getPath() );
         }
         project.visited();
     }
