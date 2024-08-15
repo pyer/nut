@@ -1,0 +1,13 @@
+# Test project
+
+group:     nut.test
+name:      test
+version:   3.0
+packaging: jar 
+
+mainClass: ab.squirrel.Main
+
+properties:
+  targetDirectory:       target/dummy
+
+

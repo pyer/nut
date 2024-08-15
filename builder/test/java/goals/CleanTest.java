@@ -72,6 +72,46 @@ public class CleanTest
         assertTrue( d2.exists() );
     }
 
+    @Test
+    public void testCleanNoTarget() throws IOException, ParserException, ValidationException, GoalException
+    {
+        Project project = createProject("/test/resources/testProject.yaml", true);
+        String basedir = project.getBaseDirectory();
+        // Create test target
+        File f = new File( basedir + "/target/dummy" );
+        assertFalse( f.exists() );
+        new Clean().execute(project);
+        assertFalse( f.exists() );
+    }
+
+    @Test(expectedExceptions = GoalException.class)
+    public void testTargetIsAFile() throws IOException, GoalException
+    {
+        Project project = createProject("/test/resources/testProject.yaml", true);
+        String basedir = project.getBaseDirectory();
+        // Create test target
+        File f = new File( basedir + "/target/dummy" );
+        f.createNewFile();
+        assertTrue( f.exists() );
+        new Clean().execute(project);
+        f.delete();
+    }
+
+    @Test(expectedExceptions = GoalException.class)
+    public void testTargetIsReadOnly() throws IOException, GoalException
+    {
+        Project project = createProject("/test/resources/testProject.yaml", true);
+        String basedir = project.getBaseDirectory();
+        // Create test target
+        File f = new File( basedir + "/target/dummy" );
+        f.mkdir();
+        assertTrue( f.exists() );
+        assertTrue( f.setReadOnly() );
+        new Clean().execute(project);
+        assertTrue( f.setWritable(true) );
+        f.delete();
+    }
+
     private Project createProject( String nutFile, boolean noop) {
         String basedir = System.getProperty("nut.basedir", ".");
         try {
