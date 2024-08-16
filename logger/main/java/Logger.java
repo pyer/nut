@@ -9,97 +9,159 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-/**
- * Logger with "standard" output and error output stream.
- */
-
 public class Logger
 {
-    private static boolean debug = false;
+    // ----------------------------------------------------------------------
+    // Log levels
+    // ----------------------------------------------------------------------
+    public enum Level {
+      ERROR,
+      WARNING,
+      INFO,
+      TRACE,
+      DEBUG;
+    }
 
+    // ----------------------------------------------------------------------
+    // Private variables
+    // ----------------------------------------------------------------------
+
+    private static Level level = Level.INFO;
+    private Level savedLevel   = Level.INFO;
     private Date startDate;
 
     // ----------------------------------------------------------------------
     // Public methods
     // ----------------------------------------------------------------------
 
+    // used by help, env, etc...
     public void out( String content )
     {
         System.out.println( content );
     }
 
+    // logs go to stderr
     public void err( String content )
     {
         System.err.println( content );
     }
 
-    public void debugOn()
+    // Level managment
+    public Level getLevel()
     {
-        debug = true;
+        return this.level;
     }
 
-    public void debugOff()
+    public void setLevel(Level level)
     {
-        debug = false;
+        this.savedLevel = this.level;
+        this.level = level;
     }
 
-    public boolean isDebug()
+    public void restoreLevel()
     {
-        return debug;
+        this.level = this.savedLevel;
+    }
+
+    public boolean isWarningEnabled()
+    {
+        return level.ordinal() >= Level.WARNING.ordinal();
+    }
+
+    public boolean isInfoEnabled()
+    {
+        return level.ordinal() >= Level.INFO.ordinal();
+    }
+
+    public boolean isTraceEnabled()
+    {
+        return level.ordinal() >= Level.TRACE.ordinal();
+    }
+
+    public boolean isDebugEnabled()
+    {
+        return level.ordinal() >= Level.DEBUG.ordinal();
     }
 
     public void debug( CharSequence content )
     {
-      if(debug)
+      if(isDebugEnabled())
         print( " debug ", content );
     }
 
     public void debug( CharSequence content, Throwable error )
     {
-      if(debug)
+      if(isDebugEnabled())
         print( " debug ", content, error );
     }
 
     public void debug( Throwable error )
     {
-      if(debug)
+      if(isDebugEnabled())
         print( " debug ", error );
+    }
+
+    public void trace( CharSequence content )
+    {
+      if(isTraceEnabled())
+        print( " trace ", content );
+    }
+
+    public void trace( CharSequence content, Throwable error )
+    {
+      if(isTraceEnabled())
+        print( " trace ", content, error );
+    }
+
+    public void trace( Throwable error )
+    {
+      if(isTraceEnabled())
+        print( " trace ", error );
     }
 
     public void info( CharSequence content )
     {
+      if(isInfoEnabled())
         print( " info  ", content );
     }
 
     public void info( CharSequence content, Throwable error )
     {
+      if(isInfoEnabled())
         print( " info  ", content, error );
     }
 
     public void info( Throwable error )
     {
+      if(isInfoEnabled())
         print( " info  ", error );
     }
 
     public void warn( CharSequence content )
     {
-        System.out.print( "\033[1;33m" );
+      if(isWarningEnabled()) {
+        System.err.print( "\033[1;33m" );
         print( " warn  ", content );
-        System.out.print( "\033[1;37m" );
+        System.err.print( "\033[1;37m" );
+      }
     }
 
     public void warn( CharSequence content, Throwable error )
     {
-        System.out.print( "\033[1;33m" );
+      if(isWarningEnabled()) {
+        System.err.print( "\033[1;33m" );
         print( " warn  ", content, error );
-        System.out.print( "\033[1;37m" );
+        System.err.print( "\033[1;37m" );
+      }
     }
 
     public void warn( Throwable error )
     {
-        System.out.print( "\033[1;33m" );
+      if(isWarningEnabled()) {
+        System.err.print( "\033[1;33m" );
         print( " warn  ", error );
-        System.out.print( "\033[1;37m" );
+        System.err.print( "\033[1;37m" );
+      }
     }
 
     public void error( CharSequence content )
@@ -161,30 +223,30 @@ public class Logger
 
     public void success( CharSequence content )
     {
-        System.out.print( "\033[1;32m" );
+        System.err.print( "\033[1;32m" );
         print( "SUCCESS", content );
-        System.out.print( "\033[1;37m" );
+        System.err.print( "\033[1;37m" );
     }
 
     public void success( String name, long time )
     {
-        System.out.print( "\033[1;32m" );
+        System.err.print( "\033[1;32m" );
         print( "SUCCESS", summaryLine( name, time ) );
-        System.out.print( "\033[1;37m" );
+        System.err.print( "\033[1;37m" );
     }
 
     public void warning( CharSequence content )
     {
-        System.out.print( "\033[1;33m" );
+        System.err.print( "\033[1;33m" );
         print( "WARNING", content );
-        System.out.print( "\033[1;37m" );
+        System.err.print( "\033[1;37m" );
     }
 
     public void warning( String name, long time )
     {
-        System.out.print( "\033[1;33m" );
+        System.err.print( "\033[1;33m" );
         print( "WARNING", summaryLine( name, time ) );
-        System.out.print( "\033[1;37m" );
+        System.err.print( "\033[1;37m" );
     }
 
     public void failure( CharSequence content )
@@ -206,7 +268,7 @@ public class Logger
         System.err.print( "\033[1;31m" );
         System.err.println( "[FAILURE] " + e.getMessage() );
         System.err.print( "\033[1;37m" );
-        if(debug)
+        if(isDebugEnabled())
            e.printStackTrace();
     }
 
@@ -215,7 +277,7 @@ public class Logger
         System.err.print( "\033[1;31m" );
         System.err.println( "[ FATAL ] " + t.getMessage() );
         System.err.print( "\033[1;37m" );
-        if(debug)
+        if(isDebugEnabled())
            t.printStackTrace();
     }
 
@@ -224,7 +286,7 @@ public class Logger
     // ----------------------------------------------------------------------
     private void print( String prefix, CharSequence content )
     {
-        System.out.println( "[" + prefix + "] " + content.toString() );
+        System.err.println( "[" + prefix + "] " + content.toString() );
     }
 
     private void print( String prefix, Throwable error )
@@ -234,7 +296,7 @@ public class Logger
 
         error.printStackTrace( pWriter );
 
-        System.out.println( "[" + prefix + "] " + sWriter.toString() );
+        System.err.println( "[" + prefix + "] " + sWriter.toString() );
     }
 
     private void print( String prefix, CharSequence content, Throwable error )
@@ -244,7 +306,7 @@ public class Logger
 
         error.printStackTrace( pWriter );
 
-        System.out.println( "[" + prefix + "] " + content.toString() + "\n\n" + sWriter.toString() );
+        System.err.println( "[" + prefix + "] " + content.toString() + "\n\n" + sWriter.toString() );
     }
 
     private String getFormattedTime( long time )

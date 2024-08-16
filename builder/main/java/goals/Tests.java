@@ -169,10 +169,15 @@ public class Tests implements Goal
                     ignored++;
                 } else {
                     if (method.isAnnotationPresent(Test.class)) {
-                        // Save current stdout
+                        Test test = (Test) method.getAnnotation(Test.class);
+                        if (!test.enabled())
+                          continue;
+
+                        // Save current stdout and stderr
                         PrintStream out = System.out;
+                        PrintStream err = System.err;
                         try {
-                            if (log.isDebug()) {
+                            if (log.isDebugEnabled()) {
                               log.debug( "      " + method.getName());
                             } else {
                               // Redirect stdout to null
@@ -186,16 +191,18 @@ public class Tests implements Goal
                             Object o = method.invoke(t);
                             // Restore stdout
                             System.setOut(out);
+                            System.setErr(err);
+                            log.trace( "      " + method.getName() + ": ok");
                             success++;
                         } catch(InvocationTargetException e) {
                             // Restore stdout
                             System.setOut(out);
+                            System.setErr(err);
                             boolean expected = false;
                             Class catched = e.getCause().getClass();
-                            Test test = (Test) method.getAnnotation(Test.class);
                             for( Class ee : test.expectedExceptions() ) {
                               if(ee.equals(catched)) {
-                                //log.debug(ee.getName() + "/" + catched.getName());
+                                log.trace("      " + method.getName() + ": ok, catch " + catched.getName());
                                 expected = true;
                               }
                             }

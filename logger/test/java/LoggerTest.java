@@ -6,27 +6,23 @@ import nut.annotations.Test;
 
 import static nut.Assert.*;
 
-/*
-Logger.java public methods:
-    public void debugOn()
-    public void debugOff()
-    public void debug( CharSequence content )
-    public void debug( CharSequence content, Throwable error )
-    public void debug( Throwable error )
-    public void info( CharSequence content )
-    public void info( CharSequence content, Throwable error )
-    public void info( Throwable error )
-    public void warn( CharSequence content )
-    public void warn( CharSequence content, Throwable error )
-    public void warn( Throwable error )
-    public void error( CharSequence content )
-    public void error( CharSequence content, Throwable error )
-    public void error( Throwable error )
-    public void line()
-*/
 
 public class LoggerTest
 {
+    private ByteArrayOutputStream output;
+    private PrintStream original;
+
+    private void setup() {
+        output = new ByteArrayOutputStream();
+        original = System.err;
+        System.setErr(new PrintStream(output));
+    }
+
+    private void restore() {
+        System.setErr(original);
+    }
+
+
     @Test
     public void testHashCodeNullSafe() {
         new Logger().hashCode();
@@ -45,85 +41,165 @@ public class LoggerTest
 
     @Test
     public void testOut() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream original = System.out;
-        System.setOut(new PrintStream(outContent));
+        output = new ByteArrayOutputStream();
+        original = System.out;
+        System.setOut(new PrintStream(output));
         new Logger().out( "hello" );
-        String out = outContent.toString();
         System.setOut(original);
-        assertEquals("hello\n", out);
+        assertEquals( output.toString(), "hello\n" );
     }
 
     @Test
     public void testErr() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream original = System.err;
-        System.setErr(new PrintStream(outContent));
+        output = new ByteArrayOutputStream();
+        original = System.err;
+        System.setErr(new PrintStream(output));
         new Logger().err( "hello" );
-        String out = outContent.toString();
         System.setErr(original);
-        assertEquals("hello\n", out);
-    }
-
-
-    @Test(enabled=false)
-    public void testDebugOn() {
-        PrintStream original = System.out;
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-        Logger log = new Logger();
-        log.debugOn();
-        log.debug( "hello" );
-        String out = outContent.toString();
-        log.debugOff();
-        System.setOut(original);
-        assertEquals("[ debug ] hello\n", out);
+        assertEquals( output.toString(), "hello\n" );
     }
 
     @Test(enabled=false)
-    public void testDebugOff() {
-        PrintStream original = System.out;
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+    public void testLevels() {
         Logger log = new Logger();
-        log.debugOff();
-        log.debug( "hello" );
-        String out = outContent.toString();
-        System.setOut(original);
-        assertTrue(out.isEmpty());
+        Logger.Level currentLevel = log.getLevel();
+
+        log.setLevel( Logger.Level.ERROR );
+        assertFalse( log.isWarningEnabled() );
+        assertFalse( log.isInfoEnabled() );
+        assertFalse( log.isTraceEnabled() );
+        assertFalse( log.isDebugEnabled() );
+
+        log.setLevel( Logger.Level.WARNING );
+        assertTrue(  log.isWarningEnabled() );
+        assertFalse( log.isInfoEnabled() );
+        assertFalse( log.isTraceEnabled() );
+        assertFalse( log.isDebugEnabled() );
+
+        log.setLevel( Logger.Level.INFO );
+        assertTrue(  log.isWarningEnabled() );
+        assertTrue(  log.isInfoEnabled() );
+        assertFalse( log.isTraceEnabled() );
+        assertFalse( log.isDebugEnabled() );
+
+        log.setLevel( Logger.Level.TRACE );
+        assertTrue(  log.isWarningEnabled() );
+        assertTrue(  log.isInfoEnabled() );
+        assertTrue(  log.isTraceEnabled() );
+        assertFalse( log.isDebugEnabled() );
+
+        log.setLevel( Logger.Level.DEBUG );
+        assertTrue(  log.isWarningEnabled() );
+        assertTrue(  log.isInfoEnabled() );
+        assertTrue(  log.isTraceEnabled() );
+        assertTrue(  log.isDebugEnabled() );
+
+        log.setLevel( currentLevel );
+        assertTrue( currentLevel == log.getLevel() );
+    }
+
+    @Test(enabled=false)
+    public void testRestoreLevel() {
+        Logger log = new Logger();
+        Logger.Level currentLevel = log.getLevel();
+
+        log.setLevel( Logger.Level.INFO );
+        log.setLevel( Logger.Level.DEBUG );
+        assertTrue( Logger.Level.DEBUG == log.getLevel() );
+        log.restoreLevel();
+        assertTrue( Logger.Level.INFO  == log.getLevel() );
+
+        log.setLevel( currentLevel );
+        assertTrue( currentLevel == log.getLevel() );
     }
 
     @Test
     public void testError() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream original = System.err;
-        System.setErr(new PrintStream(outContent));
-        new Logger().error( "ERROR" );
-        String out = outContent.toString();
-        System.setErr(original);
-        assertEquals("\033[1;31m[ error ] ERROR\n\033[1;37m", out);
+        setup();
+        Logger log = new Logger();
+        log.setLevel( Logger.Level.ERROR );
+        log.error( "ERROR" );
+        log.warn( "WARNING" );
+        log.info( "INFO" );
+        log.trace( "TRACE" );
+        log.debug( "DEBUG" );
+        log.restoreLevel();
+        restore();
+        assertEquals( output.toString(), "\033[1;31m[ error ] ERROR\n\033[1;37m" );
     }
 
     @Test
     public void testWarn() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream original = System.out;
-        System.setOut(new PrintStream(outContent));
-        new Logger().warn( "WARNING" );
-        String out = outContent.toString();
-        System.setOut(original);
-        assertEquals("\033[1;33m[ warn  ] WARNING\n\033[1;37m", out);
+        setup();
+
+        Logger log = new Logger();
+        log.setLevel( Logger.Level.ERROR );
+        log.warn( "WARNING" );
+        log.restoreLevel();
+        assertEquals( output.toString(),  "" );
+
+        log.setLevel( Logger.Level.WARNING );
+        log.warn( "WARNING" );
+        log.restoreLevel();
+        assertEquals( output.toString(), "\033[1;33m[ warn  ] WARNING\n\033[1;37m" );
+
+        restore();
     }
 
     @Test
     public void testInfo() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream original = System.out;
-        System.setOut(new PrintStream(outContent));
-        new Logger().info( "Hello !" );
-        String out = outContent.toString();
-        System.setOut(original);
-        assertEquals("[ info  ] Hello !\n", out);
+        setup();
+
+        Logger log = new Logger();
+        log.setLevel( Logger.Level.WARNING );
+        log.info( "INFO" );
+        log.restoreLevel();
+        assertEquals( output.toString(), "" );
+
+        log.setLevel( Logger.Level.INFO );
+        log.info( "Hello !" );
+        log.restoreLevel();
+        assertEquals( output.toString(), "[ info  ] Hello !\n" );
+
+        restore();
+    }
+
+    @Test
+    public void testTrace() {
+        setup();
+
+        Logger log = new Logger();
+        log.setLevel( Logger.Level.INFO );
+        log.trace( "TRACE" );
+        log.restoreLevel();
+        log.out( output.toString() );
+        assertEquals( output.toString(), "" );
+
+        log.setLevel( Logger.Level.TRACE );
+        log.info( "Hello" );
+        log.trace( "world !" );
+        log.restoreLevel();
+        assertEquals( output.toString(), "[ info  ] Hello\n[ trace ] world !\n" );
+
+        restore();
+    }
+
+    @Test
+    public void testDebug() {
+        setup();
+
+        Logger log = new Logger();
+        log.setLevel( Logger.Level.TRACE );
+        log.debug( "DEBUG" );
+        log.restoreLevel();
+        assertEquals( output.toString(), "" );
+
+        log.setLevel( Logger.Level.DEBUG );
+        log.debug( "DEBUG" );
+        log.restoreLevel();
+        assertEquals( output.toString(), "[ debug ] DEBUG\n" );
+
+        restore();
     }
 
 }

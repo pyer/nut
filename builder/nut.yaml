@@ -2,10 +2,10 @@
 #
 group:   nut
 name:    builder
-version: 3.2
+version: 3.3
 pattern: jar1
 
 dependencies:
-  - /nut/logger-3.2.jar
-  - /nut/tester-3.2.jar
+  - /nut/logger-3.3.jar
+  - /nut/tester-3.3.jar
 

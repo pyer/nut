@@ -45,7 +45,9 @@ public class Nut
                 // -Dproperty=value (-Dproperty means -Dproperty=true)
                 setDefine(args[i]);
             } else if (args[i].equals("-d") || args[i].equals("--debug")) {
-                log.debugOn();
+                log.setLevel( Logger.Level.DEBUG );
+            } else if (args[i].equals("-v") || args[i].equals("--verbose")) {
+                log.setLevel( Logger.Level.TRACE );
             } else if (args[i].equals("-n") || args[i].equals("--noop")) {
                 noop = true;
             } else if (args[i].equals("-r") || args[i].equals("--release")) {
@@ -164,8 +166,8 @@ public class Nut
         log.out( "  -n,--noop        No operation mode (dry run)" );
         log.out( "  -r,--release     Install a release version (default is snapshot)" );
         log.out( "  -s,--snapshot    Install a snapshot version of the project" );
+        log.out( "  -v,--verbose     Display more messages" );
         log.out( "  --               Next arguments are passed to the operation call (mainly run)" );
-//        log.out( "  -v,--verbose     Display info messages" );
         log.out( "\n" );
     }
 
