@@ -16,8 +16,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -42,29 +42,34 @@ public class Tests implements Goal
         }
 
         String basedir              = project.getBaseDirectory();
-        String outputDirectory      = basedir + File.separator + project.getOutputDirectory();
         String testOutputDirectory  = basedir + File.separator + project.getTestOutputDirectory();
+        String[] testDependencies   = project.getTestDependenciesClassPath().split(":");
 
         noop = project.noop();
         log.info("Testing");
-        testingClasses(outputDirectory,testOutputDirectory);
+        testingClasses(testOutputDirectory, testDependencies);
         if (failures>0) {
           project.failure();
         }
         logResults();
     }
 
-    private void testingClasses(String outputDirectory, String testOutputDirectory) throws GoalException
+    private void testingClasses(String testOutputDirectory, String[] testDependencies) throws GoalException
     {
-        File classesDir     = new File(outputDirectory);
         File testClassesDir = new File(testOutputDirectory);
         if ( testClassesDir.exists() ) {
           URL[] urls = null;
           try {
-            // convert the directories to URL format
-            urls = new URL[]{testClassesDir.toURI().toURL(), classesDir.toURI().toURL()};
+            // convert the directories to an URL array
+            List<URL> urlsList = new ArrayList<URL>();
+            // log.debug("Class loader URLs:");
+            for (String dep : testDependencies) {
+                // log.debug("   - " + dep);
+                urlsList.add(new File(dep).toURI().toURL());
+            }
+            urls = urlsList.toArray(URL[]::new);
           } catch(MalformedURLException e) {
-            log.debug("fileToClass MalformedURLException: " + e.getMessage());
+            log.error("fileToClass MalformedURLException: " + e.getMessage());
 	          e.printStackTrace();
           }
           // load the directories into class loader
@@ -170,8 +175,11 @@ public class Tests implements Goal
                 } else {
                     if (method.isAnnotationPresent(Test.class)) {
                         Test test = (Test) method.getAnnotation(Test.class);
-                        if (!test.enabled())
+                        if (!test.enabled()) {
+                          log.warn("      " + method.getName() + ": disabled");
+                          ignored++;
                           continue;
+                        }
 
                         // Save current stdout and stderr
                         PrintStream out = System.out;
@@ -231,7 +239,7 @@ public class Tests implements Goal
 
     private List<String> listOfTests( File rootDir )
     {
-        List<String> tests = new LinkedList<String>();
+        List<String> tests = new ArrayList<String>();
 
         if( rootDir.exists() ) {
           for (String test : rootDir.list()) {
