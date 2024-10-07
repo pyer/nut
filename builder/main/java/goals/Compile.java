@@ -56,7 +56,7 @@ public class Compile implements Goal
             if ( !testOutputDir.exists() ) {
                 testOutputDir.mkdirs();
             }
-            compile( testSources, testSourceDirectory, testOutputDirectory, project.getTestDependenciesClassPath() );
+            compile( testSources, testSourceDirectory, testOutputDirectory, project.getTestDependenciesClassPath(), project.getArguments() );
           }
         } else {
           log.info( "Compiling sources" );
@@ -73,7 +73,7 @@ public class Compile implements Goal
             if ( !outputDir.exists() ) {
                 outputDir.mkdirs();
             }
-            compile( sources, sourceDirectory, outputDirectory, project.getDependenciesClassPath() );
+            compile( sources, sourceDirectory, outputDirectory, project.getDependenciesClassPath(), project.getArguments() );
           }
         }
     }
@@ -101,31 +101,35 @@ public class Compile implements Goal
         return sources;
     }
 
-    private void compile(List sources, String sourceDirectory, String outputDirectory, String classPath) throws GoalException {
-        int n = 8 + sources.size();
+    private void compile(List sources, String sourceDirectory, String outputDirectory, String classPath, List<String> options) throws GoalException {
+        int n = 0;
+        if ( options != null) {
+          n = options.size();
+        }
         log.debug("      from \'" + sourceDirectory + "\' to \'" + outputDirectory + "\'" );
         log.debug("      -classpath " + classPath);
-        String[] args = new String[n];
-        args[0] = "-d";
-        args[1] = outputDirectory;
-        args[2] = "-O";
-        //    args[]( "-verbose" );
-        args[3] = "-deprecation";
-        args[4] = "-classpath";
-        args[5] = classPath;
-        args[6] = "-sourcepath";
-        args[7] = sourceDirectory;
+        String[] args = new String[8 + sources.size() + n];
+        int i = 0;
+        args[i++] = "-d";
+        args[i++] = outputDirectory;
+        args[i++] = "-O";
+        args[i++] = "-deprecation";
+        args[i++] = "-classpath";
+        args[i++] = classPath;
+        args[i++] = "-sourcepath";
+        args[i++] = sourceDirectory;
+        // optional arguments
+        if ( n > 0 ) {
+            for (String arg : options) {
+                args[i++] = arg;
+            }
+        }
         // and the sources, at last
-        for ( int i = 0; i < sources.size(); i++ ) {
-            args[8+i] = (String)(sources.get(i));
+        for ( int j = 0; j < sources.size(); j++ ) {
+                args[i++] = (String)(sources.get(j));
         }
 
         // ----------------------------------------------------------------------
-        /*
-        for ( int i=0; i<n; i++ ) {
-            log.debug( "  '"+args[i]+"'" );
-        }
-        */
         JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
         int rc = javac.run(null, null, null, args);
         if ( rc != 0 ) {
