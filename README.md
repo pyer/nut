@@ -3,7 +3,7 @@ nut
 
 
 nut is a little project I wrote to learn Java.
-Run './install' to create the first default nutRepository.
+Run './install' to create the first default nut repository in '~/.nut'.
 Then try 'nut build' within the hello folder, and 'nut run'.
 
 Do not use 'nut', unless you know what you want.
